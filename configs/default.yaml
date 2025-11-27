@@ -1,0 +1,14 @@
+name: "Default Product"
+description: "Standard configuration enabling all modules"
+
+# List of enabled modules
+modules:
+  - auth
+  - example
+  - insurance
+  - permission
+  - product
+
+# Theme configuration (example)
+theme:
+  primary: "#1976D2"
