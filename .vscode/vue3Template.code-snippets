@@ -1,0 +1,18 @@
+{
+  "Vue3 Template": {
+    "prefix": "Vue3",
+    "body": [
+      "<script setup lang='ts'>",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "待實作",
+      "</template>",
+      "",
+      "<style scoped lang=\"scss\">",
+      "",
+      "</style>"
+    ]
+  }
+}
