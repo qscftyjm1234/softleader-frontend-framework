@@ -8,9 +8,8 @@ const pageSchema: PageSchema = {
     {
       "type": "SmartCard",
       "props": {
-        "title": "新增會員",
-        "subtitle": "建立新的會員帳號",
-        "icon": "mdi-account-plus",
+        "title": "新增權限",
+        "icon": "mdi-plus-box",
         "color": "success"
       }
     }

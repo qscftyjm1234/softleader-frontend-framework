@@ -1,4 +1,28 @@
-import path from 'path' //
+import path from 'path'
+import fs from 'fs'
+import yaml from 'js-yaml'
+
+// 1. 讀取環境變數決定要使用哪個設定檔 (預設為 default)
+// 這是「產品化」的核心：透過環境變數切換不同的 YAML 設定，就能打包出不同的產品
+const productConfigName = process.env.PRODUCT_CONFIG || 'default'
+const configPath = path.resolve(__dirname, 'configs', `${productConfigName}.yaml`)
+
+// 2. 載入設定檔 (YAML)
+// 這裡會讀取 configs/xxx.yaml，知道這個產品啟用了哪些模組 (modules)
+let productConfig = { modules: [] }
+if (fs.existsSync(configPath)) {
+  try {
+    const fileContents = fs.readFileSync(configPath, 'utf8')
+    productConfig = yaml.load(fileContents)
+    console.log(`[Config] Loaded configuration: ${productConfigName}`)
+    console.log(`[Config] Enabled modules: ${productConfig.modules.join(', ')}`)
+  } catch (e) {
+    console.error(`[Config] Error loading configuration ${configPath}:`, e)
+  }
+} else {
+  console.warn(`[Config] Configuration file not found: ${configPath}. Loading no modules.`)
+}
+
 /**
  * @功能 建置、邊際nuxt3專案時，所使用之參數和模式
  * */
@@ -8,10 +32,7 @@ export default defineNuxtConfig({
    * */
   ssr: false,
 
-  /**
-   * @功能 直接使用此組件
-   * */
-  components: true,
+  // components: true, // Removed to avoid duplicate key with the detailed configuration below
 
   /**
    * @功能 控制專案編譯、打包（build）過程的設定
@@ -90,7 +111,7 @@ export default defineNuxtConfig({
    * @pathPrefix 是否自動將路徑資料夾名作為 prefix，預設為 true
    * @prefix 手動強制幫該資料夾內所有元件加上該名稱
    * @path 指定元件資料夾的路徑
-
+   * 
    **/
   components: [
     { path: '~/components', pathPrefix: false },
@@ -108,26 +129,25 @@ export default defineNuxtConfig({
     // 這裡的設定會 在瀏覽器端也能讀到（公開的）
     public: {
       logDebug: process.env.LOG_DEBUG,
-      isDev: process.env.IS_DEV
+      isDev: process.env.IS_DEV,
+      productConfig: productConfig // 將設定注入前端，方便 runtime 使用
     }
   },
   hooks: {
+    // 這是 Nuxt 的 Hook，讓我們可以在 Nuxt 建立路由表之前，動態插入自定義的頁面
     async 'pages:extend'(pages) {
-      const fs = await import('fs')
-      const path = await import('path')
-      
       const modulesDir = path.resolve(__dirname, 'modules')
       
-      // 簡單掃描 modules 下所有 pages 資料夾
-      // 這裡假設 modules/<module>/pages/<page>.vue
+      // 根據設定檔中啟用的 modules 進行掃描
+      // 只有在 YAML 裡有寫的模組，它的頁面才會被載入
+      const enabledModules = productConfig.modules || []
+
       if (fs.existsSync(modulesDir)) {
-        const modules = fs.readdirSync(modulesDir)
-        
-        for (const moduleName of modules) {
+        for (const moduleName of enabledModules) {
           const pagesDir = path.join(modulesDir, moduleName, 'pages')
           if (fs.existsSync(pagesDir)) {
-            // 遞迴掃描函式
-            const scanFiles = (dir, baseDir) => {
+            // 遞迴掃描函式：找出該模組 pages 資料夾下所有的 .vue 檔案
+            const scanFiles = (dir: string, baseDir: string) => {
               const files = fs.readdirSync(dir)
               for (const file of files) {
                 const filePath = path.join(dir, file)
@@ -135,19 +155,38 @@ export default defineNuxtConfig({
                 if (stat.isDirectory()) {
                   scanFiles(filePath, baseDir)
                 } else if (file.endsWith('.vue')) {
-                  // 計算相對路徑作為路由路徑
-                  // e.g. /path/to/modules/auth/pages/user/list.vue -> user/list.vue
+                  // 計算相對路徑，用來決定路由網址
+                  // 例如檔案是: modules/auth/pages/user/list.vue
+                  // baseDir 是: modules/auth/pages
+                  // relativePath 就是: user/list.vue
                   const relativePath = path.relative(baseDir, filePath)
-                  // user/list.vue -> /user/list
-                  // index.vue -> /
+                  
+                  // 初步處理路徑：
+                  // 1. 把 Windows 的反斜線 \ 換成 /
+                  // 2. 去掉 .vue 副檔名
+                  // 結果: /user/list
                   let routePath = '/' + relativePath.replace(/\\/g, '/').replace(/\.vue$/, '')
+                  
+                  // 如果是 index 結尾，移除 /index (這是 Nuxt 的慣例，index 代表根路徑)
                   if (routePath.endsWith('/index')) {
-                    routePath = routePath.slice(0, -6) // remove /index
-                    if (routePath === '') routePath = '/'
+                    routePath = routePath.slice(0, -6)
                   }
                   
+                  // 【關鍵邏輯】自動加上模組名稱前綴
+                  // 為了避免不同模組的頁面網址衝突，我們強制加上模組名稱
+                  // 例如 auth 模組的 user/list 頁面，網址應該是 /auth/user/list
+                  if (!routePath.startsWith(`/${moduleName}`)) {
+                     if (routePath === '/') {
+                        routePath = `/${moduleName}`
+                     } else {
+                        routePath = `/${moduleName}${routePath}`
+                     }
+                  }
+                  
+                  // 產生唯一的路由名稱 (name)，例如: auth-user-list
                   const name = relativePath.replace(/\\/g, '-').replace(/\//g, '-').replace(/\.vue$/, '')
                   
+                  // 將這個頁面加入 Nuxt 的路由表
                   pages.push({
                     name: `${moduleName}-${name}`, // 加上 module prefix 避免衝突
                     path: routePath,
@@ -158,6 +197,8 @@ export default defineNuxtConfig({
             }
             
             scanFiles(pagesDir, pagesDir)
+          } else {
+            console.warn(`[Config] Module '${moduleName}' enabled in config but pages directory not found at ${pagesDir}`)
           }
         }
       }

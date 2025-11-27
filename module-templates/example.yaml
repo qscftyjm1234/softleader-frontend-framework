@@ -7,3 +7,67 @@ routes:
       - label: "範例列表"
         path: "/example/list"
         permission: "example.list.view"
+        schema:
+          type: "Page"
+          blocks:
+            # 1. 表格區塊 (移到最上面)
+            - type: "v-row"
+              children:
+                - type: "v-col"
+                  props: { cols: "12" }
+                  children:
+                    - type: "SmartTable"
+                      props:
+                        title: "Table組件 (API 串接)"
+                        api: "/api/users" # 改用 API
+                        columns:
+                          - label: "ID"
+                            field: "id"
+                          - label: "名稱"
+                            field: "name"
+                          - label: "Email"
+                            field: "email"
+                          - label: "角色"
+                            field: "role"
+
+            # 2. 頂部歡迎區塊 (Grid Layout)
+            - type: "v-row"
+              children:
+                - type: "v-col"
+                  props: { cols: "12", md: "4" }
+                  children:
+                    - type: "SmartCard"
+                      props:
+                        title: "總銷售額"
+                        subtitle: "本月累計"
+                        text: "$1,234,567"
+                        icon: "mdi-currency-usd"
+                        color: "primary"
+                - type: "v-col"
+                  props: { cols: "12", md: "4" }
+                  children:
+                    - type: "SmartCard"
+                      props:
+                        title: "活躍用戶"
+                        subtitle: "即時在線"
+                        text: "8,901 人"
+                        icon: "mdi-account-group"
+                        color: "success"
+                - type: "v-col"
+                  props: { cols: "12", md: "4" }
+                  children:
+                    - type: "SmartCard"
+                      props:
+                        title: "系統負載"
+                        subtitle: "CPU 使用率"
+                        text: "34%"
+                        icon: "mdi-cpu-64-bit"
+                        color: "warning"
+
+            # 3. 複雜組件區塊
+            - type: "v-row"
+              children:
+                - type: "v-col"
+                  props: { cols: "12" }
+                  children:
+                    - type: "SmartComplexWidget"

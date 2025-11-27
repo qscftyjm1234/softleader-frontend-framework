@@ -32,9 +32,13 @@ export const useSidebarStore = defineStore('sidebar', {
     generate(userPermissions: string[], companyModules?: string) {
       const registry = sidebarRegistry as ModuleConfig[]
 
+      const config = useRuntimeConfig()
+      // @ts-ignore
+      const enabledModules = config.public.productConfig?.modules || []
+
       this.items = buildSidebar({
         sidebarRegistry: registry,
-        enabledModules: registry.map(m => m.module),
+        enabledModules: enabledModules,
         permissions: userPermissions,
         company: companyModules
       })

@@ -6,32 +6,33 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 設定檔路徑
-let configPath = process.argv[2] || 'module.yaml';
+const TARGET_DIR = path.join(__dirname, '../modules');
+const TEMPLATES_DIR = path.join(__dirname, '../module-templates');
 
-// 如果參數不是路徑 (沒有 / 或 \)，且沒有副檔名，則假設是樣板名稱
-if (!configPath.includes('/') && !configPath.includes('\\') && !configPath.endsWith('.yaml') && !configPath.endsWith('.yml')) {
-  configPath = path.join(__dirname, '../module-templates', `${configPath}.yaml`);
-} else if (!fs.existsSync(configPath) && !path.isAbsolute(configPath)) {
-    // 嘗試在 module-templates 找找看
-    const templatePath = path.join(__dirname, '../module-templates', configPath);
-    if (fs.existsSync(templatePath)) {
-        configPath = templatePath;
-    }
+// 解析設定檔路徑
+function resolveConfigPath(input) {
+  // 如果是絕對路徑或相對路徑
+  if (input.includes('/') || input.includes('\\') || input.endsWith('.yaml') || input.endsWith('.yml')) {
+    if (fs.existsSync(input)) return input;
+    const templatePath = path.join(TEMPLATES_DIR, input);
+    if (fs.existsSync(templatePath)) return templatePath;
+  } else {
+    // 假設是樣板名稱
+    const templatePath = path.join(TEMPLATES_DIR, `${input}.yaml`);
+    if (fs.existsSync(templatePath)) return templatePath;
+  }
+  return null;
 }
 
-const CONFIG_FILE = configPath;
-const TARGET_DIR = path.join(__dirname, '../modules');
-
 // 讀取設定檔
-function loadConfig() {
+function loadConfig(filePath) {
   try {
-    const fileContents = fs.readFileSync(CONFIG_FILE, 'utf8');
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     return yaml.load(fileContents);
   } catch (e) {
-    console.error(`❌ 無法讀取設定檔: ${CONFIG_FILE}`);
+    console.error(`❌ 無法讀取設定檔: ${filePath}`);
     console.error(e.message);
-    process.exit(1);
+    return null;
   }
 }
 
@@ -39,7 +40,7 @@ function loadConfig() {
 function createDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
-    console.log(`✅ 建立目錄: ${dirPath}`);
+    // console.log(`✅ 建立目錄: ${dirPath}`);
   }
 }
 
@@ -51,92 +52,117 @@ function writeFile(filePath, content) {
 
 // 產生 sidebar.ts 內容
 function generateSidebarContent(moduleName, routes) {
+  // Helper to remove schema from routes recursively
+  const cleanRoutes = (items) => {
+    return items.map(item => {
+      // Destructure schema out, keep everything else
+      const { schema, children, ...rest } = item;
+      const newItem = { ...rest };
+      
+      if (children) {
+        newItem.children = cleanRoutes(children);
+      }
+      
+      return newItem;
+    });
+  };
+
+  const cleanedRoutes = cleanRoutes(routes);
+
   return `export default {
   module: '${moduleName}',
-  routes: ${JSON.stringify(routes, null, 2).replace(/"([^"]+)":/g, '$1:')}
+  routes: ${JSON.stringify(cleanedRoutes, null, 2).replace(/"([^"]+)":/g, '$1:')}
 }
-`;
-}
-
-// 產生 Module.ts 內容 (Placeholder)
-function generateModuleContent(moduleName) {
-  const pascalCaseName = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
-  return `// ${pascalCaseName} Module Entry
-export default defineNuxtModule({
-  meta: {
-    name: '${moduleName}',
-    configKey: '${moduleName}'
-  },
-  setup(options, nuxt) {
-    // Auto-register components/pages logic is handled by Nuxt directory structure
-  }
-})
 `;
 }
 
 // 產生 Vue Page 內容
-function generatePageContent(title) {
+function generatePageContent(title, schema) {
+  // 預設 Schema
+  const defaultSchema = {
+    type: 'Page',
+    meta: { title: title },
+    blocks: [
+      {
+        type: 'div',
+        props: { class: 'pa-4' },
+        children: [
+          { type: 'h1', props: { class: 'text-h4 mb-4' }, children: [] },
+          { 
+            type: 'div', 
+            props: { class: 'text-body-1' }, 
+            children: [] 
+          }
+        ]
+      }
+    ]
+  };
+
+  const pageSchema = schema || defaultSchema;
+  const schemaString = JSON.stringify(pageSchema, null, 2);
+
   return `<script setup lang="ts">
-// ${title} Page
+import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
+import type { PageSchema } from '~/core/schema/types'
+
+const pageSchema: PageSchema = ${schemaString}
 </script>
 
 <template>
-  <div class="pa-4">
-    <h1>${title}</h1>
+  <div>
+    <SchemaRenderer 
+      v-for="(block, i) in pageSchema.blocks" 
+      :key="i" 
+      :schema="block" 
+    />
   </div>
 </template>
 `;
 }
 
 // 遞迴處理路由並建立對應的 Page 檔案
-function processRoutes(routes, parentPath = '') {
+function processRoutes(routes, moduleName, moduleDir) {
   routes.forEach(route => {
     if (route.children) {
-      processRoutes(route.children, parentPath);
-    } else if (route.path) {
-      // 將 URL path 轉換為檔案路徑
-      // 例如 /user/list -> modules/user/pages/list.vue
-      // 這裡假設 path 開頭是 /moduleName/
-      // 我們需要解析出相對路徑
+      processRoutes(route.children, moduleName, moduleDir);
+    } 
+    
+    if (route.path) {
+      let relativePath = route.path.startsWith('/') ? route.path.slice(1) : route.path;
       
-      // 簡單的假設：path 的格式是 /moduleName/subPath...
-      // 我們直接把 path 當作 pages 下的路徑 (去掉開頭的 /)
-      
-      const relativePath = route.path.startsWith('/') ? route.path.slice(1) : route.path;
-      // 移除模組名稱前綴 (如果有的話，這取決於專案結構，這裡假設 pages 結構跟 URL 一致)
-      // 在 Nuxt modules 中，通常 pages 目錄會被掛載到 root，所以 modules/auth/pages/login.vue -> /login 還是 /auth/login ?
-      // Nuxt 預設 modules 內的 pages 不會自動變路由，除非用 extendPages。
-      // 但這個專案似乎有自動掃描？
-      // 假設 modules/[name]/pages 對應 /modules/[name]/pages 結構，或者有額外設定。
-      // 為了保險，我們先建立檔案在 modules/[moduleName]/pages/ 下，路徑結構跟 route.path 一致。
-      
-      // 修正：如果 route.path 是 /user/list，而模組是 user
-      // 我們希望檔案在 modules/user/pages/list.vue
-      
-      // 這裡做個簡單處理：直接用 path 建立檔案，但在 modules/[currentModule]/pages 下
-      // 如果 path 包含模組名，嘗試去除
-      
-      // 暫時策略：直接在 modules/[moduleName]/pages 下建立完整路徑
-      // 例如 module=order, path=/order/list -> modules/order/pages/order/list.vue (這樣有點怪)
-      // 理想：module=order, path=/order/list -> modules/order/pages/list.vue
-      
-      // 讓使用者手動調整好了，這裡先單純建立檔案
-      // 為了避免路徑混亂，我們只建立 pages 目錄，不自動建立 .vue 檔案，除非我們很確定規則。
-      // 但使用者的需求是 "產生新的 modules... 並且到不同系統產生出的東西要相圖"
-      // 還是幫忙建一個範例檔案比較好。
-      
-      // 簡化：只建立目錄結構，不建立 .vue 檔案，以免覆蓋或路徑錯誤。
-      // 或者：只建立最底層的 .vue
+      if (relativePath.startsWith(moduleName + '/')) {
+        relativePath = relativePath.slice(moduleName.length + 1);
+      } else if (relativePath === moduleName) {
+        relativePath = 'index';
+      }
+
+      if (!relativePath.endsWith('.vue')) {
+        relativePath += '.vue';
+      }
+
+      const fullPath = path.join(moduleDir, 'pages', relativePath);
+      const dirPath = path.dirname(fullPath);
+
+      createDir(dirPath);
+
+      const content = generatePageContent(route.label || 'Untitled', route.schema);
+      writeFile(fullPath, content);
     }
   });
 }
 
-async function main() {
-  const config = loadConfig();
-  
-  if (!config.name) {
-    console.error('❌ 設定檔缺少 module name');
-    process.exit(1);
+// 單一模組生成邏輯
+async function generateModule(input) {
+  const configPath = resolveConfigPath(input);
+  if (!configPath) {
+    console.error(`❌ 找不到設定檔或樣板: ${input}`);
+    return;
+  }
+
+  const config = loadConfig(configPath);
+  if (!config || !config.name) {
+    console.error(`❌ 設定檔無效或缺少 module name: ${configPath}`);
+    return;
   }
 
   const moduleName = config.name;
@@ -157,10 +183,74 @@ async function main() {
     writeFile(path.join(moduleDir, 'sidebar.ts'), sidebarContent);
   }
 
-  // 3. 產生 Module Entry (Optional)
-  // writeFile(path.join(moduleDir, `${moduleName}Module.ts`), generateModuleContent(moduleName));
+  // 3. 產生 Pages
+  if (config.routes) {
+    processRoutes(config.routes, moduleName, moduleDir);
+  }
 
-  console.log(`✨ 模組 ${moduleName} 生成完畢！`);
+  console.log(`✨ 模組 ${moduleName} 生成完畢！\n`);
+}
+
+// 監聽模組變更
+function watchModules() {
+  console.log('👀 正在監聽模組樣板變更 (Watch Mode)...\n');
+  
+  if (!fs.existsSync(TEMPLATES_DIR)) {
+    console.error(`❌ 找不到樣板目錄: ${TEMPLATES_DIR}`);
+    return;
+  }
+
+  let debounceTimer;
+  
+  fs.watch(TEMPLATES_DIR, (eventType, filename) => {
+    if (!filename || (!filename.endsWith('.yaml') && !filename.endsWith('.yml'))) return;
+
+    // 簡單的防抖動 (Debounce)，避免短時間內重複觸發
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      console.log(`\n🔄 偵測到檔案變更: ${filename}`);
+      await generateModule(filename);
+    }, 100);
+  });
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  
+  if (args.length === 0) {
+    console.log('請提供模組名稱，例如: node scripts/generate-module.js example');
+    console.log('或者使用 "all" 生成所有模組: node scripts/generate-module.js all');
+    console.log('或者使用 "watch" 監聽變更: node scripts/generate-module.js watch');
+    process.exit(1);
+  }
+
+  if (args[0] === 'watch') {
+    // 先執行一次全部生成
+    console.log('📦 初次執行: 生成所有模組...');
+    if (fs.existsSync(TEMPLATES_DIR)) {
+      const files = fs.readdirSync(TEMPLATES_DIR).filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+      for (const file of files) {
+        await generateModule(file);
+      }
+    }
+    // 然後開始監聽
+    watchModules();
+  } else if (args[0] === 'all') {
+    console.log('📦 正在掃描所有模組樣板...\n');
+    if (fs.existsSync(TEMPLATES_DIR)) {
+      const files = fs.readdirSync(TEMPLATES_DIR).filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+      for (const file of files) {
+        await generateModule(file);
+      }
+    } else {
+      console.error(`❌ 找不到樣板目錄: ${TEMPLATES_DIR}`);
+    }
+  } else {
+    // 支援多個參數: node scripts/generate-module.js auth product
+    for (const arg of args) {
+      await generateModule(arg);
+    }
+  }
 }
 
 main();

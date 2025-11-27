@@ -1,24 +1,22 @@
 export default {
-  module: 'user',
+  module: 'auth',
   routes: [
-    {
-      label: '會員管理',
-      icon: 'mdi-account',
-      permission: 'user.view',
-      children: [
-        {
-          path: '/user/list',
-          label: '會員列表',
-          icon: 'mdi-format-list-bulleted',
-          permission: 'user.view'
-        },
-        {
-          path: '/user/create',
-          label: '新增會員',
-          icon: 'mdi-account-plus',
-          permission: 'user.create'
-        }
-      ]
-    }
-  ]
+  {
+    label: "會員管理",
+    icon: "mdi-account",
+    permission: "user.view",
+    children: [
+      {
+        label: "會員列表",
+        path: "/auth/user/list",
+        permission: "user.view"
+      },
+      {
+        label: "新增會員",
+        path: "/auth/user/create",
+        permission: "user.create"
+      }
+    ]
+  }
+]
 }

@@ -59,8 +59,8 @@ export const defaultLayoutConfig: LayoutConfig = {
     logo: {
       icon: 'mdi-rocket-launch'
     },
-    title: '富邦產險系統',
-    subtitle: 'Enterprise Edition'
+    title: '松凌科技樣板系統',
+    subtitle: 'SoftLeader System'
   },
   header: {
     visible: true,
@@ -88,7 +88,7 @@ export const defaultLayoutConfig: LayoutConfig = {
     mainMenuTitle: 'MAIN MENU',
     proCard: {
       visible: true,
-      title: '升級專業版',
+      title: '富邦升級專業版',
       subtitle: '解鎖更多功能',
       badge: 'Pro'
     }
@@ -96,7 +96,7 @@ export const defaultLayoutConfig: LayoutConfig = {
   footer: {
     visible: true,
     fixed: false,
-    content: '© 2026 富邦產險系統. All rights reserved.'
+    content: '© 2026 富邦產險系統 保留所有權利.'
   },
   theme: {
     defaultTheme: 'light',

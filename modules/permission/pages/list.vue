@@ -6,12 +6,25 @@ const pageSchema: PageSchema = {
   "type": "Page",
   "blocks": [
     {
-      "type": "SmartCard",
+      "type": "SmartTable",
       "props": {
-        "title": "新增會員",
-        "subtitle": "建立新的會員帳號",
-        "icon": "mdi-account-plus",
-        "color": "success"
+        "title": "系統權限列表",
+        "columns": [
+          {
+            "label": "代碼",
+            "field": "code"
+          },
+          {
+            "label": "名稱",
+            "field": "name"
+          }
+        ],
+        "data": [
+          {
+            "code": "user.view",
+            "name": "查看會員"
+          }
+        ]
       }
     }
   ]
