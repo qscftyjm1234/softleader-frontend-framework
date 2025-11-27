@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
+
 const sidebarStore = useSidebarStore()
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -14,11 +16,12 @@ const drawer = computed({
   set: (val) => emit('update:modelValue', val)
 })
 
-// 確保 sidebar 已經生成，並傳入使用者權限
-  sidebarStore.generate(userStore.permissions)
-}
 
-import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
+// 確保 sidebar 已經生成，並傳入使用者權限
+watch(() => userStore.permissions, (newPermissions) => {
+  sidebarStore.generate(newPermissions)
+}, { immediate: true })
+
 </script>
 
 <template>
