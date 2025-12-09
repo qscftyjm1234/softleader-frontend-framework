@@ -3,13 +3,28 @@ import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()
 
-const handleAction = (item: any) => {
+const handleAction = async (item: any) => {
   if (item.to) {
     navigateTo(item.to)
   } else if (item.action) {
     console.log('Triggered action:', item.action)
     if (item.action === 'logout') {
-      navigateTo('/login')
+      const { $api } = useNuxtApp()
+      
+      try {
+        // 1. 呼叫登出 API
+        await $api.auth.logout()
+      } catch (e) {
+        console.error('Logout failed', e)
+      } finally {
+        // 2. 清除 Cookie
+        const config = useRuntimeConfig()
+        const token = useCookie(config.public.tokenKey as string)
+        token.value = null
+        
+        // 3. 導回登入頁
+        navigateTo('/login')
+      }
     }
   }
 }

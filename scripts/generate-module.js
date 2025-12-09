@@ -189,6 +189,67 @@ async function generateModule(input) {
   }
 
   console.log(`✨ 模組 ${moduleName} 生成完畢！\n`);
+
+  // 4. 自動註冊 API Repository
+  updateRepositoryIndex(moduleName);
+}
+
+// 更新 repositories/index.ts
+function updateRepositoryIndex(moduleName) {
+  const repoIndexPath = path.join(__dirname, '../repositories/index.ts');
+  if (!fs.existsSync(repoIndexPath)) return;
+
+  // 檢查 Repository 檔案是否存在
+  const repoFilePath = path.join(__dirname, `../repositories/modules/${moduleName}.ts`);
+  if (!fs.existsSync(repoFilePath)) {
+    // console.log(`⚠️ Repository 檔案不存在，跳過註冊: ${moduleName}`);
+    return;
+  }
+
+  let content = fs.readFileSync(repoIndexPath, 'utf8');
+  
+  // 檢查是否已經 import
+  if (content.includes(`import ${moduleName} from './modules/${moduleName}'`)) {
+    return;
+  }
+
+  console.log(`📝 正在註冊 API Repository: ${moduleName}`);
+
+  // 1. 加入 Import
+  const importStatement = `import ${moduleName} from './modules/${moduleName}'`;
+  // 找最後一個 import，插在它後面
+  const lastImportIndex = content.lastIndexOf('import ');
+  if (lastImportIndex !== -1) {
+    const endOfLine = content.indexOf('\n', lastImportIndex);
+    content = content.slice(0, endOfLine + 1) + importStatement + '\n' + content.slice(endOfLine + 1);
+  } else {
+    // 如果沒有任何 import，插在最前面
+    content = importStatement + '\n' + content;
+  }
+
+  // 2. 加入 Export 物件
+  // 尋找 const repositories = { ... }
+  const exportRegex = /const repositories = \{([\s\S]*?)\}/;
+  const match = content.match(exportRegex);
+
+  if (match) {
+    const body = match[1];
+    // 檢查是否已經在物件裡 (雖然前面檢查過 import，但保險起見)
+    if (!body.includes(moduleName)) {
+      // 如果 body 結尾沒有逗號，補一個
+      const newBody = body.trimEnd();
+      const needsComma = newBody.length > 0 && !newBody.endsWith(',');
+      
+      const insertContent = (needsComma ? ',' : '') + `\n  ${moduleName}`;
+      
+      content = content.replace(exportRegex, (match, p1) => {
+        return `const repositories = {${p1.trimEnd()}${insertContent}\n}`;
+      });
+    }
+  }
+
+  fs.writeFileSync(repoIndexPath, content, 'utf8');
+  console.log(`✅ 已更新 repositories/index.ts`);
 }
 
 // 監聽模組變更

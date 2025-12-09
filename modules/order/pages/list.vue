@@ -4,14 +4,31 @@ import type { PageSchema } from '~/core/schema/types'
 
 const pageSchema: PageSchema = {
   "type": "Page",
+  "meta": {
+    "title": "訂單列表"
+  },
   "blocks": [
     {
-      "type": "SmartCard",
+      "type": "div",
       "props": {
-        "subtitle": "建立新的會員帳號",
-        "icon": "mdi-account-plus",
-        "color": "success"
-      }
+        "class": "pa-4"
+      },
+      "children": [
+        {
+          "type": "h1",
+          "props": {
+            "class": "text-h4 mb-4"
+          },
+          "children": []
+        },
+        {
+          "type": "div",
+          "props": {
+            "class": "text-body-1"
+          },
+          "children": []
+        }
+      ]
     }
   ]
 }

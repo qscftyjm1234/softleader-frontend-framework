@@ -6,11 +6,10 @@ const pageSchema: PageSchema = {
   "type": "Page",
   "blocks": [
     {
-      "type": "SmartCard",
+      "type": "LoginForm",
       "props": {
-        "subtitle": "建立新的會員帳號",
-        "icon": "mdi-account-plus",
-        "color": "success"
+        "title": "系統登入",
+        "subtitle": "請輸入您的帳號密碼"
       }
     }
   ]

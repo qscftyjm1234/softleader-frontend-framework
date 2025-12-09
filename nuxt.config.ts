@@ -130,9 +130,30 @@ export default defineNuxtConfig({
     public: {
       logDebug: process.env.LOG_DEBUG,
       isDev: process.env.IS_DEV,
-      productConfig: productConfig // 將設定注入前端，方便 runtime 使用
+      productConfig: productConfig, // 將設定注入前端，方便 runtime 使用
+      apiBase: process.env.VITE_API_BASE_URL,
+      apiTimeout: process.env.VITE_API_TIMEOUT,
+      apiRetryCount: process.env.VITE_API_RETRY_COUNT,
+      apiGlobalLoading: true, // 預設開啟全域 Loading
+      tokenKey: 'auth_token',
+      tokenMaxAge: 604800 // 7 days
     }
   },
+
+  /**
+   * @功能 路由規則與安全性 Header 設定
+   */
+  routeRules: {
+    '/**': {
+      headers: {
+        'X-Frame-Options': 'SAMEORIGIN',
+        'X-Content-Type-Options': 'nosniff',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
+      }
+    }
+  },
+
   hooks: {
     // 這是 Nuxt 的 Hook，讓我們可以在 Nuxt 建立路由表之前，動態插入自定義的頁面
     async 'pages:extend'(pages) {
@@ -175,7 +196,11 @@ export default defineNuxtConfig({
                   // 【關鍵邏輯】自動加上模組名稱前綴
                   // 為了避免不同模組的頁面網址衝突，我們強制加上模組名稱
                   // 例如 auth 模組的 user/list 頁面，網址應該是 /auth/user/list
-                  if (!routePath.startsWith(`/${moduleName}`)) {
+                  
+                  // 特殊例外：登入頁面放在根目錄 /login
+                  if (moduleName === 'auth' && relativePath === 'login.vue') {
+                    routePath = '/login'
+                  } else if (!routePath.startsWith(`/${moduleName}`)) {
                      if (routePath === '/') {
                         routePath = `/${moduleName}`
                      } else {

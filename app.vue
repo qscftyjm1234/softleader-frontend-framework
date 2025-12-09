@@ -10,13 +10,45 @@
 -->
 
 <script setup>
+import { useLoadingStore } from '~/stores/loading'
+
 console.log('APP.vue')
 const token = useCookie('token')
 // 設定登入 token
 token.value = 'abc123'
+
+const loadingStore = useLoadingStore()
 </script>
 <template>
+  <div v-if="loadingStore.isLoading" class="global-loading">
+    <div class="loading-spinner">Loading...</div>
+  </div>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
+
+<style>
+.global-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.loading-spinner {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+}
+</style>

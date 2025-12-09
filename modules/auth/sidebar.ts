@@ -17,6 +17,10 @@ export default {
         permission: "user.create"
       }
     ]
+  },
+  {
+    label: "登入",
+    path: "/login"
   }
 ]
 }

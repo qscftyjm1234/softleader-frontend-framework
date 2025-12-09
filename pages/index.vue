@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const { $api } = useNuxtApp()
+
+
 const stats = [
   { title: '總會員數', value: '1,285', icon: 'mdi-account-group', color: 'primary', trend: '+12%' },
   { title: '本月營收', value: '$45,200', icon: 'mdi-currency-usd', color: 'success', trend: '+8.5%' },

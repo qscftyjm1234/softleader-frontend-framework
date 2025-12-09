@@ -40,7 +40,15 @@ routes:
           blocks:
             - type: "SmartCard"
               props:
-                title: "新增會員"
                 subtitle: "建立新的會員帳號"
                 icon: "mdi-account-plus"
                 color: "success"
+  - label: "登入"
+    path: "/login"
+    schema:
+      type: "Page"
+      blocks:
+        - type: "LoginForm"
+          props:
+            title: "系統登入"
+            subtitle: "請輸入您的帳號密碼"
