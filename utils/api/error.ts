@@ -6,9 +6,15 @@ import type { FetchContext } from 'ofetch'
  * 
  * @param context - ofetch 的錯誤上下文
  */
-export const handleApiError = (context: FetchContext) => {
+export const handleApiError = (context: FetchContext, autoError: boolean = true) => {
   const { response } = context
   const status = response?.status
+  
+  // 自動顯示錯誤訊息
+  if (autoError) {
+    const msg = response?._data?.message || `請求失敗 (${status})`
+    useNotify().error(msg)
+  }
 
   // 根據狀態碼做不同處理
   switch (status) {

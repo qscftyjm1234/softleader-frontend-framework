@@ -18,9 +18,9 @@ export function checkPerformance(response: any, options: any) {
 /**
  * 全域登出：401 Unauthorized 時清除 Token 並導回登入頁
  */
-export function checkAuth(response: any, config: any) {
-  if (response.status === STATUS_UNAUTHORIZED) {
-    const token = useCookie(config.public.tokenKey as string)
+export function checkAuth(response: any, config: any, auth: boolean = true) {
+  if (response.status === STATUS_UNAUTHORIZED && auth) {
+    const token = useCookie(config.public.auth.tokenKey as string)
     token.value = null
     if (import.meta.client) {
       navigateTo('/login')
@@ -45,7 +45,7 @@ export function checkApiError(response: any) {
 export function checkRefreshToken(response: any, config: any) {
   const newToken = response.headers.get(HEADER_AUTH)
   if (newToken) {
-    const token = useCookie(config.public.tokenKey as string)
+    const token = useCookie(config.public.auth.tokenKey as string)
     token.value = newToken.replace(TOKEN_PREFIX, '')
   }
 }

@@ -1,4 +1,5 @@
 import { useApi } from '~/composables/useApi'
+import type { LoginResponse } from '~/types/api'
 
 export default {
   /**
@@ -6,7 +7,7 @@ export default {
    * @param credentials - { username, password }
    */
   login(credentials: any) {
-    return useApi('/auth/login', {
+    return useApi<LoginResponse>('/auth/login', {
       method: 'POST',
       body: credentials
     })

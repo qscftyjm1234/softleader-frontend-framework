@@ -1,0 +1,17 @@
+# 專案 AI 行為規範 (Project AI Rules)
+
+## 1. 語言要求 (Language Requirements)
+- **強制繁體中文**：所有的回答、解釋、對話 **必須** 使用 **繁體中文 (Traditional Chinese)**。
+- **文件語言**：所有的 Artifacts (如 `implementation_plan.md`, `task.md`, `walkthrough.md`) **必須** 使用 **繁體中文** 撰寫。
+- **程式碼註解**：程式碼中的註解 (Comments) **必須** 使用 **繁體中文**。
+- **例外**：只有程式碼關鍵字、變數名稱、專有名詞 (如 Vue, Nuxt, API) 使用英文。
+
+## 2. 程式碼風格 (Code Style)
+- 框架：Nuxt 3 + Vue 3 (Composition API)。
+- 語言：TypeScript。
+- 樣式：Vuetify / CSS。
+- 設定檔：優先使用 `core/config/` 下的模組化設定，保持 `nuxt.config.ts` 整潔。
+
+## 3. 回應風格 (Response Style)
+- 簡潔明瞭，直接切入重點。
+- 修改程式碼時，優先考慮現有的模組化架構。

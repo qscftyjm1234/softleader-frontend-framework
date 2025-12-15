@@ -9,6 +9,10 @@ import { useLoadingStore } from '~/stores/loading'
 // 擴充 UseFetchOptions 以包含自定義選項
 type UseApiOptions<T> = UseFetchOptions<T> & {
   globalLoading?: boolean
+  autoError?: boolean
+  autoSuccess?: boolean | string
+  loadingRef?: Ref<boolean>
+  auth?: boolean
 }
 
 /**
@@ -25,13 +29,19 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
   // 定義預設選項
   const defaults: UseApiOptions<ApiResponse<T>> = {
     // API 基礎路徑
-    baseURL: config.public.apiBase as string,
+    baseURL: config.public.api.baseUrl as string,
     // 請求超時時間 (ms)
-    timeout: Number(config.public.apiTimeout),
+    timeout: Number(config.public.api.timeout),
     // 失敗重試次數
-    retry: Number(config.public.apiRetryCount),
+    retry: Number(config.public.api.retry),
     // 預設開啟全域 Loading
-    globalLoading: (config.public.apiGlobalLoading as boolean) ?? true,
+    globalLoading: (config.public.api.globalLoading as boolean) ?? true,
+    // 自動顯示錯誤訊息
+    autoError: true,
+    // 自動顯示成功訊息
+    autoSuccess: false,
+    // 權限檢查 (預設開啟)，避免無須auth的API導回login頁面
+    auth: true,
 
     // 請求攔截器：在發送請求前執行
     onRequest({ request, options }) {
@@ -43,9 +53,14 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
         loadingStore.startLoading()
       }
 
+      // 處理 Button Loading
+      if ((options as any).loadingRef) {
+        (options as any).loadingRef.value = true
+      }
+
       // 1. 初始化 Headers
       options.headers = options.headers || {}
-      const headers = options.headers as Record<string, string>
+      const headers = options.headers as any
 
       // 2. 設定 Headers
       setAuthHeader(headers, config)
@@ -56,20 +71,29 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
       // Log 方便除錯
       // console.log(`[API] ${options.method || 'GET'} ${request}`)
     },
-    // ... (rest of the file) ...
 
     // 回應攔截器：在收到回應後執行
     onResponse({ response, options }) {
+      const opts = options as any
       // 處理 Loading
-      if ((options as any).globalLoading) {
+      if (opts.globalLoading) {
         loadingStore.finishLoading()
+      }
+      if (opts.loadingRef) {
+        opts.loadingRef.value = false
+      }
+
+      // 處理 Auto Success
+      if (response.ok && opts.autoSuccess) {
+        const msg = typeof opts.autoSuccess === 'string' ? opts.autoSuccess : '操作成功'
+        useNotify().success(msg)
       }
 
       // 1. 效能監控
       checkPerformance(response, options)
 
-      // 2. 全域登出
-      checkAuth(response, config)
+      // 2. 全域登出 (傳入 auth 參數)
+      checkAuth(response, config, opts.auth)
 
       // 3. 錯誤處理
       checkApiError(response)
@@ -80,13 +104,17 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
 
     // 錯誤攔截器：當請求失敗時執行
     onResponseError(context) {
+      const opts = context.options as any
       // 處理 Loading
-      if ((context.options as any).globalLoading) {
+      if (opts.globalLoading) {
         loadingStore.finishLoading()
+      }
+      if (opts.loadingRef) {
+        opts.loadingRef.value = false
       }
 
       // 呼叫 utils/api/error.ts 中的統一錯誤處理函式
-      handleApiError(context)
+      handleApiError(context, opts.autoError)
     }
   }
 

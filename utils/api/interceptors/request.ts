@@ -10,7 +10,7 @@ const COOKIE_CSRF = 'XSRF-TOKEN'
  * 設定身分驗證 Header
  */
 export function setAuthHeader(headers: Record<string, string>, config: any) {
-  const token = useCookie(config.public.tokenKey as string)
+  const token = useCookie(config.public.auth.tokenKey as string)
   if (token.value) {
     headers[HEADER_AUTH] = `${TOKEN_PREFIX}${token.value}`
   }

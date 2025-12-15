@@ -7,3 +7,13 @@ export interface ApiResponse<T> {
   message: string
   data: T
 }
+
+export interface LoginResponse {
+  accessToken: string
+  refreshToken: string
+  user: {
+    id: string
+    username: string
+    name: string
+  }
+}

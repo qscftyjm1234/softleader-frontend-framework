@@ -30,8 +30,8 @@ async function handleLogin() {
 
     // 2. 儲存 Token 到 Cookie
     const config = useRuntimeConfig()
-    const token = useCookie(config.public.tokenKey as string, {
-      maxAge: Number(config.public.tokenMaxAge)
+    const token = useCookie(config.public.auth.tokenKey as string, {
+      maxAge: Number(config.public.auth.maxAge)
     })
     token.value = data.value.accessToken
     

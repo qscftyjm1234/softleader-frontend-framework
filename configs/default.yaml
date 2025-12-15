@@ -12,3 +12,10 @@ modules:
 # Theme configuration (example)
 theme:
   primary: "#1976D2"
+
+# Meta configuration (SEO)
+meta:
+  title: "松凌科技前端架構系統"
+  description: "松凌科技前端架構系統"
+  favicon: "/favicon.jpg"
+  themeColor: "#ffffff"
