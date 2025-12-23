@@ -17,7 +17,13 @@
     "build-storybook": "storybook build",
     "gen:module": "node scripts/generate-module.js",
     "gen:watch": "node scripts/generate-module.js watch",
-    "gen:all": "node scripts/generate-module.js all"
+    "gen:all": "node scripts/generate-module.js all",
+    "commit": "cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "@nuxtjs/device": "^3.2.4",
@@ -47,7 +53,9 @@
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "^3.2.4",
     "@vue/test-utils": "^2.4.6",
+    "commitizen": "^4.3.1",
     "cross-env": "^10.1.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
