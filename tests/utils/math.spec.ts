@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { add, isEven } from '~/utils/math.ts'
+import { add, isEven } from '../../utils/math'
 
 describe('math utils', () => {
   it('adds two numbers', () => {

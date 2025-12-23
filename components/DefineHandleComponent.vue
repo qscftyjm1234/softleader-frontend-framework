@@ -51,10 +51,10 @@ defineOptions({
     <v-btn @click="emit('emitMsg', '這是新訊息')">點我觸發 update 事件</v-btn>
 
     <h2>具名 defineModel 範例</h2>
-    <input class="border" v-model="nameModelValue" />
+    <input v-model="nameModelValue" class="border" />
 
     <h2>不具名 defineModel 範例</h2>
-    <input class="border" v-model="model" />
+    <input v-model="model" class="border" />
 
     <slot>預設 default slot 內容</slot>
 

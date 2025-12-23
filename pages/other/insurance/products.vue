@@ -40,10 +40,14 @@ const products = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'active': return 'success'
-    case 'draft': return 'warning'
-    case 'closed': return 'grey'
-    default: return 'default'
+    case 'active':
+      return 'success'
+    case 'draft':
+      return 'warning'
+    case 'closed':
+      return 'grey'
+    default:
+      return 'default'
   }
 }
 </script>
@@ -54,9 +58,11 @@ const getStatusColor = (status: string) => {
       <v-card-title class="d-flex align-center py-4 px-6 border-b">
         <div>
           <div class="text-h6 font-weight-bold">商品工廠 (Product Factory)</div>
-          <div class="text-caption text-medium-emphasis">保險商品設計、上架與版本管理</div>
+          <div class="text-caption text-medium-emphasis">
+            保險商品設計、上架與版本管理
+          </div>
         </div>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn color="primary" prepend-icon="mdi-plus">新增商品</v-btn>
       </v-card-title>
 
@@ -77,19 +83,42 @@ const getStatusColor = (status: string) => {
             <td class="font-weight-bold">{{ product.code }}</td>
             <td>
               <div class="font-weight-bold">{{ product.name }}</div>
-              <div class="text-caption text-medium-emphasis text-truncate" style="max-width: 200px">{{ product.description }}</div>
+              <div
+                class="text-caption text-medium-emphasis text-truncate"
+                style="max-width: 200px"
+              >
+                {{ product.description }}
+              </div>
             </td>
-            <td><v-chip size="x-small" variant="outlined">{{ product.category }}</v-chip></td>
+            <td>
+              <v-chip size="x-small" variant="outlined">{{
+                product.category
+              }}</v-chip>
+            </td>
             <td>v{{ product.version }}</td>
             <td>{{ product.launchDate }}</td>
             <td>
-              <v-chip :color="getStatusColor(product.status)" size="small" label>
+              <v-chip
+                :color="getStatusColor(product.status)"
+                size="small"
+                label
+              >
                 {{ product.status.toUpperCase() }}
               </v-chip>
             </td>
             <td class="text-right">
-              <v-btn icon="mdi-pencil" size="small" variant="text" color="primary"></v-btn>
-              <v-btn icon="mdi-content-copy" size="small" variant="text" color="info"></v-btn>
+              <v-btn
+                icon="mdi-pencil"
+                size="small"
+                variant="text"
+                color="primary"
+              />
+              <v-btn
+                icon="mdi-content-copy"
+                size="small"
+                variant="text"
+                color="info"
+              />
             </td>
           </tr>
         </tbody>

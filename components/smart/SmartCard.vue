@@ -7,7 +7,7 @@ interface Props {
   color?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   title: '',
   subtitle: '',
   text: '',
@@ -18,8 +18,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <v-card class="mx-auto" :color="color" variant="tonal">
-    <template v-slot:prepend>
-      <v-icon :icon="icon"></v-icon>
+    <template #prepend>
+      <v-icon :icon="icon" />
     </template>
     <v-card-title v-if="title">
       {{ title }}
@@ -30,10 +30,10 @@ const props = withDefaults(defineProps<Props>(), {
     <v-card-text v-if="text">
       {{ text }}
     </v-card-text>
-    
+
     <!-- 支援 Children 渲染 -->
     <div v-if="$slots.default" class="px-4 pb-4">
-      <slot></slot>
+      <slot />
     </div>
   </v-card>
 </template>

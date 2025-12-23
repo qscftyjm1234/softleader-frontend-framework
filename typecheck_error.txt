@@ -1,0 +1,27 @@
+[Config] Loaded configuration: default
+┌─────────────────┬─────────────────────────────────────────────────┐
+│ (index)         │ Values                                          │
+├─────────────────┼─────────────────────────────────────────────────┤
+│ Project Name    │ '松凌科技前端架構系統'                          │
+│ Environment     │ 'production'                                    │
+│ Product Config  │ 'default'                                       │
+│ API Base URL    │ '/api'                                          │
+│ Enabled Modules │ 'auth, example, insurance, permission, product' │
+└─────────────────┴─────────────────────────────────────────────────┘
+stories/Button.stories.ts(3,20): error TS2307: Cannot find module 'storybook/test' or its corresponding type declarations.
+stories/Header.stories.ts(3,20): error TS2307: Cannot find module 'storybook/test' or its corresponding type declarations.
+stories/Page.stories.ts(4,43): error TS2307: Cannot find module 'storybook/test' or its corresponding type declarations.
+
+[41m[30m ERROR [39m[49m Process exited with non-zero status (2)
+
+    [90mat [39mR._waitForOutput ([36m/C:/Users/gino.huang/Documents/nuxt3-test/node_modules/.pnpm/tinyexec@1.0.1/node_modules/tinyexec/dist/main.js:530:13[39m)
+    [90mat [39mprocess.processTicksAndRejections ([36mnode:internal/process/task_queues:105:5[39m)
+    [90mat [39masync Object.run ([36m/C:/Users/gino.huang/Documents/nuxt3-test/node_modules/.pnpm/@nuxt+cli@3.28.0_magicast@0.3.5/node_modules/@nuxt/cli/dist/chunks/typecheck.mjs:63:5[39m)
+    [90mat [39masync runCommand ([36m/C:/Users/gino.huang/Documents/nuxt3-test/node_modules/.pnpm/citty@0.1.6/node_modules/citty/dist/index.mjs:316:16[39m)
+    [90mat [39masync runCommand ([36m/C:/Users/gino.huang/Documents/nuxt3-test/node_modules/.pnpm/citty@0.1.6/node_modules/citty/dist/index.mjs:307:11[39m)
+    [90mat [39masync runMain ([36m/C:/Users/gino.huang/Documents/nuxt3-test/node_modules/.pnpm/citty@0.1.6/node_modules/citty/dist/index.mjs:445:7[39m) 
+
+
+
+[41m[30m ERROR [39m[49m Process exited with non-zero status (2)
+

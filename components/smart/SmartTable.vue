@@ -14,6 +14,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  api: '',
   data: () => []
 })
 
@@ -26,14 +28,16 @@ const totalItems = ref(0)
 const loading = ref(false)
 
 // 轉換 columns 格式給 Vuetify
-const headers = computed(() => props.columns.map(col => ({
-  title: col.label,
-  key: col.field,
-  sortable: col.sortable !== false
-})))
+const headers = computed(() =>
+  props.columns.map((col) => ({
+    title: col.label,
+    key: col.field,
+    sortable: col.sortable !== false
+  }))
+)
 
 // 載入資料函式
-const loadItems = async ({ page: p, itemsPerPage: ipp, sortBy }: any) => {
+const loadItems = async ({ page: p, itemsPerPage: ipp }: any) => {
   if (!props.api) return
 
   loading.value = true
@@ -66,7 +70,7 @@ const loadItems = async ({ page: p, itemsPerPage: ipp, sortBy }: any) => {
 }
 
 // 監聽搜尋變更，重置頁碼並重新載入
-let searchTimeout: NodeJS.Timeout
+let searchTimeout: ReturnType<typeof setTimeout>
 watch(search, () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
@@ -89,7 +93,7 @@ onMounted(() => {
   <v-card class="mb-4" elevation="0" border rounded="lg">
     <v-card-title class="d-flex align-center py-3 px-4">
       <span class="text-h6 font-weight-bold">{{ title }}</span>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <!-- 搜尋框 -->
       <v-text-field
         v-model="search"
@@ -102,10 +106,10 @@ onMounted(() => {
         style="max-width: 300px"
         class="ml-4"
         rounded="lg"
-      ></v-text-field>
+      />
     </v-card-title>
-    
-    <v-divider></v-divider>
+
+    <v-divider />
 
     <!-- Server Side Table -->
     <v-data-table-server
@@ -122,17 +126,27 @@ onMounted(() => {
       @update:options="loadItems"
     >
       <!-- 自定義欄位渲染 -->
-      <template v-for="col in columns" :key="col.field" v-slot:[`item.${col.field}`]="{ item }">
+      <template
+        v-for="col in columns"
+        :key="col.field"
+        #[`item.${col.field}`]="{ item }"
+      >
         <!-- Tag Type -->
         <v-chip
           v-if="col.type === 'tag'"
-          :color="item[col.field] === 'Admin' ? 'primary' : (item[col.field] === 'Editor' ? 'success' : 'grey')"
+          :color="
+            item[col.field] === 'Admin'
+              ? 'primary'
+              : item[col.field] === 'Editor'
+                ? 'success'
+                : 'grey'
+          "
           size="small"
           variant="flat"
         >
           {{ item[col.field] }}
         </v-chip>
-        
+
         <!-- Default Text -->
         <span v-else>
           {{ item[col.field] }}
@@ -149,10 +163,14 @@ onMounted(() => {
       class="elevation-0"
       hover
     >
-      <template v-for="col in columns" :key="col.field" v-slot:[`item.${col.field}`]="{ item }">
-         <span v-if="!col.type || col.type === 'text'">
-            {{ item[col.field] }}
-          </span>
+      <template
+        v-for="col in columns"
+        :key="col.field"
+        #[`item.${col.field}`]="{ item }"
+      >
+        <span v-if="!col.type || col.type === 'text'">
+          {{ item[col.field] }}
+        </span>
       </template>
     </v-data-table>
   </v-card>

@@ -1,0 +1,30 @@
+
+
+# ------------------------------------------------------------------
+# Husky pre-commit hook
+# 這個腳本會在每次執行 git commit 之前自動運作
+# ------------------------------------------------------------------
+
+echo "[Husky] 開始執行提交前檢查..."
+
+# 1. 執行 lint-staged
+#    這會檢查此 Commit 中有修改過的檔案，執行 ESLint 和 Prettier。
+#    如果有無法自動修復的錯誤，會停止 Commit。
+echo "[Husky] 正在執行 lint-staged (自動修復程式碼風格)..."
+pnpm exec lint-staged
+if [ $? -ne 0 ]; then
+    echo "[Husky] lint-staged 失敗，請修復上述錯誤。"
+    exit 1
+fi
+
+# 2. 執行 TypeScript 全域檢查
+#    這會掃描整個專案的 .ts/.vue 檔案，確保沒有型別錯誤。
+#    這一步可能需要幾秒鐘的時間。
+echo "[Husky] 正在執行 TypeScript 全域檢查..."
+pnpm exec nuxi typecheck
+if [ $? -ne 0 ]; then
+    echo "[Husky] TypeScript 檢查失敗，請修復上述錯誤。"
+    exit 1
+fi
+
+echo "[Husky] 所有檢查通過！"

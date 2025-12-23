@@ -1,55 +1,56 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+import { spawn } from 'child_process'
 // Helper to spawn a process and pipe output
 function runCommand(command, args, name, color) {
   const child = spawn(command, args, {
     stdio: 'pipe',
     shell: true,
     env: { ...process.env, FORCE_COLOR: 'true' } // Force color output
-  });
+  })
 
   child.stdout.on('data', (data) => {
-    const lines = data.toString().split('\n');
-    lines.forEach(line => {
+    const lines = data.toString().split('\n')
+    lines.forEach((line) => {
       if (line.trim()) {
-        console.log(`${color}[${name}] \x1b[0m${line}`);
+        console.log(`${color}[${name}] \x1b[0m${line}`)
       }
-    });
-  });
+    })
+  })
 
   child.stderr.on('data', (data) => {
-    const lines = data.toString().split('\n');
-    lines.forEach(line => {
+    const lines = data.toString().split('\n')
+    lines.forEach((line) => {
       if (line.trim()) {
-        console.error(`${color}[${name}] \x1b[0m${line}`);
+        console.error(`${color}[${name}] \x1b[0m${line}`)
       }
-    });
-  });
+    })
+  })
 
-  return child;
+  return child
 }
 
-console.log('\x1b[32m🚀 Starting Development Server & Module Watcher...\x1b[0m\n');
+console.log(
+  '\x1b[32m🚀 Starting Development Server & Module Watcher...\x1b[0m\n'
+)
 
 // 1. Start Module Watcher
-const watcher = runCommand('node', ['scripts/generate-module.js', 'watch'], 'WATCHER', '\x1b[36m'); // Cyan
+const watcher = runCommand(
+  'node',
+  ['scripts/generate-module.js', 'watch'],
+  'WATCHER',
+  '\x1b[36m'
+) // Cyan
 
 // 2. Start Nuxt Dev Server
-const nuxt = runCommand('nuxt', ['dev'], 'NUXT', '\x1b[35m'); // Magenta
+const nuxt = runCommand('nuxt', ['dev'], 'NUXT', '\x1b[35m') // Magenta
 
 // Handle termination
 const cleanup = () => {
-  console.log('\n\x1b[33m🛑 Shutting down...\x1b[0m');
-  watcher.kill();
-  nuxt.kill();
-  process.exit();
-};
+  console.log('\n\x1b[33m🛑 Shutting down...\x1b[0m')
+  watcher.kill()
+  nuxt.kill()
+  process.exit()
+}
 
-process.on('SIGINT', cleanup);
-process.on('SIGTERM', cleanup);
-process.on('exit', cleanup);
+process.on('SIGINT', cleanup)
+process.on('SIGTERM', cleanup)
+process.on('exit', cleanup)

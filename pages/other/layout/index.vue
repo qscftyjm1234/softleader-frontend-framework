@@ -4,5 +4,5 @@
 // })
 </script>
 <template>
-  <v-card title="布局內容"> </v-card>
+  <v-card title="布局內容" />
 </template>

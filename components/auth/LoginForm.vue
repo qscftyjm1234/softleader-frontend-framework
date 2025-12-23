@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
 const { $api } = useNuxtApp()
 const router = useRouter()
 
-const props = defineProps<{
+defineProps<{
   title?: string
   subtitle?: string
 }>()
@@ -19,11 +18,11 @@ const errorMsg = ref('')
 async function handleLogin() {
   loading.value = true
   errorMsg.value = ''
-  
+
   try {
     // 1. 呼叫登入 API
     const { data, error } = await $api.auth.login(form)
-    
+
     if (error.value) {
       throw new Error(error.value.message || '登入失敗')
     }
@@ -33,11 +32,10 @@ async function handleLogin() {
     const token = useCookie(config.public.auth.tokenKey as string, {
       maxAge: Number(config.public.auth.maxAge)
     })
-    token.value = data.value.accessToken
-    
+    token.value = (data.value as any)?.accessToken
+
     // 3. 導向首頁
     router.push('/')
-    
   } catch (err: any) {
     errorMsg.value = err.message || '發生未知錯誤'
   } finally {
@@ -55,7 +53,7 @@ async function handleLogin() {
       <v-card-subtitle v-if="subtitle" class="text-center mb-4">
         {{ subtitle }}
       </v-card-subtitle>
-      
+
       <v-card-text>
         <v-form @submit.prevent="handleLogin">
           <v-text-field
@@ -64,8 +62,8 @@ async function handleLogin() {
             prepend-inner-icon="mdi-account"
             variant="outlined"
             class="mb-2"
-          ></v-text-field>
-          
+          />
+
           <v-text-field
             v-model="form.password"
             label="密碼"
@@ -73,7 +71,7 @@ async function handleLogin() {
             prepend-inner-icon="mdi-lock"
             variant="outlined"
             class="mb-4"
-          ></v-text-field>
+          />
 
           <v-alert
             v-if="errorMsg"
@@ -84,7 +82,7 @@ async function handleLogin() {
           >
             {{ errorMsg }}
           </v-alert>
-          
+
           <v-btn
             type="submit"
             block

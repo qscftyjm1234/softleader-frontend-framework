@@ -21,10 +21,12 @@ const modules = [
       <v-col cols="12" md="8" lg="6">
         <v-card class="rounded-lg" elevation="2">
           <v-card-title class="d-flex align-center py-4 px-6 border-b">
-            <v-icon icon="mdi-shield-plus" start color="primary"></v-icon>
+            <v-icon icon="mdi-shield-plus" start color="primary" />
             <div>
               <div class="text-h6 font-weight-bold">新增權限</div>
-              <div class="text-caption text-medium-emphasis">定義新的系統操作權限點</div>
+              <div class="text-caption text-medium-emphasis">
+                定義新的系統操作權限點
+              </div>
             </div>
           </v-card-title>
 
@@ -41,9 +43,9 @@ const modules = [
                     color="primary"
                     hint="顯示在權限列表的名稱"
                     persistent-hint
-                  ></v-text-field>
+                  />
                 </v-col>
-                
+
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="formData.code"
@@ -54,7 +56,7 @@ const modules = [
                     prepend-inner-icon="mdi-code-tags"
                     color="primary"
                     class="font-monospace"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -65,7 +67,7 @@ const modules = [
                     variant="outlined"
                     density="comfortable"
                     color="primary"
-                  ></v-select>
+                  />
                 </v-col>
 
                 <v-col cols="12">
@@ -76,7 +78,7 @@ const modules = [
                     variant="outlined"
                     rows="3"
                     color="primary"
-                  ></v-textarea>
+                  />
                 </v-col>
 
                 <v-col cols="12">
@@ -94,18 +96,25 @@ const modules = [
                     label="設為系統核心權限 (無法刪除)"
                     color="error"
                     hide-details
-                  ></v-checkbox>
+                  />
                 </v-col>
               </v-row>
             </v-form>
           </v-card-text>
 
-          <v-divider></v-divider>
+          <v-divider />
 
           <v-card-actions class="pa-6">
-            <v-spacer></v-spacer>
-            <v-btn variant="text" color="grey-darken-1" to="/permission/list">取消</v-btn>
-            <v-btn color="primary" variant="flat" prepend-icon="mdi-content-save">儲存設定</v-btn>
+            <v-spacer />
+            <v-btn variant="text" color="grey-darken-1" to="/permission/list"
+              >取消</v-btn
+            >
+            <v-btn
+              color="primary"
+              variant="flat"
+              prepend-icon="mdi-content-save"
+              >儲存設定</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-col>

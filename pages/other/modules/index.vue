@@ -28,7 +28,7 @@ const { x, y } = useMouse()
   </v-card>
   <v-card class="pa-2 mb-4" title="使用i18n語系，nuxt3整合之套件">
     <p>
-      <v-btn color="primary" @click="switchLocale('en')" class="mr-2"
+      <v-btn color="primary" class="mr-2" @click="switchLocale('en')"
         >English</v-btn
       >
       <v-btn color="green" @click="switchLocale('zh')">中文</v-btn>

@@ -3,7 +3,8 @@ const activities = [
   {
     id: 1,
     user: 'Admin',
-    avatar: 'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light',
+    avatar:
+      'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light',
     action: '登入系統',
     target: '',
     ip: '192.168.1.1',
@@ -43,7 +44,8 @@ const activities = [
   {
     id: 5,
     user: 'Admin',
-    avatar: 'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light',
+    avatar:
+      'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light',
     action: '新增權限',
     target: 'order.view',
     ip: '192.168.1.1',
@@ -54,19 +56,27 @@ const activities = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'success': return 'success'
-    case 'danger': return 'error'
-    case 'info': return 'info'
-    default: return 'grey'
+    case 'success':
+      return 'success'
+    case 'danger':
+      return 'error'
+    case 'info':
+      return 'info'
+    default:
+      return 'grey'
   }
 }
 
 const getStatusIcon = (status: string) => {
   switch (status) {
-    case 'success': return 'mdi-check-circle'
-    case 'danger': return 'mdi-alert-circle'
-    case 'info': return 'mdi-information'
-    default: return 'mdi-circle'
+    case 'success':
+      return 'mdi-check-circle'
+    case 'danger':
+      return 'mdi-alert-circle'
+    case 'info':
+      return 'mdi-information'
+    default:
+      return 'mdi-circle'
   }
 }
 </script>
@@ -77,20 +87,41 @@ const getStatusIcon = (status: string) => {
       <v-card-title class="d-flex align-center py-4 px-6 border-b">
         <div>
           <div class="text-h6 font-weight-bold">系統稽核紀錄</div>
-          <div class="text-caption text-medium-emphasis">追蹤所有系統操作與安全性事件</div>
+          <div class="text-caption text-medium-emphasis">
+            追蹤所有系統操作與安全性事件
+          </div>
         </div>
-        <v-spacer></v-spacer>
-        <v-btn variant="outlined" color="grey-darken-1" prepend-icon="mdi-filter-variant" class="mr-2">篩選</v-btn>
-        <v-btn variant="outlined" color="primary" prepend-icon="mdi-download">匯出 CSV</v-btn>
+        <v-spacer />
+        <v-btn
+          variant="outlined"
+          color="grey-darken-1"
+          prepend-icon="mdi-filter-variant"
+          class="mr-2"
+          >篩選</v-btn
+        >
+        <v-btn variant="outlined" color="primary" prepend-icon="mdi-download"
+          >匯出 CSV</v-btn
+        >
       </v-card-title>
 
       <v-card-text class="pa-0">
         <v-list lines="two" class="py-0">
           <template v-for="(item, index) in activities" :key="item.id">
             <v-list-item class="py-3 px-6">
-              <template v-slot:prepend>
-                <v-avatar v-if="item.avatar" :image="item.avatar" size="40" class="mr-3"></v-avatar>
-                <v-avatar v-else color="primary" variant="tonal" size="40" class="mr-3">
+              <template #prepend>
+                <v-avatar
+                  v-if="item.avatar"
+                  :image="item.avatar"
+                  size="40"
+                  class="mr-3"
+                />
+                <v-avatar
+                  v-else
+                  color="primary"
+                  variant="tonal"
+                  size="40"
+                  class="mr-3"
+                >
                   <span class="text-subtitle-2">{{ item.user.charAt(0) }}</span>
                 </v-avatar>
               </template>
@@ -98,30 +129,45 @@ const getStatusIcon = (status: string) => {
               <v-list-item-title class="d-flex align-center mb-1">
                 <span class="font-weight-bold mr-2">{{ item.user }}</span>
                 <span class="text-body-2">{{ item.action }}</span>
-                <v-chip v-if="item.target" size="x-small" class="ml-2" variant="outlined">{{ item.target }}</v-chip>
+                <v-chip
+                  v-if="item.target"
+                  size="x-small"
+                  class="ml-2"
+                  variant="outlined"
+                  >{{ item.target }}</v-chip
+                >
               </v-list-item-title>
 
               <v-list-item-subtitle class="d-flex align-center">
-                <v-icon size="x-small" icon="mdi-clock-outline" class="mr-1"></v-icon>
+                <v-icon size="x-small" icon="mdi-clock-outline" class="mr-1" />
                 <span class="mr-4">{{ item.time }}</span>
-                <v-icon size="x-small" icon="mdi-ip-network" class="mr-1"></v-icon>
+                <v-icon size="x-small" icon="mdi-ip-network" class="mr-1" />
                 <span>{{ item.ip }}</span>
               </v-list-item-subtitle>
 
-              <template v-slot:append>
-                <v-chip :color="getStatusColor(item.status)" size="small" variant="tonal" label>
-                  <v-icon :icon="getStatusIcon(item.status)" start size="small"></v-icon>
+              <template #append>
+                <v-chip
+                  :color="getStatusColor(item.status)"
+                  size="small"
+                  variant="tonal"
+                  label
+                >
+                  <v-icon
+                    :icon="getStatusIcon(item.status)"
+                    start
+                    size="small"
+                  />
                   {{ item.status.toUpperCase() }}
                 </v-chip>
               </template>
             </v-list-item>
-            <v-divider v-if="index < activities.length - 1"></v-divider>
+            <v-divider v-if="index < activities.length - 1" />
           </template>
         </v-list>
       </v-card-text>
-      
-      <v-divider></v-divider>
-      
+
+      <v-divider />
+
       <v-card-actions class="justify-center py-3">
         <v-btn variant="text" color="primary" size="small">載入更多紀錄</v-btn>
       </v-card-actions>

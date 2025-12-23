@@ -21,10 +21,10 @@ function goBack() {
 <template>
   <h1><slot /></h1>
 
-  <v-btn @click="goToRouter()" class="ma-2"> 前往/router </v-btn>
+  <v-btn class="ma-2" @click="goToRouter()"> 前往/router </v-btn>
 
-  <v-btn @click="goToParamRouter()" class="ma-2"> 前往動態param參數路由 </v-btn>
-  <v-btn @click="goBack()" class="ma-2"> 回上一頁 </v-btn>
+  <v-btn class="ma-2" @click="goToParamRouter()"> 前往動態param參數路由 </v-btn>
+  <v-btn class="ma-2" @click="goBack()"> 回上一頁 </v-btn>
   <br />
   <template v-if="userId">
     <v-card class="ma-2 pa-2">

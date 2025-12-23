@@ -16,6 +16,6 @@ function handleLogin() {
   <div>
     <h2 v-if="userStore.isLoggedIn">歡迎，{{ userStore.user?.name }}</h2>
     <v-btn @click="handleLogin">登入</v-btn>
-    <v-btn @click="userStore.logout" v-if="userStore.isLoggedIn">登出</v-btn>
+    <v-btn v-if="userStore.isLoggedIn" @click="userStore.logout">登出</v-btn>
   </div>
 </template>

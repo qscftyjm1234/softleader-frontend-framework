@@ -26,7 +26,7 @@ console.log(`JSON.stringify拷貝目標：${jsonCloned.bulid.name}`) // 全球�
 
 // ❌ 缺點
 // # 無法拷貝函式、undefined、Symbol
-// #　日期 (Date)、正則 (RegExp) 會變成字串
+// # 日期 (Date)、正則 (RegExp) 會變成字串
 
 /**
  * @功能 使用深拷貝套件
@@ -41,7 +41,7 @@ console.log(`useDeepClone拷貝目標：${cloned.user.age}`) // 30 ✅ 不受影
 
 // 碰到undefind不會錯
 const undefinedClone = ref(undefined)
-const getUndefinedClone = useDeepClone(undefinedClone) // 30 ✅ No error
+useDeepClone(undefinedClone) // 30 ✅ No error
 </script>
 
 <template>
@@ -61,7 +61,7 @@ const getUndefinedClone = useDeepClone(undefinedClone) // 30 ✅ No error
 
       console.log(noDeppCloned.bulid.name) // 全球人壽第三大樓 ❌ 會受影響
 
-      <hr />
+      <hr >
       /**
       * @功能 使用JSON.parse(JSON.stringify(obj))
       */
@@ -76,9 +76,9 @@ const getUndefinedClone = useDeepClone(undefinedClone) // 30 ✅ No error
 
       // ❌ 缺點
       // # 無法拷貝函式、undefined、Symbol
-      // #　日期 (Date)、正則 (RegExp) 會變成字串
+      // # 日期 (Date)、正則 (RegExp) 會變成字串
 
-      <hr />
+      <hr >
       /**
       * @功能 使用深拷貝套件
       */

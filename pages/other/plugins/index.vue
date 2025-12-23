@@ -1,4 +1,5 @@
 <script setup>
+/* global dayjs */
 /** 全域函數的註冊 */
 const { $hellow, $axios } = useNuxtApp()
 

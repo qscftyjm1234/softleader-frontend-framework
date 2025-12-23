@@ -25,19 +25,23 @@ const roles = [
       <v-col cols="12" md="10" lg="8">
         <v-card class="rounded-lg" elevation="2">
           <v-card-title class="d-flex align-center py-4 px-6 border-b">
-            <v-icon icon="mdi-account-plus" start color="primary"></v-icon>
+            <v-icon icon="mdi-account-plus" start color="primary" />
             <div>
               <div class="text-h6 font-weight-bold">新增會員</div>
-              <div class="text-caption text-medium-emphasis">建立新的使用者帳號並設定權限</div>
+              <div class="text-caption text-medium-emphasis">
+                建立新的使用者帳號並設定權限
+              </div>
             </div>
-            <v-spacer></v-spacer>
-            <v-btn variant="text" icon="mdi-close" to="/user/list"></v-btn>
+            <v-spacer />
+            <v-btn variant="text" icon="mdi-close" to="/user/list" />
           </v-card-title>
 
           <v-card-text class="pt-6">
             <v-form>
               <!-- 基本資訊區塊 -->
-              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">基本資訊</div>
+              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">
+                基本資訊
+              </div>
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
@@ -48,7 +52,7 @@ const roles = [
                     density="comfortable"
                     prepend-inner-icon="mdi-account"
                     color="primary"
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
@@ -60,7 +64,7 @@ const roles = [
                     prepend-inner-icon="mdi-email"
                     color="primary"
                     type="email"
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
@@ -73,7 +77,7 @@ const roles = [
                     color="primary"
                     type="password"
                     hint="至少包含 8 個字元"
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select
@@ -84,7 +88,7 @@ const roles = [
                     density="comfortable"
                     prepend-inner-icon="mdi-shield-account"
                     color="primary"
-                  ></v-select>
+                  />
                 </v-col>
                 <v-col cols="12">
                   <v-textarea
@@ -94,14 +98,16 @@ const roles = [
                     variant="outlined"
                     rows="3"
                     color="primary"
-                  ></v-textarea>
+                  />
                 </v-col>
               </v-row>
 
-              <v-divider class="my-6"></v-divider>
+              <v-divider class="my-6" />
 
               <!-- 設定與狀態區塊 -->
-              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">帳號設定</div>
+              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">
+                帳號設定
+              </div>
               <v-row>
                 <v-col cols="12" md="6">
                   <v-switch
@@ -111,10 +117,12 @@ const roles = [
                     hide-details
                     inset
                   >
-                    <template v-slot:label>
+                    <template #label>
                       <div>
                         <div class="font-weight-bold">啟用帳號</div>
-                        <div class="text-caption">使用者建立後是否可立即登入</div>
+                        <div class="text-caption">
+                          使用者建立後是否可立即登入
+                        </div>
                       </div>
                     </template>
                   </v-switch>
@@ -126,18 +134,30 @@ const roles = [
                     label="接收 Email 通知"
                     hide-details
                     inset
-                  ></v-switch>
+                  />
                 </v-col>
               </v-row>
             </v-form>
           </v-card-text>
 
-          <v-divider></v-divider>
+          <v-divider />
 
           <v-card-actions class="pa-6 bg-grey-lighten-5">
-            <v-spacer></v-spacer>
-            <v-btn variant="outlined" color="grey-darken-1" class="me-2" to="/user/list">取消</v-btn>
-            <v-btn color="primary" variant="flat" size="large" prepend-icon="mdi-check">確認建立</v-btn>
+            <v-spacer />
+            <v-btn
+              variant="outlined"
+              color="grey-darken-1"
+              class="me-2"
+              to="/user/list"
+              >取消</v-btn
+            >
+            <v-btn
+              color="primary"
+              variant="flat"
+              size="large"
+              prepend-icon="mdi-check"
+              >確認建立</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-col>

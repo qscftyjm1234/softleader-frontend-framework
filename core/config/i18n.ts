@@ -1,6 +1,6 @@
 import type { NuxtConfig } from 'nuxt/schema'
 
-export const i18nConfig: NuxtConfig['i18n'] = {
+export const i18nConfig = {
   // 基本語言清單
   locales: [
     { code: 'en', name: 'English', iso: 'en-US', file: 'en-US.json' },

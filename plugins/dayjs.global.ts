@@ -13,5 +13,5 @@ export default defineNuxtPlugin(() => {
   // 使用 extend 注入插件
   // dayjs.extend(utc)
   // dayjs.extend(relativeTime)
-  globalThis.dayjs = dayjs
+  ;(globalThis as any).dayjs = dayjs
 })

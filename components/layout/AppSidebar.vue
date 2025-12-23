@@ -16,12 +16,14 @@ const drawer = computed({
   set: (val) => emit('update:modelValue', val)
 })
 
-
 // 確保 sidebar 已經生成，並傳入使用者權限
-watch(() => userStore.permissions, (newPermissions) => {
-  sidebarStore.generate(newPermissions)
-}, { immediate: true })
-
+watch(
+  () => userStore.permissions,
+  (newPermissions) => {
+    sidebarStore.generate(newPermissions)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -35,8 +37,11 @@ watch(() => userStore.permissions, (newPermissions) => {
     <!-- 品牌 Logo 區塊 -->
     <div class="pa-6 d-flex align-center">
       <v-avatar color="primary" size="40" rounded="lg" class="mr-3 elevation-2">
-        <v-img v-if="appStore.config.branding.logo.image" :src="appStore.config.branding.logo.image"></v-img>
-        <v-icon v-else :icon="appStore.config.branding.logo.icon" size="24"></v-icon>
+        <v-img
+          v-if="appStore.config.branding.logo.image"
+          :src="appStore.config.branding.logo.image"
+        />
+        <v-icon v-else :icon="appStore.config.branding.logo.icon" size="24" />
       </v-avatar>
       <div>
         <div
@@ -45,11 +50,13 @@ watch(() => userStore.permissions, (newPermissions) => {
         >
           {{ appStore.config.branding.title }}
         </div>
-        <div class="text-caption text-grey-lighten-1">{{ appStore.config.branding.subtitle }}</div>
+        <div class="text-caption text-grey-lighten-1">
+          {{ appStore.config.branding.subtitle }}
+        </div>
       </div>
     </div>
 
-    <v-divider class="mb-2 border-opacity-25"></v-divider>
+    <v-divider class="mb-2 border-opacity-25" />
 
     <v-list nav open-strategy="single" class="px-3">
       <div
@@ -58,22 +65,28 @@ watch(() => userStore.permissions, (newPermissions) => {
         {{ appStore.config.sidebar.mainMenuTitle }}
       </div>
       <AppSidebarItem
-        v-for="(item, i) in sidebarStore.items"
+        v-for="item in sidebarStore.items"
         :key="item.label"
         :item="item"
       />
     </v-list>
 
-    <template v-slot:append>
-      <div class="pa-4" v-if="appStore.config.sidebar.proCard.visible">
+    <template #append>
+      <div v-if="appStore.config.sidebar.proCard.visible" class="pa-4">
         <v-card color="grey-darken-3" class="rounded-lg pa-3" variant="flat">
           <div class="d-flex align-center">
             <v-avatar size="36" color="primary" variant="tonal" class="mr-3">
-              <span class="text-subtitle-2">{{ appStore.config.sidebar.proCard.badge }}</span>
+              <span class="text-subtitle-2">{{
+                appStore.config.sidebar.proCard.badge
+              }}</span>
             </v-avatar>
             <div>
-              <div class="text-subtitle-2 font-weight-bold">{{ appStore.config.sidebar.proCard.title }}</div>
-              <div class="text-caption text-grey-lighten-1">{{ appStore.config.sidebar.proCard.subtitle }}</div>
+              <div class="text-subtitle-2 font-weight-bold">
+                {{ appStore.config.sidebar.proCard.title }}
+              </div>
+              <div class="text-caption text-grey-lighten-1">
+                {{ appStore.config.sidebar.proCard.subtitle }}
+              </div>
             </div>
           </div>
         </v-card>

@@ -16,12 +16,12 @@ const appStore = useAppStore()
     color="white"
     :height="appStore.config.header.height"
   >
-    <v-app-bar-nav-icon @click="appStore.toggleDrawer" color="grey-darken-2"></v-app-bar-nav-icon>
-    
+    <v-app-bar-nav-icon color="grey-darken-2" @click="appStore.toggleDrawer" />
+
     <!-- Breadcrumbs -->
     <HeaderBreadcrumbs />
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
     <!-- Global Search -->
     <HeaderSearch />

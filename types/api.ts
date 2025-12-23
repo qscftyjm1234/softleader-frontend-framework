@@ -17,3 +17,18 @@ export interface LoginResponse {
     name: string
   }
 }
+
+export interface UserListResponse {
+  items: any[]
+  total: number
+}
+
+export interface OrderListResponse {
+  items: any[]
+  total: number
+}
+
+export interface OrderDetailResponse {
+  id: string
+  items: any[]
+}

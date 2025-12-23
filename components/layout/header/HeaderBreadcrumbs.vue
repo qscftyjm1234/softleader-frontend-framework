@@ -7,7 +7,7 @@ const route = useRoute()
 
 const breadcrumbs = computed(() => {
   const path = route.path
-  const parts = path.split('/').filter(p => p)
+  const parts = path.split('/').filter((p) => p)
   return parts.map((part, index) => ({
     title: part.charAt(0).toUpperCase() + part.slice(1),
     disabled: index === parts.length - 1,
@@ -22,11 +22,11 @@ const breadcrumbs = computed(() => {
     :items="breadcrumbs"
     class="d-none d-md-flex ml-2"
   >
-    <template v-slot:divider>
-      <v-icon icon="mdi-chevron-right"></v-icon>
+    <template #divider>
+      <v-icon icon="mdi-chevron-right" />
     </template>
-    <template v-slot:prepend>
-      <v-icon icon="mdi-home" size="small" class="mr-1"></v-icon>
+    <template #prepend>
+      <v-icon icon="mdi-home" size="small" class="mr-1" />
     </template>
   </v-breadcrumbs>
 </template>

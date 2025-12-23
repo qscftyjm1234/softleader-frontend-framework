@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { SidebarItem } from '~/core/sidebar/buildSidebar'
 
+import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
+
 defineOptions({
   name: 'AppSidebarItem'
 })
@@ -13,22 +15,23 @@ const props = defineProps<{
 // 這樣可以保持縮排一致
 const displayIcon = computed(() => props.item.icon || 'mdi-circle-medium')
 const isTransparent = computed(() => !props.item.icon)
-
-import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
 </script>
 
 <template>
   <!-- 如果有子選單，使用 v-list-group -->
-  <v-list-group v-if="item.children && item.children.length > 0" :value="item.label">
-    <template v-slot:activator="{ props }">
+  <v-list-group
+    v-if="item.children && item.children.length > 0"
+    :value="item.label"
+  >
+    <template #activator="{ props: activatorProps }">
       <v-list-item
-        v-bind="props"
+        v-bind="activatorProps"
         :prepend-icon="displayIcon"
         :class="{ 'ghost-icon': isTransparent }"
         :title="item.label"
         rounded="lg"
         class="mb-1"
-      ></v-list-item>
+      />
     </template>
 
     <!-- 遞迴呼叫自己渲染子選單 -->
@@ -46,13 +49,13 @@ import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
     :class="{ 'ghost-icon': isTransparent }"
     :title="item.label"
     :to="item.to"
-    :value="item.to" 
+    :value="item.to"
     :disabled="item.disabled"
     nuxt
     rounded="lg"
     class="mb-1"
     active-class="bg-primary text-white"
-  ></v-list-item>
+  />
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const childRef = ref(null)
+const childRef = ref<any>(null)
 const modelA = ref('不具名v-model')
 const modelB = ref('具名v-model')
 </script>
@@ -9,9 +9,9 @@ const modelB = ref('具名v-model')
   <DefineHandleComponent
     ref="childRef"
     v-model="modelA"
-    v-model:nameModelValue="modelB"
+    v-model:name-model-value="modelB"
     msg="傳入的msg"
-    @emitMsg="
+    @emit-msg="
       (e) => {
         console.log(e)
       }

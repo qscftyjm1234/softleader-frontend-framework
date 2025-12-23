@@ -5,6 +5,6 @@ import cloneDeep from 'lodash.clonedeep'
  * @param source 原始物件或陣列
  * @returns 完整拷貝的新物件
  */
-export function useDeepClone(source) {
+export function useDeepClone(source: any) {
   return cloneDeep(source)
 }

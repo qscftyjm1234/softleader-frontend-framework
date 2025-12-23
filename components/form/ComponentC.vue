@@ -1,3 +1,3 @@
 <template>
-  <v-card title="ComponentC"> </v-card>
+  <v-card title="ComponentC" />
 </template>

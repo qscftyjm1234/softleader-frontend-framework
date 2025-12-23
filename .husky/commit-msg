@@ -1,0 +1,11 @@
+
+
+echo "[Husky] 正在檢查提交訊息格式..."
+
+pnpm exec commitlint --edit "${1}"
+if [ $? -ne 0 ]; then
+    echo "[Husky] 提交訊息格式錯誤，請修正。"
+    exit 1
+fi
+
+echo "[Husky] 提交訊息格式正確！"

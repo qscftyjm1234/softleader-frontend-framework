@@ -4,7 +4,7 @@
  * @用法
  * ```typescript
  * import { maskIdCard, maskPhone, maskEmail } from '~/utils/security/mask'
- * 
+ *
  * maskIdCard('A123456789')      // A123****89
  * maskPhone('0912345678')        // 0912***678
  * maskEmail('user@example.com')  // u***@example.com
@@ -26,19 +26,19 @@ export function maskText(
   maskChar: string = '*'
 ): string {
   if (!text) return ''
-  
+
   const len = text.length
-  
+
   // 如果文字太短，無法遮蔽
   if (len <= visibleStart + visibleEnd) {
     return text
   }
-  
+
   const start = text.slice(0, visibleStart)
   const end = text.slice(-visibleEnd)
   const maskedLength = len - visibleStart - visibleEnd
   const masked = maskChar.repeat(Math.min(maskedLength, 4)) // 最多 4 個 *
-  
+
   return `${start}${masked}${end}`
 }
 
@@ -62,17 +62,17 @@ export function maskPhone(phone: string | null | undefined): string {
   if (!phone) return ''
   // 移除非數字字元
   const cleanPhone = phone.replace(/\D/g, '')
-  
+
   // 手機號碼（10碼）
   if (cleanPhone.length === 10) {
     return maskText(cleanPhone, 4, 3)
   }
-  
+
   // 市內電話（8-9碼）
   if (cleanPhone.length >= 8 && cleanPhone.length <= 9) {
     return maskText(cleanPhone, 2, 4)
   }
-  
+
   // 其他情況使用預設遮蔽
   return maskText(cleanPhone, 3, 2)
 }
@@ -84,16 +84,21 @@ export function maskPhone(phone: string | null | undefined): string {
  */
 export function maskEmail(email: string | null | undefined): string {
   if (!email) return ''
-  
-  const [localPart, domain] = email.split('@')
-  
-  if (!domain) return maskText(email)
-  
+
+  const parts = email.split('@')
+  if (parts.length < 2) return maskText(email)
+
+  const localPart = parts[0]
+  const domain = parts[1]
+
+  if (!localPart || !domain) return maskText(email)
+
   // 遮蔽 @ 前的部分
-  const maskedLocal = localPart.length <= 2
-    ? localPart.charAt(0) + '***'
-    : localPart.charAt(0) + '***' + localPart.slice(-1)
-  
+  const maskedLocal =
+    localPart.length <= 2
+      ? localPart.charAt(0) + '***'
+      : localPart.charAt(0) + '***' + localPart.slice(-1)
+
   return `${maskedLocal}@${domain}`
 }
 
@@ -105,12 +110,12 @@ export function maskEmail(email: string | null | undefined): string {
  */
 export function maskName(name: string | null | undefined): string {
   if (!name) return ''
-  
+
   const len = name.length
-  
+
   if (len <= 1) return name
   if (len === 2) return name.charAt(0) + '*'
-  
+
   // 保留姓和最後一個字
   const masked = '*'.repeat(len - 2)
   return name.charAt(0) + masked + name.charAt(len - 1)
@@ -123,7 +128,7 @@ export function maskName(name: string | null | undefined): string {
  */
 export function maskAddress(address: string | null | undefined): string {
   if (!address) return ''
-  
+
   // 保留縣市區（約前6-8字），其餘遮蔽
   const prefixLength = Math.min(address.length, 8)
   return address.slice(0, prefixLength) + '***'
@@ -136,15 +141,15 @@ export function maskAddress(address: string | null | undefined): string {
  */
 export function maskCreditCard(cardNumber: string | null | undefined): string {
   if (!cardNumber) return ''
-  
+
   // 移除非數字字元
   const cleanNumber = cardNumber.replace(/\D/g, '')
-  
+
   if (cleanNumber.length < 12) return maskText(cleanNumber)
-  
+
   const first4 = cleanNumber.slice(0, 4)
   const last4 = cleanNumber.slice(-4)
-  
+
   return `${first4} **** **** ${last4}`
 }
 
@@ -153,12 +158,14 @@ export function maskCreditCard(cardNumber: string | null | undefined): string {
  * @param accountNumber - 銀行帳號
  * @example maskBankAccount('12345678901234') => '1234******1234'
  */
-export function maskBankAccount(accountNumber: string | null | undefined): string {
+export function maskBankAccount(
+  accountNumber: string | null | undefined
+): string {
   if (!accountNumber) return ''
-  
+
   // 移除非數字字元
   const cleanNumber = accountNumber.replace(/\D/g, '')
-  
+
   return maskText(cleanNumber, 4, 4)
 }
 

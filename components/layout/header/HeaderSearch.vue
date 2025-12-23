@@ -18,5 +18,5 @@ const appStore = useAppStore()
     bg-color="grey-lighten-3"
     style="max-width: 300px"
     class="mr-4 d-none d-sm-flex"
-  ></v-text-field>
+  />
 </template>
