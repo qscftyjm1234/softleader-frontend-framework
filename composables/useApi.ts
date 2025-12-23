@@ -13,6 +13,7 @@ type UseApiOptions<T> = UseFetchOptions<T> & {
   autoSuccess?: boolean | string
   loadingRef?: Ref<boolean>
   auth?: boolean
+  prefix?: string // [NEW] 支援動態路徑前綴
 }
 
 /**
@@ -121,6 +122,18 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
   // 合併選項 (使用 defu 進行深層合併，比手動 spread 更安全漂亮)
   const params = defu(options, defaults)
 
+  // [NEW] 處理 Prefix: 自動將 prefix 接在 baseURL 後面
+  // 範例：BaseURL(https://api.com) + Prefix(/jasmine) = https://api.com/jasmine
+  if (params.prefix) {
+    // 確保 baseURL 不會以 / 結尾且 prefix 以 / 開頭
+    // 使用 unref 確保即使傳入 ref 也能正確處理
+    const base = String(unref(params.baseURL) ?? '').replace(/\/$/, '')
+    const pre = params.prefix.startsWith('/') ? params.prefix : `/${params.prefix}`
+    
+    // 注意：這裡將組合後的 URL 寫回 baseURL
+    params.baseURL = `${base}${pre}`
+  }
+
   // 回傳原生的 useFetch
   // 注意：這裡指定 useFetch 的回傳型別為 ApiResponse<T>，但透過 transform 轉成 T
   return useFetch<ApiResponse<T>>(url, {
@@ -130,4 +143,32 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
       return response.data as T
     }
   } as UseFetchOptions<ApiResponse<T>>)
+}
+
+/**
+ * 💡 Smart Client: 建立具備特定 Prefix 的 API 客戶端
+ * 這被認為是「最棒」的管理模式，因為它極度簡化了 Repository 的代碼
+ * 
+ * @example
+ * const api = useClient('/jasmine-mar/policy')
+ * api.get('/list') // 自動發送 GET /jasmine-mar/policy/list
+ */
+export const useClient = (prefix: string) => {
+  // 核心 helper：統一處理 method 與 prefix 注入
+  const call = <T>(method: string, url: string, body?: any, options: UseApiOptions<T> = {}) => {
+    return useApi<T>(url, {
+      ...options,
+      method: method as any,
+      prefix,
+      body 
+    })
+  }
+
+  return {
+    get: <T>(url: string, options: UseApiOptions<T> = {}) => call<T>('GET', url, undefined, options),
+    post: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('POST', url, body, options),
+    put: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('PUT', url, body, options),
+    patch: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('PATCH', url, body, options),
+    delete: <T>(url: string, options: UseApiOptions<T> = {}) => call<T>('DELETE', url, undefined, options)
+  }
 }

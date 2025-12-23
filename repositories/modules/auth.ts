@@ -1,5 +1,8 @@
-import { useApi } from '~/composables/useApi'
+import { useClient } from '~/composables/useApi'
 import type { LoginResponse } from '~/types/api'
+
+// 1. 定義 Client
+const api = useClient('/auth')
 
 export default {
   /**
@@ -7,27 +10,20 @@ export default {
    * @param credentials - { username, password }
    */
   login(credentials: any) {
-    return useApi<LoginResponse>('/auth/login', {
-      method: 'POST',
-      body: credentials
-    })
+    return api.post<LoginResponse>('/login', credentials)
   },
 
   /**
    * 登出
    */
   logout() {
-    return useApi('/auth/logout', {
-      method: 'POST'
-    })
+    return api.post('/logout')
   },
 
   /**
    * 取得當前使用者資料
    */
   fetchUser() {
-    return useApi('/auth/me', {
-      method: 'GET'
-    })
+    return api.get('/me')
   }
 }

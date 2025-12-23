@@ -1,108 +1,151 @@
-# API 開發指南 (API Development Guide)
+# 前端 API 開發規範指引 (API Guide)
 
-歡迎加入團隊！這份文件將教你如何在這個專案中新增與使用 API。
+本專案採用 Nuxt 3 `useFetch` 為核心，並封裝成 `useApi` 與 `useClient`。
+請遵循以下規範以確保程式碼統一、簡潔、易維護。
 
-## 1. 架構概覽
+## 1. 核心觀念：Smart Client (`useClient`)
 
-我們使用 Nuxt 3 的 Plugin 機制與 TypeScript 來提供全域的 API 存取。
+這是我們最新的標準寫法。透過 `useClient` 建立具備特定路徑前綴 (Prefix) 的客戶端，能大幅減少重複代碼。
 
-- **`$api`**: 全域變數，可在任何地方使用。
-- **`repositories/modules/*.ts`**: API 定義檔 (Repository)。
-- **`scripts/generate-module.js`**: 自動生成模組與註冊 API 的腳本。
-
-## 2. 如何使用 API
-
-在 Vue Component (`.vue`) 或 Composable (`.ts`) 中：
-
+### ❌ 舊寫法 (不推薦)
+每次都要重複寫 prefix，容易出錯且冗長。
 ```typescript
-const { $api } = useNuxtApp()
-
-// 範例：取得使用者列表
-const { data: users } = await $api.user.getUsers()
-
-// 範例：取得訂單詳情
-const { data: order } = await $api.order.getOrderById(123)
+useApi('/list', { prefix: '/jasmine-mar/policy', method: 'GET' })
 ```
 
-> **💡 提示**：VS Code 支援自動補全，輸入 `$api.` 就會看到所有可用的模組。
-
-## 3. 如何新增 API 模組
-
-假設你要新增一個 `product` (產品) 模組：
-
-### 步驟一：建立設定檔
-在 `module-templates/` 新增 `product.yaml`：
-
-```yaml
-name: product
-routes:
-  - path: /list
-    label: 產品列表
-```
-
-### 步驟二：執行生成腳本
-開啟終端機執行：
-
-```bash
-node scripts/generate-module.js product
-```
-
-這個腳本會自動幫你做完所有事情：
-1.  生成 `modules/product` 頁面結構。
-2.  生成 `repositories/modules/product.ts` (API 定義檔)。
-3.  **自動註冊** 到 `repositories/index.ts`。
-
-### 步驟三：開始寫 API
-去編輯 `repositories/modules/product.ts`，加入你的 API 方法：
-
+### ✅ 新寫法 (標準)
 ```typescript
-import { useApi } from '~/composables/useApi'
+// repositories/modules/policy.ts
+import { useClient } from '~/composables/useApi'
+
+// 1. 定義 Client (集中管理路徑)
+const api = useClient('/jasmine-mar/mar/policy')
 
 export default {
-  getProducts() {
-    return useApi('/products', { method: 'GET' })
+  // 2. 直接使用 (就像 axios 一樣直覺)
+  getQotList: (params) => api.get('/qot', { query: params }),
+  createQot: (data) => api.post('/qot', data)
+}
+```
+
+---
+
+## 2. 處理動態路徑 (Dynamic Paths)
+
+當遇到類似結構但中間路徑不同 (如 `/qot`, `/pos`, `/mod`) 時，請使用**參數化**方式，不要複製貼上多個 function。
+
+```typescript
+// 定義基底 Client
+const service = useClient('/jasmine-mar')
+
+export default {
+  /**
+   * 取得保單詳情
+   * @param type - 業務別 ('qot' | 'pos' | 'mod')
+   * @param id - 單號
+   */
+  getDetail(type: 'qot' | 'pos' | 'mod', id: string) {
+    // 自動組裝：/jasmine-mar/qot/policies/detail/123
+    return service.get(`/${type}/policies/detail/${id}`)
   }
 }
 ```
 
-搞定！現在你可以直接用 `$api.product.getProducts()` 了。
+---
 
-## 4. 參數參考 (Reference)
+## 3. 參數總覽 (Options)
 
-### `useApi(url, options)`
+`useClient` 的第二個參數 (或是 `get` 的第二個參數) 支援所有強大功能：
 
-`useApi` 繼承了 Nuxt `useFetch` 的所有參數，以下是常用參數說明：
-
-#### 1. 請求相關 (Request)
-
-| 參數 | 類型 | 說明 | 範例 |
+| 參數名稱 | 類型 | 預設 | 重點功能描述 |
 | :--- | :--- | :--- | :--- |
-| `method` | `'GET' \| 'POST' \| 'PUT' \| 'DELETE'` | HTTP 請求方法 (預設為 GET) | `method: 'POST'` |
-| `query` | `Object` | URL 查詢參數，會自動轉為 `?key=value` | `query: { page: 1, q: 'keyword' }` |
-| `body` | `Object` | Request Body，通常用於 POST/PUT，會自動轉為 JSON | `body: { name: 'Gino', age: 18 }` |
-| `headers` | `Object` | 自定義 HTTP Headers | `headers: { 'X-Custom': 'value' }` |
-| `params` | `Object` | 同 `query`，這是 `useFetch` 的別名 | `params: { id: 1 }` |
+| **`loadingRef`** | `Ref` | - | **✨ 自動 Loading**：傳入 `ref(false)`，API 發送時自動變 `true`，結束變 `false`。省去手動開關的麻煩。 |
+| **`watch`** | `Array` | - | **✨ 自動重打**：傳入 `[page, filter]`，當這些變數改變時，API 會自動重新發送。 |
+| **`globalLoading`** | `Bool` | `true` | **介面優化**：是否顯示瀏覽器最上方的藍色進度條。若已有按鈕動畫，建議設為 `false` 以免干擾。 |
+| `query` | `Object` | - | URL 查詢參數 (會轉為 `?page=1`)。 |
+| `body` | `Object` | - | POST / PUT 的資料內容。 |
+| `headers` | `Object` | - | 自定義 HTTP Headers (如 `{ 'X-Custom': '1' }`)。 |
+| `auth` | `Bool` | `true` | 是否檢查 Token。設為 `false` 可允許未登入呼叫 (如登入 API)。 |
+| `autoError` | `Bool` | `true` | 是否自動跳出紅底錯誤通知。 |
+| `transform` | `Func` | - | **資料清洗**：`(res) => res.items`。在資料傳給前端前先過濾，減少 Payload。 |
+| `pick` | `Array` | - | **欄位篩選**：`['id', 'name']`。只取出需要的欄位，節省資源。 |
 
-#### 2. 響應式與觸發 (Reactivity)
+### ✨ 進階技巧範例
+```typescript
+// 完整火力展示
+api.get('/list', {
+  // 1. 綁定按鈕，自動轉圈圈
+  loadingRef: isBtnLoading,
+  
+  // 2. 既然有按鈕轉圈了，就把上面藍條關掉
+  globalLoading: false,
+  
+  // 3. 當頁碼或搜尋改變時，自動重打 (省去 watch 程式碼)
+  watch: [page, search],
+  
+  // 4. 只取需要的欄位 (優化效能)
+  // 注意：這是針對 "已經拆包後" 的資料做篩選 (對 business data 做 pick，不是 response envelope)
+  pick: ['id', 'title'] 
+})
+```
 
-| 參數 | 類型 | 說明 | 範例 |
-| :--- | :--- | :--- | :--- |
-| `watch` | `Array<Ref>` | 當陣列中的變數改變時，自動重新發送請求 | `watch: [page, keyword]` |
-| `immediate` | `boolean` | 是否在元件建立時立即發送請求 (預設 true) | `immediate: false` (手動觸發用) |
+### 完整範例
+```typescript
+const { data, pending } = await api.get('/list', {
+  query: { page: 1 },
+  loadingRef: isSubmitting,     // 按鈕會自動轉圈圈
+  globalLoading: false,         // 關掉上方藍條
+  autoSuccess: '儲存成功！'      // 成功時自動跳綠色通知
+})
+```
 
-#### 3. 效能與體驗 (Performance)
+---
 
-| 參數 | 類型 | 說明 | 範例 |
-| :--- | :--- | :--- | :--- |
-| `lazy` | `boolean` | 是否延遲載入 (不阻塞頁面導航) | `lazy: true` (配合 pending 狀態顯示 Loading) |
-| `server` | `boolean` | 是否在伺服器端執行 (預設 true) | `server: false` (只在瀏覽器端發送) |
-| `pick` | `Array<string>` | 只回傳指定的欄位 (減少資料傳輸) | `pick: ['id', 'title']` |
+## 4. 回傳值與回應處理 (Response)
 
-#### 4. 回傳值 (Return Values)
+`useApi` 與 `useClient` 回傳的是 Nuxt 原生的 **AsyncData** 物件。
+但請注意：**我們已經自動拆包 (Auto Unwrap)**。
 
-`useApi` 回傳一個物件，包含以下響應式變數 (Ref)：
+### 什麼是自動拆包？
+後端回傳的格式通常是：
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": { "id": 1, "name": "Gino" }
+}
+```
+但在前端，您拿到的 `data.value` 會直接是 `{ "id": 1, "name": "Gino" }`，不需要再寫 `.data.data`。
 
-- `data`: API 回傳的資料 (成功時有值)。
-- `pending`: `true` 代表請求中，可用來顯示 Loading。
-- `error`: 失敗時的錯誤物件。
-- `refresh()`: 函式，呼叫後可強制重新發送請求。
+### 常用變數解構
+```typescript
+import repository from '~/repositories/modules/policy'
+
+// 呼叫 Repository 方法 (其底層就是 useApi)
+const { 
+  data,       // T | null (您的資料, e.g. QotListResponse)
+  pending,    // boolean (是否正在載入，可用於 Skeleton)
+  error,      // error | null (若發生錯誤會有值)
+  refresh,    // function (呼叫可重新打一次 API)
+  execute     // function (同 refresh，但在 lazy: true 時很有用)
+} = await repository.policy.getQotList({ page: 1 })
+
+// 使用資料 (請注意：要用 .value 取值)
+console.log(data.value?.items)
+```
+
+### 錯誤處理流程
+1. **自動攔截 (預設)**：`autoError: true` 會自動跳出紅底 Notify，通常您不需要在 Component 寫 `if (error.value)`。
+2. **手動處理**：若您想自己控制錯誤 UI：
+```typescript
+const { error } = await api.get('/list', { autoError: false })
+
+if (error.value) {
+  // 自己處理介面顯示
+  myErrorState.value = true
+}
+```
+
+---
+
+
