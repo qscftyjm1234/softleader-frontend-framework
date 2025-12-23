@@ -3,8 +3,8 @@ import order from './modules/order'
 import auth from './modules/auth'
 
 /**
- * Repository Index (資料層 / Data Layer)
- * 
+ * Repository Index (資料層)
+ *
  * 職責：
  * 1. 自動掃描 modules 資料夾下的所有檔案
  * 2. 將它們打包成一個大物件匯出
@@ -14,7 +14,7 @@ import auth from './modules/auth'
 const repositories = {
   user,
   order,
-  auth,
+  auth
 }
 
 export default repositories

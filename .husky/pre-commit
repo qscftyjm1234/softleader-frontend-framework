@@ -17,14 +17,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 2. 執行 TypeScript 全域檢查
-#    這會掃描整個專案的 .ts/.vue 檔案，確保沒有型別錯誤。
-#    這一步可能需要幾秒鐘的時間。
-echo "[Husky] 正在執行 TypeScript 全域檢查..."
-pnpm exec nuxi typecheck
-if [ $? -ne 0 ]; then
-    echo "[Husky] TypeScript 檢查失敗，請修復上述錯誤。"
-    exit 1
-fi
+# 2. TypeScript 全域檢查已移動至 commit-msg hook，
+#    確保在訊息格式正確後才執行耗時檢查。
 
 echo "[Husky] 所有檢查通過！"
