@@ -1,3 +1,5 @@
+const { types, maxHeaderLength, maxLineLength } = require('./.commit-types.cjs')
+
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
@@ -9,22 +11,11 @@ module.exports = {
     // ----------------------------
 
     // type-enum: 限制 type 必須是以下清單之一
-    // [2, 'always', [...]] => 2=錯誤, 'always'=必須遵守
+    // 從 .commit-types.cjs 引入，確保與 Commitizen 一致
     'type-enum': [
       2,
       'always',
-      [
-        'feat', // 新功能 (feature)
-        'fix', // 修補 bug
-        'docs', // 文件修改 (documentation)
-        'style', // 格式 (不影響程式碼運行的變動，如空格、分號等)
-        'refactor', // 重構 (既不是新增功能，也不是修補 bug 的程式碼變動)
-        'perf', // 改進效能 (performance)
-        'test', // 增加或修改測試
-        'chore', // 其他不修改 src 或 test 檔案的更改 (雜務)
-        'revert' // 回退版本
-        // ... 其他定義
-      ]
+      types.map(t => t.value)
     ],
 
     // type-case: type 的大小寫限制
@@ -70,8 +61,8 @@ module.exports = {
     'subject-full-stop': [2, 'never', '.'],
 
     // header-max-length: header (第一行) 的最大長度
-    // 72 字元是 GitHub 等工具的最佳顯示長度
-    'header-max-length': [2, 'always', 72],
+    // 從 .commit-types.cjs 引入，確保與 Commitizen 一致
+    'header-max-length': [2, 'always', maxHeaderLength],
 
     // ----------------------------
     // Body (內文) 與 Footer 相關設定
@@ -89,7 +80,8 @@ module.exports = {
     'body-leading-blank': [1, 'always'], // 1 = 警告
 
     // body-max-line-length: body 每一行的最大長度
-    'body-max-line-length': [2, 'always', 100],
+    // 從 .commit-types.cjs 引入
+    'body-max-line-length': [2, 'always', maxLineLength],
 
     // footer-leading-blank: body 與 footer 之間是否要有空行
     'footer-leading-blank': [1, 'always']
