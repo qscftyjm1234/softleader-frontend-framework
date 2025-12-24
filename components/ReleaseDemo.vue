@@ -19,12 +19,28 @@ function greet(name: string): void {
   console.log(`喵`)
   console.log(`喵`)
 }
+
+/**
+ * 顯示年紀
+ *
+ * @history
+ * @param {number} ago - 顯示年紀
+ * @author amy
+ * @version 1 - Do thing
+ * @version 2 - Do thing to change
+ * @returns {void}
+ */
+function ago(ago: number): void {
+  console.log(`小狗狗`)
+  console.log(`${message.value} ${ago}`)
+}
 </script>
 
 <template>
   <div class="release-demo">
     <h1>{{ message }}</h1>
     <button @click="greet('Developer')">Greet</button>
+    <button @click="ago(15)">Greet</button>
   </div>
 </template>
 
