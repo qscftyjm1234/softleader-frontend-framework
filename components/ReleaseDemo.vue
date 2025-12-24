@@ -4,8 +4,8 @@ import { ref } from 'vue'
 /**
  * 這是為了演示版本發布而建立的組件
  *
- * @see {@link ../CHANGELOG.md} - 查看此組件的新增紀錄
- * @see {@link ../CHANGELOG.md#011} - v0.1.1 中文化 (本次修改)
+ * @see {@link ../CHANGELOG.md} (請將滑鼠移到此處查看連結)
+ * @see https://github.com/qscftyjm1234/frontier_project/blob/main/CHANGELOG.md (Web版)
  */
 const message = ref('你好，標準版本！')
 
