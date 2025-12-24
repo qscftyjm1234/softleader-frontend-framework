@@ -229,16 +229,19 @@ function writeMarkdown(filePath, funcName, commits, metadata) {
   const totalVersions = commits.length
   const latestCommit = commits[0] // Git log returns newest first
 
-  let md = `# History: \`${funcName}\`\n\n`
-  md += `**ID**: \`${uniqueId}\`\n`
-  md += `**檔案**: \`${filePath}\`\n`
+  let md = `# 📜 函數歷史記錄: \`${funcName}\`\n\n`
+  md += `## 📋 基本資訊\n\n`
+  md += `| 項目 | 內容 |\n`
+  md += `|------|------|\n`
+  md += `| **歷史 ID** | \`${uniqueId}\` |\n`
+  md += `| **所屬檔案** | \`${filePath}\` |\n`
   if (metadata && metadata.author) {
-    md += `**原作者（JSDoc）**: ${metadata.author}\n`
+    md += `| **原作者** | ${metadata.author} |\n`
   }
-  md += `**當前版本**: v${totalVersions}\n`
-  md += `**最後異動者（Git）**: ${latestCommit.author}\n`
-  md += `**最後異動時間**: ${latestCommit.date.split('T')[0]}\n`
-  md += `**產生時間**: ${new Date().toLocaleString()}\n\n`
+  md += `| **當前版本** | v${totalVersions} |\n`
+  md += `| **最後異動者** | ${latestCommit.author} |\n`
+  md += `| **最後異動時間** | ${latestCommit.date.split(' ')[0]} |\n`
+  md += `| **文件產生時間** | ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })} |\n\n`
 
   md += `## 版本演進總覽\n\n`
   md += `| 版本 | 日期 | 作者 | 異動說明 | Commit |\n`
