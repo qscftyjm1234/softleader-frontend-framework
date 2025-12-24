@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/qscftyjm1234/frontier_project/compare/v0.0.1...v0.0.2) (2025-12-24)
+
+### 🐛 錯誤修復
+
+- **release:** 將歡迎訊息中文化 ([d1aa70d](https://github.com/qscftyjm1234/frontier_project/commit/d1aa70d77399554b4b61cda0594faf62d450bfa9)), closes [#123](https://github.com/qscftyjm1234/frontier_project/issues/123)
+
 ### 0.0.1 (2025-12-24)
 
 ### ♻️ 重構
