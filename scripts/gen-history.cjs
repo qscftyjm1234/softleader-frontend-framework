@@ -9,11 +9,20 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true })
 }
 
+// Main execution
+const target = process.argv[2] // Get command line argument if any
+if (target) {
+  console.log(`🔍 Filtering by: "${target}"`)
+}
+
+SEARCH_DIRS.forEach((dir) => processDirectory(dir, target))
+
 /**
  * Recursively search for files in a directory.
  * @param {string} dir - Directory to search
+ * @param {string} [filter] - Optional filter string
  */
-function processDirectory(dir) {
+function processDirectory(dir, filter) {
   if (!fs.existsSync(dir)) return
 
   const files = fs.readdirSync(dir)
@@ -23,9 +32,12 @@ function processDirectory(dir) {
     const stat = fs.statSync(filePath)
 
     if (stat.isDirectory()) {
-      processDirectory(filePath)
+      processDirectory(filePath, filter)
     } else if (file.endsWith('.vue') || file.endsWith('.ts') || file.endsWith('.js')) {
-      processFile(filePath)
+      // If filter exists, file path OR filename must include the filter string
+      if (!filter || filePath.includes(filter)) {
+        processFile(filePath)
+      }
     }
   })
 }
@@ -146,6 +158,3 @@ function writeMarkdown(filePath, funcName, commits) {
   fs.writeFileSync(outPath, md)
   console.log(`Created ${outPath}`)
 }
-
-// Main execution
-SEARCH_DIRS.forEach((dir) => processDirectory(dir))

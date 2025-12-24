@@ -12,11 +12,7 @@ module.exports = {
 
     // type-enum: 限制 type 必須是以下清單之一
     // 從 .commit-types.cjs 引入，確保與 Commitizen 一致
-    'type-enum': [
-      2,
-      'always',
-      types.map(t => t.value)
-    ],
+    'type-enum': [2, 'always', types.map((t) => t.value)],
 
     // type-case: type 的大小寫限制
     // 'lower-case' = 小寫
@@ -47,11 +43,7 @@ module.exports = {
     // subject-case: subject 的大小寫限制
     // ['sentence-case', 'start-case', 'pascal-case', 'upper-case']
     // 這裡通常不強制，或設為 'sentence-case'
-    'subject-case': [
-      0,
-      'never',
-      ['sentence-case', 'start-case', 'pascal-case', 'upper-case']
-    ],
+    'subject-case': [0, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
 
     // subject-empty: subject 是否可以為空
     'subject-empty': [2, 'never'],

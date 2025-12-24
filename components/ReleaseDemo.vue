@@ -8,11 +8,16 @@ const message = ref('你好，標準版本！')
  *
  * @history
  * @param {string} name - 使用者名稱123
+ * @author gino.huang
+ * @version 1 - Do thing
+ * @version 2 - Do thing to change
  * @returns {void}
  */
 function greet(name: string): void {
   console.log(`小狗狗`)
   console.log(`${message.value} ${name}`)
+  console.log(`喵`)
+  console.log(`喵`)
 }
 </script>
 
