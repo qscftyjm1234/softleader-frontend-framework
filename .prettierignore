@@ -1,0 +1,41 @@
+# Prettier 忽略檔案
+
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Build outputs
+dist/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+
+# Cache
+.cache/
+.temp/
+.tmp/
+
+# Generated files
+*.log
+*.tsbuildinfo
+
+# Public assets (通常不需要格式化)
+public/
+
+# Storybook
+storybook-static/
+
+# Test coverage
+coverage/
+
+# IDE (不忽略 .vscode/ 和 .idea/,因為可能包含需要格式化的設定檔)
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated code
+generate/

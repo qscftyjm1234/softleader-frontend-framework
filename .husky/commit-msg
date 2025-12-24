@@ -16,7 +16,7 @@ echo "[Husky] 提交訊息格式正確！"
 # ------------------------------------------------------------------
 
 echo "[Husky] 正在執行 TypeScript 全域檢查..."
-pnpm exec nuxi typecheck
+pnpm exec vue-tsc --noEmit
 if [ $? -ne 0 ]; then
     echo "[Husky] TypeScript 檢查失敗，請修復上述錯誤。"
     exit 1

@@ -94,6 +94,53 @@ pnpm commit
 
 完成後會自動產生 Commit 並執行檢查。
 
+## 程式碼註解規範
+
+本專案採用嚴格的註解規範，確保程式碼可維護性與可讀性。
+
+### 必要規範
+
+1. **所有 exported 函式必須包含 JSDoc 註解**
+2. **使用標準標籤標記特殊註解**（TODO, FIXME, HACK, NOTE 等）
+3. **商業邏輯變更必須記錄版本與時間**
+
+### 標籤格式
+
+```javascript
+// TODO: [作者] 待辦事項說明 (YYYY-MM-DD)
+// FIXME: [作者] 需要修復的問題 (YYYY-MM-DD)
+// HACK: [作者] 臨時解決方案 (YYYY-MM-DD)
+// NOTE: [作者] 重要說明 (YYYY-MM-DD)
+```
+
+### JSDoc 範例
+
+```javascript
+/**
+ * 函式功能說明
+ *
+ * @param {type} paramName - 參數說明
+ * @returns {type} 回傳值說明
+ * @author 作者名稱
+ * @since YYYY-MM-DD
+ * @version 版本號
+ */
+```
+
+### 詳細文件
+
+完整的註解規範請參考：
+
+- [註解規範文件](./docs/comment-guidelines.md)
+- [註解範例](./docs/comment-examples.js)
+
+### VSCode 擴充套件
+
+建議安裝以下擴充套件以獲得更好的註解體驗：
+
+- **Better Comments** - 為不同標籤提供顏色標記
+- **TODO Highlight** - 高亮顯示 TODO/FIXME 等標籤
+
 ## Tooling
 
 ### Formatting

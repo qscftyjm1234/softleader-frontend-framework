@@ -14,5 +14,13 @@
     {
       "path": "./.nuxt/tsconfig.node.json"
     }
+  ],
+  "exclude": [
+    "**/*-test.vue",
+    "**/*.test.vue",
+    "**/*.ignore.vue",
+    "**/*-test.ts",
+    "**/*.test.ts",
+    "**/*.ignore.ts"
   ]
 }

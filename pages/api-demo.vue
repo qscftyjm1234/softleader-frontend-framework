@@ -1,3 +1,16 @@
+<script setup lang="ts">
+const { user } = useRepository()
+
+const page = ref(1)
+const search = ref('')
+
+// useFetch is reactive because we pass refs in the query object
+const { data, pending, error } = await user.getUsers({
+  page,
+  q: search,
+  itemsPerPage: 5
+})
+</script>
 <template>
   <div class="p-8">
     <h1 class="text-2xl font-bold mb-6">API Management Demo</h1>
@@ -30,9 +43,22 @@
       </div>
     </div>
 
-    <div v-if="pending" class="text-gray-500">Loading...</div>
-    <div v-else-if="error" class="text-red-500">Error: {{ error.message }}</div>
-    <div v-else class="border rounded-lg overflow-hidden">
+    <div
+      v-if="pending"
+      class="text-gray-500"
+    >
+      Loading...
+    </div>
+    <div
+      v-else-if="error"
+      class="text-red-500"
+    >
+      Error: {{ error.message }}
+    </div>
+    <div
+      v-else
+      class="border rounded-lg overflow-hidden"
+    >
       <table class="w-full text-left">
         <thead class="bg-gray-50">
           <tr>
@@ -61,17 +87,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-const { user } = useRepository()
-
-const page = ref(1)
-const search = ref('')
-
-// useFetch is reactive because we pass refs in the query object
-const { data, pending, error } = await user.getUsers({
-  page,
-  q: search,
-  itemsPerPage: 5
-})
-</script>
