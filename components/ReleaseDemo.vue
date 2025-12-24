@@ -12,10 +12,12 @@ const message = ref('你好，標準版本！')
 /**
  * 顯示歡迎訊息
  *
- * @param {string} name - 使用者名稱
+ * @history
+ * @param {string} name - 使用者名稱123
  * @returns {void}
  */
 function greet(name: string): void {
+  console.log(`小狗狗`)
   console.log(`${message.value} ${name}`)
 }
 </script>

@@ -18,7 +18,8 @@
     "gen:watch": "node scripts/generate-module.js watch",
     "gen:all": "node scripts/generate-module.js all",
     "commit": "cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "doc:history": "node scripts/gen-history.cjs"
   },
   "config": {
     "commitizen": {
