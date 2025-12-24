@@ -19,7 +19,8 @@
     "gen:all": "node scripts/generate-module.js all",
     "commit": "cz",
     "release": "standard-version",
-    "doc:history": "node scripts/gen-history.cjs"
+    "doc:history": "node scripts/gen-history.cjs",
+    "gen:history": "node scripts/gen-history.cjs"
   },
   "config": {
     "commitizen": {

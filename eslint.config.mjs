@@ -127,7 +127,7 @@ export default [
       'jsdoc/require-param-description': 'error', // @param 要有說明
       'jsdoc/require-returns': 'error', // 要寫 @returns
       'jsdoc/require-returns-description': 'error', // @returns 要有說明
-      'jsdoc/check-tag-names': ['error', { definedTags: ['history'] }] // 檢查標籤名稱是否正確，允許 @history
+      'jsdoc/check-tag-names': ['error', { definedTags: ['history', 'historyId'] }] // 檢查標籤名稱是否正確，允許 @history 和 @historyId
     }
   },
 
