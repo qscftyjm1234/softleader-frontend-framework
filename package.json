@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "prepare": "husky",
@@ -16,7 +17,8 @@
     "gen:module": "node scripts/generate-module.js",
     "gen:watch": "node scripts/generate-module.js watch",
     "gen:all": "node scripts/generate-module.js all",
-    "commit": "cz"
+    "commit": "cz",
+    "release": "standard-version"
   },
   "config": {
     "commitizen": {
@@ -73,6 +75,7 @@
     "lint-staged": "^16.2.7",
     "playwright": "^1.55.1",
     "prettier": "^3.6.2",
+    "standard-version": "^9.5.0",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.2.1"
   }
