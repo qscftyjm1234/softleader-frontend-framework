@@ -5,8 +5,9 @@ import { ref } from 'vue'
  * 這是為了演示版本發布而建立的組件
  *
  * @see {@link ../CHANGELOG.md} - 查看此組件的新增紀錄
+ * @see {@link ../CHANGELOG.md#011} - v0.1.1 中文化 (本次修改)
  */
-const message = ref('Hello Standard Version!')
+const message = ref('你好，標準版本！')
 
 /**
  * 顯示歡迎訊息
