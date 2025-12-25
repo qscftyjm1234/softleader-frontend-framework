@@ -2,7 +2,7 @@ import { productConfig } from './loader'
 
 /**
  * Runtime Configuration
- * 
+ *
  * 這裡定義了所有的環境變數與設定值。
  * 結構分為 private (根層級) 和 public (public 屬性內)。
  */
@@ -20,16 +20,16 @@ export const runtimeConfig = {
       debug: process.env.LOG_DEBUG === 'true',
       // 是否為開發環境 (true: 開發中, false: 正式站)
       isDev: process.env.IS_DEV === 'true',
-      
+
       /**
        * 產品設定檔注入
        * 將 YAML 讀取到的設定 (如 modules 列表) 注入到前端。
        * 這樣前端頁面也能知道目前啟用哪些模組，或讀取產品特定的 UI 設定。
        * 注意：這是 Build Time 決定的，Runtime 無法動態改變 YAML 內容。
        */
-      productConfig: productConfig,
+      productConfig: productConfig
     },
-    
+
     // API 連線相關設定
     api: {
       // API 伺服器的基礎路徑 (Base URL)
@@ -41,7 +41,7 @@ export const runtimeConfig = {
       // 是否預設開啟全域 Loading 條 (上方藍色進度條)
       globalLoading: true
     },
-    
+
     // 身分認證相關設定
     auth: {
       // 儲存 Token 的 Cookie 名稱

@@ -68,20 +68,32 @@ const getStatusText = (status: string) => {
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="3">
-        <v-card class="rounded-lg bg-primary text-white mb-4" elevation="2">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="rounded-lg bg-primary text-white mb-4"
+          elevation="2"
+        >
           <v-card-text>
             <div class="text-subtitle-2 opacity-80">本月應收保費</div>
             <div class="text-h4 font-weight-bold">$1.2M</div>
           </v-card-text>
         </v-card>
-        <v-card class="rounded-lg bg-error text-white mb-4" elevation="2">
+        <v-card
+          class="rounded-lg bg-error text-white mb-4"
+          elevation="2"
+        >
           <v-card-text>
             <div class="text-subtitle-2 opacity-80">逾期未繳金額</div>
             <div class="text-h4 font-weight-bold">$45k</div>
           </v-card-text>
         </v-card>
-        <v-card class="rounded-lg bg-success text-white" elevation="2">
+        <v-card
+          class="rounded-lg bg-success text-white"
+          elevation="2"
+        >
           <v-card-text>
             <div class="text-subtitle-2 opacity-80">收費達成率</div>
             <div class="text-h4 font-weight-bold">96.5%</div>
@@ -89,22 +101,27 @@ const getStatusText = (status: string) => {
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="9">
-        <v-card class="rounded-lg h-100" elevation="2">
+      <v-col
+        cols="12"
+        md="9"
+      >
+        <v-card
+          class="rounded-lg h-100"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center py-4 px-6 border-b">
             <div>
               <div class="text-h6 font-weight-bold">收費作業 (Billing)</div>
-              <div class="text-caption text-medium-emphasis">
-                保費帳單管理與催收
-              </div>
+              <div class="text-caption text-medium-emphasis">保費帳單管理與催收</div>
             </div>
             <v-spacer />
             <v-btn
               variant="outlined"
               color="primary"
               prepend-icon="mdi-email-alert"
-              >批次寄送催繳單</v-btn
             >
+              批次寄送催繳單
+            </v-btn>
           </v-card-title>
 
           <v-table hover>
@@ -121,7 +138,10 @@ const getStatusText = (status: string) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="bill in billings" :key="bill.id">
+              <tr
+                v-for="bill in billings"
+                :key="bill.id"
+              >
                 <td class="font-weight-bold">{{ bill.id }}</td>
                 <td class="text-medium-emphasis">{{ bill.policy }}</td>
                 <td>{{ bill.holder }}</td>
@@ -137,11 +157,10 @@ const getStatusText = (status: string) => {
                     icon="mdi-credit-card-outline"
                     size="small"
                     class="mr-1"
-                  />{{ bill.method }}
+                  />
+                  {{ bill.method }}
                 </td>
-                <td class="text-right font-weight-bold">
-                  ${{ bill.amount.toLocaleString() }}
-                </td>
+                <td class="text-right font-weight-bold">${{ bill.amount.toLocaleString() }}</td>
                 <td class="text-center">
                   <v-chip
                     :color="getStatusColor(bill.status)"

@@ -14,7 +14,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app :theme="appStore.config.theme.defaultTheme" class="bg-grey-lighten-4">
+  <v-app
+    :theme="appStore.config.theme.defaultTheme"
+    class="bg-grey-lighten-4"
+  >
     <!-- Header -->
     <AppHeader />
 
@@ -23,7 +26,10 @@ onMounted(() => {
 
     <!-- Main Content -->
     <v-main>
-      <v-container fluid class="pa-6">
+      <v-container
+        fluid
+        class="pa-6"
+      >
         <slot />
       </v-container>
     </v-main>

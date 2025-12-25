@@ -11,6 +11,8 @@ export const appConfig: NuxtConfig['app'] = {
       { name: 'theme-color', content: productConfig.meta?.themeColor || '#ffffff' }
     ],
     // 分頁小圖示
-    link: [{ rel: 'icon', type: 'image/x-icon', href: productConfig.meta?.favicon || '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: productConfig.meta?.favicon || '/favicon.ico' }
+    ]
   }
 }

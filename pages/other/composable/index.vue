@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const { count, addCount } = useCounter()
 </script>
 

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // 對應 middleware/auth.ts
 definePageMeta({
   middleware: 'try-middleware'

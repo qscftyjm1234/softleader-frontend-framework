@@ -17,6 +17,7 @@ const api = useClient('/orders')
 export default {
   /**
    * 取得訂單列表
+   * @param params
    */
   getOrders(params: OrderQueryParams = {}) {
     // GET /orders
@@ -25,6 +26,7 @@ export default {
 
   /**
    * 根據 ID 取得訂單詳情
+   * @param id
    */
   getOrderById(id: MaybeRef<string | number>) {
     // GET /orders/:id
@@ -33,6 +35,7 @@ export default {
 
   /**
    * 建立新訂單
+   * @param orderData
    */
   createOrder(orderData: any) {
     // POST /orders

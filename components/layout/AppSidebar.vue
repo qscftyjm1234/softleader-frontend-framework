@@ -36,12 +36,21 @@ watch(
   >
     <!-- 品牌 Logo 區塊 -->
     <div class="pa-6 d-flex align-center">
-      <v-avatar color="primary" size="40" rounded="lg" class="mr-3 elevation-2">
+      <v-avatar
+        color="primary"
+        size="40"
+        rounded="lg"
+        class="mr-3 elevation-2"
+      >
         <v-img
           v-if="appStore.config.branding.logo.image"
           :src="appStore.config.branding.logo.image"
         />
-        <v-icon v-else :icon="appStore.config.branding.logo.icon" size="24" />
+        <v-icon
+          v-else
+          :icon="appStore.config.branding.logo.icon"
+          size="24"
+        />
       </v-avatar>
       <div>
         <div
@@ -58,10 +67,12 @@ watch(
 
     <v-divider class="mb-2 border-opacity-25" />
 
-    <v-list nav open-strategy="single" class="px-3">
-      <div
-        class="text-caption font-weight-bold text-grey-darken-1 mb-2 mt-2 px-2"
-      >
+    <v-list
+      nav
+      open-strategy="single"
+      class="px-3"
+    >
+      <div class="text-caption font-weight-bold text-grey-darken-1 mb-2 mt-2 px-2">
         {{ appStore.config.sidebar.mainMenuTitle }}
       </div>
       <AppSidebarItem
@@ -72,13 +83,23 @@ watch(
     </v-list>
 
     <template #append>
-      <div v-if="appStore.config.sidebar.proCard.visible" class="pa-4">
-        <v-card color="grey-darken-3" class="rounded-lg pa-3" variant="flat">
+      <div
+        v-if="appStore.config.sidebar.proCard.visible"
+        class="pa-4"
+      >
+        <v-card
+          color="grey-darken-3"
+          class="rounded-lg pa-3"
+          variant="flat"
+        >
           <div class="d-flex align-center">
-            <v-avatar size="36" color="primary" variant="tonal" class="mr-3">
-              <span class="text-subtitle-2">{{
-                appStore.config.sidebar.proCard.badge
-              }}</span>
+            <v-avatar
+              size="36"
+              color="primary"
+              variant="tonal"
+              class="mr-3"
+            >
+              <span class="text-subtitle-2">{{ appStore.config.sidebar.proCard.badge }}</span>
             </v-avatar>
             <div>
               <div class="text-subtitle-2 font-weight-bold">

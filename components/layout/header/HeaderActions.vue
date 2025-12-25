@@ -13,7 +13,10 @@ const handleAction = (item: any) => {
 </script>
 
 <template>
-  <template v-for="(action, i) in appStore.config.header.actions" :key="i">
+  <template
+    v-for="(action, i) in appStore.config.header.actions"
+    :key="i"
+  >
     <v-btn
       icon
       class="mr-2"
@@ -29,10 +32,17 @@ const handleAction = (item: any) => {
       >
         <v-icon :icon="action.icon" />
       </v-badge>
-      <v-icon v-else :icon="action.icon" />
-      <v-tooltip v-if="action.title" activator="parent" location="bottom">{{
-        action.title
-      }}</v-tooltip>
+      <v-icon
+        v-else
+        :icon="action.icon"
+      />
+      <v-tooltip
+        v-if="action.title"
+        activator="parent"
+        location="bottom"
+      >
+        {{ action.title }}
+      </v-tooltip>
     </v-btn>
   </template>
 </template>

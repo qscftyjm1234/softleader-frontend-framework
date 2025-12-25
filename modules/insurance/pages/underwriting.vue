@@ -3,13 +3,13 @@ import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
 import type { PageSchema } from '~/core/schema/types'
 
 const pageSchema: PageSchema = {
-  "type": "Page",
-  "blocks": [
+  type: 'Page',
+  blocks: [
     {
-      "type": "SmartCard",
-      "props": {
-        "title": "核保作業",
-        "icon": "mdi-file-check"
+      type: 'SmartCard',
+      props: {
+        title: '核保作業',
+        icon: 'mdi-file-check'
       }
     }
   ]
@@ -18,10 +18,10 @@ const pageSchema: PageSchema = {
 
 <template>
   <div>
-    <SchemaRenderer 
-      v-for="(block, i) in pageSchema.blocks" 
-      :key="i" 
-      :schema="block" 
+    <SchemaRenderer
+      v-for="(block, i) in pageSchema.blocks"
+      :key="i"
+      :schema="block"
     />
   </div>
 </template>

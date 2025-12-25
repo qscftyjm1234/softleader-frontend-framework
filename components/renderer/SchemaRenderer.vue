@@ -27,9 +27,7 @@ const resolvedComponent = computed(() => {
     :key="props.schema.id"
   >
     <!-- 1. Render text content if 'textContent' or 'text' prop exists (for simple elements like button, p, h1) -->
-    <template
-      v-if="props.schema.props?.textContent || props.schema.props?.text"
-    >
+    <template v-if="props.schema.props?.textContent || props.schema.props?.text">
       {{ props.schema.props.textContent || props.schema.props.text }}
     </template>
 

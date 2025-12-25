@@ -18,15 +18,9 @@ export interface ProductConfig {
  * 載入產品設定檔 (YAML)
  * @param rootDir 專案根目錄 (預設為 process.cwd())
  */
-export function loadProductConfig(
-  rootDir: string = process.cwd()
-): ProductConfig {
+export function loadProductConfig(rootDir: string = process.cwd()): ProductConfig {
   const productConfigName = process.env.PRODUCT_CONFIG || 'default'
-  const configPath = path.resolve(
-    rootDir,
-    'configs',
-    `${productConfigName}.yaml`
-  )
+  const configPath = path.resolve(rootDir, 'configs', `${productConfigName}.yaml`)
 
   let config: ProductConfig = { modules: [] }
 
@@ -42,9 +36,7 @@ export function loadProductConfig(
       console.error(`[Config] Error loading configuration ${configPath}:`, e)
     }
   } else {
-    console.warn(
-      `[Config] Configuration file not found: ${configPath}. Loading no modules.`
-    )
+    console.warn(`[Config] Configuration file not found: ${configPath}. Loading no modules.`)
   }
 
   return config

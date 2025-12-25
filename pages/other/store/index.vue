@@ -3,6 +3,9 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 
+/**
+ *
+ */
 function handleLogin() {
   userStore.login({
     name: '全球人壽小編',
@@ -16,6 +19,11 @@ function handleLogin() {
   <div>
     <h2 v-if="userStore.isLoggedIn">歡迎，{{ userStore.user?.name }}</h2>
     <v-btn @click="handleLogin">登入</v-btn>
-    <v-btn v-if="userStore.isLoggedIn" @click="userStore.logout">登出</v-btn>
+    <v-btn
+      v-if="userStore.isLoggedIn"
+      @click="userStore.logout"
+    >
+      登出
+    </v-btn>
   </div>
 </template>

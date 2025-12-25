@@ -7,9 +7,7 @@ const history = ref<string[]>([])
 
 const increment = () => {
   count.value++
-  history.value.unshift(
-    `Count increased to ${count.value} at ${new Date().toLocaleTimeString()}`
-  )
+  history.value.unshift(`Count increased to ${count.value} at ${new Date().toLocaleTimeString()}`)
 }
 
 const reset = () => {
@@ -30,17 +28,15 @@ const reset = () => {
     <!-- Clean Header -->
     <div class="pa-6 pb-0 d-flex align-center justify-space-between">
       <div>
-        <div class="text-overline text-grey-darken-1 mb-1 font-weight-bold">
-          SMART WIDGET
-        </div>
-        <div class="text-h5 font-weight-bold text-grey-darken-4">
-          複雜組件範例
-        </div>
-        <div class="text-body-2 text-grey-darken-1 mt-1">
-          展示內部狀態管理與互動邏輯
-        </div>
+        <div class="text-overline text-grey-darken-1 mb-1 font-weight-bold">SMART WIDGET</div>
+        <div class="text-h5 font-weight-bold text-grey-darken-4">複雜組件範例</div>
+        <div class="text-body-2 text-grey-darken-1 mt-1">展示內部狀態管理與互動邏輯</div>
       </div>
-      <v-avatar color="blue-lighten-5" size="48" rounded="lg">
+      <v-avatar
+        color="blue-lighten-5"
+        size="48"
+        rounded="lg"
+      >
         <v-icon
           icon="mdi-chart-timeline-variant"
           color="blue-darken-2"
@@ -57,9 +53,7 @@ const reset = () => {
         class="pa-6 mb-6 d-flex align-center justify-space-between"
       >
         <div>
-          <div class="text-caption text-grey-darken-1 font-weight-bold mb-1">
-            CURRENT VALUE
-          </div>
+          <div class="text-caption text-grey-darken-1 font-weight-bold mb-1">CURRENT VALUE</div>
           <div class="text-h2 font-weight-black text-blue-darken-3">
             {{ count }}
           </div>
@@ -93,9 +87,7 @@ const reset = () => {
 
       <!-- History Section -->
       <div class="mb-3 d-flex align-center">
-        <span class="text-subtitle-2 font-weight-bold text-grey-darken-3"
-          >操作紀錄</span
-        >
+        <span class="text-subtitle-2 font-weight-bold text-grey-darken-3">操作紀錄</span>
         <v-chip
           size="x-small"
           color="blue-grey"

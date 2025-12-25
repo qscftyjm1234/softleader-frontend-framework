@@ -3,14 +3,14 @@ import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
 import type { PageSchema } from '~/core/schema/types'
 
 const pageSchema: PageSchema = {
-  "type": "Page",
-  "blocks": [
+  type: 'Page',
+  blocks: [
     {
-      "type": "SmartCard",
-      "props": {
-        "subtitle": "建立新的會員帳號",
-        "icon": "mdi-account-plus",
-        "color": "success"
+      type: 'SmartCard',
+      props: {
+        subtitle: '建立新的會員帳號',
+        icon: 'mdi-account-plus',
+        color: 'success'
       }
     }
   ]
@@ -19,10 +19,10 @@ const pageSchema: PageSchema = {
 
 <template>
   <div>
-    <SchemaRenderer 
-      v-for="(block, i) in pageSchema.blocks" 
-      :key="i" 
-      :schema="block" 
+    <SchemaRenderer
+      v-for="(block, i) in pageSchema.blocks"
+      :key="i"
+      :schema="block"
     />
   </div>
 </template>

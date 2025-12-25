@@ -59,10 +59,19 @@ const customers = [
         md="6"
         lg="3"
       >
-        <v-card class="rounded-lg h-100" elevation="2">
+        <v-card
+          class="rounded-lg h-100"
+          elevation="2"
+        >
           <v-card-text class="text-center pt-6">
-            <v-avatar size="80" class="mb-4 elevation-2">
-              <v-img v-if="customer.avatar" :src="customer.avatar" />
+            <v-avatar
+              size="80"
+              class="mb-4 elevation-2"
+            >
+              <v-img
+                v-if="customer.avatar"
+                :src="customer.avatar"
+              />
               <span
                 v-else
                 class="text-h4 font-weight-bold text-primary bg-primary-lighten-5 w-100 h-100 d-flex align-center justify-center"
@@ -91,8 +100,14 @@ const customers = [
 
             <v-divider class="mb-4" />
 
-            <v-row no-gutters class="text-center">
-              <v-col cols="6" class="border-e">
+            <v-row
+              no-gutters
+              class="text-center"
+            >
+              <v-col
+                cols="6"
+                class="border-e"
+              >
                 <div class="text-caption text-medium-emphasis">有效保單</div>
                 <div class="text-h6 font-weight-bold">
                   {{ customer.policyCount }}
@@ -108,9 +123,13 @@ const customers = [
           </v-card-text>
 
           <v-card-actions class="border-t">
-            <v-btn block color="primary" variant="text"
-              >查看全貌 (Customer 360)</v-btn
+            <v-btn
+              block
+              color="primary"
+              variant="text"
             >
+              查看全貌 (Customer 360)
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

@@ -3,38 +3,38 @@ import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
 import type { PageSchema } from '~/core/schema/types'
 
 const pageSchema: PageSchema = {
-  "type": "Page",
-  "blocks": [
+  type: 'Page',
+  blocks: [
     {
-      "type": "v-row",
-      "children": [
+      type: 'v-row',
+      children: [
         {
-          "type": "v-col",
-          "props": {
-            "cols": "12"
+          type: 'v-col',
+          props: {
+            cols: '12'
           },
-          "children": [
+          children: [
             {
-              "type": "SmartTable",
-              "props": {
-                "title": "Table組件 (API 串接)",
-                "api": "/api/users",
-                "columns": [
+              type: 'SmartTable',
+              props: {
+                title: 'Table組件 (API 串接)',
+                api: '/api/users',
+                columns: [
                   {
-                    "label": "ID",
-                    "field": "id"
+                    label: 'ID',
+                    field: 'id'
                   },
                   {
-                    "label": "名稱",
-                    "field": "name"
+                    label: '名稱',
+                    field: 'name'
                   },
                   {
-                    "label": "Email",
-                    "field": "email"
+                    label: 'Email',
+                    field: 'email'
                   },
                   {
-                    "label": "角色",
-                    "field": "role"
+                    label: '角色',
+                    field: 'role'
                   }
                 ]
               }
@@ -44,61 +44,61 @@ const pageSchema: PageSchema = {
       ]
     },
     {
-      "type": "v-row",
-      "children": [
+      type: 'v-row',
+      children: [
         {
-          "type": "v-col",
-          "props": {
-            "cols": "12",
-            "md": "4"
+          type: 'v-col',
+          props: {
+            cols: '12',
+            md: '4'
           },
-          "children": [
+          children: [
             {
-              "type": "SmartCard",
-              "props": {
-                "title": "總銷售額",
-                "subtitle": "本月累計",
-                "text": "$1,234,567",
-                "icon": "mdi-currency-usd",
-                "color": "primary"
+              type: 'SmartCard',
+              props: {
+                title: '總銷售額',
+                subtitle: '本月累計',
+                text: '$1,234,567',
+                icon: 'mdi-currency-usd',
+                color: 'primary'
               }
             }
           ]
         },
         {
-          "type": "v-col",
-          "props": {
-            "cols": "12",
-            "md": "4"
+          type: 'v-col',
+          props: {
+            cols: '12',
+            md: '4'
           },
-          "children": [
+          children: [
             {
-              "type": "SmartCard",
-              "props": {
-                "title": "活躍用戶",
-                "subtitle": "即時在線",
-                "text": "8,901 人",
-                "icon": "mdi-account-group",
-                "color": "success"
+              type: 'SmartCard',
+              props: {
+                title: '活躍用戶',
+                subtitle: '即時在線',
+                text: '8,901 人',
+                icon: 'mdi-account-group',
+                color: 'success'
               }
             }
           ]
         },
         {
-          "type": "v-col",
-          "props": {
-            "cols": "12",
-            "md": "4"
+          type: 'v-col',
+          props: {
+            cols: '12',
+            md: '4'
           },
-          "children": [
+          children: [
             {
-              "type": "SmartCard",
-              "props": {
-                "title": "系統負載",
-                "subtitle": "CPU 使用率",
-                "text": "34%",
-                "icon": "mdi-cpu-64-bit",
-                "color": "warning"
+              type: 'SmartCard',
+              props: {
+                title: '系統負載',
+                subtitle: 'CPU 使用率',
+                text: '34%',
+                icon: 'mdi-cpu-64-bit',
+                color: 'warning'
               }
             }
           ]
@@ -106,16 +106,16 @@ const pageSchema: PageSchema = {
       ]
     },
     {
-      "type": "v-row",
-      "children": [
+      type: 'v-row',
+      children: [
         {
-          "type": "v-col",
-          "props": {
-            "cols": "12"
+          type: 'v-col',
+          props: {
+            cols: '12'
           },
-          "children": [
+          children: [
             {
-              "type": "SmartComplexWidget"
+              type: 'SmartComplexWidget'
             }
           ]
         }
@@ -127,10 +127,10 @@ const pageSchema: PageSchema = {
 
 <template>
   <div>
-    <SchemaRenderer 
-      v-for="(block, i) in pageSchema.blocks" 
-      :key="i" 
-      :schema="block" 
+    <SchemaRenderer
+      v-for="(block, i) in pageSchema.blocks"
+      :key="i"
+      :schema="block"
     />
   </div>
 </template>

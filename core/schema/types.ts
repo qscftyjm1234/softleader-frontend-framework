@@ -26,7 +26,7 @@ export interface SchemaNode {
    * Unique identifier for the node (optional, useful for keys).
    */
   id?: string
-  
+
   /**
    * Conditional rendering logic (optional).
    * e.g., "user.isAdmin"

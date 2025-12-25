@@ -14,28 +14,30 @@ import LoginForm from '~/components/auth/LoginForm.vue'
 
 const registry: Record<string, Component | string> = {
   // HTML elements
-  'div': 'div',
-  'span': 'span',
-  'h1': 'h1',
-  'h2': 'h2',
-  'p': 'p',
-  'button': 'button',
-  
+  div: 'div',
+  span: 'span',
+  h1: 'h1',
+  h2: 'h2',
+  p: 'p',
+  button: 'button',
+
   // Layout Components (Vuetify)
   'v-row': 'v-row',
   'v-col': 'v-col',
   'v-container': 'v-container',
   'v-spacer': 'v-spacer',
-  
+
   // Smart Components
-  'SmartTable': SmartTable,
-  'SmartCard': SmartCard,
-  'SmartComplexWidget': SmartComplexWidget,
-  'LoginForm': LoginForm,
+  SmartTable: SmartTable,
+  SmartCard: SmartCard,
+  SmartComplexWidget: SmartComplexWidget,
+  LoginForm: LoginForm
 }
 
 /**
  * Register a component globally for the schema system.
+ * @param name
+ * @param component
  */
 export function registerComponent(name: string, component: Component | string) {
   registry[name] = component
@@ -43,6 +45,7 @@ export function registerComponent(name: string, component: Component | string) {
 
 /**
  * Get a component by name.
+ * @param name
  */
 export function getComponent(name: string): Component | string {
   return registry[name] || 'div' // Fallback to div if not found

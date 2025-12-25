@@ -83,13 +83,14 @@ const getStatusIcon = (status: string) => {
 
 <template>
   <v-container fluid>
-    <v-card class="rounded-lg" elevation="2">
+    <v-card
+      class="rounded-lg"
+      elevation="2"
+    >
       <v-card-title class="d-flex align-center py-4 px-6 border-b">
         <div>
           <div class="text-h6 font-weight-bold">系統稽核紀錄</div>
-          <div class="text-caption text-medium-emphasis">
-            追蹤所有系統操作與安全性事件
-          </div>
+          <div class="text-caption text-medium-emphasis">追蹤所有系統操作與安全性事件</div>
         </div>
         <v-spacer />
         <v-btn
@@ -97,16 +98,27 @@ const getStatusIcon = (status: string) => {
           color="grey-darken-1"
           prepend-icon="mdi-filter-variant"
           class="mr-2"
-          >篩選</v-btn
         >
-        <v-btn variant="outlined" color="primary" prepend-icon="mdi-download"
-          >匯出 CSV</v-btn
+          篩選
+        </v-btn>
+        <v-btn
+          variant="outlined"
+          color="primary"
+          prepend-icon="mdi-download"
         >
+          匯出 CSV
+        </v-btn>
       </v-card-title>
 
       <v-card-text class="pa-0">
-        <v-list lines="two" class="py-0">
-          <template v-for="(item, index) in activities" :key="item.id">
+        <v-list
+          lines="two"
+          class="py-0"
+        >
+          <template
+            v-for="(item, index) in activities"
+            :key="item.id"
+          >
             <v-list-item class="py-3 px-6">
               <template #prepend>
                 <v-avatar
@@ -134,14 +146,23 @@ const getStatusIcon = (status: string) => {
                   size="x-small"
                   class="ml-2"
                   variant="outlined"
-                  >{{ item.target }}</v-chip
                 >
+                  {{ item.target }}
+                </v-chip>
               </v-list-item-title>
 
               <v-list-item-subtitle class="d-flex align-center">
-                <v-icon size="x-small" icon="mdi-clock-outline" class="mr-1" />
+                <v-icon
+                  size="x-small"
+                  icon="mdi-clock-outline"
+                  class="mr-1"
+                />
                 <span class="mr-4">{{ item.time }}</span>
-                <v-icon size="x-small" icon="mdi-ip-network" class="mr-1" />
+                <v-icon
+                  size="x-small"
+                  icon="mdi-ip-network"
+                  class="mr-1"
+                />
                 <span>{{ item.ip }}</span>
               </v-list-item-subtitle>
 
@@ -169,7 +190,13 @@ const getStatusIcon = (status: string) => {
       <v-divider />
 
       <v-card-actions class="justify-center py-3">
-        <v-btn variant="text" color="primary" size="small">載入更多紀錄</v-btn>
+        <v-btn
+          variant="text"
+          color="primary"
+          size="small"
+        >
+          載入更多紀錄
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

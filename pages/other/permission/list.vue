@@ -78,13 +78,14 @@ const getTypeColor = (type: string) => {
 
 <template>
   <v-container fluid>
-    <v-card class="rounded-lg" elevation="2">
+    <v-card
+      class="rounded-lg"
+      elevation="2"
+    >
       <v-card-title class="d-flex align-center py-4 px-6">
         <div>
           <div class="text-h6 font-weight-bold">權限列表</div>
-          <div class="text-caption text-medium-emphasis">
-            系統所有功能點的權限定義
-          </div>
+          <div class="text-caption text-medium-emphasis">系統所有功能點的權限定義</div>
         </div>
         <v-spacer />
         <v-text-field
@@ -98,9 +99,13 @@ const getTypeColor = (type: string) => {
           class="me-4"
           style="max-width: 300px"
         />
-        <v-btn color="primary" prepend-icon="mdi-plus" to="/permission/create"
-          >新增權限</v-btn
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+          to="/permission/create"
         >
+          新增權限
+        </v-btn>
       </v-card-title>
 
       <v-divider />
@@ -113,10 +118,9 @@ const getTypeColor = (type: string) => {
       >
         <!-- 自定義代碼欄位 -->
         <template #item.code="{ item }">
-          <code
-            class="bg-grey-lighten-3 px-2 py-1 rounded text-caption font-weight-bold"
-            >{{ item.code }}</code
-          >
+          <code class="bg-grey-lighten-3 px-2 py-1 rounded text-caption font-weight-bold">
+            {{ item.code }}
+          </code>
         </template>
 
         <!-- 自定義類型欄位 -->
@@ -140,7 +144,12 @@ const getTypeColor = (type: string) => {
             variant="text"
             color="primary"
           />
-          <v-btn icon="mdi-delete" size="small" variant="text" color="error" />
+          <v-btn
+            icon="mdi-delete"
+            size="small"
+            variant="text"
+            color="error"
+          />
         </template>
       </v-data-table>
     </v-card>

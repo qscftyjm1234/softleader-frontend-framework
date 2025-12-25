@@ -14,16 +14,29 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = computed(() => !!token.value)
 
   // 👉 Action
+  /**
+   *
+   * @param payload
+   * @param payload.name
+   * @param payload.email
+   * @param payload.token
+   */
   function login(payload: { name: string; email: string; token: string }) {
     user.value = { name: payload.name, email: payload.email }
     token.value = payload.token
   }
 
+  /**
+   *
+   */
   function logout() {
     user.value = null
     token.value = null
   }
 
+  /**
+   *
+   */
   function fetchUserInfo() {
     // 模擬 API 請求
     setTimeout(() => {

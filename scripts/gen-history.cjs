@@ -3,6 +3,18 @@ const path = require('path')
 const { execSync } = require('child_process')
 const crypto = require('crypto')
 
+// ========================================
+// 功能開關檢查
+// ========================================
+// 檢查是否啟用歷史文件生成功能
+// 可透過環境變數 NUXT_PUBLIC_FEATURE_HISTORY_GENERATION 控制
+const isHistoryGenerationEnabled = process.env.NUXT_PUBLIC_FEATURE_HISTORY_GENERATION !== 'false'
+
+if (!isHistoryGenerationEnabled) {
+  console.log('⏭️  歷史文件生成功能已停用 (NUXT_PUBLIC_FEATURE_HISTORY_GENERATION=false)')
+  process.exit(0)
+}
+
 const SEARCH_DIRS = ['components', 'composables', 'utils', 'pages']
 const OUTPUT_DIR = 'docs/history'
 

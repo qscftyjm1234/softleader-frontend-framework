@@ -26,7 +26,11 @@ const breadcrumbs = computed(() => {
       <v-icon icon="mdi-chevron-right" />
     </template>
     <template #prepend>
-      <v-icon icon="mdi-home" size="small" class="mr-1" />
+      <v-icon
+        icon="mdi-home"
+        size="small"
+        class="mr-1"
+      />
     </template>
   </v-breadcrumbs>
 </template>

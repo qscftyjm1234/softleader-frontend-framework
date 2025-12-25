@@ -1,4 +1,4 @@
-<script setup></script>
+<script setup lang="ts"></script>
 <template>
-  <Router> router query 動態參數 </Router>
+  <Router>router query 動態參數</Router>
 </template>

@@ -2,8 +2,18 @@ import type { UseFetchOptions } from 'nuxt/app'
 import { defu } from 'defu'
 import type { ApiResponse } from '~/types/api'
 import { handleApiError } from '~/utils/api/error'
-import { setAuthHeader, setI18nHeader, setRequestIdHeader, setCsrfHeader } from '~/utils/api/interceptors/request'
-import { checkPerformance, checkAuth, checkApiError, checkRefreshToken } from '~/utils/api/interceptors/response'
+import {
+  setAuthHeader,
+  setI18nHeader,
+  setRequestIdHeader,
+  setCsrfHeader
+} from '~/utils/api/interceptors/request'
+import {
+  checkPerformance,
+  checkAuth,
+  checkApiError,
+  checkRefreshToken
+} from '~/utils/api/interceptors/response'
 import { useLoadingStore } from '~/stores/loading'
 
 // 擴充 UseFetchOptions 以包含自定義選項
@@ -18,7 +28,7 @@ type UseApiOptions<T> = UseFetchOptions<T> & {
 
 /**
  * 封裝 Nuxt 的 useFetch，提供統一的 API 呼叫介面
- * 
+ *
  * @template T - 回傳資料的型別 (拆包後的資料型別)
  * @param url - API 路徑或回傳路徑的函式
  * @param options - useFetch 的選項 (包含自定義 globalLoading)
@@ -47,7 +57,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
     // 請求攔截器：在發送請求前執行
     onRequest({ request, options }) {
       // 紀錄請求開始時間
-      (options as any)._startTime = Date.now()
+      ;(options as any)._startTime = Date.now()
 
       // 處理 Loading
       if ((options as any).globalLoading) {
@@ -56,7 +66,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
 
       // 處理 Button Loading
       if ((options as any).loadingRef) {
-        (options as any).loadingRef.value = true
+        ;(options as any).loadingRef.value = true
       }
 
       // 1. 初始化 Headers
@@ -68,7 +78,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
       setCsrfHeader(headers)
       setI18nHeader(headers)
       setRequestIdHeader(headers)
-      
+
       // Log 方便除錯
       // console.log(`[API] ${options.method || 'GET'} ${request}`)
     },
@@ -129,7 +139,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
     // 使用 unref 確保即使傳入 ref 也能正確處理
     const base = String(unref(params.baseURL) ?? '').replace(/\/$/, '')
     const pre = params.prefix.startsWith('/') ? params.prefix : `/${params.prefix}`
-    
+
     // 注意：這裡將組合後的 URL 寫回 baseURL
     params.baseURL = `${base}${pre}`
   }
@@ -148,7 +158,8 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
 /**
  * 💡 Smart Client: 建立具備特定 Prefix 的 API 客戶端
  * 這被認為是「最棒」的管理模式，因為它極度簡化了 Repository 的代碼
- * 
+ *
+ * @param prefix
  * @example
  * const api = useClient('/jasmine-mar/policy')
  * api.get('/list') // 自動發送 GET /jasmine-mar/policy/list
@@ -160,15 +171,20 @@ export const useClient = (prefix: string) => {
       ...options,
       method: method as any,
       prefix,
-      body 
+      body
     })
   }
 
   return {
-    get: <T>(url: string, options: UseApiOptions<T> = {}) => call<T>('GET', url, undefined, options),
-    post: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('POST', url, body, options),
-    put: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('PUT', url, body, options),
-    patch: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) => call<T>('PATCH', url, body, options),
-    delete: <T>(url: string, options: UseApiOptions<T> = {}) => call<T>('DELETE', url, undefined, options)
+    get: <T>(url: string, options: UseApiOptions<T> = {}) =>
+      call<T>('GET', url, undefined, options),
+    post: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) =>
+      call<T>('POST', url, body, options),
+    put: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) =>
+      call<T>('PUT', url, body, options),
+    patch: <T>(url: string, body?: any, options: UseApiOptions<T> = {}) =>
+      call<T>('PATCH', url, body, options),
+    delete: <T>(url: string, options: UseApiOptions<T> = {}) =>
+      call<T>('DELETE', url, undefined, options)
   }
 }

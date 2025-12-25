@@ -54,16 +54,22 @@ const getStatusColor = (status: string) => {
 
 <template>
   <v-container fluid>
-    <v-card class="rounded-lg" elevation="2">
+    <v-card
+      class="rounded-lg"
+      elevation="2"
+    >
       <v-card-title class="d-flex align-center py-4 px-6 border-b">
         <div>
           <div class="text-h6 font-weight-bold">商品工廠 (Product Factory)</div>
-          <div class="text-caption text-medium-emphasis">
-            保險商品設計、上架與版本管理
-          </div>
+          <div class="text-caption text-medium-emphasis">保險商品設計、上架與版本管理</div>
         </div>
         <v-spacer />
-        <v-btn color="primary" prepend-icon="mdi-plus">新增商品</v-btn>
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+        >
+          新增商品
+        </v-btn>
       </v-card-title>
 
       <v-table hover>
@@ -79,7 +85,10 @@ const getStatusColor = (status: string) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="product in products" :key="product.code">
+          <tr
+            v-for="product in products"
+            :key="product.code"
+          >
             <td class="font-weight-bold">{{ product.code }}</td>
             <td>
               <div class="font-weight-bold">{{ product.name }}</div>
@@ -91,9 +100,12 @@ const getStatusColor = (status: string) => {
               </div>
             </td>
             <td>
-              <v-chip size="x-small" variant="outlined">{{
-                product.category
-              }}</v-chip>
+              <v-chip
+                size="x-small"
+                variant="outlined"
+              >
+                {{ product.category }}
+              </v-chip>
             </td>
             <td>v{{ product.version }}</td>
             <td>{{ product.launchDate }}</td>

@@ -1,11 +1,11 @@
 /**
  * @功能 浮水印 Composable
- * @desc 在頁面上繪製浮水印，用於追溯資料來源
+ * @description 在頁面上繪製浮水印，用於追溯資料來源
  * @用法
  * ```vue
  * <script setup>
  * const { showWatermark, hideWatermark } = useWatermark()
- * 
+ *
  * onMounted(() => {
  *   showWatermark({ text: '使用者帳號' })
  * })
@@ -30,12 +30,16 @@ interface WatermarkOptions {
   zIndex?: number
 }
 
+/**
+ *
+ */
 export function useWatermark() {
   const watermarkId = 'app-watermark'
   let watermarkEl: HTMLDivElement | null = null
 
   /**
    * 建立浮水印 Canvas
+   * @param options
    */
   const createWatermarkCanvas = (options: Required<WatermarkOptions>): string => {
     const { text, fontSize, color, rotate, gapX, gapY } = options
@@ -67,6 +71,7 @@ export function useWatermark() {
 
   /**
    * 顯示浮水印
+   * @param options
    */
   const showWatermark = (options: WatermarkOptions = {}) => {
     // 移除舊的浮水印
@@ -145,6 +150,7 @@ export function useWatermark() {
 
   /**
    * 更新浮水印文字
+   * @param text
    */
   const updateWatermark = (text: string) => {
     hideWatermark()

@@ -16,6 +16,8 @@ const api = useClient('/users')
 export default {
   /**
    * 取得使用者列表
+   * @param params
+   * @param options
    */
   getUsers(params: UserQueryParams = {}, options: UseFetchOptions<UserListResponse> = {}) {
     return api.get<UserListResponse>('/', {
@@ -23,9 +25,10 @@ export default {
       ...options
     })
   },
-  
+
   /**
    * 根據 ID 取得單一使用者
+   * @param id
    */
   getUserById(id: MaybeRef<number>) {
     return api.get<any>(`/${unref(id)}`)
@@ -33,6 +36,7 @@ export default {
 
   /**
    * [範例] 建立使用者
+   * @param userData
    */
   createUser(userData: any) {
     return api.post('/', userData)
@@ -40,6 +44,7 @@ export default {
 
   /**
    * [範例] 搜尋使用者
+   * @param keyword
    */
   searchUsers(keyword: Ref<string>) {
     return api.get('/search', {
@@ -61,11 +66,11 @@ export default {
     // 為了保持功能，我這裡用 root client 處理 (假設它不是 users/*)
     // 但原檔放在 user.ts 卻叫 /heavy-report 有點怪
     // 我先維持原路徑：/heavy-report (不接在 /users 後面)
-    
+
     // 這裡特別展示：如何在 policy 模式下呼叫「外面」的 API
     // 方法 1: 使用 useApi
     // return useApi('/heavy-report', { lazy: true })
-    
+
     // 方法 2 (如果它其實是 user 報表):
     return useApi('/heavy-report', { lazy: true })
   }

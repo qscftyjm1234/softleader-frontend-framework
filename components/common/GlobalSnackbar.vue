@@ -12,7 +12,13 @@ const { show, message, color, timeout } = useNotify()
     {{ message }}
 
     <template #actions>
-      <v-btn color="white" variant="text" @click="show = false"> Close </v-btn>
+      <v-btn
+        color="white"
+        variant="text"
+        @click="show = false"
+      >
+        Close
+      </v-btn>
     </template>
   </v-snackbar>
 </template>

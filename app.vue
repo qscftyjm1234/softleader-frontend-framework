@@ -9,7 +9,7 @@
 
 -->
 
-<script setup>
+<script setup lang="ts">
 import { useLoadingStore } from '~/stores/loading'
 
 console.log('APP.vue')
@@ -20,7 +20,10 @@ token.value = 'abc123'
 const loadingStore = useLoadingStore()
 </script>
 <template>
-  <div v-if="loadingStore.isLoading" class="global-loading">
+  <div
+    v-if="loadingStore.isLoading"
+    class="global-loading"
+  >
     <div class="loading-spinner">Loading...</div>
   </div>
   <NuxtLayout>

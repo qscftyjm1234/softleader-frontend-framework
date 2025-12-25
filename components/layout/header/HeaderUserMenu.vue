@@ -37,15 +37,24 @@ const handleAction = async (item: any) => {
     offset="10"
   >
     <template #activator="{ props }">
-      <v-btn icon v-bind="props">
-        <v-avatar color="primary" size="36">
+      <v-btn
+        icon
+        v-bind="props"
+      >
+        <v-avatar
+          color="primary"
+          size="36"
+        >
           <v-img
             src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
           />
         </v-avatar>
       </v-btn>
     </template>
-    <v-card width="200" class="rounded-lg">
+    <v-card
+      width="200"
+      class="rounded-lg"
+    >
       <v-list>
         <v-list-item
           prepend-avatar="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
@@ -54,12 +63,18 @@ const handleAction = async (item: any) => {
         />
       </v-list>
       <v-divider />
-      <v-list density="compact" nav>
+      <v-list
+        density="compact"
+        nav
+      >
         <template
           v-for="(item, i) in appStore.config.header.userMenu.items"
           :key="i"
         >
-          <v-divider v-if="item.divider" class="my-2" />
+          <v-divider
+            v-if="item.divider"
+            class="my-2"
+          />
           <v-list-item
             v-else
             :prepend-icon="item.icon"

@@ -1,5 +1,12 @@
 import { spawn } from 'child_process'
 // Helper to spawn a process and pipe output
+/**
+ *
+ * @param command
+ * @param args
+ * @param name
+ * @param color
+ */
 function runCommand(command, args, name, color) {
   const child = spawn(command, args, {
     stdio: 'pipe',
@@ -28,17 +35,10 @@ function runCommand(command, args, name, color) {
   return child
 }
 
-console.log(
-  '\x1b[32m🚀 Starting Development Server & Module Watcher...\x1b[0m\n'
-)
+console.log('\x1b[32m🚀 Starting Development Server & Module Watcher...\x1b[0m\n')
 
 // 1. Start Module Watcher
-const watcher = runCommand(
-  'node',
-  ['scripts/generate-module.js', 'watch'],
-  'WATCHER',
-  '\x1b[36m'
-) // Cyan
+const watcher = runCommand('node', ['scripts/generate-module.js', 'watch'], 'WATCHER', '\x1b[36m') // Cyan
 
 // 2. Start Nuxt Dev Server
 const nuxt = runCommand('nuxt', ['dev'], 'NUXT', '\x1b[35m') // Magenta

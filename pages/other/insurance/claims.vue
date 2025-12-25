@@ -73,22 +73,38 @@ const getStatusText = (status: string) => {
   <v-container fluid>
     <v-row>
       <!-- 左側：理賠列表 -->
-      <v-col cols="12" md="8">
-        <v-card class="rounded-lg" elevation="2">
+      <v-col
+        cols="12"
+        md="8"
+      >
+        <v-card
+          class="rounded-lg"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center py-4 px-6 border-b">
             <div>
               <div class="text-h6 font-weight-bold">理賠案件處理</div>
-              <div class="text-caption text-medium-emphasis">
-                待處理案件佇列
-              </div>
+              <div class="text-caption text-medium-emphasis">待處理案件佇列</div>
             </div>
             <v-spacer />
-            <v-btn variant="text" icon="mdi-filter-variant" />
-            <v-btn variant="text" icon="mdi-refresh" />
+            <v-btn
+              variant="text"
+              icon="mdi-filter-variant"
+            />
+            <v-btn
+              variant="text"
+              icon="mdi-refresh"
+            />
           </v-card-title>
 
-          <v-list lines="two" class="py-0">
-            <template v-for="(claim, index) in claims" :key="claim.id">
+          <v-list
+            lines="two"
+            class="py-0"
+          >
+            <template
+              v-for="(claim, index) in claims"
+              :key="claim.id"
+            >
               <v-list-item class="py-4 px-6">
                 <template #prepend>
                   <v-avatar
@@ -97,26 +113,27 @@ const getStatusText = (status: string) => {
                     size="48"
                     class="mr-4"
                   >
-                    <v-icon icon="mdi-file-document-alert" size="24" />
+                    <v-icon
+                      icon="mdi-file-document-alert"
+                      size="24"
+                    />
                   </v-avatar>
                 </template>
 
                 <v-list-item-title class="d-flex align-center mb-1">
-                  <span class="font-weight-bold text-h6 mr-3">{{
-                    claim.id
-                  }}</span>
-                  <v-chip size="x-small" variant="outlined" class="mr-2">{{
-                    claim.type
-                  }}</v-chip>
-                  <span class="text-caption text-medium-emphasis">{{
-                    claim.date
-                  }}</span>
+                  <span class="font-weight-bold text-h6 mr-3">{{ claim.id }}</span>
+                  <v-chip
+                    size="x-small"
+                    variant="outlined"
+                    class="mr-2"
+                  >
+                    {{ claim.type }}
+                  </v-chip>
+                  <span class="text-caption text-medium-emphasis">{{ claim.date }}</span>
                 </v-list-item-title>
 
                 <v-list-item-subtitle class="d-flex align-center mt-1">
-                  <span class="font-weight-bold mr-2">{{
-                    claim.claimant
-                  }}</span>
+                  <span class="font-weight-bold mr-2">{{ claim.claimant }}</span>
                   <span class="text-medium-emphasis mr-2">|</span>
                   <span>保單: {{ claim.policy }}</span>
                 </v-list-item-subtitle>
@@ -143,8 +160,14 @@ const getStatusText = (status: string) => {
       </v-col>
 
       <!-- 右側：理賠統計與快捷功能 -->
-      <v-col cols="12" md="4">
-        <v-card class="rounded-lg mb-4 bg-primary text-white" elevation="2">
+      <v-col
+        cols="12"
+        md="4"
+      >
+        <v-card
+          class="rounded-lg mb-4 bg-primary text-white"
+          elevation="2"
+        >
           <v-card-text class="d-flex align-center">
             <div>
               <div class="text-subtitle-2 mb-1 opacity-80">平均結案天數</div>
@@ -159,7 +182,10 @@ const getStatusText = (status: string) => {
           </v-card-text>
         </v-card>
 
-        <v-card class="rounded-lg mb-4" elevation="2">
+        <v-card
+          class="rounded-lg mb-4"
+          elevation="2"
+        >
           <v-card-title>理賠類型分佈</v-card-title>
           <v-card-text>
             <div class="d-flex align-center mb-3">
@@ -207,7 +233,10 @@ const getStatusText = (status: string) => {
           </v-card-text>
         </v-card>
 
-        <v-card class="rounded-lg" elevation="2">
+        <v-card
+          class="rounded-lg"
+          elevation="2"
+        >
           <v-list nav>
             <v-list-item
               prepend-icon="mdi-plus-circle"
@@ -219,7 +248,11 @@ const getStatusText = (status: string) => {
               title="理賠進度查詢"
               link
             />
-            <v-list-item prepend-icon="mdi-calculator" title="理賠試算" link />
+            <v-list-item
+              prepend-icon="mdi-calculator"
+              title="理賠試算"
+              link
+            />
           </v-list>
         </v-card>
       </v-col>

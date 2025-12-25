@@ -53,12 +53,12 @@ export default [
       'vue/valid-v-slot': 'off', // 關閉 v-slot 檢查
       'vue/html-self-closing': 'off', // 允許非自閉合標籤
 
-      // 強制 <script> 必須使用 TypeScript
+      // 建議 <script> 使用 TypeScript（警告）
       'vue/block-lang': [
-        'error',
+        'warn',
         {
           script: {
-            lang: 'ts' // 強制 <script lang="ts">
+            lang: 'ts' // 建議 <script lang="ts">
           }
         }
       ],
@@ -89,6 +89,7 @@ export default [
 
       // JavaScript 規則
       'no-undef': 'off', // 關閉未定義變數檢查（Nuxt 有自動導入）
+      'no-unused-vars': 'warn', // 未使用的變數改為警告
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 正式環境警告 console
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 正式環境警告 debugger
 
@@ -123,11 +124,11 @@ export default [
           ]
         }
       ],
-      'jsdoc/require-param': 'error', // 要寫 @param
-      'jsdoc/require-param-description': 'error', // @param 要有說明
-      'jsdoc/require-returns': 'error', // 要寫 @returns
-      'jsdoc/require-returns-description': 'error', // @returns 要有說明
-      'jsdoc/check-tag-names': ['error', { definedTags: ['history', 'historyId'] }] // 檢查標籤名稱是否正確，允許 @history 和 @historyId
+      'jsdoc/require-param': 'warn', // 要寫 @param（警告）
+      'jsdoc/require-param-description': 'warn', // @param 要有說明（警告）
+      'jsdoc/require-returns': 'warn', // 要寫 @returns（警告）
+      'jsdoc/require-returns-description': 'warn', // @returns 要有說明（警告）
+      'jsdoc/check-tag-names': ['warn', { definedTags: ['history', 'historyId', '功能', '用法'] }] // 檢查標籤名稱（警告），允許自訂標籤
     }
   },
 

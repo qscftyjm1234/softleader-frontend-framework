@@ -90,7 +90,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-card class="mb-4" elevation="0" border rounded="lg">
+  <v-card
+    class="mb-4"
+    elevation="0"
+    border
+    rounded="lg"
+  >
     <v-card-title class="d-flex align-center py-3 px-4">
       <span class="text-h6 font-weight-bold">{{ title }}</span>
       <v-spacer />

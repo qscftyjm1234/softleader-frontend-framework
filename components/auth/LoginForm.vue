@@ -15,6 +15,9 @@ const form = reactive({
 const loading = ref(false)
 const errorMsg = ref('')
 
+/**
+ *
+ */
 async function handleLogin() {
   loading.value = true
   errorMsg.value = ''
@@ -46,11 +49,17 @@ async function handleLogin() {
 
 <template>
   <v-container class="fill-height justify-center">
-    <v-card width="400" class="pa-4">
+    <v-card
+      width="400"
+      class="pa-4"
+    >
       <v-card-title class="text-center text-h5 mb-4">
         {{ title || '登入' }}
       </v-card-title>
-      <v-card-subtitle v-if="subtitle" class="text-center mb-4">
+      <v-card-subtitle
+        v-if="subtitle"
+        class="text-center mb-4"
+      >
         {{ subtitle }}
       </v-card-subtitle>
 

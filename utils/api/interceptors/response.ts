@@ -6,6 +6,8 @@ const TOKEN_PREFIX = 'Bearer '
 
 /**
  * 效能監控：開發環境下若請求超過閾值則警告
+ * @param response
+ * @param options
  */
 export function checkPerformance(response: any, options: any) {
   const startTime = (options as any)._startTime || 0
@@ -17,6 +19,9 @@ export function checkPerformance(response: any, options: any) {
 
 /**
  * 全域登出：401 Unauthorized 時清除 Token 並導回登入頁
+ * @param response
+ * @param config
+ * @param auth
  */
 export function checkAuth(response: any, config: any, auth: boolean = true) {
   if (response.status === STATUS_UNAUTHORIZED && auth) {
@@ -30,6 +35,7 @@ export function checkAuth(response: any, config: any, auth: boolean = true) {
 
 /**
  * 錯誤處理：檢查後端自定義錯誤碼
+ * @param response
  */
 export function checkApiError(response: any) {
   const data = response._data
@@ -41,6 +47,8 @@ export function checkApiError(response: any) {
 
 /**
  * Token 更新：若 Header 包含新 Token 則自動更新 Cookie
+ * @param response
+ * @param config
  */
 export function checkRefreshToken(response: any, config: any) {
   const newToken = response.headers.get(HEADER_AUTH)

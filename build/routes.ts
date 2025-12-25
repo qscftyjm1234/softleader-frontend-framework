@@ -29,36 +29,39 @@ export function scanModulePages(pages: NuxtPage[], enabledModules: string[], roo
               // baseDir 是: modules/auth/pages
               // relativePath 就是: user/list.vue
               const relativePath = path.relative(baseDir, filePath)
-              
+
               // 初步處理路徑：
               // 1. 把 Windows 的反斜線 \ 換成 /
               // 2. 去掉 .vue 副檔名
               // 結果: /user/list
               let routePath = '/' + relativePath.replace(/\\/g, '/').replace(/\.vue$/, '')
-              
+
               // 如果是 index 結尾，移除 /index (這是 Nuxt 的慣例，index 代表根路徑)
               if (routePath.endsWith('/index')) {
                 routePath = routePath.slice(0, -6)
               }
-              
+
               // 【關鍵邏輯】自動加上模組名稱前綴
               // 為了避免不同模組的頁面網址衝突，我們強制加上模組名稱
               // 例如 auth 模組的 user/list 頁面，網址應該是 /auth/user/list
-              
+
               // 特殊例外：登入頁面放在根目錄 /login
               if (moduleName === 'auth' && relativePath === 'login.vue') {
                 routePath = '/login'
               } else if (!routePath.startsWith(`/${moduleName}`)) {
-                 if (routePath === '/') {
-                    routePath = `/${moduleName}`
-                 } else {
-                    routePath = `/${moduleName}${routePath}`
-                 }
+                if (routePath === '/') {
+                  routePath = `/${moduleName}`
+                } else {
+                  routePath = `/${moduleName}${routePath}`
+                }
               }
-              
+
               // 產生唯一的路由名稱 (name)，例如: auth-user-list
-              const name = relativePath.replace(/\\/g, '-').replace(/\//g, '-').replace(/\.vue$/, '')
-              
+              const name = relativePath
+                .replace(/\\/g, '-')
+                .replace(/\//g, '-')
+                .replace(/\.vue$/, '')
+
               // 將這個頁面加入 Nuxt 的路由表
               pages.push({
                 name: `${moduleName}-${name}`, // 加上 module prefix 避免衝突
@@ -68,10 +71,12 @@ export function scanModulePages(pages: NuxtPage[], enabledModules: string[], roo
             }
           }
         }
-        
+
         scanFiles(pagesDir, pagesDir)
       } else {
-        console.warn(`[Config] Module '${moduleName}' enabled in config but pages directory not found at ${pagesDir}`)
+        console.warn(
+          `[Config] Module '${moduleName}' enabled in config but pages directory not found at ${pagesDir}`
+        )
       }
     }
   }

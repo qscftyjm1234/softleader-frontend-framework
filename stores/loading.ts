@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 
 export const useLoadingStore = defineStore('loading', {
   state: () => ({
-    requestCount: 0,
+    requestCount: 0
   }),
   getters: {
-    isLoading: (state) => state.requestCount > 0,
+    isLoading: (state) => state.requestCount > 0
   },
   actions: {
     startLoading() {
@@ -19,5 +19,5 @@ export const useLoadingStore = defineStore('loading', {
     resetLoading() {
       this.requestCount = 0
     }
-  },
+  }
 })

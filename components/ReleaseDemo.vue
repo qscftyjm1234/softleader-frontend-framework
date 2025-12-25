@@ -48,6 +48,7 @@ function ago(ago: number): void {
  */
 function sex(sex: number): void {
   console.log(`測試性向`)
+  console.log(`測試性向`)
   console.log(`${message.value} ${sex}`)
 }
 </script>

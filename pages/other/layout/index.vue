@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // definePageMeta({
 //   layout: 'style01' // 對應 layouts/admin.vue
 // })

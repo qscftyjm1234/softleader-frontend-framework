@@ -2,7 +2,7 @@ import type { NuxtConfig } from 'nuxt/schema'
 
 /**
  * @功能 安全性 Header 設定
- * @desc 設定各種安全性相關的 HTTP Response Headers
+ * @description 設定各種安全性相關的 HTTP Response Headers
  */
 export const securityConfig: NuxtConfig['routeRules'] = {
   '/**': {

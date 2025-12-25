@@ -86,13 +86,14 @@ const getStatusText = (status: string) => {
 
 <template>
   <v-container fluid>
-    <v-card class="rounded-lg" elevation="2">
+    <v-card
+      class="rounded-lg"
+      elevation="2"
+    >
       <v-card-title class="d-flex align-center py-4 px-6 border-b">
         <div>
           <div class="text-h6 font-weight-bold">保單管理</div>
-          <div class="text-caption text-medium-emphasis">
-            查詢與維護所有保單資料
-          </div>
+          <div class="text-caption text-medium-emphasis">查詢與維護所有保單資料</div>
         </div>
         <v-spacer />
         <v-text-field
@@ -106,20 +107,26 @@ const getStatusText = (status: string) => {
           class="me-4"
           style="max-width: 300px"
         />
-        <v-btn color="primary" prepend-icon="mdi-plus">新增投保</v-btn>
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+        >
+          新增投保
+        </v-btn>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="policies" :search="search" hover>
+      <v-data-table
+        :headers="headers"
+        :items="policies"
+        :search="search"
+        hover
+      >
         <template #item.policyNo="{ item }">
-          <span class="font-weight-bold text-primary cursor-pointer">{{
-            item.policyNo
-          }}</span>
+          <span class="font-weight-bold text-primary cursor-pointer">{{ item.policyNo }}</span>
         </template>
 
         <template #item.premium="{ item }">
-          <span class="font-weight-bold"
-            >${{ item.premium.toLocaleString() }}</span
-          >
+          <span class="font-weight-bold">${{ item.premium.toLocaleString() }}</span>
         </template>
 
         <template #item.status="{ item }">

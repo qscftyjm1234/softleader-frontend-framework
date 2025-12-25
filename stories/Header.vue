@@ -8,7 +8,10 @@
           viewBox="0 0 32 32"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g fill="none" fill-rule="evenodd">
+          <g
+            fill="none"
+            fill-rule="evenodd"
+          >
             <path
               d="M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z"
               fill="#FFF"
@@ -26,10 +29,14 @@
         <h1>Acme</h1>
       </div>
       <div>
-        <span v-if="user" class="welcome"
-          >Welcome, <b>{{ user.name }}</b
-          >!</span
+        <span
+          v-if="user"
+          class="welcome"
         >
+          Welcome,
+          <b>{{ user.name }}</b>
+          !
+        </span>
         <my-button
           v-if="user"
           size="small"

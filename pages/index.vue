@@ -68,18 +68,30 @@ const recentActivities = [
     <div class="d-flex align-center mb-6">
       <div>
         <h1 class="text-h4 font-weight-bold">Dashboard</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">
-          歡迎回來，這裡是您的系統概況。
-        </p>
+        <p class="text-subtitle-1 text-medium-emphasis">歡迎回來，這裡是您的系統概況。</p>
       </div>
       <v-spacer />
-      <v-btn color="primary" prepend-icon="mdi-download">匯出報表</v-btn>
+      <v-btn
+        color="primary"
+        prepend-icon="mdi-download"
+      >
+        匯出報表
+      </v-btn>
     </div>
 
     <!-- 統計卡片 -->
     <v-row>
-      <v-col v-for="(stat, i) in stats" :key="i" cols="12" sm="6" md="3">
-        <v-card elevation="2" class="rounded-lg">
+      <v-col
+        v-for="(stat, i) in stats"
+        :key="i"
+        cols="12"
+        sm="6"
+        md="3"
+      >
+        <v-card
+          elevation="2"
+          class="rounded-lg"
+        >
           <v-card-text class="d-flex align-center">
             <v-avatar
               :color="stat.color"
@@ -87,7 +99,10 @@ const recentActivities = [
               size="48"
               class="me-4"
             >
-              <v-icon :icon="stat.icon" size="24" />
+              <v-icon
+                :icon="stat.icon"
+                size="24"
+              />
             </v-avatar>
             <div>
               <div class="text-caption text-medium-emphasis">
@@ -116,10 +131,20 @@ const recentActivities = [
 
     <v-row class="mt-4">
       <!-- 系統公告 / 趨勢圖 (模擬) -->
-      <v-col cols="12" md="8">
-        <v-card class="h-100 rounded-lg" elevation="2">
+      <v-col
+        cols="12"
+        md="8"
+      >
+        <v-card
+          class="h-100 rounded-lg"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center">
-            <v-icon icon="mdi-chart-line" start color="primary" />
+            <v-icon
+              icon="mdi-chart-line"
+              start
+              color="primary"
+            />
             流量趨勢
             <v-spacer />
             <v-btn-toggle
@@ -138,7 +163,11 @@ const recentActivities = [
             style="height: 300px"
           >
             <div class="text-center text-medium-emphasis">
-              <v-icon icon="mdi-chart-bar" size="64" class="mb-2 opacity-50" />
+              <v-icon
+                icon="mdi-chart-bar"
+                size="64"
+                class="mb-2 opacity-50"
+              />
               <p>圖表區塊 (建議整合 Chart.js 或 ECharts)</p>
             </div>
           </v-card-text>
@@ -146,8 +175,14 @@ const recentActivities = [
       </v-col>
 
       <!-- 近期活動 -->
-      <v-col cols="12" md="4">
-        <v-card class="h-100 rounded-lg" elevation="2">
+      <v-col
+        cols="12"
+        md="4"
+      >
+        <v-card
+          class="h-100 rounded-lg"
+          elevation="2"
+        >
           <v-card-title>近期活動</v-card-title>
           <v-list lines="two">
             <v-list-item
@@ -162,7 +197,11 @@ const recentActivities = [
                   variant="flat"
                   class="me-1"
                 >
-                  <v-icon :icon="activity.icon" size="small" color="white" />
+                  <v-icon
+                    :icon="activity.icon"
+                    size="small"
+                    color="white"
+                  />
                 </v-avatar>
               </template>
               <v-list-item-title class="text-body-2">
@@ -172,7 +211,13 @@ const recentActivities = [
             </v-list-item>
           </v-list>
           <v-card-actions>
-            <v-btn block variant="text" color="primary">查看更多</v-btn>
+            <v-btn
+              block
+              variant="text"
+              color="primary"
+            >
+              查看更多
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

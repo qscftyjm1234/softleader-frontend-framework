@@ -17,6 +17,9 @@ const model = defineModel({
 })
 
 // 4. defineExpose - 暴露內部方法給外層
+/**
+ *
+ */
 function sayHello() {
   alert(`Hello, 全球人壽!`)
 }
@@ -44,21 +47,31 @@ defineOptions({
   >
     <h2>defineProps 範例</h2>
     <p>
-      傳入的 prop msg：<strong>{{ props.msg }}</strong>
+      傳入的 prop msg：
+      <strong>{{ props.msg }}</strong>
     </p>
 
     <h2>defineEmits 範例</h2>
     <v-btn @click="emit('emitMsg', '這是新訊息')">點我觸發 update 事件</v-btn>
 
     <h2>具名 defineModel 範例</h2>
-    <input v-model="nameModelValue" class="border" />
+    <input
+      v-model="nameModelValue"
+      class="border"
+    />
 
     <h2>不具名 defineModel 範例</h2>
-    <input v-model="model" class="border" />
+    <input
+      v-model="model"
+      class="border"
+    />
 
     <slot>預設 default slot 內容</slot>
 
     <h2>defineOptions 範例</h2>
-    <p>這個組件名稱為：<code>DefineHandleComponent</code></p>
+    <p>
+      這個組件名稱為：
+      <code>DefineHandleComponent</code>
+    </p>
   </div>
 </template>

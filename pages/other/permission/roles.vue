@@ -44,17 +44,29 @@ const roles = [
     <div class="d-flex align-center mb-6">
       <div>
         <h1 class="text-h5 font-weight-bold">角色與權限</h1>
-        <p class="text-subtitle-2 text-medium-emphasis">
-          管理系統角色及其對應的權限範圍。
-        </p>
+        <p class="text-subtitle-2 text-medium-emphasis">管理系統角色及其對應的權限範圍。</p>
       </div>
       <v-spacer />
-      <v-btn color="primary" prepend-icon="mdi-plus">新增角色</v-btn>
+      <v-btn
+        color="primary"
+        prepend-icon="mdi-plus"
+      >
+        新增角色
+      </v-btn>
     </div>
 
     <v-row>
-      <v-col v-for="role in roles" :key="role.code" cols="12" md="6" lg="3">
-        <v-card class="h-100 rounded-lg" elevation="2">
+      <v-col
+        v-for="role in roles"
+        :key="role.code"
+        cols="12"
+        md="6"
+        lg="3"
+      >
+        <v-card
+          class="h-100 rounded-lg"
+          elevation="2"
+        >
           <v-card-text>
             <div class="d-flex justify-space-between align-start mb-4">
               <v-avatar
@@ -63,7 +75,10 @@ const roles = [
                 size="56"
                 rounded="lg"
               >
-                <v-icon :icon="role.icon" size="32" />
+                <v-icon
+                  :icon="role.icon"
+                  size="32"
+                />
               </v-avatar>
               <v-menu>
                 <template #activator="{ props }">
@@ -75,8 +90,14 @@ const roles = [
                   />
                 </template>
                 <v-list>
-                  <v-list-item prepend-icon="mdi-pencil" title="編輯" />
-                  <v-list-item prepend-icon="mdi-content-copy" title="複製" />
+                  <v-list-item
+                    prepend-icon="mdi-pencil"
+                    title="編輯"
+                  />
+                  <v-list-item
+                    prepend-icon="mdi-content-copy"
+                    title="複製"
+                  />
                   <v-list-item
                     prepend-icon="mdi-delete"
                     title="刪除"
@@ -102,21 +123,32 @@ const roles = [
                 位使用者
               </div>
               <div>
-                <span class="font-weight-bold">{{
-                  role.permissionsCount
-                }}</span>
+                <span class="font-weight-bold">{{ role.permissionsCount }}</span>
                 項權限
               </div>
             </div>
 
             <div class="d-flex mt-3">
               <v-avatar-group max="3">
-                <v-avatar size="24" color="grey-lighten-2" />
-                <v-avatar size="24" color="grey-lighten-1" />
-                <v-avatar size="24" color="grey-darken-1" />
-                <v-avatar size="24" color="grey-darken-2" class="text-caption"
-                  >+{{ role.usersCount }}</v-avatar
+                <v-avatar
+                  size="24"
+                  color="grey-lighten-2"
+                />
+                <v-avatar
+                  size="24"
+                  color="grey-lighten-1"
+                />
+                <v-avatar
+                  size="24"
+                  color="grey-darken-1"
+                />
+                <v-avatar
+                  size="24"
+                  color="grey-darken-2"
+                  class="text-caption"
                 >
+                  +{{ role.usersCount }}
+                </v-avatar>
               </v-avatar-group>
             </div>
           </v-card-text>

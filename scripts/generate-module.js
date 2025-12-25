@@ -10,6 +10,10 @@ const TARGET_DIR = path.join(__dirname, '../modules')
 const TEMPLATES_DIR = path.join(__dirname, '../module-templates')
 
 // 解析設定檔路徑
+/**
+ *
+ * @param input
+ */
 function resolveConfigPath(input) {
   // 如果是絕對路徑或相對路徑
   if (
@@ -30,6 +34,10 @@ function resolveConfigPath(input) {
 }
 
 // 讀取設定檔
+/**
+ *
+ * @param filePath
+ */
 function loadConfig(filePath) {
   try {
     const fileContents = fs.readFileSync(filePath, 'utf8')
@@ -42,6 +50,10 @@ function loadConfig(filePath) {
 }
 
 // 建立目錄
+/**
+ *
+ * @param dirPath
+ */
 function createDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true })
@@ -50,12 +62,22 @@ function createDir(dirPath) {
 }
 
 // 寫入檔案
+/**
+ *
+ * @param filePath
+ * @param content
+ */
 function writeFile(filePath, content) {
   fs.writeFileSync(filePath, content, 'utf8')
   console.log(`✅ 建立檔案: ${filePath}`)
 }
 
 // 產生 sidebar.ts 內容
+/**
+ *
+ * @param moduleName
+ * @param routes
+ */
 function generateSidebarContent(moduleName, routes) {
   // Helper to remove schema from routes recursively
   const cleanRoutes = (items) => {
@@ -83,6 +105,11 @@ function generateSidebarContent(moduleName, routes) {
 }
 
 // 產生 Vue Page 內容
+/**
+ *
+ * @param title
+ * @param schema
+ */
 function generatePageContent(title, schema) {
   // 預設 Schema
   const defaultSchema = {
@@ -127,6 +154,12 @@ const pageSchema: PageSchema = ${schemaString}
 }
 
 // 遞迴處理路由並建立對應的 Page 檔案
+/**
+ *
+ * @param routes
+ * @param moduleName
+ * @param moduleDir
+ */
 function processRoutes(routes, moduleName, moduleDir) {
   routes.forEach((route) => {
     if (route.children) {
@@ -134,9 +167,7 @@ function processRoutes(routes, moduleName, moduleDir) {
     }
 
     if (route.path) {
-      let relativePath = route.path.startsWith('/')
-        ? route.path.slice(1)
-        : route.path
+      let relativePath = route.path.startsWith('/') ? route.path.slice(1) : route.path
 
       if (relativePath.startsWith(moduleName + '/')) {
         relativePath = relativePath.slice(moduleName.length + 1)
@@ -153,16 +184,17 @@ function processRoutes(routes, moduleName, moduleDir) {
 
       createDir(dirPath)
 
-      const content = generatePageContent(
-        route.label || 'Untitled',
-        route.schema
-      )
+      const content = generatePageContent(route.label || 'Untitled', route.schema)
       writeFile(fullPath, content)
     }
   })
 }
 
 // 單一模組生成邏輯
+/**
+ *
+ * @param input
+ */
 async function generateModule(input) {
   const configPath = resolveConfigPath(input)
   if (!configPath) {
@@ -206,15 +238,16 @@ async function generateModule(input) {
 }
 
 // 更新 repositories/index.ts
+/**
+ *
+ * @param moduleName
+ */
 function updateRepositoryIndex(moduleName) {
   const repoIndexPath = path.join(__dirname, '../repositories/index.ts')
   if (!fs.existsSync(repoIndexPath)) return
 
   // 檢查 Repository 檔案是否存在
-  const repoFilePath = path.join(
-    __dirname,
-    `../repositories/modules/${moduleName}.ts`
-  )
+  const repoFilePath = path.join(__dirname, `../repositories/modules/${moduleName}.ts`)
   if (!fs.existsSync(repoFilePath)) {
     // console.log(`⚠️ Repository 檔案不存在，跳過註冊: ${moduleName}`);
     return
@@ -236,10 +269,7 @@ function updateRepositoryIndex(moduleName) {
   if (lastImportIndex !== -1) {
     const endOfLine = content.indexOf('\n', lastImportIndex)
     content =
-      content.slice(0, endOfLine + 1) +
-      importStatement +
-      '\n' +
-      content.slice(endOfLine + 1)
+      content.slice(0, endOfLine + 1) + importStatement + '\n' + content.slice(endOfLine + 1)
   } else {
     // 如果沒有任何 import，插在最前面
     content = importStatement + '\n' + content
@@ -271,6 +301,9 @@ function updateRepositoryIndex(moduleName) {
 }
 
 // 監聽模組變更
+/**
+ *
+ */
 function watchModules() {
   console.log('👀 正在監聽模組樣板變更 (Watch Mode)...\n')
 
@@ -282,11 +315,7 @@ function watchModules() {
   let debounceTimer
 
   fs.watch(TEMPLATES_DIR, (eventType, filename) => {
-    if (
-      !filename ||
-      (!filename.endsWith('.yaml') && !filename.endsWith('.yml'))
-    )
-      return
+    if (!filename || (!filename.endsWith('.yaml') && !filename.endsWith('.yml'))) return
 
     // 簡單的防抖動 (Debounce)，避免短時間內重複觸發
     clearTimeout(debounceTimer)
@@ -297,17 +326,16 @@ function watchModules() {
   })
 }
 
+/**
+ *
+ */
 async function main() {
   const args = process.argv.slice(2)
 
   if (args.length === 0) {
     console.log('請提供模組名稱，例如: node scripts/generate-module.js example')
-    console.log(
-      '或者使用 "all" 生成所有模組: node scripts/generate-module.js all'
-    )
-    console.log(
-      '或者使用 "watch" 監聽變更: node scripts/generate-module.js watch'
-    )
+    console.log('或者使用 "all" 生成所有模組: node scripts/generate-module.js all')
+    console.log('或者使用 "watch" 監聽變更: node scripts/generate-module.js watch')
     process.exit(1)
   }
 

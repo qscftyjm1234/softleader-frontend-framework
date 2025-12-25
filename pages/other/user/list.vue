@@ -86,13 +86,14 @@ const getStatusText = (status: string) => {
 
 <template>
   <v-container fluid>
-    <v-card class="rounded-lg" elevation="2">
+    <v-card
+      class="rounded-lg"
+      elevation="2"
+    >
       <v-card-title class="d-flex align-center py-4 px-6">
         <div>
           <div class="text-h6 font-weight-bold">會員列表</div>
-          <div class="text-caption text-medium-emphasis">
-            管理系統中的所有註冊會員
-          </div>
+          <div class="text-caption text-medium-emphasis">管理系統中的所有註冊會員</div>
         </div>
         <v-spacer />
         <v-text-field
@@ -106,18 +107,32 @@ const getStatusText = (status: string) => {
           class="me-4"
           style="max-width: 300px"
         />
-        <v-btn color="primary" prepend-icon="mdi-plus" to="/user/create"
-          >新增會員</v-btn
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+          to="/user/create"
         >
+          新增會員
+        </v-btn>
       </v-card-title>
 
       <v-divider />
 
-      <v-data-table :headers="headers" :items="users" :search="search" hover>
+      <v-data-table
+        :headers="headers"
+        :items="users"
+        :search="search"
+        hover
+      >
         <!-- 自定義會員資訊欄位 -->
         <template #item.user="{ item }">
           <div class="d-flex align-center py-2">
-            <v-avatar color="primary" variant="tonal" size="36" class="me-3">
+            <v-avatar
+              color="primary"
+              variant="tonal"
+              size="36"
+              class="me-3"
+            >
               <span class="text-subtitle-2">{{ item.name.charAt(0) }}</span>
             </v-avatar>
             <div>
@@ -149,7 +164,12 @@ const getStatusText = (status: string) => {
             variant="text"
             color="primary"
           />
-          <v-btn icon="mdi-delete" size="small" variant="text" color="error" />
+          <v-btn
+            icon="mdi-delete"
+            size="small"
+            variant="text"
+            color="error"
+          />
         </template>
       </v-data-table>
     </v-card>

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useDeepClone } from '~/utils/common/useDeepClone'
 /**
  * @功能 無使用深拷貝
@@ -45,7 +45,10 @@ useDeepClone(undefinedClone) // 30 ✅ No error
 </script>
 
 <template>
-  <v-card title="使用useDeepClone套件" class="pa-4">
+  <v-card
+    title="使用useDeepClone套件"
+    class="pa-4"
+  >
     <pre>
 
     <code>

@@ -7,7 +7,7 @@ export interface SidebarItem {
   icon: string
   permission: string
   path?: string // 舊格式
-  to?: string   // 新格式
+  to?: string // 新格式
   disabled?: boolean // 是否禁用 (顯示但不可點擊)
   module?: string // 所屬模組 (自動注入)
   children?: SidebarItem[] // 子選單
@@ -41,9 +41,9 @@ export interface BuildSidebarOptions {
 
 /**
  * 建構側邊欄選單
- * 
+ *
  * 負責整合各模組設定，過濾權限與啟用狀態，並標準化輸出格式。
- * 
+ *
  * @param options - 建構選項
  * @param options.sidebarRegistry - 所有模組的側邊欄設定註冊表
  * @param options.enabledModules - 目前系統啟用的模組清單，未啟用的模組將被過濾
@@ -58,51 +58,57 @@ export function buildSidebar({
   enabledModules = [],
   customFilter
 }: BuildSidebarOptions) {
-  
   // 遞迴處理函式
   const processItems = (items: SidebarItem[], moduleName: string): SidebarItem[] => {
-    return items
-      .map(item => ({ ...item, module: moduleName })) // 注入模組名稱
-      .filter(item => {
-        // 1. 權限過濾
-        // 1. 權限過濾 (支援 '*' 為超級管理員權限)
-        if (item.permission && !permissions.includes('*') && !permissions.includes(item.permission)) return false
-        // 2. 自定義過濾
-        if (customFilter && !customFilter(item)) return false
-        return true
-      })
-      .map(item => {
-        const newItem: SidebarItem = {
-          label: item.label,
-          icon: item.icon,
-          permission: item.permission, // 保留 permission 供除錯或後續使用
-          to: item.to ?? item.path ?? '',
-          disabled: item.disabled ?? false,
-          module: item.module
-        }
-
-        // 遞迴處理子選單
-        if (item.children && item.children.length > 0) {
-          const processedChildren = processItems(item.children, moduleName)
-          if (processedChildren.length > 0) {
-            newItem.children = processedChildren
+    return (
+      items
+        .map((item) => ({ ...item, module: moduleName })) // 注入模組名稱
+        .filter((item) => {
+          // 1. 權限過濾
+          // 1. 權限過濾 (支援 '*' 為超級管理員權限)
+          if (
+            item.permission &&
+            !permissions.includes('*') &&
+            !permissions.includes(item.permission)
+          )
+            return false
+          // 2. 自定義過濾
+          if (customFilter && !customFilter(item)) return false
+          return true
+        })
+        .map((item) => {
+          const newItem: SidebarItem = {
+            label: item.label,
+            icon: item.icon,
+            permission: item.permission, // 保留 permission 供除錯或後續使用
+            to: item.to ?? item.path ?? '',
+            disabled: item.disabled ?? false,
+            module: item.module
           }
-        }
 
-        return newItem
-      })
-      // 過濾掉沒有子項目且沒有連結的父層 (視需求而定，這裡假設如果父層沒連結且子層都被過濾光了，父層也該隱藏)
-      // 但如果父層本身有連結，則保留
-      .filter(item => {
-        const hasChildren = item.children && item.children.length > 0
-        const hasLink = !!item.to
-        return hasChildren || hasLink
-      })
+          // 遞迴處理子選單
+          if (item.children && item.children.length > 0) {
+            const processedChildren = processItems(item.children, moduleName)
+            if (processedChildren.length > 0) {
+              newItem.children = processedChildren
+            }
+          }
+
+          return newItem
+        })
+        // 過濾掉沒有子項目且沒有連結的父層 (視需求而定，這裡假設如果父層沒連結且子層都被過濾光了，父層也該隱藏)
+        // 但如果父層本身有連結，則保留
+        .filter((item) => {
+          const hasChildren = item.children && item.children.length > 0
+          const hasLink = !!item.to
+          return hasChildren || hasLink
+        })
+    )
   }
 
   return sidebarRegistry
-    .filter(m => enabledModules.includes(m.module))
-    .flatMap(m => {
+    .filter((m) => enabledModules.includes(m.module))
+    .flatMap((m) => {
       const items = m.routes ?? m.items ?? []
       return processItems(items, m.module)
     })

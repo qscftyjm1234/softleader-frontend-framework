@@ -1,7 +1,7 @@
 /**
- * @功能 敏感資料遮蔽工具
- * @desc 用於將敏感資料部分遮蔽，保護個人隱私
- * @用法
+ * @description 敏感資料遮蔽工具
+ * @description 用於將敏感資料部分遮蔽，保護個人隱私
+ * @example
  * ```typescript
  * import { maskIdCard, maskPhone, maskEmail } from '~/utils/security/mask'
  *
@@ -9,6 +9,7 @@
  * maskPhone('0912345678')        // 0912***678
  * maskEmail('user@example.com')  // u***@example.com
  * ```
+ * @returns string 返回值
  */
 
 /**
@@ -46,6 +47,7 @@ export function maskText(
  * 身分證字號遮蔽
  * @param idCard - 身分證字號
  * @example maskIdCard('A123456789') => 'A123****89'
+ * @returns string 返回值
  */
 export function maskIdCard(idCard: string | null | undefined): string {
   if (!idCard) return ''
@@ -57,6 +59,7 @@ export function maskIdCard(idCard: string | null | undefined): string {
  * 電話號碼遮蔽
  * @param phone - 電話號碼
  * @example maskPhone('0912345678') => '0912***678'
+ * @returns string 返回值
  */
 export function maskPhone(phone: string | null | undefined): string {
   if (!phone) return ''
@@ -81,6 +84,7 @@ export function maskPhone(phone: string | null | undefined): string {
  * Email 遮蔽
  * @param email - 電子郵件地址
  * @example maskEmail('user@example.com') => 'u***@example.com'
+ * @returns string 返回值
  */
 export function maskEmail(email: string | null | undefined): string {
   if (!email) return ''
@@ -107,6 +111,7 @@ export function maskEmail(email: string | null | undefined): string {
  * @param name - 姓名
  * @example maskName('王小明') => '王*明'
  * @example maskName('王大小明') => '王**明'
+ * @returns string 返回值
  */
 export function maskName(name: string | null | undefined): string {
   if (!name) return ''
@@ -125,6 +130,7 @@ export function maskName(name: string | null | undefined): string {
  * 地址遮蔽
  * @param address - 地址
  * @example maskAddress('台北市大安區信義路100號5樓') => '台北市大安區***'
+ * @returns string 返回值
  */
 export function maskAddress(address: string | null | undefined): string {
   if (!address) return ''
@@ -138,6 +144,7 @@ export function maskAddress(address: string | null | undefined): string {
  * 信用卡號遮蔽
  * @param cardNumber - 信用卡號
  * @example maskCreditCard('1234567890123456') => '1234 **** **** 3456'
+ * @returns string 返回值
  */
 export function maskCreditCard(cardNumber: string | null | undefined): string {
   if (!cardNumber) return ''
@@ -157,10 +164,9 @@ export function maskCreditCard(cardNumber: string | null | undefined): string {
  * 銀行帳號遮蔽
  * @param accountNumber - 銀行帳號
  * @example maskBankAccount('12345678901234') => '1234******1234'
+ * @returns string 返回值
  */
-export function maskBankAccount(
-  accountNumber: string | null | undefined
-): string {
+export function maskBankAccount(accountNumber: string | null | undefined): string {
   if (!accountNumber) return ''
 
   // 移除非數字字元
@@ -173,6 +179,7 @@ export function maskBankAccount(
  * 統一編號遮蔽
  * @param taxId - 統一編號
  * @example maskTaxId('12345678') => '1234****'
+ * @returns string 返回值
  */
 export function maskTaxId(taxId: string | null | undefined): string {
   if (!taxId) return ''
@@ -183,6 +190,7 @@ export function maskTaxId(taxId: string | null | undefined): string {
  * 護照號碼遮蔽
  * @param passport - 護照號碼
  * @example maskPassport('AB1234567') => 'AB***567'
+ * @returns string 返回值
  */
 export function maskPassport(passport: string | null | undefined): string {
   if (!passport) return ''

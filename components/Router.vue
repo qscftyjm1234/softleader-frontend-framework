@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 
@@ -6,14 +6,23 @@ const userId = route.params.id
 
 const router = useRouter()
 
+/**
+ *
+ */
 function goToRouter() {
   router.push('/router')
 }
 
+/**
+ *
+ */
 function goToParamRouter() {
   router.push('/router/1')
 }
 
+/**
+ *
+ */
 function goBack() {
   router.back()
 }
@@ -21,10 +30,25 @@ function goBack() {
 <template>
   <h1><slot /></h1>
 
-  <v-btn class="ma-2" @click="goToRouter()"> 前往/router </v-btn>
+  <v-btn
+    class="ma-2"
+    @click="goToRouter()"
+  >
+    前往/router
+  </v-btn>
 
-  <v-btn class="ma-2" @click="goToParamRouter()"> 前往動態param參數路由 </v-btn>
-  <v-btn class="ma-2" @click="goBack()"> 回上一頁 </v-btn>
+  <v-btn
+    class="ma-2"
+    @click="goToParamRouter()"
+  >
+    前往動態param參數路由
+  </v-btn>
+  <v-btn
+    class="ma-2"
+    @click="goBack()"
+  >
+    回上一頁
+  </v-btn>
   <br />
   <template v-if="userId">
     <v-card class="ma-2 pa-2">
@@ -32,10 +56,13 @@ function goBack() {
     </v-card>
   </template>
 
-  <v-card class="ma-2 pa-2"> path: {{ route.path }} </v-card>
-  <v-card class="ma-2 pa-2"> fullPath : {{ route.fullPath }} </v-card>
+  <v-card class="ma-2 pa-2">path: {{ route.path }}</v-card>
+  <v-card class="ma-2 pa-2">fullPath : {{ route.fullPath }}</v-card>
 
-  <textarea id="codeInput" spellcheck="false">
+  <textarea
+    id="codeInput"
+    spellcheck="false"
+  >
 		// 在這裡輸入你的程式碼
 		pages/
 		├── index.vue          // 對應路由 '/'

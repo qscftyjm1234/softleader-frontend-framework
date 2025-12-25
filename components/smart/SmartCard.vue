@@ -17,7 +17,11 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <v-card class="mx-auto" :color="color" variant="tonal">
+  <v-card
+    class="mx-auto"
+    :color="color"
+    variant="tonal"
+  >
     <template #prepend>
       <v-icon :icon="icon" />
     </template>
@@ -32,7 +36,10 @@ withDefaults(defineProps<Props>(), {
     </v-card-text>
 
     <!-- 支援 Children 渲染 -->
-    <div v-if="$slots.default" class="px-4 pb-4">
+    <div
+      v-if="$slots.default"
+      class="px-4 pb-4"
+    >
       <slot />
     </div>
   </v-card>

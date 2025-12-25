@@ -1,6 +1,6 @@
 /**
  * 系統級全域日誌工具 (Logger)
- * 
+ *
  * 特點：
  * 1. 自動判斷環境：預設只在開發環境 (Development) 輸出 Log，正式環境自動靜音。
  * 2. 統一格式：自動加上時間戳記與標籤。
@@ -10,6 +10,8 @@ export const logger = {
   /**
    * 一般資訊 (Info)
    * 只在開發環境顯示
+   * @param message
+   * @param {...any} args
    */
   info(message: any, ...args: any[]) {
     if (import.meta.dev) {
@@ -26,6 +28,8 @@ export const logger = {
   /**
    * 成功訊息 (Success)
    * 只在開發環境顯示
+   * @param message
+   * @param {...any} args
    */
   success(message: any, ...args: any[]) {
     if (import.meta.dev) {
@@ -42,6 +46,8 @@ export const logger = {
   /**
    * 警告訊息 (Warn)
    * 在所有環境都會顯示
+   * @param message
+   * @param {...any} args
    */
   warn(message: any, ...args: any[]) {
     console.warn(
@@ -56,6 +62,8 @@ export const logger = {
   /**
    * 錯誤訊息 (Error)
    * 在所有環境都會顯示
+   * @param message
+   * @param {...any} args
    */
   error(message: any, ...args: any[]) {
     console.error(
@@ -70,6 +78,8 @@ export const logger = {
   /**
    * 除錯訊息 (Debug)
    * 只有在開啟 debug 模式時顯示
+   * @param message
+   * @param {...any} args
    */
   debug(message: any, ...args: any[]) {
     const config = useRuntimeConfig()

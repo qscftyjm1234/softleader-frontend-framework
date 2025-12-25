@@ -3,26 +3,26 @@ import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
 import type { PageSchema } from '~/core/schema/types'
 
 const pageSchema: PageSchema = {
-  "type": "Page",
-  "blocks": [
+  type: 'Page',
+  blocks: [
     {
-      "type": "SmartTable",
-      "props": {
-        "title": "系統權限列表",
-        "columns": [
+      type: 'SmartTable',
+      props: {
+        title: '系統權限列表',
+        columns: [
           {
-            "label": "代碼",
-            "field": "code"
+            label: '代碼',
+            field: 'code'
           },
           {
-            "label": "名稱",
-            "field": "name"
+            label: '名稱',
+            field: 'name'
           }
         ],
-        "data": [
+        data: [
           {
-            "code": "user.view",
-            "name": "查看會員"
+            code: 'user.view',
+            name: '查看會員'
           }
         ]
       }
@@ -33,10 +33,10 @@ const pageSchema: PageSchema = {
 
 <template>
   <div>
-    <SchemaRenderer 
-      v-for="(block, i) in pageSchema.blocks" 
-      :key="i" 
-      :schema="block" 
+    <SchemaRenderer
+      v-for="(block, i) in pageSchema.blocks"
+      :key="i"
+      :schema="block"
     />
   </div>
 </template>

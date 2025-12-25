@@ -22,28 +22,42 @@ const roles = [
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="12" md="10" lg="8">
-        <v-card class="rounded-lg" elevation="2">
+      <v-col
+        cols="12"
+        md="10"
+        lg="8"
+      >
+        <v-card
+          class="rounded-lg"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center py-4 px-6 border-b">
-            <v-icon icon="mdi-account-plus" start color="primary" />
+            <v-icon
+              icon="mdi-account-plus"
+              start
+              color="primary"
+            />
             <div>
               <div class="text-h6 font-weight-bold">新增會員</div>
-              <div class="text-caption text-medium-emphasis">
-                建立新的使用者帳號並設定權限
-              </div>
+              <div class="text-caption text-medium-emphasis">建立新的使用者帳號並設定權限</div>
             </div>
             <v-spacer />
-            <v-btn variant="text" icon="mdi-close" to="/user/list" />
+            <v-btn
+              variant="text"
+              icon="mdi-close"
+              to="/user/list"
+            />
           </v-card-title>
 
           <v-card-text class="pt-6">
             <v-form>
               <!-- 基本資訊區塊 -->
-              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">
-                基本資訊
-              </div>
+              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">基本資訊</div>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
                     v-model="formData.name"
                     label="姓名"
@@ -54,7 +68,10 @@ const roles = [
                     color="primary"
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
                     v-model="formData.email"
                     label="電子郵件"
@@ -66,7 +83,10 @@ const roles = [
                     type="email"
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
                     v-model="formData.password"
                     label="密碼"
@@ -79,7 +99,10 @@ const roles = [
                     hint="至少包含 8 個字元"
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-select
                     v-model="formData.role"
                     :items="roles"
@@ -105,11 +128,12 @@ const roles = [
               <v-divider class="my-6" />
 
               <!-- 設定與狀態區塊 -->
-              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">
-                帳號設定
-              </div>
+              <div class="text-subtitle-1 font-weight-bold mb-2 text-primary">帳號設定</div>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-switch
                     v-model="formData.status"
                     color="success"
@@ -120,14 +144,15 @@ const roles = [
                     <template #label>
                       <div>
                         <div class="font-weight-bold">啟用帳號</div>
-                        <div class="text-caption">
-                          使用者建立後是否可立即登入
-                        </div>
+                        <div class="text-caption">使用者建立後是否可立即登入</div>
                       </div>
                     </template>
                   </v-switch>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-switch
                     v-model="formData.notifications.email"
                     color="primary"
@@ -149,15 +174,17 @@ const roles = [
               color="grey-darken-1"
               class="me-2"
               to="/user/list"
-              >取消</v-btn
             >
+              取消
+            </v-btn>
             <v-btn
               color="primary"
               variant="flat"
               size="large"
               prepend-icon="mdi-check"
-              >確認建立</v-btn
             >
+              確認建立
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
