@@ -1,5 +1,5 @@
-name: "Default Product"
-description: "Standard configuration enabling all modules"
+name: 'Default Product'
+description: 'Standard configuration enabling all modules'
 
 # List of enabled modules
 modules:
@@ -8,14 +8,15 @@ modules:
   - insurance
   - permission
   - product
+  - showcase
 
 # Theme configuration (example)
 theme:
-  primary: "#1976D2"
+  primary: '#1976D2'
 
 # Meta configuration (SEO)
 meta:
-  title: "松凌科技前端架構系統"
-  description: "松凌科技前端架構系統"
-  favicon: "/favicon.jpg"
-  themeColor: "#ffffff"
+  title: '松凌科技前端架構系統'
+  description: '松凌科技前端架構系統'
+  favicon: '/favicon.jpg'
+  themeColor: '#ffffff'

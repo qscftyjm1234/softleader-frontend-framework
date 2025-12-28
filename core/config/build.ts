@@ -1,24 +1,18 @@
 import type { NuxtConfig } from 'nuxt/schema'
 
+/**
+ * 建置設定
+ *
+ * 控制 Nuxt 如何編譯和打包你的應用程式
+ *
+ * @see https://nuxt.com/docs/api/nuxt-config#build
+ */
 export const buildConfig: NuxtConfig['build'] = {
+  /**
+   * 需要轉譯的套件清單
+   *
+   * 某些第三方 UI 框架（如 Vuetify）需要特別處理才能在 Nuxt 中正常運作
+   * 這裡指定的套件會被 Nuxt 重新編譯
+   */
   transpile: ['vuetify']
 }
-
-export const importsConfig: NuxtConfig['imports'] = {
-  dirs: ['utils/global']
-  // `utils/global`：全域工具，自動引入 (無需 import)
-  // `utils` 根目錄：Nuxt 預設強制自動引入
-  // `utils/xxx` (子目錄)：預設不會引入，需手動 import
-}
-
-export const componentsConfig: NuxtConfig['components'] = [
-  // 1. 一般元件：去前綴
-  // 讓 `components/user/Profile.vue` 變成 `<Profile />` 而不是 `<UserProfile />`
-  // 優點：名稱簡短；缺點：需注意不同資料夾下的同名檔案衝突
-  { path: '~/components', pathPrefix: false },
-
-  // 2. 表單元件：強制前綴 Form
-  // 讓 `components/form/Input.vue` 變成 `<FormInput />`
-  // 優點：避免與 HTML 原生標籤衝突，且語意明確
-  { path: '~/components/form/', prefix: 'Form' }
-]

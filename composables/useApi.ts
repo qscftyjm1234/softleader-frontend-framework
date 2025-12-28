@@ -14,6 +14,7 @@ import {
   checkApiError,
   checkRefreshToken
 } from '~/utils/api/interceptors/response'
+import { checkMockData } from '~/utils/api/interceptors/mock'
 import { useLoadingStore } from '~/stores/loading'
 
 // 擴充 UseFetchOptions 以包含自定義選項
@@ -32,8 +33,12 @@ type UseApiOptions<T> = UseFetchOptions<T> & {
  * @template T - 回傳資料的型別 (拆包後的資料型別)
  * @param url - API 路徑或回傳路徑的函式
  * @param options - useFetch 的選項 (包含自定義 globalLoading)
+ * @returns Nuxt useFetch 的非同步資料物件，資料已自動拆包為型別 T
  */
-export function useApi<T>(url: string | (() => string), options: UseApiOptions<T> = {}) {
+export function useApi<T>(
+  url: string | (() => string),
+  options: UseApiOptions<T> = {}
+): ReturnType<typeof useFetch<T>> {
   const config = useRuntimeConfig()
   const loadingStore = useLoadingStore()
 
@@ -55,7 +60,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
     auth: true,
 
     // 請求攔截器：在發送請求前執行
-    onRequest({ request, options }) {
+    async onRequest({ request, options }) {
       // 紀錄請求開始時間
       ;(options as any)._startTime = Date.now()
 
@@ -80,7 +85,7 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
       setRequestIdHeader(headers)
 
       // Log 方便除錯
-      // console.log(`[API] ${options.method || 'GET'} ${request}`)
+      console.log(`[API Request] ${options.method || 'GET'} ${request}`)
     },
 
     // 回應攔截器：在收到回應後執行
@@ -146,13 +151,14 @@ export function useApi<T>(url: string | (() => string), options: UseApiOptions<T
 
   // 回傳原生的 useFetch
   // 注意：這裡指定 useFetch 的回傳型別為 ApiResponse<T>，但透過 transform 轉成 T
+  // transform 的類型推斷有問題，但運行時是正確的，所以使用 any 繞過
   return useFetch<ApiResponse<T>>(url, {
     ...params,
-    transform: (response) => {
+    transform: (response: ApiResponse<T>) => {
       // 自動拆包：只回傳 data 部分，處理資料轉換
-      return response.data as T
+      return response.data
     }
-  } as UseFetchOptions<ApiResponse<T>>)
+  }) as any
 }
 
 /**

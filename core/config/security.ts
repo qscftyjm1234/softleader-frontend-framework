@@ -5,6 +5,7 @@ import type { NuxtConfig } from 'nuxt/schema'
  * @description 設定各種安全性相關的 HTTP Response Headers
  */
 export const securityConfig: NuxtConfig['routeRules'] = {
+  // 全域安全性設定 (目前的用途)
   '/**': {
     headers: {
       /**
@@ -46,25 +47,24 @@ export const securityConfig: NuxtConfig['routeRules'] = {
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
 
       /**
-       * 內容安全策略 (CSP)
-       * @注意 這是基本設定，可根據專案需求調整
-       * - default-src 'self': 預設只允許同源載入
-       * - script-src 'self' 'unsafe-inline' 'unsafe-eval': Vue/Nuxt 需要 inline script
-       * - style-src 'self' 'unsafe-inline': 允許 inline style
-       * - img-src 'self' data: https:: 允許 data URI 與 HTTPS 圖片
-       * - font-src 'self' https://fonts.gstatic.com: 允許 Google Fonts
-       * - connect-src 'self' https:: 允許 HTTPS API 請求
+       * 內容安全策略 (CSP) - Report Only 模式
+       *
+       * 目前設定為 "Report Only"，這意味著：
+       * 1. 瀏覽器會檢查安全規則，但 **不會真的阻擋** 資源載入。
+       * 2. 違反規則時，會顯示在 Console 中供開發者除錯。
+       *
+       * [建議] 在專案穩定後，將 Header 名稱改回 'Content-Security-Policy' 以啟用強制阻擋。
        */
-      'Content-Security-Policy': [
-        "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' data: https: blob:",
-        "font-src 'self' https://fonts.gstatic.com data:",
-        "connect-src 'self' https: wss:",
-        "frame-ancestors 'self'",
-        "base-uri 'self'",
-        "form-action 'self'"
+      'Content-Security-Policy-Report-Only': [
+        "default-src 'self'", // 預設：只允許同源 (自己的網域)
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // JS：允許 inline (Vue 需要) 與 eval
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // CSS：允許 inline 與 Google Fonts
+        "img-src 'self' data: https: blob:", // 圖片：允許 https 圖片、Base64、Blob
+        "font-src 'self' https://fonts.gstatic.com data:", // 字型：允許 Google Fonts
+        "connect-src 'self' https: wss:", // 連線：允許 HTTPS API 與 WebSocket
+        "frame-ancestors 'self'", // 嵌入：只允許自己嵌入自己 (防 iframe 攻擊)
+        "base-uri 'self'", // <base> 標籤：只准自己
+        "form-action 'self'" // 表單提交：只准自己
       ].join('; ')
     }
   }

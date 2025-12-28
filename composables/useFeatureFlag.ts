@@ -14,13 +14,11 @@
  */
 
 import { defaultFeatures, type FeatureConfig } from '~/core/config/features'
+import { useFeatureStore } from '~/stores/features'
 
 type FeaturePath =
   | `devTools.${keyof typeof defaultFeatures.devTools}`
   | `logging.${keyof typeof defaultFeatures.logging}`
-  | `monitoring.${keyof typeof defaultFeatures.monitoring}`
-  | `experimental.${keyof typeof defaultFeatures.experimental}`
-  | `integrations.${keyof typeof defaultFeatures.integrations}`
 
 /**
  * 從環境變數或配置中獲取功能狀態
@@ -59,9 +57,13 @@ function getFeatureValue(config: FeatureConfig): boolean {
  * 從路徑字串獲取功能配置
  *
  * @param path - 功能路徑,格式: 'category.featureName'
+ * @param features - 功能配置物件
  * @returns 功能配置物件或 null
  */
-function getConfigByPath(path: FeaturePath): FeatureConfig | null {
+function getConfigByPath(
+  path: FeaturePath,
+  features: typeof defaultFeatures
+): FeatureConfig | null {
   const [category, feature] = path.split('.') as [keyof typeof defaultFeatures, string]
 
   if (!category || !feature) {
@@ -69,7 +71,7 @@ function getConfigByPath(path: FeaturePath): FeatureConfig | null {
     return null
   }
 
-  const categoryConfig = defaultFeatures[category]
+  const categoryConfig = features[category]
   if (!categoryConfig) {
     console.warn(`[useFeatureFlag] Unknown category: ${category}`)
     return null
@@ -90,6 +92,9 @@ function getConfigByPath(path: FeaturePath): FeatureConfig | null {
  * @returns 功能開關相關方法
  */
 export function useFeatureFlag() {
+  // 使用 Feature Store 以支援熱重載
+  const featureStore = useFeatureStore()
+
   /**
    * 檢查功能是否啟用
    *
@@ -103,7 +108,7 @@ export function useFeatureFlag() {
    * ```
    */
   const isEnabled = (featurePath: FeaturePath): boolean => {
-    const config = getConfigByPath(featurePath)
+    const config = getConfigByPath(featurePath, featureStore.config)
     if (!config) {
       return false
     }
@@ -118,7 +123,7 @@ export function useFeatureFlag() {
    * @returns 功能配置物件
    */
   const getFeatureConfig = (featurePath: FeaturePath): FeatureConfig | null => {
-    return getConfigByPath(featurePath)
+    return getConfigByPath(featurePath, featureStore.config)
   }
 
   /**
@@ -129,11 +134,13 @@ export function useFeatureFlag() {
   const getAllFeatures = () => {
     const features: Record<string, boolean> = {}
 
-    Object.entries(defaultFeatures).forEach(([category, categoryFeatures]) => {
-      Object.entries(categoryFeatures).forEach(([featureName, config]) => {
-        const path = `${category}.${featureName}`
-        features[path] = getFeatureValue(config as FeatureConfig)
-      })
+    Object.entries(featureStore.config).forEach(([category, categoryFeatures]) => {
+      Object.entries(categoryFeatures as Record<string, unknown>).forEach(
+        ([featureName, config]) => {
+          const path = `${category}.${featureName}`
+          features[path] = getFeatureValue(config as FeatureConfig)
+        }
+      )
     })
 
     return features
@@ -146,7 +153,7 @@ export function useFeatureFlag() {
    * @returns 該分類下所有功能的狀態
    */
   const getCategoryFeatures = (category: keyof typeof defaultFeatures) => {
-    const categoryConfig = defaultFeatures[category]
+    const categoryConfig = featureStore.config[category]
     if (!categoryConfig) {
       console.warn(`[useFeatureFlag] Unknown category: ${category}`)
       return {}

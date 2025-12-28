@@ -5,6 +5,18 @@
  */
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
+
+  // ✅ 檢查是否啟用資安模式（預設關閉）
+  const isSecurityEnabled =
+    config.public.enableSecurityMode === true || config.public.enableSecurityMode === 'true'
+
+  // 如果未啟用，直接返回
+  if (!isSecurityEnabled) {
+    console.log('[Security] 資安模式已關閉')
+    return
+  }
+
+  console.log('[Security] 資安模式已啟用')
   const isProduction = config.public.env === 'production'
 
   // ==========================================
@@ -39,21 +51,21 @@ export default defineNuxtPlugin(() => {
    * 可根據需求開關各項功能
    */
   const securityOptions = {
-    disableContextMenu: true,        // 禁用右鍵選單
-    disableDevTools: true,           // 禁用開發者工具快捷鍵
-    disableTextSelection: false,     // 禁用文字選取（依需求開啟）
-    disableDragDrop: true,           // 禁用拖曳
-    disableConsole: isProduction,    // 生產環境禁用 console
-    disablePrintScreen: true,        // 嘗試禁用 Print Screen
-    blurOnVisibilityChange: true,    // 切換視窗時模糊畫面
-    blurOnPrintScreen: true,         // 按下截圖鍵時模糊
-    detectScreenCapture: true,       // 偵測螢幕錄影/截圖並模糊
-    preventMediaCapture: true,       // 阻止 Media Capture API
-    enableKioskMode: false,          // 啟用 Kiosk 模式（全螢幕、隱藏網址列）
-    disableNavigation: true,         // 禁用瀏覽器導航快捷鍵
-    preventBackNavigation: true,     // 防止上一頁
-    idleTimeoutBlur: true,           // 閒置超時自動模糊
-    idleTimeoutDuration: 3 * 60 * 1000  // 閒置時間（毫秒），預設 3 分鐘
+    disableContextMenu: true, // 禁用右鍵選單
+    disableDevTools: true, // 禁用開發者工具快捷鍵
+    disableTextSelection: false, // 禁用文字選取（依需求開啟）
+    disableDragDrop: true, // 禁用拖曳
+    disableConsole: isProduction, // 生產環境禁用 console
+    disablePrintScreen: true, // 嘗試禁用 Print Screen
+    blurOnVisibilityChange: true, // 切換視窗時模糊畫面
+    blurOnPrintScreen: true, // 按下截圖鍵時模糊
+    detectScreenCapture: true, // 偵測螢幕錄影/截圖並模糊
+    preventMediaCapture: true, // 阻止 Media Capture API
+    enableKioskMode: false, // 啟用 Kiosk 模式（全螢幕、隱藏網址列）
+    disableNavigation: true, // 禁用瀏覽器導航快捷鍵
+    preventBackNavigation: true, // 防止上一頁
+    idleTimeoutBlur: true, // 閒置超時自動模糊
+    idleTimeoutDuration: 3 * 60 * 1000 // 閒置時間（毫秒），預設 3 分鐘
   }
 
   // ==========================================
@@ -64,17 +76,17 @@ export default defineNuxtPlugin(() => {
    * 模糊層設定選項
    */
   interface BlurOverlayOptions {
-    id: string                        // 元素 ID
-    zIndex?: number                   // z-index 層級
-    blurAmount?: number               // 模糊程度（px）
-    icon?: string                     // 圖示 emoji
-    title?: string                    // 標題文字
-    message?: string                  // 訊息內容
-    action?: string                   // 動作提示文字
-    clickToDismiss?: boolean          // 點擊解除
-    pointerEvents?: boolean           // 是否可點擊（pointer-events）
-    onShow?: () => void               // 顯示時的回調
-    onHide?: () => void               // 隱藏時的回調
+    id: string // 元素 ID
+    zIndex?: number // z-index 層級
+    blurAmount?: number // 模糊程度（px）
+    icon?: string // 圖示 emoji
+    title?: string // 標題文字
+    message?: string // 訊息內容
+    action?: string // 動作提示文字
+    clickToDismiss?: boolean // 點擊解除
+    pointerEvents?: boolean // 是否可點擊（pointer-events）
+    onShow?: () => void // 顯示時的回調
+    onHide?: () => void // 隱藏時的回調
   }
 
   /**
@@ -180,7 +192,7 @@ export default defineNuxtPlugin(() => {
       animation: slideDown 0.3s ease-out;
     `
     warning.textContent = `⚠️ ${message}`
-    
+
     // 加入動畫樣式
     const animStyle = document.createElement('style')
     animStyle.textContent = `
@@ -266,25 +278,25 @@ export default defineNuxtPlugin(() => {
         e.preventDefault()
         return false
       }
-      
+
       // Ctrl+Shift+I (開發者工具)
       if (e.ctrlKey && e.shiftKey && e.key === 'I') {
         e.preventDefault()
         return false
       }
-      
+
       // Ctrl+Shift+J (Console)
       if (e.ctrlKey && e.shiftKey && e.key === 'J') {
         e.preventDefault()
         return false
       }
-      
+
       // Ctrl+Shift+C (Element Inspector)
       if (e.ctrlKey && e.shiftKey && e.key === 'C') {
         e.preventDefault()
         return false
       }
-      
+
       // Ctrl+U (View Source)
       if (e.ctrlKey && e.key === 'u') {
         e.preventDefault()
@@ -309,7 +321,7 @@ export default defineNuxtPlugin(() => {
   if (securityOptions.disableTextSelection) {
     document.body.style.userSelect = 'none'
     document.body.style.webkitUserSelect = 'none'
-    
+
     const style = document.createElement('style')
     style.textContent = `
       body { user-select: none !important; -webkit-user-select: none !important; }
@@ -347,35 +359,39 @@ export default defineNuxtPlugin(() => {
   // ===== 6. Print Screen 按鍵偵測與持續模糊 =====
   if (securityOptions.disablePrintScreen) {
     // 📌 方法1: keydown 立即模糊（盡早觸發）
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
-      // PrintScreen 鍵 - 持續模糊
-      if (e.key === 'PrintScreen') {
-        screenshotBlur.show()
-        e.preventDefault()
-        return false
-      }
+    document.addEventListener(
+      'keydown',
+      (e: KeyboardEvent) => {
+        // PrintScreen 鍵 - 持續模糊
+        if (e.key === 'PrintScreen') {
+          screenshotBlur.show()
+          e.preventDefault()
+          return false
+        }
 
-      // Windows + Shift + S (截圖工具) - 持續模糊
-      if (e.shiftKey && e.metaKey && e.key.toLowerCase() === 's') {
-        screenshotBlur.show()
-        e.preventDefault()
-        return false
-      }
+        // Windows + Shift + S (截圖工具) - 持續模糊
+        if (e.shiftKey && e.metaKey && e.key.toLowerCase() === 's') {
+          screenshotBlur.show()
+          e.preventDefault()
+          return false
+        }
 
-      // Alt + PrintScreen (截取當前視窗)
-      if (e.key === 'PrintScreen' && e.altKey) {
-        screenshotBlur.show()
-        e.preventDefault()
-        return false
-      }
+        // Alt + PrintScreen (截取當前視窗)
+        if (e.key === 'PrintScreen' && e.altKey) {
+          screenshotBlur.show()
+          e.preventDefault()
+          return false
+        }
 
-      // MacOS: Cmd + Shift + 3/4/5
-      if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
-        screenshotBlur.show()
-        e.preventDefault()
-        return false
-      }
-    }, true) // 使用 capture: true 更早捕獲
+        // MacOS: Cmd + Shift + 3/4/5
+        if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
+          screenshotBlur.show()
+          e.preventDefault()
+          return false
+        }
+      },
+      true
+    ) // 使用 capture: true 更早捕獲
 
     // 📌 方法2: keyup 也觸發（補救）
     document.addEventListener('keyup', (e: KeyboardEvent) => {
@@ -388,13 +404,13 @@ export default defineNuxtPlugin(() => {
     // 因為 Win+Shift+S 是系統級快捷鍵，必須在用戶完成按鍵組合前就模糊
     let blurTimeout: ReturnType<typeof setTimeout> | null = null
     let isPreemptiveBlur = false
-    
+
     // 顯示先發制人模糊
     const showQuickBlur = () => {
       preemptiveBlur.show()
       isPreemptiveBlur = true
     }
-    
+
     // 隱藏先發制人模糊
     const hideQuickBlur = () => {
       preemptiveBlur.hide()
@@ -402,39 +418,47 @@ export default defineNuxtPlugin(() => {
     }
 
     // 🔑 核心：當 Shift 按下時立即模糊
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
-      // 清除之前的計時器
-      if (blurTimeout) {
-        clearTimeout(blurTimeout)
-        blurTimeout = null
-      }
-      
-      // 當 Shift 鍵按下時，立即顯示模糊
-      // 這會在用戶完成 Win+Shift+S 組合之前就模糊
-      if (e.key === 'Shift') {
-        showQuickBlur()
-        console.log('[Security] Shift 按下，先發制人模糊')
-        
-        // 500ms 後如果沒有失焦（沒有截圖），則解除模糊
-        blurTimeout = setTimeout(() => {
-          if (isPreemptiveBlur && document.hasFocus()) {
-            hideQuickBlur()
-            console.log('[Security] 500ms 無截圖，解除模糊')
-          }
-        }, 500)
-      }
-    }, true)
-    
+    document.addEventListener(
+      'keydown',
+      (e: KeyboardEvent) => {
+        // 清除之前的計時器
+        if (blurTimeout) {
+          clearTimeout(blurTimeout)
+          blurTimeout = null
+        }
+
+        // 當 Shift 鍵按下時，立即顯示模糊
+        // 這會在用戶完成 Win+Shift+S 組合之前就模糊
+        if (e.key === 'Shift') {
+          showQuickBlur()
+          console.log('[Security] Shift 按下，先發制人模糊')
+
+          // 500ms 後如果沒有失焦（沒有截圖），則解除模糊
+          blurTimeout = setTimeout(() => {
+            if (isPreemptiveBlur && document.hasFocus()) {
+              hideQuickBlur()
+              console.log('[Security] 500ms 無截圖，解除模糊')
+            }
+          }, 500)
+        }
+      },
+      true
+    )
+
     // Shift 放開時，延遲解除模糊（給一點時間偵測是否有截圖）
-    document.addEventListener('keyup', (e: KeyboardEvent) => {
-      if (e.key === 'Shift') {
-        setTimeout(() => {
-          if (isPreemptiveBlur && document.hasFocus()) {
-            hideQuickBlur()
-          }
-        }, 300)
-      }
-    }, true)
+    document.addEventListener(
+      'keyup',
+      (e: KeyboardEvent) => {
+        if (e.key === 'Shift') {
+          setTimeout(() => {
+            if (isPreemptiveBlur && document.hasFocus()) {
+              hideQuickBlur()
+            }
+          }, 300)
+        }
+      },
+      true
+    )
 
     // 視窗失焦時（確認是截圖），顯示持續模糊
     window.addEventListener('blur', () => {
@@ -481,7 +505,9 @@ export default defineNuxtPlugin(() => {
     const detectDisplayMedia = () => {
       if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
         // 攔截 getDisplayMedia
-        const originalGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices)
+        const originalGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(
+          navigator.mediaDevices
+        )
         navigator.mediaDevices.getDisplayMedia = async (constraints) => {
           console.warn('[Security] Screen capture attempt detected - showing blur')
           screenshotBlur.show()
@@ -501,7 +527,7 @@ export default defineNuxtPlugin(() => {
     const originalToDataURL = HTMLCanvasElement.prototype.toDataURL
     const originalToBlob = HTMLCanvasElement.prototype.toBlob
 
-    HTMLCanvasElement.prototype.toDataURL = function(...args) {
+    HTMLCanvasElement.prototype.toDataURL = function (...args) {
       // 可選擇性允許某些 canvas
       if (this.dataset.allowCapture !== 'true') {
         console.warn('[Security] Canvas capture attempt - showing blur')
@@ -512,7 +538,7 @@ export default defineNuxtPlugin(() => {
       return originalToDataURL.apply(this, args)
     }
 
-    HTMLCanvasElement.prototype.toBlob = function(callback, ...args) {
+    HTMLCanvasElement.prototype.toBlob = function (callback, ...args) {
       if (this.dataset.allowCapture !== 'true') {
         console.warn('[Security] Canvas toBlob attempt - showing blur')
         screenshotBlur.show()
@@ -587,7 +613,10 @@ export default defineNuxtPlugin(() => {
       }
 
       // Backspace (部分瀏覽器上一頁)
-      if (e.key === 'Backspace' && !(e.target as HTMLElement).matches('input, textarea, [contenteditable]')) {
+      if (
+        e.key === 'Backspace' &&
+        !(e.target as HTMLElement).matches('input, textarea, [contenteditable]')
+      ) {
         e.preventDefault()
         return false
       }
@@ -628,7 +657,7 @@ export default defineNuxtPlugin(() => {
   if (securityOptions.preventBackNavigation) {
     // 方法1: 覆蓋 history state
     history.pushState(null, '', location.href)
-    
+
     window.addEventListener('popstate', () => {
       history.pushState(null, '', location.href)
     })
@@ -666,13 +695,17 @@ export default defineNuxtPlugin(() => {
 
     // 監聽使用者活動事件
     const activityEvents = ['mousemove', 'mousedown', 'scroll', 'touchstart', 'touchmove']
-    activityEvents.forEach(event => {
-      document.addEventListener(event, () => {
-        if (!idleBlur.isVisible()) {
-          // 只有在未鎖定時才重置計時器，避免滑鼠微動解除鎖定
-          resetIdleTimer()
-        }
-      }, { passive: true })
+    activityEvents.forEach((event) => {
+      document.addEventListener(
+        event,
+        () => {
+          if (!idleBlur.isVisible()) {
+            // 只有在未鎖定時才重置計時器，避免滑鼠微動解除鎖定
+            resetIdleTimer()
+          }
+        },
+        { passive: true }
+      )
     })
 
     // 點擊解除後也重置計時器
@@ -680,7 +713,9 @@ export default defineNuxtPlugin(() => {
 
     // 初始化計時器
     resetIdleTimer()
-    console.log(`[Security] 閒置超時模糊已啟用，閒置 ${securityOptions.idleTimeoutDuration / 1000} 秒後將鎖定畫面`)
+    console.log(
+      `[Security] 閒置超時模糊已啟用，閒置 ${securityOptions.idleTimeoutDuration / 1000} 秒後將鎖定畫面`
+    )
   }
 
   // ===== 15. Kiosk 模式（全螢幕，隱藏網址列） =====
@@ -721,29 +756,29 @@ export default defineNuxtPlugin(() => {
   ;(window as any).openSecureWindow = (url: string = location.href) => {
     const width = screen.availWidth
     const height = screen.availHeight
-    
+
     const features = [
       `width=${width}`,
       `height=${height}`,
       'top=0',
       'left=0',
-      'menubar=no',      // 隱藏選單列
-      'toolbar=no',      // 隱藏工具列
-      'location=no',     // 隱藏網址列
-      'status=no',       // 隱藏狀態列
+      'menubar=no', // 隱藏選單列
+      'toolbar=no', // 隱藏工具列
+      'location=no', // 隱藏網址列
+      'status=no', // 隱藏狀態列
       'resizable=yes',
       'scrollbars=yes'
     ].join(',')
 
     const secureWindow = window.open(url, '_blank', features)
-    
+
     if (secureWindow) {
       // 關閉原視窗
       window.close()
     } else {
       alert('請允許彈出視窗以使用安全模式')
     }
-    
+
     return secureWindow
   }
 })

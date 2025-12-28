@@ -81,37 +81,5 @@ watch(
         :item="item"
       />
     </v-list>
-
-    <template #append>
-      <div
-        v-if="appStore.config.sidebar.proCard.visible"
-        class="pa-4"
-      >
-        <v-card
-          color="grey-darken-3"
-          class="rounded-lg pa-3"
-          variant="flat"
-        >
-          <div class="d-flex align-center">
-            <v-avatar
-              size="36"
-              color="primary"
-              variant="tonal"
-              class="mr-3"
-            >
-              <span class="text-subtitle-2">{{ appStore.config.sidebar.proCard.badge }}</span>
-            </v-avatar>
-            <div>
-              <div class="text-subtitle-2 font-weight-bold">
-                {{ appStore.config.sidebar.proCard.title }}
-              </div>
-              <div class="text-caption text-grey-lighten-1">
-                {{ appStore.config.sidebar.proCard.subtitle }}
-              </div>
-            </div>
-          </div>
-        </v-card>
-      </div>
-    </template>
   </v-navigation-drawer>
 </template>

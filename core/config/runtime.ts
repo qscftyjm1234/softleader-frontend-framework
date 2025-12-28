@@ -1,4 +1,4 @@
-import { productConfig } from './loader'
+import { productConfig } from '../../scripts/product-loader'
 
 /**
  * Runtime Configuration
@@ -22,6 +22,12 @@ export const runtimeConfig = {
       isDev: process.env.IS_DEV === 'true',
 
       /**
+       * App 識別字串 (User-Agent)
+       * 用於判斷網頁是否在 App 的 Webview 中開啟
+       */
+      uaIdentifier: process.env.NUXT_PUBLIC_APP_UA_IDENTIFIER || 'MyApp',
+
+      /**
        * 產品設定檔注入
        * 將 YAML 讀取到的設定 (如 modules 列表) 注入到前端。
        * 這樣前端頁面也能知道目前啟用哪些模組，或讀取產品特定的 UI 設定。
@@ -29,6 +35,9 @@ export const runtimeConfig = {
        */
       productConfig: productConfig
     },
+
+    // 資安模式開關（預設關閉）
+    enableSecurityMode: process.env.NUXT_PUBLIC_ENABLE_SECURITY_MODE === 'true',
 
     // API 連線相關設定
     api: {

@@ -1,132 +1,116 @@
 <script setup lang="ts">
-const stats = [
-  {
-    title: '總會員數',
-    value: '1,285',
-    icon: 'mdi-account-group',
-    color: 'primary',
-    trend: '+12%'
-  },
-  {
-    title: '本月營收',
-    value: '$45,200',
-    icon: 'mdi-currency-usd',
-    color: 'success',
-    trend: '+8.5%'
-  },
-  {
-    title: '待處理訂單',
-    value: '24',
-    icon: 'mdi-clipboard-alert',
-    color: 'warning',
-    trend: '-2%'
-  },
-  {
-    title: '系統負載',
-    value: '32%',
-    icon: 'mdi-server-network',
-    color: 'info',
-    trend: '穩定'
-  }
-]
+// @ts-nocheck
+const { data: statsData, pending: statsPending } = useRepository().dashboard.getStats()
+await waitForData(statsPending)
+// console.log('統計:', statsData.value)
 
-const recentActivities = [
-  {
-    user: 'Admin',
-    action: '更新了系統設定',
-    time: '10 分鐘前',
-    icon: 'mdi-cog',
-    color: 'grey'
-  },
-  {
-    user: '王小明',
-    action: '新增了一筆訂單 #2023001',
-    time: '25 分鐘前',
-    icon: 'mdi-cart-plus',
-    color: 'success'
-  },
-  {
-    user: '李大華',
-    action: '申請了退款',
-    time: '1 小時前',
-    icon: 'mdi-cash-refund',
-    color: 'error'
-  },
-  {
-    user: 'System',
-    action: '自動備份完成',
-    time: '2 小時前',
-    icon: 'mdi-database-check',
-    color: 'info'
-  }
-]
+const { data: activitiesData, pending: activitiesPending } =
+  useRepository().dashboard.getActivities({
+    limit: 10
+  })
+
+await waitForData(activitiesPending)
+// console.log('活動:', activitiesData.value)
+import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
+import { useDevice } from '~/composables/useDevice'
+
+const device = useDevice()
+
+const abcb = ref<any>(1)
+const abc = ref<number>(1)
+abc.value = '2'
 </script>
 
 <template>
   <v-container fluid>
+    <!-- Debug Platform -->
+    <v-alert
+      type="info"
+      variant="tonal"
+      class="mb-4"
+    >
+      <pre>{{ device }}</pre>
+    </v-alert>
+
     <!-- 歡迎標題 -->
     <div class="d-flex align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold">Dashboard</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">歡迎回來，這裡是您的系統概況。</p>
+        <h1 class="text-h4 font-weight-bold">{{ $t('dashboard.title') }}</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">{{ $t('dashboard.welcomeMessage') }}</p>
       </div>
       <v-spacer />
+
+      <HeaderLanguage />
+
       <v-btn
         color="primary"
         prepend-icon="mdi-download"
       >
-        匯出報表
+        {{ $t('dashboard.exportReport') }}
       </v-btn>
     </div>
 
     <!-- 統計卡片 -->
     <v-row>
-      <v-col
-        v-for="(stat, i) in stats"
-        :key="i"
-        cols="12"
-        sm="6"
-        md="3"
-      >
-        <v-card
-          elevation="2"
-          class="rounded-lg"
+      <template v-if="statsPending">
+        <v-col
+          v-for="i in 4"
+          :key="`skeleton-${i}`"
+          cols="12"
+          sm="6"
+          md="3"
         >
-          <v-card-text class="d-flex align-center">
-            <v-avatar
-              :color="stat.color"
-              variant="tonal"
-              size="48"
-              class="me-4"
-            >
-              <v-icon
-                :icon="stat.icon"
-                size="24"
-              />
-            </v-avatar>
-            <div>
-              <div class="text-caption text-medium-emphasis">
-                {{ stat.title }}
+          <v-skeleton-loader type="card" />
+        </v-col>
+      </template>
+      <template v-else>
+        <v-col
+          v-for="(stat, i) in statsData"
+          :key="i"
+          cols="12"
+          sm="6"
+          md="3"
+        >
+          <v-card
+            elevation="2"
+            class="rounded-lg"
+          >
+            <v-card-text class="d-flex align-center">
+              <v-avatar
+                :color="stat.color"
+                variant="tonal"
+                size="48"
+                class="me-4"
+              >
+                <v-icon
+                  :icon="stat.icon"
+                  size="24"
+                />
+              </v-avatar>
+              <div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ stat.title }}
+                </div>
+                <div class="text-h5 font-weight-bold">{{ stat.value }}</div>
               </div>
-              <div class="text-h5 font-weight-bold">{{ stat.value }}</div>
-            </div>
-            <v-spacer />
-            <v-chip
-              :color="
-                stat.trend.includes('+')
-                  ? 'success'
-                  : stat.trend.includes('-')
-                    ? 'error'
-                    : 'default'
-              "
-              size="x-small"
-              label
-            >
-              {{ stat.trend }}
-            </v-chip>
-          </v-card-text>
-        </v-card>
-      </v-col>
+              <v-spacer />
+              <v-chip
+                :color="
+                  stat.trend.includes('+')
+                    ? 'success'
+                    : stat.trend.includes('-')
+                      ? 'error'
+                      : 'default'
+                "
+                size="x-small"
+                label
+              >
+                {{ stat.trend }}
+              </v-chip>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </template>
     </v-row>
 
     <v-row class="mt-4">
@@ -145,7 +129,7 @@ const recentActivities = [
               start
               color="primary"
             />
-            流量趨勢
+            {{ $t('dashboard.trafficTrend') }}
             <v-spacer />
             <v-btn-toggle
               density="compact"
@@ -153,9 +137,9 @@ const recentActivities = [
               variant="outlined"
               mandatory
             >
-              <v-btn size="small">週</v-btn>
-              <v-btn size="small">月</v-btn>
-              <v-btn size="small">年</v-btn>
+              <v-btn size="small">{{ $t('common.week') }}</v-btn>
+              <v-btn size="small">{{ $t('common.month') }}</v-btn>
+              <v-btn size="small">{{ $t('common.year') }}</v-btn>
             </v-btn-toggle>
           </v-card-title>
           <v-card-text
@@ -168,7 +152,7 @@ const recentActivities = [
                 size="64"
                 class="mb-2 opacity-50"
               />
-              <p>圖表區塊 (建議整合 Chart.js 或 ECharts)</p>
+              <p>{{ $t('dashboard.chartPlaceholder') }}</p>
             </div>
           </v-card-text>
         </v-card>
@@ -183,10 +167,23 @@ const recentActivities = [
           class="h-100 rounded-lg"
           elevation="2"
         >
-          <v-card-title>近期活動</v-card-title>
-          <v-list lines="two">
+          <v-card-title>{{ $t('dashboard.recentActivities') }}</v-card-title>
+          <v-list
+            v-if="activitiesPending"
+            lines="two"
+          >
+            <v-skeleton-loader
+              v-for="i in 4"
+              :key="`activity-skeleton-${i}`"
+              type="list-item-avatar-two-line"
+            />
+          </v-list>
+          <v-list
+            v-else
+            lines="two"
+          >
             <v-list-item
-              v-for="(activity, i) in recentActivities"
+              v-for="(activity, i) in activitiesData"
               :key="i"
               :subtitle="activity.time"
             >
@@ -216,7 +213,7 @@ const recentActivities = [
               variant="text"
               color="primary"
             >
-              查看更多
+              {{ $t('common.viewMore') }}
             </v-btn>
           </v-card-actions>
         </v-card>

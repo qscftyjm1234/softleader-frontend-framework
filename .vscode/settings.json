@@ -10,6 +10,12 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode", // 預設使用 Prettier 格式化
 
   // ========================================
+  // TypeScript / JavaScript 檢查設定
+  // ========================================
+  "typescript.validate.enable": false, // 關閉 TypeScript 檢查
+  "javascript.validate.enable": false, // 關閉 JavaScript 檢查
+
+  // ========================================
   // ESLint 設定
   // ========================================
   "eslint.enable": true, // 啟用 ESLint

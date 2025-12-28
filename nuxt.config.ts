@@ -1,15 +1,18 @@
 import { scanModulePages } from './build/routes'
-import { productConfig } from './core/config/loader'
+import { productConfig } from './scripts/product-loader'
 import { runtimeConfig as projectRuntimeConfig } from './core/config/runtime'
 import { i18nConfig } from './core/config/i18n'
 import { appConfig } from './core/config/app'
 import { securityConfig } from './core/config/security'
-import { buildConfig, importsConfig, componentsConfig } from './core/config/build'
+import { buildConfig } from './core/config/build'
+import { importsConfig } from './core/config/imports'
+import { componentsConfig } from './core/config/components'
 import { modulesConfig } from './core/config/modules'
 import { cssConfig } from './core/config/css'
 import { typescriptConfig } from './core/config/typescript'
 import { viteConfig } from './core/config/vite'
-import { experimentalConfig } from './core/config/experimental'
+
+// Force Nuxt config reload to fix auto-imports
 import { devtoolsConfig, telemetryConfig } from './core/config/devtools'
 import { nitroConfig } from './core/config/nitro'
 
@@ -87,12 +90,6 @@ export default defineNuxtConfig({
    * @description 包含預熱與 CSS 編譯器設定
    */
   vite: viteConfig,
-
-  /**
-   * @功能 實驗性功能
-   * @description 包含 Typed Pages 與 View Transitions
-   */
-  experimental: experimentalConfig,
 
   /**
    * @功能 開發工具設定

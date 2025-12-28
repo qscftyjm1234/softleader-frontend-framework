@@ -1,14 +1,20 @@
 import type { NuxtConfig } from 'nuxt/schema'
 
+/**
+ * Vite 設定
+ *
+ * 控制 Vite 建置工具的行為
+ *
+ * @see https://nuxt.com/docs/api/nuxt-config#vite
+ */
 export const viteConfig: NuxtConfig['vite'] = {
+  /**
+   * 預熱常用檔案
+   *
+   * 在開發模式下預先載入這些檔案，加速首次訪問
+   */
   warmup: {
-    clientFiles: ['./app.vue', './pages/**/*.vue'] // 預熱常用檔案，加速啟動
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern-compiler' // 使用新版編譯器
-      }
-    }
+    clientFiles: ['./app.vue', './pages/**/*.vue']
   }
-} as any
+  // 移除 SCSS modern-compiler 設定（Nuxt 3 不支援）
+}
