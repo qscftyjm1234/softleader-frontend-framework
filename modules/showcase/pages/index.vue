@@ -56,6 +56,18 @@ definePageMeta({
         </div>
         <div class="card-text">展示檔案上傳介面與預覽功能。</div>
       </router-link>
+
+      <!-- 導航卡片：前往檔案下載 -->
+      <router-link
+        to="/showcase/file-download"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">💾</span>
+          檔案下載 (File Download)
+        </div>
+        <div class="card-text">展示檔案下載功能，支援 PDF、Excel、圖片等多種檔案類型。</div>
+      </router-link>
     </div>
   </div>
 </template>
