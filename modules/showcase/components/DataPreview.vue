@@ -73,12 +73,13 @@ defineExpose({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 0.25rem 0.75rem; /* Reduced header padding */
   background-color: #f8f9fa;
   cursor: pointer;
   user-select: none;
   border-bottom: 1px solid transparent;
   transition: background-color 0.2s;
+  height: 2rem; /* Fixed low height */
 }
 
 .header:hover {
@@ -95,7 +96,7 @@ defineExpose({
 
 .title {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #444;
   font-family:
@@ -107,7 +108,7 @@ defineExpose({
 .toggle-btn {
   background: none;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #777;
   cursor: pointer;
 }
@@ -118,7 +119,7 @@ defineExpose({
 
 /* 內容區：JSON 程式碼 */
 .code-block {
-  padding: 1.25rem;
+  padding: 0.5rem; /* Reduced code block padding */
   margin: 0;
   overflow-x: auto; /* 支援橫向捲動 */
   background-color: #1e1e1e; /* Dark background for better contrast */
@@ -134,8 +135,8 @@ pre {
 
 code {
   font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
-  font-size: 0.95rem; /* Slightly larger font */
-  line-height: 1.6; /* Better line height */
+  font-size: 0.85rem; /* Slightly smaller font */
+  line-height: 1.25; /* Tighter line height */
   white-space: pre; /* Ensure correct formatting */
 }
 </style>

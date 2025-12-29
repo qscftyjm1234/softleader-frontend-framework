@@ -8,7 +8,7 @@
  *
  * @returns 包含裝置資訊、環境判斷與裝置名稱的整合物件
  */
-export const useDevice = () => {
+export const useAppDevice = () => {
   // 1. 取得裝置資訊
   // 注意：這裡不能呼叫 useDevice()，因為會遞迴呼叫自己
   // 我們改為從 NuxtApp Context 取得 @nuxtjs/device 注入的 $device

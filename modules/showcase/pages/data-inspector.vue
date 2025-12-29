@@ -2,10 +2,10 @@
 import DataPreview from '../components/DataPreview.vue'
 import { useUserStore } from '~/stores/user'
 import { useFeatureStore } from '~/stores/features'
-import { useDevice } from '~/composables/useDevice'
+import { useAppDevice } from '~/composables/useAppDevice'
 
 // --- 1. 平台與裝置資訊 (Real-time) ---
-const device = useDevice()
+const device = useAppDevice()
 // 將 device 的響應式物件轉換為純物件以便展示
 const deviceInfo = computed(() => ({
   deviceName: device.deviceName.value,

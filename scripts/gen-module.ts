@@ -83,7 +83,7 @@ function generateSidebarContent(moduleName, routes) {
   const cleanRoutes = (items) => {
     return items.map((item) => {
       // Destructure schema out, keep everything else
-      // eslint-disable-next-line no-unused-vars
+
       const { schema, children, ...rest } = item
       const newItem = { ...rest }
 

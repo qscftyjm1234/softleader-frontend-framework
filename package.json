@@ -18,7 +18,7 @@
     "gen:watch": "npx jiti scripts/gen-module.ts watch",
     "gen:all": "npx jiti scripts/gen-module.ts all",
     "commit": "cz",
-    "release": "standard-version",
+    "release": "standard-version --config configs/git/versionrc.json",
     "doc:history": "node scripts/gen-history.cjs",
     "gen:history": "node scripts/gen-history.cjs"
   },
@@ -27,14 +27,8 @@
       "path": "./node_modules/cz-customizable"
     },
     "cz-customizable": {
-      "config": ".cz-config.cjs"
+      "config": "configs/git/cz-config.cjs"
     }
-  },
-  "lint-staged": {
-    "*.{js,ts,vue}": [
-      "eslint --fix --no-warn-ignored",
-      "prettier --write"
-    ]
   },
   "dependencies": {
     "@nuxtjs/device": "^3.2.4",

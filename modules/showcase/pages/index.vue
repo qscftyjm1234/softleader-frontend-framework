@@ -23,13 +23,38 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <!-- 簡單的 SVG icon 作為替代 -->
           <span class="icon">🔍</span>
           資料檢視器 (Data Inspector)
         </div>
         <div class="card-text">
           查看各模組 (Auth, Insurance, Product) 的 Mock Data 與 JSON 輸出格式。
         </div>
+      </router-link>
+
+      <!-- 導航卡片：前往選項系統 -->
+      <router-link
+        to="/showcase/options"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📋</span>
+          選項系統 (Options)
+        </div>
+        <div class="card-text">
+          展示集中管理的選項數據 (如性別、狀態) 及其輔助方法 (findByValue, excludes 等)。
+        </div>
+      </router-link>
+
+      <!-- 導航卡片：前往媒體上傳 -->
+      <router-link
+        to="/showcase/media"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📁</span>
+          媒體上傳 (Media Upload)
+        </div>
+        <div class="card-text">展示檔案上傳介面與預覽功能。</div>
       </router-link>
     </div>
   </div>

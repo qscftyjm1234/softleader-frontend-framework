@@ -36,11 +36,9 @@ const props = withDefaults(
   { primary: false, size: 'medium', backgroundColor: undefined }
 )
 
-/* eslint-disable no-unused-vars */
 const emit = defineEmits<{
   (e: 'click', id: number): void
 }>()
-/* eslint-enable no-unused-vars */
 
 const classes = computed(() => ({
   'storybook-button': true,

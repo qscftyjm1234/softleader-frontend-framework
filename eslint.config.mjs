@@ -91,7 +91,8 @@ export default [
 
       // JavaScript 規則
       'no-undef': 'off', // 關閉未定義變數檢查（Nuxt 有自動導入）
-      'no-unused-vars': 'warn', // 未使用的變數改為警告
+      'no-unused-vars': 'off', // 關閉原生規則（不支援 TS 類型）
+      '@typescript-eslint/no-unused-vars': 'warn', // 改用 TS 專用規則
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 正式環境警告 console
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 正式環境警告 debugger
 

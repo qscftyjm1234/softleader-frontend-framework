@@ -1,6 +1,6 @@
 'use strict'
 
-const { types, maxHeaderLength } = require('./.commit-types.cjs')
+const { types, maxHeaderLength } = require('./commit-types.cjs')
 
 module.exports = {
   // 可選擇的類型 (從 .commit-types.cjs 引入，與 commitlint 完全一致)

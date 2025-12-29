@@ -67,11 +67,9 @@ import './header.css'
 
 defineProps<{ user: { name: string } | null }>()
 
-/* eslint-disable no-unused-vars */
 defineEmits<{
   (event: 'createAccount'): void
   (event: 'login'): void
   (event: 'logout'): void
 }>()
-/* eslint-enable no-unused-vars */
 </script>
