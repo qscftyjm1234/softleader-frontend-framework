@@ -4,6 +4,7 @@ import vue from 'eslint-plugin-vue' // Vue 規則
 import jsdoc from 'eslint-plugin-jsdoc' // JSDoc 註解檢查
 import vueParser from 'vue-eslint-parser' // Vue 檔案解析器
 import tsParser from '@typescript-eslint/parser' // TypeScript 解析器
+import tsPlugin from '@typescript-eslint/eslint-plugin' // TypeScript 插件
 import prettierConfig from 'eslint-config-prettier' // 避免與 Prettier 衝突
 import prettierPlugin from 'eslint-plugin-prettier' // 整合 Prettier
 
@@ -36,7 +37,8 @@ export default [
     plugins: {
       vue,
       jsdoc,
-      prettier: prettierPlugin
+      prettier: prettierPlugin,
+      '@typescript-eslint': tsPlugin
     },
 
     // 規則設定

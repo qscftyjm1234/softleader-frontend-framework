@@ -17,7 +17,17 @@ export const nitroConfig: NuxtConfig['nitro'] = {
    * 開啟後，Nuxt 會在建置時自動產生 .gz 與 .br 壓縮檔
    * 有助於減少傳輸流量並提升載入速度
    */
-  compressPublicAssets: true
+  compressPublicAssets: true,
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        composite: true,
+        emitDeclarationOnly: true,
+        noEmit: false
+      }
+    }
+  }
 
   /**
    * 開發環境代理 (Development Proxy)

@@ -31,6 +31,7 @@ export default defineNuxtConfig({
   /**
    * @功能 是否需要SSR
    * */
+
   ssr: false,
 
   /**

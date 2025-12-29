@@ -1,5 +1,12 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "composite": true,
+    "noEmit": false
+  },
   "files": [],
   "references": [
     {

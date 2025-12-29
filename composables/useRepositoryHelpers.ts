@@ -15,8 +15,6 @@
  * @returns Promise
  */
 export async function waitForData(pending: Ref<boolean>, timeout: number = 10000): Promise<void> {
-  const startTime = Date.now()
-
   return new Promise((resolve, reject) => {
     // 如果已經載入完成，直接返回
     if (!pending.value) {
