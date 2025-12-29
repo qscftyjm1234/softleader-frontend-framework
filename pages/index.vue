@@ -12,9 +12,8 @@ const { data: activitiesData, pending: activitiesPending } =
 await waitForData(activitiesPending)
 // console.log('活動:', activitiesData.value)
 import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
-import { useDevice } from '~/composables/useDevice'
 
-const device = useDevice()
+const device = useAppDevice()
 
 const abcb = ref<any>(1)
 const abc = ref<number>(1)

@@ -45,16 +45,16 @@ definePageMeta({
         </div>
       </router-link>
 
-      <!-- 導航卡片：前往媒體上傳 -->
+      <!-- 導航卡片：前往檔案上傳 -->
       <router-link
-        to="/showcase/media"
+        to="/showcase/file-upload"
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📁</span>
-          媒體上傳 (Media Upload)
+          <span class="icon">📤</span>
+          檔案上傳 (File Upload)
         </div>
-        <div class="card-text">展示檔案上傳介面與預覽功能。</div>
+        <div class="card-text">展示檔案上傳介面與預覽功能，支援拖放、驗證與進度追蹤。</div>
       </router-link>
 
       <!-- 導航卡片：前往檔案下載 -->
@@ -67,6 +67,80 @@ definePageMeta({
           檔案下載 (File Download)
         </div>
         <div class="card-text">展示檔案下載功能，支援 PDF、Excel、圖片等多種檔案類型。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往日期時間 -->
+      <router-link
+        to="/showcase/datetime"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📅</span>
+          日期時間 (DateTime)
+        </div>
+        <div class="card-text">展示日期時間處理功能，包含格式化、計算、比較與驗證。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往表單驗證 -->
+      <router-link
+        to="/showcase/validation"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">✅</span>
+          表單驗證 (Validation)
+        </div>
+        <div class="card-text">展示表單驗證功能，包含 Email、電話、身分證等常用驗證規則。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往資料格式化 -->
+      <router-link
+        to="/showcase/formatter"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🎨</span>
+          資料格式化 (Formatter)
+        </div>
+        <div class="card-text">展示資料格式化功能，包含數字、貨幣、電話號碼、字串等格式化。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往本地儲存 -->
+      <router-link
+        to="/showcase/storage"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">💾</span>
+          本地儲存 (Storage)
+        </div>
+        <div class="card-text">
+          展示本地儲存功能，包含 LocalStorage/SessionStorage 封裝與響應式儲存。
+        </div>
+      </router-link>
+
+      <!-- 導航卡片：前往防抖/節流 -->
+      <router-link
+        to="/showcase/debounce"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">⏱️</span>
+          防抖/節流 (Debounce)
+        </div>
+        <div class="card-text">展示防抖與節流功能，用於效能優化與減少函數執行頻率。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往分頁管理 -->
+      <router-link
+        to="/showcase/pagination"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📄</span>
+          分頁管理 (Pagination)
+        </div>
+        <div class="card-text">展示分頁管理功能，包含頁碼計算、範圍管理與陣列分頁。</div>
       </router-link>
     </div>
   </div>
