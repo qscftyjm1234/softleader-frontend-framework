@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * Header Actions - Framework Agnostic
+ * 框架無關的標頭動作按鈕
+ */
 import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()
@@ -13,36 +17,35 @@ const handleAction = (item: any) => {
 </script>
 
 <template>
-  <template
-    v-for="(action, i) in appStore.config.header.actions"
-    :key="i"
-  >
-    <v-btn
-      icon
-      class="mr-2"
-      :color="action.color"
+  <div style="display: flex; gap: 0.5rem">
+    <button
+      v-for="(action, i) in appStore.config.header.actions"
+      :key="i"
+      class="btn-icon"
+      :title="action.title"
       @click="handleAction(action)"
     >
-      <v-badge
-        v-if="action.badge"
-        :content="action.badge"
-        color="error"
-        dot
-        floating
-      >
-        <v-icon :icon="action.icon" />
-      </v-badge>
-      <v-icon
-        v-else
-        :icon="action.icon"
-      />
-      <v-tooltip
-        v-if="action.title"
-        activator="parent"
-        location="bottom"
-      >
-        {{ action.title }}
-      </v-tooltip>
-    </v-btn>
-  </template>
+      <div style="position: relative">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+        </svg>
+        <span
+          v-if="action.badge"
+          class="badge badge-dot"
+          style="position: absolute; top: -2px; right: -2px"
+        />
+      </div>
+    </button>
+  </div>
 </template>

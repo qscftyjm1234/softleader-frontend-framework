@@ -1,6 +1,9 @@
 <script setup lang="ts">
+/**
+ * App Sidebar Item - Framework Agnostic
+ * 框架無關的側邊欄項目 (支援遞迴巢狀選單)
+ */
 import type { SidebarItem } from '~/core/sidebar/buildSidebar'
-
 import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
 
 defineOptions({
@@ -11,55 +14,112 @@ const props = defineProps<{
   item: SidebarItem
 }>()
 
-// 如果沒有 icon，使用一個預設的 icon (如 mdi-circle) 但設為透明
-// 這樣可以保持縮排一致
-const displayIcon = computed(() => props.item.icon || 'mdi-circle-medium')
-const isTransparent = computed(() => !props.item.icon)
+const route = useRoute()
+const isExpanded = ref(false)
+
+// 判斷是否為當前活動項目
+const isActive = computed(() => {
+  if (!props.item.to) return false
+  return route.path === props.item.to
+})
+
+// 如果有子選單,切換展開狀態
+const toggleExpand = () => {
+  if (props.item.children && props.item.children.length > 0) {
+    isExpanded.value = !isExpanded.value
+  }
+}
+
+// 處理點擊事件
+const handleClick = () => {
+  if (props.item.to) {
+    navigateTo(props.item.to)
+  } else {
+    toggleExpand()
+  }
+}
 </script>
 
 <template>
-  <!-- 如果有子選單，使用 v-list-group -->
-  <v-list-group
-    v-if="item.children && item.children.length > 0"
-    :value="item.label"
-  >
-    <template #activator="{ props: activatorProps }">
-      <v-list-item
-        v-bind="activatorProps"
-        :prepend-icon="displayIcon"
-        :class="{ 'ghost-icon': isTransparent }"
-        :title="item.label"
-        rounded="lg"
-        class="mb-1"
+  <!-- 如果有子選單 -->
+  <div v-if="item.children && item.children.length > 0">
+    <div
+      class="sidebar-nav-item"
+      :class="{ 'is-disabled': item.disabled }"
+      @click="handleClick"
+    >
+      <svg
+        v-if="item.icon"
+        class="sidebar-nav-icon"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <!-- 簡化的圖標,實際應用中可以根據 item.icon 動態渲染 -->
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+        />
+      </svg>
+      <span style="flex: 1">{{ item.label }}</span>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        :style="{
+          transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.2s'
+        }"
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+
+    <!-- 子選單 (遞迴) -->
+    <div
+      v-show="isExpanded"
+      style="padding-left: 1rem"
+    >
+      <AppSidebarItem
+        v-for="child in item.children"
+        :key="child.label"
+        :item="child"
       />
-    </template>
+    </div>
+  </div>
 
-    <!-- 遞迴呼叫自己渲染子選單 -->
-    <AppSidebarItem
-      v-for="child in item.children"
-      :key="child.label"
-      :item="child"
-    />
-  </v-list-group>
-
-  <!-- 如果沒有子選單，使用 v-list-item -->
-  <v-list-item
+  <!-- 如果沒有子選單 -->
+  <NuxtLink
     v-else
-    :prepend-icon="displayIcon"
-    :class="{ 'ghost-icon': isTransparent }"
-    :title="item.label"
-    :to="item.to"
-    :value="item.to"
-    :disabled="item.disabled"
-    nuxt
-    rounded="lg"
-    class="mb-1"
-    active-class="bg-primary text-white"
-  />
+    :to="item.to || '#'"
+    class="sidebar-nav-item"
+    :class="{ 'is-active': isActive, 'is-disabled': item.disabled }"
+    @click.prevent="handleClick"
+  >
+    <svg
+      v-if="item.icon"
+      class="sidebar-nav-icon"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <!-- 簡化的圖標,實際應用中可以根據 item.icon 動態渲染 -->
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+      />
+    </svg>
+    <span>{{ item.label }}</span>
+  </NuxtLink>
 </template>
-
-<style scoped>
-.ghost-icon :deep(.v-icon) {
-  opacity: 0;
-}
-</style>

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+/**
+ * Default Layout - Framework Agnostic
+ * 框架無關的預設佈局
+ *
+ * 此佈局不依賴任何 UI 框架,使用純 HTML + CSS 實現
+ */
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import AppSidebar from '~/components/layout/AppSidebar.vue'
@@ -14,9 +20,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app
-    :theme="appStore.config.theme.defaultTheme"
-    class="bg-grey-lighten-4"
+  <div
+    class="app-layout"
+    :class="{ 'has-sidebar': appStore.config.sidebar.visible }"
   >
     <!-- Header -->
     <AppHeader />
@@ -24,20 +30,22 @@ onMounted(() => {
     <!-- Sidebar -->
     <AppSidebar v-model="appStore.drawer" />
 
+    <!-- Backdrop for mobile -->
+    <div
+      class="backdrop"
+      :class="{ 'is-visible': appStore.drawer }"
+      @click="appStore.drawer = false"
+    />
+
     <!-- Main Content -->
-    <v-main>
-      <v-container
-        fluid
-        class="pa-6"
-      >
-        <slot />
-      </v-container>
-    </v-main>
+    <main class="app-main">
+      <slot />
+    </main>
 
     <!-- Footer -->
     <AppFooter />
 
     <!-- Global Snackbar -->
     <GlobalSnackbar />
-  </v-app>
+  </div>
 </template>

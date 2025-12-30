@@ -1,9 +1,16 @@
 <script setup lang="ts">
+/**
+ * Header User Menu - Framework Agnostic
+ * 框架無關的使用者選單
+ */
 import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()
+const isOpen = ref(false)
 
 const handleAction = async (item: any) => {
+  isOpen.value = false
+
   if (item.to) {
     navigateTo(item.to)
   } else if (item.action) {
@@ -28,64 +35,98 @@ const handleAction = async (item: any) => {
     }
   }
 }
+
+const toggleMenu = () => {
+  isOpen.value = !isOpen.value
+}
+
+// 點擊外部關閉
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement
+    if (!target.closest('.dropdown')) {
+      isOpen.value = false
+    }
+  })
+})
 </script>
 
 <template>
-  <v-menu
+  <div
     v-if="appStore.config.header.userMenu.visible"
-    location="bottom end"
-    offset="10"
+    class="dropdown"
+    :class="{ 'is-open': isOpen }"
   >
-    <template #activator="{ props }">
-      <v-btn
-        icon
-        v-bind="props"
-      >
-        <v-avatar
-          color="primary"
-          size="36"
-        >
-          <v-img
-            src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-          />
-        </v-avatar>
-      </v-btn>
-    </template>
-    <v-card
-      width="200"
-      class="rounded-lg"
+    <button
+      class="dropdown-toggle btn-icon"
+      @click.stop="toggleMenu"
     >
-      <v-list>
-        <v-list-item
-          prepend-avatar="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-          title="Admin User"
-          subtitle="admin@example.com"
-        />
-      </v-list>
-      <v-divider />
-      <v-list
-        density="compact"
-        nav
+      <img
+        src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+        alt="User avatar"
+        style="width: 36px; height: 36px; border-radius: var(--radius-full); object-fit: cover"
+      />
+    </button>
+
+    <div class="dropdown-menu">
+      <!-- User Info -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 1rem;
+          border-bottom: 1px solid var(--color-gray-200);
+        "
       >
+        <img
+          src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+          alt="User avatar"
+          style="width: 40px; height: 40px; border-radius: var(--radius-full); object-fit: cover"
+        />
+        <div>
+          <div style="font-weight: 600; font-size: 0.875rem">Admin User</div>
+          <div style="font-size: 0.75rem; color: var(--color-gray-600)">admin@example.com</div>
+        </div>
+      </div>
+
+      <!-- Menu Items -->
+      <div style="padding: 0.5rem 0">
         <template
           v-for="(item, i) in appStore.config.header.userMenu.items"
           :key="i"
         >
-          <v-divider
+          <div
             v-if="item.divider"
-            class="my-2"
+            class="dropdown-menu-divider"
           />
-          <v-list-item
+          <a
             v-else
-            :prepend-icon="item.icon"
-            :title="item.title"
-            :value="item.action"
-            :color="item.color"
-            :to="item.to"
-            @click="handleAction(item)"
-          />
+            href="#"
+            class="dropdown-menu-item"
+            :style="{ color: item.color === 'error' ? 'var(--color-error)' : 'inherit' }"
+            @click.prevent="handleAction(item)"
+          >
+            <svg
+              v-if="item.icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="margin-right: 0.75rem"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+            </svg>
+            {{ item.title }}
+          </a>
         </template>
-      </v-list>
-    </v-card>
-  </v-menu>
+      </div>
+    </div>
+  </div>
 </template>

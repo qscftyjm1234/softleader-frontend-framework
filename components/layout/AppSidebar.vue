@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * App Sidebar - Framework Agnostic
+ * 框架無關的側邊欄
+ */
 import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
 
 const sidebarStore = useSidebarStore()
@@ -16,7 +20,7 @@ const drawer = computed({
   set: (val) => emit('update:modelValue', val)
 })
 
-// 確保 sidebar 已經生成，並傳入使用者權限
+// 確保 sidebar 已經生成,並傳入使用者權限
 watch(
   () => userStore.permissions,
   (newPermissions) => {
@@ -27,52 +31,42 @@ watch(
 </script>
 
 <template>
-  <v-navigation-drawer
-    v-model="drawer"
-    class="bg-grey-darken-4"
-    theme="dark"
-    elevation="2"
-    :width="appStore.config?.sidebar?.width || 280"
+  <aside
+    class="app-sidebar"
+    :class="{ 'is-open': drawer }"
   >
     <!-- 品牌 Logo 區塊 -->
-    <div class="pa-6 d-flex align-center">
-      <v-avatar
-        color="primary"
-        size="40"
-        rounded="lg"
-        class="mr-3 elevation-2"
-      >
-        <v-img
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">
+        <img
           v-if="appStore.config.branding.logo.image"
           :src="appStore.config.branding.logo.image"
+          alt="Logo"
+          style="width: 100%; height: 100%; object-fit: contain"
         />
-        <v-icon
+        <svg
           v-else
-          :icon="appStore.config.branding.logo.icon"
-          size="24"
-        />
-      </v-avatar>
-      <div>
-        <div
-          class="text-h6 font-weight-bold text-white"
-          style="line-height: 1.2"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="currentColor"
         >
+          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+        </svg>
+      </div>
+      <div class="sidebar-brand-text">
+        <h1 class="sidebar-brand-title">
           {{ appStore.config.branding.title }}
-        </div>
-        <div class="text-caption text-grey-lighten-1">
+        </h1>
+        <p class="sidebar-brand-subtitle">
           {{ appStore.config.branding.subtitle }}
-        </div>
+        </p>
       </div>
     </div>
 
-    <v-divider class="mb-2 border-opacity-25" />
-
-    <v-list
-      nav
-      open-strategy="single"
-      class="px-3"
-    >
-      <div class="text-caption font-weight-bold text-grey-darken-1 mb-2 mt-2 px-2">
+    <!-- 導航選單 -->
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-title">
         {{ appStore.config.sidebar.mainMenuTitle }}
       </div>
       <AppSidebarItem
@@ -80,6 +74,6 @@ watch(
         :key="item.label"
         :item="item"
       />
-    </v-list>
-  </v-navigation-drawer>
+    </nav>
+  </aside>
 </template>

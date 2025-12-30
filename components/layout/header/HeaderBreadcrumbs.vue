@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * Header Breadcrumbs - Framework Agnostic
+ * 框架無關的麵包屑導航
+ */
 import { useAppStore } from '~/stores/app'
 import { useRoute } from 'vue-router'
 
@@ -17,20 +21,55 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-  <v-breadcrumbs
+  <nav
     v-if="appStore.config.header.breadcrumbs"
-    :items="breadcrumbs"
-    class="d-none d-md-flex ml-2"
+    class="breadcrumbs hidden-mobile"
+    aria-label="breadcrumb"
   >
-    <template #divider>
-      <v-icon icon="mdi-chevron-right" />
-    </template>
-    <template #prepend>
-      <v-icon
-        icon="mdi-home"
-        size="small"
-        class="mr-1"
-      />
-    </template>
-  </v-breadcrumbs>
+    <ol class="breadcrumbs">
+      <li class="breadcrumb-item">
+        <NuxtLink to="/">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          </svg>
+        </NuxtLink>
+      </li>
+      <template
+        v-for="(item, index) in breadcrumbs"
+        :key="index"
+      >
+        <li class="breadcrumb-divider">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </li>
+        <li
+          class="breadcrumb-item"
+          :class="{ 'is-active': item.disabled }"
+        >
+          <NuxtLink
+            v-if="!item.disabled"
+            :to="item.href"
+          >
+            {{ item.title }}
+          </NuxtLink>
+          <span v-else>{{ item.title }}</span>
+        </li>
+      </template>
+    </ol>
+  </nav>
 </template>
