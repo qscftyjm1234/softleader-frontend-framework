@@ -98,6 +98,20 @@ const ExtensionHandlers: Record<string, (ctx: ExtensionContext) => any> = {
   },
 
   /**
+   * 取得原始資料（用於 debug）
+   * @param ctx - 擴充上下文
+   * @returns 原始陣列資料（純陣列）
+   */
+  value: (ctx) => [...ctx.data],
+
+  /**
+   * 取得原始資料（別名）
+   * @param ctx - 擴充上下文
+   * @returns 原始陣列資料（純陣列）
+   */
+  get: (ctx) => () => [...ctx.data],
+
+  /**
    * 強制重新載入
    * @param ctx - 擴充上下文
    * @returns 重新載入函數
@@ -292,6 +306,21 @@ function createOptionProxy(registryKey: string, definition: OptionDefinition): O
         // S. 安全轉換字串
         if (prop === 'toString') {
           return () => JSON.stringify(data, null, 2)
+        }
+
+        // I. 改善 console.log 輸出 (Node.js inspect)
+        if (prop === 'inspect' || prop === Symbol.for('nodejs.util.inspect.custom')) {
+          return () => data
+        }
+
+        // C. 改善瀏覽器 console.log 輸出
+        if (prop === Symbol.toStringTag) {
+          return 'OptionArray'
+        }
+
+        // V. 瀏覽器 DevTools 自訂格式化（Chrome/Edge）
+        if (prop === 'constructor') {
+          return Array
         }
 
         // A. 優先檢查是否為「擴充功能」

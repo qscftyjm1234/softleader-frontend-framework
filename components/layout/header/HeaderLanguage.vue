@@ -7,7 +7,7 @@ const { locale, locales } = useLanguage()
 </script>
 
 <template>
-  <div style="position: relative">
+  <div style="position: relative; margin-right: 8px">
     <svg
       width="20"
       height="20"

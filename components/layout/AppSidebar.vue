@@ -1,8 +1,10 @@
 <script setup lang="ts">
 /**
- * App Sidebar - Framework Agnostic
- * 框架無關的側邊欄
+ * App Sidebar - 使用三層架構
+ * 業務層：整合 Store、權限控制、導航邏輯
+ * UI 層：使用 IDrawer + IMenuItem (可替換 UI 框架)
  */
+import IDrawer from '~/components/uiInterface/layout/IDrawer.vue'
 import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
 
 const sidebarStore = useSidebarStore()
@@ -31,9 +33,10 @@ watch(
 </script>
 
 <template>
-  <aside
-    class="app-sidebar"
-    :class="{ 'is-open': drawer }"
+  <IDrawer
+    v-model="drawer"
+    :permanent="true"
+    width="256px"
   >
     <!-- 品牌 Logo 區塊 -->
     <div class="sidebar-brand">
@@ -75,5 +78,59 @@ watch(
         :item="item"
       />
     </nav>
-  </aside>
+  </IDrawer>
 </template>
+
+<style scoped>
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-brand-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: #3498db;
+}
+
+.sidebar-brand-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-brand-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-brand-subtitle {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin: 0.25rem 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav {
+  padding: 1rem 0;
+}
+
+.sidebar-nav-title {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+</style>

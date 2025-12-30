@@ -1,4 +1,17 @@
 <script setup lang="ts">
+/**
+ * SmartTable - 智能表格組件
+ *
+ * 業務層：使用 uiInterface 層組件 + composables
+ * 遵循三層架構：
+ * - UI: 使用 ICard, IDataTable, ITextField 等介面層組件
+ * - Logic: 使用 useTableData 管理資料載入
+ */
+import ICard from '~/components/uiInterface/ICard.vue'
+import ITextField from '~/components/uiInterface/ITextField.vue'
+import IDivider from '~/components/uiInterface/IDivider.vue'
+import IChip from '~/components/uiInterface/IChip.vue'
+
 interface Column {
   label: string
   field: string
@@ -19,164 +32,202 @@ const props = withDefaults(defineProps<Props>(), {
   data: () => []
 })
 
-// 狀態管理
-const search = ref('')
-const page = ref(1)
-const itemsPerPage = ref(5)
-const serverItems = ref<any[]>([])
-const totalItems = ref(0)
-const loading = ref(false)
+// 使用 composable 管理表格資料
+const tableData = useTableData({
+  api: props.api,
+  staticData: props.data
+})
 
-// 轉換 columns 格式給 Vuetify
+// 轉換 columns 格式
 const headers = computed(() =>
   props.columns.map((col) => ({
-    title: col.label,
     key: col.field,
+    label: col.label,
     sortable: col.sortable !== false
   }))
 )
 
-// 載入資料函式
-const loadItems = async ({ page: p, itemsPerPage: ipp }: any) => {
-  if (!props.api) return
-
-  loading.value = true
-  try {
-    // 使用 $fetch 而不是 useFetch，避免 Nuxt 的自動緩存/去重複機制導致資料沒更新
-    const result = await $fetch(props.api, {
-      params: {
-        page: p,
-        itemsPerPage: ipp,
-        q: search.value
-      }
-    })
-
-    if (result) {
-      // 支援回傳格式 { items: [], total: 100 } 或直接回傳 []
-      if (Array.isArray(result)) {
-        serverItems.value = result
-        totalItems.value = result.length
-      } else {
-        const res = result as any
-        serverItems.value = res.items || []
-        totalItems.value = res.total || 0
-      }
-    }
-  } catch (e) {
-    console.error('Failed to load items', e)
-  } finally {
-    loading.value = false
-  }
+// 取得欄位顏色 (for tag type)
+const getTagColor = (value: string): string => {
+  if (value === 'Admin') return '#1976D2'
+  if (value === 'Editor') return '#4CAF50'
+  return '#9E9E9E'
 }
-
-// 監聽搜尋變更，重置頁碼並重新載入
-let searchTimeout: ReturnType<typeof setTimeout>
-watch(search, () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    page.value = 1
-    // v-data-table-server 會自動觸發 loadItems，但有時需要手動強制更新
-    // 這裡我們依賴 items-per-page 或 page 改變觸發，或者直接呼叫
-  }, 500)
-})
-
-// 初始載入 (如果沒有 API，就用靜態資料)
-onMounted(() => {
-  if (!props.api) {
-    serverItems.value = props.data
-    totalItems.value = props.data.length
-  }
-})
 </script>
 
 <template>
-  <v-card
-    class="mb-4"
+  <ICard
     elevation="0"
-    border
-    rounded="lg"
+    class="smart-table"
   >
-    <v-card-title class="d-flex align-center py-3 px-4">
-      <span class="text-h6 font-weight-bold">{{ title }}</span>
-      <v-spacer />
-      <!-- 搜尋框 -->
-      <v-text-field
-        v-model="search"
-        prepend-inner-icon="mdi-magnify"
-        label="搜尋..."
-        single-line
-        hide-details
-        density="compact"
-        variant="outlined"
-        style="max-width: 300px"
-        class="ml-4"
-        rounded="lg"
+    <!-- Header with Search -->
+    <div class="table-header">
+      <h3 class="table-title">{{ title }}</h3>
+      <ITextField
+        v-model="tableData.search.value"
+        placeholder="搜尋..."
+        class="table-search"
       />
-    </v-card-title>
+    </div>
 
-    <v-divider />
+    <IDivider />
 
-    <!-- Server Side Table -->
-    <v-data-table-server
-      v-if="api"
-      v-model:items-per-page="itemsPerPage"
-      v-model:page="page"
-      :headers="headers"
-      :items="serverItems"
-      :items-length="totalItems"
-      :loading="loading"
-      :search="search"
-      class="elevation-0"
-      hover
-      @update:options="loadItems"
+    <!-- Loading State -->
+    <div
+      v-if="tableData.loading.value"
+      class="table-loading"
     >
-      <!-- 自定義欄位渲染 -->
-      <template
-        v-for="col in columns"
-        :key="col.field"
-        #[`item.${col.field}`]="{ item }"
-      >
-        <!-- Tag Type -->
-        <v-chip
-          v-if="col.type === 'tag'"
-          :color="
-            item[col.field] === 'Admin'
-              ? 'primary'
-              : item[col.field] === 'Editor'
-                ? 'success'
-                : 'grey'
-          "
-          size="small"
-          variant="flat"
-        >
-          {{ item[col.field] }}
-        </v-chip>
+      ⏳ 載入中...
+    </div>
 
-        <!-- Default Text -->
-        <span v-else>
-          {{ item[col.field] }}
-        </span>
-      </template>
-    </v-data-table-server>
-
-    <!-- Static Table (Fallback) -->
-    <v-data-table
+    <!-- Table Content -->
+    <div
       v-else
-      :headers="headers"
-      :items="data"
-      :search="search"
-      class="elevation-0"
-      hover
+      class="table-wrapper"
     >
-      <template
-        v-for="col in columns"
-        :key="col.field"
-        #[`item.${col.field}`]="{ item }"
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th
+              v-for="col in headers"
+              :key="col.key"
+            >
+              {{ col.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in tableData.items.value"
+            :key="index"
+            class="table-row"
+          >
+            <td
+              v-for="col in columns"
+              :key="col.field"
+            >
+              <!-- Tag Type -->
+              <IChip
+                v-if="col.type === 'tag'"
+                size="small"
+                :color="getTagColor(item[col.field])"
+              >
+                {{ item[col.field] }}
+              </IChip>
+
+              <!-- Default Text -->
+              <span v-else>
+                {{ item[col.field] }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div
+        v-if="tableData.items.value.length === 0"
+        class="table-empty"
       >
-        <span v-if="!col.type || col.type === 'text'">
-          {{ item[col.field] }}
-        </span>
-      </template>
-    </v-data-table>
-  </v-card>
+        無資料
+      </div>
+    </div>
+
+    <!-- Pagination Info -->
+    <div
+      v-if="api && tableData.totalItems.value > 0"
+      class="table-footer"
+    >
+      <div class="pagination-info">
+        共 {{ tableData.totalItems.value }} 筆資料 (第 {{ tableData.page.value }} 頁，每頁
+        {{ tableData.itemsPerPage.value }} 筆)
+      </div>
+    </div>
+  </ICard>
 </template>
+
+<style scoped>
+.smart-table {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header */
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.table-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #424242;
+}
+
+.table-search {
+  max-width: 300px;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: #f5f5f5;
+}
+
+.data-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #757575;
+  font-size: 0.875rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.data-table td {
+  padding: 0.75rem 1rem;
+  color: #424242;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table-row:hover {
+  background: #f9f9f9;
+}
+
+.table-row:last-child td {
+  border-bottom: none;
+}
+
+/* States */
+.table-loading,
+.table-empty {
+  padding: 3rem;
+  text-align: center;
+  color: #9e9e9e;
+  font-size: 0.875rem;
+}
+
+/* Footer */
+.table-footer {
+  padding: 1rem 1.5rem;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: #757575;
+}
+</style>

@@ -21,7 +21,6 @@ export const currencies = async (): Promise<OptionItem[]> => {
     { label: '歐元 (EUR)', value: 'EUR' }
   ]
 }
-
 /**
  * 鄉鎮區列表 - 帶參數範例
  * @param cityId

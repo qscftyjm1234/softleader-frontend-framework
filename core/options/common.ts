@@ -31,7 +31,17 @@ export const opStatus: OptionItem[] = [
   { label: '待生效', value: 'PENDING', color: 'blue' }
 ]
 
-/** 假資料：響應式選項 (Computed 範例) */
+/** 台灣城市列表 */
+export const cities: OptionItem[] = [
+  { label: '台北市', value: 'TPE' },
+  { label: '新北市', value: 'NTPC' },
+  { label: '桃園市', value: 'TYC' },
+  { label: '台中市', value: 'TXG' },
+  { label: '台南市', value: 'TNN' },
+  { label: '高雄市', value: 'KHH' }
+]
+
+/** 假資料:響應式選項 (Computed 範例) */
 export const vocabularies = computed(() => {
   // 模擬： userId 透過 store異動等等
   return [

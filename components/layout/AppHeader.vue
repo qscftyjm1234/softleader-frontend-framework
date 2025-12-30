@@ -1,8 +1,10 @@
 <script setup lang="ts">
 /**
- * App Header - Framework Agnostic
- * 框架無關的應用程式標頭
+ * App Header - 使用三層架構
+ * 業務層：整合 Store、子組件
+ * UI 層：使用 IAppBar (可替換 UI 框架)
  */
+import IAppBar from '~/components/uiInterface/layout/IAppBar.vue'
 import { useAppStore } from '~/stores/app'
 import HeaderBreadcrumbs from '~/components/layout/header/HeaderBreadcrumbs.vue'
 import HeaderSearch from '~/components/layout/header/HeaderSearch.vue'
@@ -14,9 +16,11 @@ const appStore = useAppStore()
 </script>
 
 <template>
-  <header
+  <IAppBar
     v-if="appStore.config.header.visible"
-    class="app-header"
+    :fixed="true"
+    :elevation="2"
+    color="white"
   >
     <!-- Mobile Menu Toggle -->
     <button
@@ -71,5 +75,38 @@ const appStore = useAppStore()
       <!-- User Menu -->
       <HeaderUserMenu />
     </div>
-  </header>
+  </IAppBar>
 </template>
+
+<style scoped>
+.header-nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.header-nav-toggle:hover {
+  color: #3498db;
+}
+
+@media (max-width: 1023px) {
+  .header-nav-toggle {
+    display: block;
+  }
+}
+
+.header-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-spacer {
+  flex: 1;
+}
+</style>

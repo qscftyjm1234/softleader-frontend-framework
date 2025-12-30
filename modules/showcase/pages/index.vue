@@ -228,6 +228,48 @@ definePageMeta({
         </div>
         <div class="card-text">展示閒置偵測功能，包含活動監控、自動登出與暫停/恢復機制。</div>
       </router-link>
+
+      <!-- 導航卡片:前往組件架構 -->
+      <router-link
+        to="/showcase/component-showcase"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🎨</span>
+          組件展示 (Component Showcase)
+        </div>
+        <div class="card-text">
+          展示三層架構設計:Composables、UI 適配層、業務組件,實現框架無關的開發模式。
+        </div>
+      </router-link>
+
+      <!-- 導航卡片:前往 Mock API -->
+      <router-link
+        to="/showcase/mock-api"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🔌</span>
+          Mock API 展示
+        </div>
+        <div class="card-text">
+          展示專案中可用的 Mock API 端點,包含檔案上傳、匯出、報表生成等功能。
+        </div>
+      </router-link>
+
+      <!-- 導航卡片:前往 API Demo -->
+      <router-link
+        to="/showcase/api-demo"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🔗</span>
+          API 管理展示 (API Demo)
+        </div>
+        <div class="card-text">
+          展示如何使用 Repository 模式進行 API 呼叫,包含分頁、搜尋、載入狀態等功能。
+        </div>
+      </router-link>
     </div>
   </div>
 </template>

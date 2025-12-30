@@ -1,7 +1,19 @@
 <script setup lang="ts">
-// 這個組件內部可以非常複雜，包含大量的狀態、計算、API 呼叫等
-// 但對 Schema 來說，它只是一個 "標籤"
+/**
+ * SmartComplexWidget - 複雜智能組件
+ *
+ * 業務層：使用 uiInterface 層組件
+ * 遵循三層架構：
+ * - UI: 使用 ICard, ISheet, IButton 等介面層組件
+ */
+import ICard from '~/components/uiInterface/ICard.vue'
+import ISheet from '~/components/uiInterface/ISheet.vue'
+import IButton from '~/components/uiInterface/IButton.vue'
+import IAvatar from '~/components/uiInterface/IAvatar.vue'
+import IIcon from '~/components/uiInterface/IIcon.vue'
+import IChip from '~/components/uiInterface/IChip.vue'
 
+// 狀態管理
 const count = ref(0)
 const history = ref<string[]>([])
 
@@ -17,112 +29,238 @@ const reset = () => {
 </script>
 
 <template>
-  <v-card
-    class="mx-auto"
+  <ICard
     elevation="0"
-    border
-    rounded="xl"
-    max-width="600"
-    color="white"
+    class="complex-widget"
   >
-    <!-- Clean Header -->
-    <div class="pa-6 pb-0 d-flex align-center justify-space-between">
-      <div>
-        <div class="text-overline text-grey-darken-1 mb-1 font-weight-bold">SMART WIDGET</div>
-        <div class="text-h5 font-weight-bold text-grey-darken-4">複雜組件範例</div>
-        <div class="text-body-2 text-grey-darken-1 mt-1">展示內部狀態管理與互動邏輯</div>
+    <!-- Header -->
+    <div class="widget-header">
+      <div class="widget-header__info">
+        <div class="widget-overline">SMART WIDGET</div>
+        <h2 class="widget-title">複雜組件範例</h2>
+        <p class="widget-subtitle">展示內部狀態管理與互動邏輯</p>
       </div>
-      <v-avatar
-        color="blue-lighten-5"
-        size="48"
-        rounded="lg"
+      <IAvatar
+        :size="48"
+        color="#E3F2FD"
+        rounded="8px"
       >
-        <v-icon
-          icon="mdi-chart-timeline-variant"
-          color="blue-darken-2"
-          size="24"
+        <IIcon
+          icon="📊"
+          :size="24"
         />
-      </v-avatar>
+      </IAvatar>
     </div>
 
-    <v-card-text class="pa-6">
-      <!-- Main Content Card -->
-      <v-sheet
-        color="grey-lighten-4"
-        rounded="xl"
-        class="pa-6 mb-6 d-flex align-center justify-space-between"
-      >
+    <!-- Main Content -->
+    <ISheet
+      color="#F5F5F5"
+      rounded="12px"
+      padding="1.5rem"
+      class="widget-content"
+    >
+      <div class="content-display">
         <div>
-          <div class="text-caption text-grey-darken-1 font-weight-bold mb-1">CURRENT VALUE</div>
-          <div class="text-h2 font-weight-black text-blue-darken-3">
-            {{ count }}
-          </div>
+          <div class="content-label">CURRENT VALUE</div>
+          <div class="content-value">{{ count }}</div>
         </div>
 
-        <div class="d-flex flex-column gap-2">
-          <v-btn
-            color="blue-darken-2"
-            variant="flat"
-            height="44"
-            prepend-icon="mdi-plus"
-            class="text-none px-6"
-            rounded="lg"
-            elevation="2"
+        <div class="content-actions">
+          <IButton
+            variant="primary"
+            size="large"
             @click="increment"
           >
-            增加數值
-          </v-btn>
-          <v-btn
+            ➕ 增加數值
+          </IButton>
+          <IButton
             variant="text"
-            color="grey-darken-2"
-            height="36"
-            class="text-none"
             size="small"
             @click="reset"
           >
             重置狀態
-          </v-btn>
+          </IButton>
         </div>
-      </v-sheet>
+      </div>
+    </ISheet>
 
-      <!-- History Section -->
-      <div class="mb-3 d-flex align-center">
-        <span class="text-subtitle-2 font-weight-bold text-grey-darken-3">操作紀錄</span>
-        <v-chip
-          size="x-small"
-          color="blue-grey"
-          variant="flat"
-          class="ml-2 font-weight-bold"
+    <!-- History Section -->
+    <div class="widget-history">
+      <div class="history-header">
+        <span class="history-title">操作紀錄</span>
+        <IChip
+          size="small"
+          color="#90A4AE"
         >
           {{ history.length }}
-        </v-chip>
+        </IChip>
       </div>
 
-      <div class="d-flex flex-column gap-2">
-        <v-slide-y-transition group>
+      <div class="history-list">
+        <TransitionGroup name="slide-fade">
           <div
             v-for="log in history"
             :key="log"
-            class="d-flex align-center py-3 px-4 border rounded-lg bg-white"
+            class="history-item"
           >
-            <div class="d-flex flex-column mr-3">
-              <v-icon
-                icon="mdi-circle-small"
-                color="green-darken-1"
-                size="small"
-              />
-            </div>
-            <span class="text-body-2 text-grey-darken-3">{{ log }}</span>
+            <IIcon
+              icon="🟢"
+              :size="12"
+            />
+            <span class="history-text">{{ log }}</span>
           </div>
-        </v-slide-y-transition>
+        </TransitionGroup>
 
         <div
           v-if="history.length === 0"
-          class="text-center py-8 text-grey-lighten-1 border border-dashed rounded-lg"
+          class="history-empty"
         >
-          <div class="text-body-2">尚無任何操作紀錄</div>
+          <div class="history-empty__text">尚無任何操作紀錄</div>
         </div>
       </div>
-    </v-card-text>
-  </v-card>
+    </div>
+  </ICard>
 </template>
+
+<style scoped>
+.complex-widget {
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+}
+
+/* Header */
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.widget-header__info {
+  flex: 1;
+}
+
+.widget-overline {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #9e9e9e;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.widget-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #424242;
+  margin: 0;
+}
+
+.widget-subtitle {
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0.25rem 0 0;
+}
+
+/* Content */
+.widget-content {
+  margin: 1.5rem;
+}
+
+.content-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.content-label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #757575;
+  margin-bottom: 0.25rem;
+}
+
+.content-value {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #1565c0;
+}
+
+.content-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* History */
+.widget-history {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.history-title {
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #424242;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.history-text {
+  font-size: 0.875rem;
+  color: #424242;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 2rem;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+}
+
+.history-empty__text {
+  font-size: 0.875rem;
+  color: #bdbdbd;
+}
+
+/* Transitions */
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s ease-in;
+}
+
+.slide-fade-enter-from {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+</style>

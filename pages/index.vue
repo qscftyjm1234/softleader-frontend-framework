@@ -27,6 +27,15 @@ import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
       <HeaderLanguage />
 
       <v-btn
+        color="success"
+        prepend-icon="mdi-view-dashboard"
+        class="me-2"
+        to="/showcase"
+      >
+        Showcase 展示
+      </v-btn>
+
+      <v-btn
         color="primary"
         prepend-icon="mdi-download"
       >
