@@ -142,6 +142,92 @@ definePageMeta({
         </div>
         <div class="card-text">展示分頁管理功能，包含頁碼計算、範圍管理與陣列分頁。</div>
       </router-link>
+
+      <!-- 導航卡片：前往權限管理 -->
+      <router-link
+        to="/showcase/permission"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🛡️</span>
+          權限管理 (Permission)
+        </div>
+        <div class="card-text">展示權限管理功能，包含角色驗證、功能權限控制與多重權限檢查。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往彈窗管理 -->
+      <router-link
+        to="/showcase/modal"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🪟</span>
+          彈窗管理 (Modal)
+        </div>
+        <div class="card-text">展示彈窗管理功能，包含統一彈窗控制、多層彈窗管理與確認對話框。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往加密工具 -->
+      <router-link
+        to="/showcase/encryption"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🔐</span>
+          加密工具 (Encryption)
+        </div>
+        <div class="card-text">
+          展示加密工具功能，包含 Base64 編碼/解碼、AES 加密/解密與雜湊函數。
+        </div>
+      </router-link>
+
+      <!-- 導航卡片：前往日誌系統 -->
+      <router-link
+        to="/showcase/logger"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📋</span>
+          日誌系統 (Logger)
+        </div>
+        <div class="card-text">展示日誌系統功能，包含分級日誌、效能追蹤與環境區分。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往錯誤處理 -->
+      <router-link
+        to="/showcase/error-handler"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">⚠️</span>
+          錯誤處理 (Error Handler)
+        </div>
+        <div class="card-text">展示錯誤處理功能，包含錯誤捕捉、分類、記錄與重試機制。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往網路狀態 -->
+      <router-link
+        to="/showcase/network"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">📡</span>
+          網路狀態 (Network)
+        </div>
+        <div class="card-text">展示網路狀態監控，包含線上/離線狀態、網路類型與速度偵測。</div>
+      </router-link>
+
+      <!-- 導航卡片：前往閒置偵測 -->
+      <router-link
+        to="/showcase/idle"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">⏱️</span>
+          閒置偵測 (Idle)
+        </div>
+        <div class="card-text">展示閒置偵測功能，包含活動監控、自動登出與暫停/恢復機制。</div>
+      </router-link>
     </div>
   </div>
 </template>

@@ -1,0 +1,120 @@
+/**
+ * useNetwork - 網路狀態監控
+ * 提供線上/離線狀態、網路類型和速度偵測
+ */
+
+export type NetworkType = 'slow-2g' | '2g' | '3g' | '4g' | undefined
+
+export interface UseNetworkReturn {
+  /** 是否線上 */
+  isOnline: Ref<boolean>
+  /** 網路類型 */
+  effectiveType: Ref<NetworkType>
+  /** 下載速度（Mbps） */
+  downlink: Ref<number | undefined>
+  /** 往返時間（ms） */
+  rtt: Ref<number | undefined>
+  /** 省流量模式 */
+  saveData: Ref<boolean>
+}
+
+/**
+ * 網路狀態監控 Composable
+ * @returns 網路狀態資訊
+ */
+export function useNetwork(): UseNetworkReturn {
+  const logger = useLogger('Network')
+
+  // 基本線上/離線狀態
+  const isOnline = ref(true)
+
+  // Network Information API 資訊
+  const effectiveType = ref<NetworkType>(undefined)
+  const downlink = ref<number | undefined>(undefined)
+  const rtt = ref<number | undefined>(undefined)
+  const saveData = ref(false)
+
+  /**
+   * 更新網路資訊
+   */
+  const updateNetworkInfo = (): void => {
+    // @ts-expect-error - Navigator.connection is not standard
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+
+    if (connection) {
+      effectiveType.value = connection.effectiveType
+      downlink.value = connection.downlink
+      rtt.value = connection.rtt
+      saveData.value = connection.saveData || false
+
+      logger.debug('Network info updated', {
+        effectiveType: effectiveType.value,
+        downlink: downlink.value,
+        rtt: rtt.value,
+        saveData: saveData.value
+      })
+    }
+  }
+
+  /**
+   * 處理線上狀態
+   */
+  const handleOnline = (): void => {
+    isOnline.value = true
+    logger.info('Network online')
+    updateNetworkInfo()
+  }
+
+  /**
+   * 處理離線狀態
+   */
+  const handleOffline = (): void => {
+    isOnline.value = false
+    logger.warn('Network offline')
+  }
+
+  // 初始化
+  onMounted(() => {
+    // 設定初始狀態
+    isOnline.value = navigator.onLine
+    updateNetworkInfo()
+
+    // 監聽線上/離線事件
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    // 監聽網路資訊變化
+    // @ts-expect-error - Navigator.connection is not standard
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+    if (connection) {
+      connection.addEventListener('change', updateNetworkInfo)
+    }
+
+    logger.info('Network monitoring started', {
+      isOnline: isOnline.value,
+      effectiveType: effectiveType.value
+    })
+  })
+
+  // 清理
+  onUnmounted(() => {
+    window.removeEventListener('online', handleOnline)
+    window.removeEventListener('offline', handleOffline)
+
+    // @ts-expect-error - Navigator.connection is not standard
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+    if (connection) {
+      connection.removeEventListener('change', updateNetworkInfo)
+    }
+
+    logger.info('Network monitoring stopped')
+  })
+
+  return {
+    isOnline,
+    effectiveType,
+    downlink,
+    rtt,
+    saveData
+  }
+}

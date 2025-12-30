@@ -12,25 +12,10 @@ const { data: activitiesData, pending: activitiesPending } =
 await waitForData(activitiesPending)
 // console.log('活動:', activitiesData.value)
 import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
-
-const device = useAppDevice()
-
-const abcb = ref<any>(1)
-const abc = ref<number>(1)
-abc.value = '2'
 </script>
 
 <template>
   <v-container fluid>
-    <!-- Debug Platform -->
-    <v-alert
-      type="info"
-      variant="tonal"
-      class="mb-4"
-    >
-      <pre>{{ device }}</pre>
-    </v-alert>
-
     <!-- 歡迎標題 -->
     <div class="d-flex align-center mb-6">
       <div>
