@@ -59,30 +59,47 @@ const handleSearch = (query: string) => {
 <template>
   <!-- 目前使用原生 HTML Select -->
   <!-- 未來可以換成 Vuetify/Element UI/Ant Design -->
+  <div class="select-wrapper">
+    <!-- 1. 前置 Slot (例如放 Icon) -->
+    <div
+      v-if="$slots.prepend"
+      class="select-prepend"
+    >
+      <slot name="prepend" />
+    </div>
 
-  <select
-    v-model="internalValue"
-    :disabled="disabled"
-    :multiple="multiple"
-    class="ui-select"
-  >
-    <option
-      v-if="placeholder && !multiple"
-      value=""
-      disabled
-      selected
+    <select
+      v-model="internalValue"
+      :disabled="disabled"
+      :multiple="multiple"
+      class="ui-select"
     >
-      {{ placeholder }}
-    </option>
-    <option
-      v-for="option in options"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
+      <option
+        v-if="placeholder && !multiple"
+        value=""
+        disabled
+        selected
+      >
+        {{ placeholder }}
+      </option>
+      <option
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+        :disabled="option.disabled"
+      >
+        {{ option.label }}
+      </option>
+    </select>
+
+    <!-- 2. 後置 Slot (例如放單位或說明) -->
+    <div
+      v-if="$slots.append"
+      class="select-append"
     >
-      {{ option.label }}
-    </option>
-  </select>
+      <slot name="append" />
+    </div>
+  </div>
 
   <!-- 未來換成 Vuetify 的範例 -->
   <!--
@@ -96,7 +113,20 @@ const handleSearch = (query: string) => {
     item-title="label"
     item-value="value"
     @update:search="handleSearch"
-  />
+  >
+    Slot 透傳與轉接
+    1. 透傳所有 Slot
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
+
+    2. (選用) Slot 正規化：例如將 Vuetify 的 'item' 轉接為標準的 'option'
+    
+    <template #item="scope">
+      <slot name="option" v-bind="scope" />
+    </template>
+    
+  </VSelect>
   -->
 
   <!-- 未來換成 Element UI 的範例 -->
@@ -122,8 +152,22 @@ const handleSearch = (query: string) => {
 </template>
 
 <style scoped>
-.ui-select {
+.select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
+}
+
+.select-prepend,
+.select-append {
+  display: flex;
+  align-items: center;
+  color: #666;
+}
+
+.ui-select {
+  flex: 1;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;

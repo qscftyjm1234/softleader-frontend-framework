@@ -33,7 +33,12 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   readonly: false,
   error: false,
-  clearable: false
+  clearable: false,
+  maxlength: undefined,
+  autocomplete: 'off',
+  errorMessage: '',
+  prefixIcon: '',
+  suffixIcon: ''
 })
 
 const emit = defineEmits<{
@@ -58,6 +63,10 @@ const handleClear = () => {
   internalValue.value = ''
   emit('clear')
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>

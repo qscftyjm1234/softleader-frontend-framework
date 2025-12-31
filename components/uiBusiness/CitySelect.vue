@@ -76,5 +76,20 @@ const handleChange = (value: string) => {
     :placeholder="placeholder"
     :disabled="disabled"
     @update:model-value="handleChange"
-  />
+  >
+    <!-- 
+      Slot Forwarding (Slot 透傳)
+      將 CitySelect 接收到的所有 slot，原封不動地傳給 ISelect
+      這樣如果不論 ISelect 換成什麼 UI 庫，只有要支援該 slot，外層都能使用
+    -->
+    <template
+      v-for="(_, name) in $slots"
+      #[name]="slotData"
+    >
+      <slot
+        :name="name"
+        v-bind="slotData || {}"
+      />
+    </template>
+  </ISelect>
 </template>

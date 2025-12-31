@@ -229,6 +229,20 @@ definePageMeta({
         <div class="card-text">展示閒置偵測功能，包含活動監控、自動登出與暫停/恢復機制。</div>
       </router-link>
 
+      <!-- 導航卡片：前往資安防護 -->
+      <router-link
+        to="/showcase/security"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">🔒</span>
+          資安防護 (Security)
+        </div>
+        <div class="card-text">
+          展示完整的前端資安防護系統，包含 17 項安全機制與 HTTP 安全標頭。
+        </div>
+      </router-link>
+
       <!-- 導航卡片:前往組件架構 -->
       <router-link
         to="/showcase/component-showcase"
