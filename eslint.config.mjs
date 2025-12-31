@@ -4,7 +4,7 @@ import vue from 'eslint-plugin-vue' // Vue 規則
 import jsdoc from 'eslint-plugin-jsdoc' // JSDoc 註解檢查
 import vueParser from 'vue-eslint-parser' // Vue 檔案解析器
 import tsParser from '@typescript-eslint/parser' // TypeScript 解析器
-import tsPlugin from '@typescript-eslint/eslint-plugin' // TypeScript 插件
+import tsPlugin from '@typescript-eslint/eslint-plugin' // TypeScript 外掛
 import prettierConfig from 'eslint-config-prettier' // 避免與 Prettier 衝突
 import prettierPlugin from 'eslint-plugin-prettier' // 整合 Prettier
 
@@ -33,7 +33,7 @@ export default [
       }
     },
 
-    // 啟用的插件
+    // 啟用的外掛
     plugins: {
       vue,
       jsdoc,
@@ -146,9 +146,9 @@ export default [
       'node_modules/', // 套件
       'dist/', // 編譯輸出
       '.nuxt', // Nuxt 快取
-      '.config/', // 配置檔
-      'tsconfig.json', // TS 配置
-      'plugins/', // 插件
+      '.config/', // 設定檔
+      'tsconfig.json', // TS 設定
+      'plugins/', // 外掛
       'generate/', // 生成檔案
       'public/js/hanlinks/', // 第三方 JS
       '**/*-test.{js,ts,vue}', // 忽略所有結尾是 -test 的檔案

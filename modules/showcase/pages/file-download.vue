@@ -11,12 +11,12 @@ const {
   downloadFromJson
 } = useFileDownload()
 
-// Loading states
+// 載入狀態
 const isDownloadingUrl = ref(false)
 const isDownloadingApi = ref(false)
 const isDownloadingBase64 = ref(false)
 
-// Demo data
+// 演示資料
 const demoBase64 =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
 const demoJsonData = {
@@ -29,11 +29,11 @@ const demoJsonData = {
 }
 const demoTextContent = '這是一個測試文字檔案\n包含多行內容\n用於展示文字檔案下載功能'
 
-// Action handlers
+// 動作處理程式
 const handleDownloadFromUrl = async () => {
   isDownloadingUrl.value = true
   try {
-    // Using a real public PDF for demo
+    // 使用真實的公開 PDF 進行演示
     await downloadFromUrl(
       'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
       {
@@ -50,7 +50,7 @@ const handleDownloadFromUrl = async () => {
 const handleDownloadFromApi = async () => {
   isDownloadingApi.value = true
   try {
-    // This is a demo - replace with your actual API endpoint
+    // 這是演示 - 請替換為您實際的 API 端點
     await downloadFromApi('/api/files/export', {
       filename: 'export.xlsx',
       method: 'GET',
@@ -157,7 +157,7 @@ definePageMeta({
 
         <div class="demo-grid">
           <div class="usage-block">
-            <div class="block-header">Example Code</div>
+            <div class="block-header">程式碼範例</div>
             <div class="code-content">
               <pre><code>&lt;script setup&gt;
 // 1. 引入 composable
@@ -205,7 +205,7 @@ const handleDownload = async () => {
     <section class="module-section mt-8">
       <h2 class="section-title">
         <span class="icon">🎮</span>
-        Interactive Playground (全功能演示)
+        Interactive Playground (互動式演示)
       </h2>
       <div class="card-content">
         <div class="method-demos">
@@ -227,7 +227,7 @@ const handleDownload = async () => {
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 從外部 URL 下載檔案
 await downloadFromUrl(
@@ -284,7 +284,7 @@ await downloadFromUrl(
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// GET 方法
 await downloadFromApi('/api/files/export', {
@@ -313,7 +313,7 @@ await downloadFromApi('/api/reports/generate', {
                       apiUrl: 'string',
                       options: {
                         filename: 'string (optional)',
-                        method: 'GET | POST (optional, default: GET)',
+                        method: 'GET | POST (選填, 預設: GET)',
                         body: 'any (optional)',
                         '...other options': 'same as downloadFromUrl'
                       }
@@ -342,7 +342,7 @@ await downloadFromApi('/api/reports/generate', {
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 支援帶 data URI 前綴或純 Base64
 const base64 = 'data:image/png;base64,iVBORw0KG...'
@@ -385,7 +385,7 @@ downloadFromBase64(
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 建立並下載文字檔案
 const content = '這是一個測試文字檔案'
@@ -424,7 +424,7 @@ downloadFromText(
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 自動格式化 JSON 並下載
 const data = {
@@ -466,7 +466,7 @@ downloadFromJson(
             <div class="demo-grid">
               <!-- Usage -->
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 從 Canvas 建立 Blob 並下載
 const canvas = document.createElement('canvas')
@@ -512,7 +512,7 @@ canvas.toBlob((blob) => {
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 全域 Loading（使用 Loading Store）
 await downloadFromApi('/api/file', {
@@ -546,7 +546,7 @@ await downloadFromApi('/api/file', {
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 自訂錯誤處理
 await downloadFromUrl('https://invalid-url.com/file.pdf', {
@@ -585,7 +585,7 @@ try {
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Supported MIME Types</div>
+                <div class="block-header">支援的 MIME 類型</div>
                 <div class="code-content">
                   <pre><code>// 文件類型
 .pdf  → application/pdf

@@ -5,12 +5,12 @@
  * 展示三層架構：
  * 1. uiInterface 層（UI 框架適配層）
  * 2. uiBusiness 層（業務邏輯層）
- * 3. 頁面層（直接使用業務組件）
+ * 3. 頁面層（直接使用業務元件）
  */
 
 import { ref } from 'vue'
 
-// 引入所有業務組件
+// 引入所有業務元件
 import EmailInput from '@/components/uiBusiness/EmailInput.vue'
 import PhoneInput from '@/components/uiBusiness/PhoneInput.vue'
 import PasswordInput from '@/components/uiBusiness/PasswordInput.vue'
@@ -19,7 +19,7 @@ import CountrySelect from '@/components/uiBusiness/CountrySelect.vue'
 import GenderRadio from '@/components/uiBusiness/GenderRadio.vue'
 import DateRangePicker from '@/components/uiBusiness/DateRangePicker.vue'
 
-// 引入所有介面組件
+// 引入所有介面元件
 import IInput from '@/components/uiInterface/IInput.vue'
 import IButton from '@/components/uiInterface/IButton.vue'
 import ICheckbox from '@/components/uiInterface/ICheckbox.vue'
@@ -33,7 +33,7 @@ import IChip from '@/components/uiInterface/IChip.vue'
 import ITextField from '@/components/uiInterface/ITextField.vue'
 import IDataTable from '@/components/uiInterface/IDataTable.vue'
 
-// 業務組件示範數據
+// 業務元件示範數據
 const email = ref('')
 const phone = ref('')
 const password = ref('')
@@ -42,7 +42,7 @@ const country = ref('')
 const gender = ref('')
 const dateRange = ref({ start: null, end: null })
 
-// 介面組件示範數據
+// 介面元件示範數據
 const inputValue = ref('')
 const textareaValue = ref('')
 const checkboxValue = ref(false)
@@ -72,7 +72,7 @@ const tableData = [
 ]
 
 definePageMeta({
-  title: '組件展示 (Component Showcase)',
+  title: '元件展示 (Component Showcase)',
   icon: 'mdi-layers'
 })
 
@@ -90,7 +90,7 @@ const activeTab = ref('architecture') // architecture, business, interface
       >
         ← 返回
       </router-link>
-      <h1 class="page-title">🎨 組件展示 (Component Showcase)</h1>
+      <h1 class="page-title">元件展示 (Component Showcase)</h1>
       <p class="page-desc">
         展示三層架構設計：uiInterface 層（可替換 UI 框架）、uiBusiness
         層（穩定業務邏輯）、頁面層（簡潔使用）
@@ -105,7 +105,7 @@ const activeTab = ref('architecture') // architecture, business, interface
           <div class="layer-number">3</div>
           <div class="layer-content">
             <h3>頁面層 (Page Layer)</h3>
-            <p>直接使用業務組件，程式碼最簡潔</p>
+            <p>直接使用業務元件，程式碼最簡潔</p>
             <code>&lt;EmailInput v-model="email" /&gt;</code>
           </div>
         </div>
@@ -151,21 +151,21 @@ const activeTab = ref('architecture') // architecture, business, interface
           :class="{ active: activeTab === 'business' }"
           @click="activeTab = 'business'"
         >
-          🎯 業務組件 (7個)
+          業務元件 (7個)
         </button>
         <button
           class="tab"
           :class="{ active: activeTab === 'interface' }"
           @click="activeTab = 'interface'"
         >
-          🔧 介面組件 (12個)
+          介面元件 (12個)
         </button>
         <button
           class="tab"
           :class="{ active: activeTab === 'migration' }"
           @click="activeTab = 'migration'"
         >
-          🔄 如何替換框架
+          如何替換框架
         </button>
       </div>
     </div>
@@ -175,8 +175,8 @@ const activeTab = ref('architecture') // architecture, business, interface
       v-show="activeTab === 'business'"
       class="section"
     >
-      <h2 class="section-title">🎯 uiBusiness 層組件（推薦使用）</h2>
-      <p class="section-desc">這些組件已封裝好業務邏輯，直接使用即可</p>
+      <h2 class="section-title">uiBusiness 層元件（推薦使用）</h2>
+      <p class="section-desc">這些元件已封裝好業務邏輯，直接使用即可</p>
 
       <div class="component-grid">
         <!-- EmailInput -->
@@ -291,9 +291,9 @@ const activeTab = ref('architecture') // architecture, business, interface
       v-show="activeTab === 'interface'"
       class="section"
     >
-      <h2 class="section-title">🔧 uiInterface 層組件（基礎組件）</h2>
+      <h2 class="section-title">uiInterface 層元件（基礎元件）</h2>
       <p class="section-desc">
-        這些是基礎 UI 組件，可替換內部實作（原生 HTML / Vuetify / Element UI）
+        這些是基礎 UI 元件，可替換內部實作（原生 HTML / Vuetify / Element UI）
       </p>
 
       <div class="component-grid">
@@ -316,7 +316,7 @@ const activeTab = ref('architecture') // architecture, business, interface
         <!-- IButton -->
         <div class="component-card">
           <h3>IButton</h3>
-          <p class="component-desc">按鈕組件</p>
+          <p class="component-desc">按鈕元件</p>
           <div class="demo-area">
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
               <IButton variant="primary">主要按鈕</IButton>
@@ -549,14 +549,14 @@ const activeTab = ref('architecture') // architecture, business, interface
       v-show="activeTab === 'migration'"
       class="section"
     >
-      <h2 class="section-title">🔄 如何替換 UI 框架</h2>
+      <h2 class="section-title">如何替換 UI 框架</h2>
       <div class="migration-guide">
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
             <h3>只需修改 uiInterface 層</h3>
             <p>
-              打開任一 uiInterface 組件，例如
+              打開任一 uiInterface 元件，例如
               <code>IInput.vue</code>
             </p>
           </div>
@@ -586,7 +586,7 @@ const activeTab = ref('architecture') // architecture, business, interface
             <div class="success-box">
               ✅ 所有頁面自動使用新的 UI 框架
               <br />
-              ✅ 業務組件不用改
+              ✅ 業務元件不用改
               <br />
               ✅ 頁面程式碼不用改
             </div>
@@ -754,7 +754,7 @@ const activeTab = ref('architecture') // architecture, business, interface
   margin: 0.25rem 0;
 }
 
-/* 組件網格 */
+/* 元件網格 */
 .component-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

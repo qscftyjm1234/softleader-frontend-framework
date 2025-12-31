@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * GenderRadio - 性別選擇（業務組件）
+ * GenderRadio - 性別選擇（業務元件）
  *
  * 用途：封裝性別選擇的業務邏輯
  * 特點：
- * - 使用 Radio 組件
+ * - 使用 Radio 元件
  * - 自動從 useOptions 載入性別選項
  * - 支援橫向/縱向排列
  */

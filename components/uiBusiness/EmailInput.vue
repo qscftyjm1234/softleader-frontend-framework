@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * EmailInput - Email 輸入框（業務組件）
+ * EmailInput - Email 輸入框（業務元件）
  *
  * 用途：封裝 Email 輸入的業務邏輯
  * 特點：

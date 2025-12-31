@@ -4,7 +4,7 @@ import { useUserStore } from '~/stores/user'
 import { useFeatureStore } from '~/stores/features'
 import { useAppDevice } from '~/composables/useAppDevice'
 
-// --- 1. 平台與裝置資訊 (Real-time) ---
+// --- 1. 平台與裝置資訊 (即時) ---
 const device = useAppDevice()
 // 將 device 的響應式物件轉換為純物件以便展示
 const deviceInfo = computed(() => ({
@@ -17,7 +17,7 @@ const deviceInfo = computed(() => ({
   userAgent: device.userAgent
 }))
 
-// --- 2. i18n 多語系資訊 (Real-time) ---
+// --- 2. i18n 多語系資訊 (即時) ---
 const { locale, locales, strategy } = useI18n()
 const i18nInfo = computed(() => ({
   currentLocale: locale.value,
@@ -25,11 +25,11 @@ const i18nInfo = computed(() => ({
   availableLocales: locales.value
 }))
 
-// --- 3. Pinia Stores 狀態 (Real-time) ---
+// --- 3. Pinia Stores 狀態 (即時) ---
 const userStore = useUserStore()
 const featuresStore = useFeatureStore()
 
-// --- 4. 模擬資料 (Mock Data) ---
+// --- 4. 模擬資料 ---
 // Auth 模組模擬資料
 const authMockData = {
   id: 'USER_001',
@@ -38,7 +38,7 @@ const authMockData = {
   metadata: { department: 'Frontend', level: 3 }
 }
 
-// Insurance 保險模組資料架構
+// Insurance 保險模組資料結構
 const policySchema = {
   policyNo: { type: 'string', required: true, label: '保單號碼' },
   status: { type: 'enum', options: ['active', 'expired'], label: '狀態' },
@@ -46,11 +46,11 @@ const policySchema = {
   premium: { type: 'number', currency: 'TWD' }
 }
 
-// --- 5. Runtime Config (Real-time) ---
+// --- 5. 執行時設定 (即時) ---
 const config = useRuntimeConfig()
 const configData = computed(() => config.public)
 
-// --- 6. UI Control ---
+// --- 6. UI 控制 ---
 const devicePreview = ref()
 const i18nPreview = ref()
 const configPreview = ref()
@@ -175,6 +175,7 @@ definePageMeta({
         </h2>
         <div class="card-content">
           <p class="section-desc">以下展示各業務模組 API 預期的回傳格式範例</p>
+          >
           <DataPreview
             ref="authMockPreview"
             title="Auth Module - User Profile (Mock)"

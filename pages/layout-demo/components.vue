@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Layout Demo - Components Page
- * 展示各種 UI 組件的使用
+ * 展示各種 UI 元件的使用
  */
 definePageMeta({
   layout: 'default'
@@ -31,9 +31,9 @@ const tableData = [
     <!-- Page Header -->
     <div style="margin-bottom: 2rem">
       <h1 style="font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem 0">
-        Layout 展示 - 組件頁面
+        Layout 展示 - 元件頁面
       </h1>
-      <p style="color: var(--color-gray-600); margin: 0">展示各種常用 UI 組件的實現方式</p>
+      <p style="color: var(--color-gray-600); margin: 0">展示各種常用 UI 元件的實現方式</p>
     </div>
 
     <!-- Buttons Section -->

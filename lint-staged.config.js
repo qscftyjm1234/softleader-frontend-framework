@@ -1,5 +1,5 @@
 /**
- * Lint-staged 配置
+ * Lint-staged 設定
  * 在 git commit 前自動檢查和修復即將提交的檔案
  */
 export default {

@@ -17,7 +17,7 @@ const pageSchema: PageSchema = {
             {
               type: 'SmartTable',
               props: {
-                title: 'Table組件 (API 串接)',
+                title: 'Table 元件 (API 串接)',
                 api: '/api/users',
                 columns: [
                   {

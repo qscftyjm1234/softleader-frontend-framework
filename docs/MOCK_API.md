@@ -10,7 +10,7 @@
 
 ### 1. 啟用 Mock API
 
-在 `.env` 文件中設定:
+在 `.env` 檔案中設定:
 
 ```bash
 NUXT_PUBLIC_FEATURE_API_MOCK=true
@@ -27,7 +27,7 @@ npm run dev
 
 ### 3. 測試 Mock API
 
-所有發送到 `/api/*` 的請求都會被攔截並返回 Mock 資料。
+所有發送到 `/api/*` 的請求都會被攔截並回傳 Mock 資料。
 
 ## 📁 專案結構
 
@@ -56,17 +56,17 @@ composables/
 import { UserListResponseSchema } from '~/mock/schemas/user'
 
 export async function getUsers(params: any) {
-  // 如果 Mock 啟用，會自動返回假資料
+  // 如果 Mock 啟用，會自動回傳假資料
   // 如果 Mock 關閉，會發送真實請求
   const response = await useApi('/api/users', { params })
 
-  // Zod 驗證響應資料
+  // Zod 驗證回應資料
   const validated = UserListResponseSchema.parse(response)
   return validated
 }
 ```
 
-### 在組件中使用
+### 在元件中使用
 
 ```vue
 <script setup lang="ts">
@@ -79,11 +79,11 @@ const { data, pending } = await useFetch('/api/users', {
 </script>
 ```
 
-## 🔧 添加新的 Mock API
+## 🔧 新增新的 Mock API
 
 ### 1. 定義 Schema
 
-在 `mock/schemas/` 創建新的 Schema 文件:
+在 `mock/schemas/` 建立新的 Schema 檔案:
 
 ```typescript
 // mock/schemas/product.ts
@@ -100,7 +100,7 @@ export type Product = z.infer<typeof ProductSchema>
 
 ### 2. 創建 Factory
 
-在 `mock/factories/` 創建 Factory:
+在 `mock/factories/` 建立 Factory:
 
 ```typescript
 // mock/factories/product.factory.ts
@@ -138,7 +138,7 @@ if (method === 'GET' && url.includes('/api/products')) {
   }
 }
 
-// GET /api/products/:id - 商品詳情
+// GET /api/products/:id - 商品詳細
 if (method === 'GET' && url.match(/\/api\/products\/\d+/)) {
   const id = parseInt(url.match(/\/api\/products\/(\d+)/)?.[1] || '1')
   return {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * App Header - 使用三層架構
- * 業務層：整合 Store、子組件
+ * 業務層：整合 Store、子元件
  * UI 層：使用 IAppBar (可替換 UI 框架)
  */
 import IAppBar from '~/components/uiInterface/layout/IAppBar.vue'

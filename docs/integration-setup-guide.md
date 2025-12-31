@@ -2,17 +2,17 @@
 
 ## 📋 概述
 
-本專案已完成 Vue、TypeScript、Prettier 和 ESLint 的完整整合配置，確保代碼品質和一致性。
+本專案已完成 Vue、TypeScript、Prettier 和 ESLint 的完整整合配置，確保程式碼品質和一致性。
 
 ## ✅ 已配置的工具
 
-### 1. **Prettier** - 代碼格式化
+### 1. **Prettier** - 程式碼格式化
 
 - 配置檔：`.prettierrc.json`
 - 忽略檔：`.prettierignore`
 - 自動格式化：儲存時自動執行
 
-### 2. **ESLint** - 代碼檢查
+### 2. **ESLint** - 程式碼檢查
 
 - 配置檔：`eslint.config.mjs`
 - 整合：Nuxt 官方 `@nuxt/eslint`
@@ -114,11 +114,11 @@ plugins: {
 
 - 所有導出的函式必須有 JSDoc 註解
 - 必須包含參數描述
-- 必須包含返回值描述
+- 必須包含回傳值描述
 
 #### Vue 規則
 
-- 允許單字組件名稱
+- 允許單字元件名稱
 - 允許多根節點（Vue 3）
 - 關閉 `v-slot` 驗證（Vuetify 相容性）
 

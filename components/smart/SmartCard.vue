@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * SmartCard - 智能卡片組件
+ * SmartCard - 智慧卡片元件
  *
- * 業務層：使用 uiInterface 層組件，提供便捷的卡片封裝
+ * 業務層：使用 uiInterface 層元件，提供便捷的卡片封裝
  * 遵循三層架構：不直接依賴 UI 框架
  */
 import ICard from '~/components/uiInterface/ICard.vue'

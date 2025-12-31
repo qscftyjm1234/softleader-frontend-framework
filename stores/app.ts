@@ -2,12 +2,12 @@ import { defineStore } from 'pinia'
 import { defaultLayoutConfig, type LayoutConfig } from '~/core/config/layout'
 
 export const useAppStore = defineStore('app', () => {
-  // State
+  // 狀態 (State)
   const config = ref<LayoutConfig>({ ...defaultLayoutConfig })
   const drawer = ref(true)
   const loading = ref(false)
 
-  // Actions
+  // 動作 (Actions)
   /**
    *
    */
@@ -24,21 +24,21 @@ export const useAppStore = defineStore('app', () => {
   }
 
   /**
-   * 更新配置
-   * @param newConfig - 部分配置物件
+   * 更新設定
+   * @param newConfig - 部分設定物件
    */
   function updateConfig(newConfig: Partial<LayoutConfig>) {
-    // Deep merge logic could be added here for more complex updates
+    // 可以在這裡加入深度合併 (Deep merge) 邏輯以處理更複雜的更新
     Object.assign(config.value, newConfig)
   }
 
   /**
-   * 重新載入配置（用於熱重載）
-   * @param newConfig - 新的配置物件
+   * 重新載入設定（用於熱重載）
+   * @param newConfig - 新的設定物件
    */
   function reloadConfig(newConfig?: typeof defaultLayoutConfig) {
     if (newConfig) {
-      // 使用新模組的配置
+      // 使用新模組的設定
       Object.assign(config.value, newConfig)
     } else {
       // 使用當前的 defaultLayoutConfig（用於手動重載）
@@ -47,7 +47,7 @@ export const useAppStore = defineStore('app', () => {
     console.log('🔄 Layout config reloaded:', config.value)
   }
 
-  // Initialize (Simulate fetching from backend)
+  // 初始化 (模擬從後端獲取)
   /**
    *
    */
@@ -63,10 +63,10 @@ export const useAppStore = defineStore('app', () => {
   // 開發模式下啟用熱重載
   if (import.meta.hot) {
     console.log('1414')
-    // {import.meta.hot.accept}如果有人改了我裡面的 code，直接把我的新邏輯「塞」進去就好，不准重新整理網頁
+    // {import.meta.hot.accept} 如果有人改了我裡面的程式碼，直接把我的新邏輯「塞」進去就好，不准重新整理網頁
     import.meta.hot.accept('~/core/config/layout', (newModule) => {
       if (newModule && newModule.defaultLayoutConfig) {
-        // 使用新模組的配置資料
+        // 使用新模組的設定資料
         reloadConfig(newModule.defaultLayoutConfig)
       }
     })

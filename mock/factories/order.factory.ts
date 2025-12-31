@@ -1,5 +1,5 @@
 /**
- * Order Factory
+ * 訂單工廠 (Order Factory)
  *
  * 使用簡單的手寫邏輯生成符合 Schema 的 Mock Order 資料
  */

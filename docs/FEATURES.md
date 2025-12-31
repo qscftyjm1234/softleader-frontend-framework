@@ -2,7 +2,7 @@
 
 ## 📋 概述
 
-本系統提供集中式的功能開關管理,讓不同的前端項目或客戶可以根據需求啟用或停用特定功能。
+本系統提供集中式的功能開關管理,讓不同的前端專案或客戶可以根據需求啟用或停用特定功能。
 
 ## 🎯 功能分類
 
@@ -10,7 +10,7 @@
 
 | 功能                | 說明                     | 預設狀態 | 建議環境   |
 | ------------------- | ------------------------ | -------- | ---------- |
-| `historyGeneration` | 自動生成函數歷史記錄文件 | ✅ 啟用  | 開發、測試 |
+| `historyGeneration` | 自動產生函式歷史記錄文件 | ✅ 啟用  | 開發、測試 |
 | `apiMock`           | API Mock 功能            | ✅ 啟用  | 開發       |
 | `devLogging`        | 開發環境詳細日誌         | ✅ 啟用  | 開發       |
 | `devToolsPanel`     | 開發工具面板             | ✅ 啟用  | 開發       |
@@ -20,7 +20,7 @@
 | 功能           | 說明              | 預設狀態 | 建議環境   |
 | -------------- | ----------------- | -------- | ---------- |
 | `consoleLog`   | Console 日誌輸出  | ✅ 啟用  | 全部       |
-| `apiLog`       | API 請求/響應日誌 | ✅ 啟用  | 開發、測試 |
+| `apiLog`       | API 請求/回應日誌 | ✅ 啟用  | 開發、測試 |
 | `businessLog`  | 業務邏輯執行日誌  | ✅ 啟用  | 開發、測試 |
 | `errorDetails` | 錯誤詳細資訊      | ✅ 啟用  | 全部       |
 
@@ -28,7 +28,7 @@
 
 | 功能               | 說明           | 預設狀態 | 建議環境   |
 | ------------------ | -------------- | -------- | ---------- |
-| `performance`      | 性能監控       | ❌ 停用  | 測試、正式 |
+| `performance`      | 效能監控       | ❌ 停用  | 測試、正式 |
 | `errorTracking`    | 錯誤追蹤       | ❌ 停用  | 測試、正式 |
 | `analytics`        | 使用者行為分析 | ❌ 停用  | 正式       |
 | `pageLoadTracking` | 頁面載入追蹤   | ❌ 停用  | 測試、正式 |
@@ -51,7 +51,7 @@
 
 ## 🚀 使用方式
 
-### 在組件中使用
+### 在元件中使用
 
 ```vue
 <script setup lang="ts">
@@ -136,7 +136,7 @@ NUXT_PUBLIC_FEATURE_PERFORMANCE=true
 
 > 💡 **提示**: 環境變數的優先級高於配置文件
 
-## 📦 不同客戶/項目配置範例
+## 📦 不同客戶/專案配置範例
 
 ### 範例 1: 精簡版 (小型客戶)
 
@@ -207,7 +207,7 @@ const config = getFeatureConfig('devTools.historyGeneration')
 console.log(config)
 // {
 //   enabled: true,
-//   description: '自動生成函數歷史記錄文件',
+//   description: '自動產生函式歷史記錄文件',
 //   envKey: 'NUXT_PUBLIC_FEATURE_HISTORY_GENERATION',
 //   environments: ['development', 'staging']
 // }
@@ -226,7 +226,7 @@ console.log(config)
 1. 在 [`core/config/features.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/core/config/features.ts) 中新增功能定義
 2. 更新此文件的功能清單
 3. 在 [`.env.example`](file:///c:/Users/gino.huang/Documents/nuxt3-test/.env.example) 中添加對應的環境變數
-4. 在代碼中使用 `useFeatureFlag()` 檢查功能狀態
+4. 在程式碼中使用 `useFeatureFlag()` 檢查功能狀態
 
 ## 🔍 相關文件
 

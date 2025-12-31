@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * DateRangePicker - 日期範圍選擇（業務組件）
+ * DateRangePicker - 日期範圍選擇（業務元件）
  *
  * 用途：封裝日期範圍選擇的業務邏輯
  * 特點：

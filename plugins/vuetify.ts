@@ -11,9 +11,9 @@ import * as directives from 'vuetify/directives'
 export default defineNuxtPlugin((nuxtApp) => {
   // 建立 Vuetify 實例，也就是「把你要用的元件跟指令裝進 Vuetify 裡
   const vuetify = createVuetify({
-    components, // vuefity提供組件，為了方便故，全部引入。
+    components, // vuetify 提供元件，為了方便故，全部引入。
 
-    // 也可以挑選您需要的組件引入
+    // 也可以挑選您需要的元件引入
     // components: {
     //   VBtn,
     //   VCard

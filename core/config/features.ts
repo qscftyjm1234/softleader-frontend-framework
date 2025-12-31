@@ -1,8 +1,8 @@
 /**
- * 功能開關控制
+ * 功能開關設定
  *
- * 這個文件定義了系統中所有可用的功能開關。
- * 不同的前端項目或客戶可以根據需求啟用或停用特定功能。
+ * 這個檔案定義了系統中所有可用的功能開關。
+ * 不同的前端專案或客戶可以根據需求啟用或停用特定功能。
  *
  * @module config/features
  */
@@ -21,7 +21,7 @@ export interface FeatureConfig {
 export interface FeatureFlags {
   /** 開發工具相關功能 */
   devTools: {
-    /** 自動生成函數歷史記錄文件 */
+    /** 自動產生函式歷史記錄文件 */
     historyGeneration: FeatureConfig
     /** API Mock 功能 */
     apiMock: FeatureConfig
@@ -29,7 +29,7 @@ export interface FeatureFlags {
 }
 
 /**
- * 預設功能開關配置
+ * 預設功能開關設定
  *
  * 可以透過環境變數覆蓋這些預設值
  * 環境變數格式: NUXT_PUBLIC_FEATURE_<CATEGORY>_<FEATURE_NAME>=true|false
@@ -38,7 +38,7 @@ export const defaultFeatures: FeatureFlags = {
   devTools: {
     historyGeneration: {
       enabled: true,
-      description: '自動生成函數歷史記錄文件,追蹤業務邏輯演進',
+      description: '自動產生函式歷史記錄文件,追蹤業務邏輯演進',
       envKey: 'NUXT_PUBLIC_FEATURE_HISTORY_GENERATION',
       environments: ['development', 'staging']
     },

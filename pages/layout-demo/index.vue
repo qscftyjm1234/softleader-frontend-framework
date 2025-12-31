@@ -23,8 +23,8 @@ const demos = [
     color: 'success'
   },
   {
-    title: '組件頁面',
-    description: '展示各種常用 UI 組件的實現方式 (按鈕、表格、徽章等)',
+    title: '元件頁面',
+    description: '展示各種常用 UI 元件的實現方式 (按鈕、表格、徽章等)',
     path: '/layout-demo/components',
     icon: 'components',
     color: 'warning'

@@ -2,7 +2,7 @@
 
 ## 概述
 
-本專案的 Layout 系統完全不依賴任何 UI 框架 (如 Vuetify, Element Plus 等),使用純 HTML + CSS 實現,可輕鬆整合到任何技術棧中。
+本專案的 Layout 系統完全不依賴任何 UI 框架 (如 Vuetify, Element Plus 等),使用純 HTML + CSS 實現,可輕鬆整合到任何技術堆疊中。
 
 ## 核心特性
 
@@ -81,7 +81,7 @@ definePageMeta({
 - `/layout-demo` - 展示首頁
 - `/layout-demo/basic` - 基本頁面範例
 - `/layout-demo/form` - 表單頁面範例
-- `/layout-demo/components` - UI 組件範例
+- `/layout-demo/components` - UI 元件範例
 
 ## 檔案結構
 
@@ -159,7 +159,7 @@ body {
     <!-- Layout 提供的結構 -->
     <h1>頁面標題</h1>
 
-    <!-- 使用 Vuetify 組件 -->
+    <!-- 使用 Vuetify 元件 -->
     <v-btn color="primary">Vuetify 按鈕</v-btn>
 
     <!-- 使用原生 HTML + Layout CSS -->

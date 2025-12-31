@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * PasswordInput - 密碼輸入（業務組件）
+ * PasswordInput - 密碼輸入（業務元件）
  *
  * 用途：封裝密碼輸入的業務邏輯
  * 特點：

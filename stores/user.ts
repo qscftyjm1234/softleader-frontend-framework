@@ -3,17 +3,17 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
-  // 👉 State
+  // 👉 狀態 (State)
   const user = ref<{ name: string; email: string } | null>(null)
   const token = ref<string | null>(null)
   // 範例權限：通常會從後端 API 取得
   // 開發模式：使用 '*' 代表擁有所有權限
   const permissions = ref<string[]>(['*'])
 
-  // 👉 Getter
+  // 👉 計算屬性 (Getters)
   const isLoggedIn = computed(() => !!token.value)
 
-  // 👉 Action
+  // 👉 動作 (Actions)
   /**
    *
    * @param payload
@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', () => {
     }, 500)
   }
 
-  // 要 return 出來的才會對外能用
+  // 必須回傳才能對外公開使用
   return {
     user,
     token,

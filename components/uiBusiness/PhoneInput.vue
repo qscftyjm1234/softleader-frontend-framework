@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * PhoneInput - 電話號碼輸入（業務組件）
+ * PhoneInput - 電話號碼輸入（業務元件）
  *
  * 用途：封裝電話號碼輸入的業務邏輯
  * 特點：

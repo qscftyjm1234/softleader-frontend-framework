@@ -4,7 +4,7 @@ import DataPreview from '../components/DataPreview.vue'
 
 const { open, close, closeAll, confirm, alert, modals, hasModal, modalCount } = useModal()
 
-// Demo state
+// 演示狀態
 const customTitle = ref('自訂標題')
 const customContent = ref('這是自訂的彈窗內容')
 const confirmResult = ref('')
@@ -119,7 +119,7 @@ definePageMeta({
 
         <div class="demo-grid">
           <div class="usage-block">
-            <div class="block-header">Example Code</div>
+            <div class="block-header">程式碼範例</div>
             <div class="code-content">
               <pre><code>&lt;script setup&gt;
 // 1. 引入 composable
@@ -177,7 +177,7 @@ const customResult = await open({
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 開啟基本彈窗
 const result = await open({
@@ -213,7 +213,7 @@ const result = await open({
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 確認對話框
 const confirmed = await confirm({
@@ -252,7 +252,7 @@ if (confirmed) {
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 警告對話框
 await alert({
@@ -306,7 +306,7 @@ console.log('警告已關閉')</code></pre>
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 自訂彈窗
 await open({
@@ -338,7 +338,7 @@ await open({
 
             <div class="demo-grid">
               <div class="usage-block">
-                <div class="block-header">Usage code</div>
+                <div class="block-header">使用程式碼</div>
                 <div class="code-content">
                   <pre><code>// 開啟多個彈窗
 open({ title: '第一層', content: '...' })

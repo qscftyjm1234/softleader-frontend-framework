@@ -34,7 +34,7 @@ export function checkAuth(response: any, config: any, auth: boolean = true) {
 }
 
 /**
- * 錯誤處理：檢查後端自定義錯誤碼
+ * 錯誤處理：檢查後端自訂錯誤碼
  * @param response
  */
 export function checkApiError(response: any) {

@@ -29,7 +29,7 @@ root/
 ├── repositories/    # ✨ 統一 API 管理層 (Smart Client)
 │   ├── modules/     # 各業務模組 (policy, auth, order)
 │   └── factory.ts   # 核心工廠模式
-├── plugins/         # 核心插件 (Security, Vuetify)
+├── plugins/         # 核心外掛 (Security, Vuetify)
 └── pages/           # 路由視圖
 ```
 
@@ -53,7 +53,7 @@ root/
 
 > **解決痛點**: 防止機密資料外洩、截圖保護。
 
-- **動態浮水印 (Watermark)**: `useWatermark` 可顯示「使用者/時間/IP」浮水印，嚇阻拍照外流。
+- **動態浮水印 (Watermark)**: `useWatermark` 可顯示「使用者/時間/IP」浮水印，防止截圖外洩。
 - **防截圖/錄影**: 偵測 PrintScreen 或視窗失焦時自動模糊畫面 (`security.client.ts`)。
 - **閒置保護**: 長時間無操作自動鎖定或登出。
 
@@ -131,8 +131,8 @@ _為什麼非用 Nuxt 3 不可？這裡有幾個讓甲方工程師無法拒絕�
 - **Component Islands (`.island.vue`)**:
   - 獨立的 Server Component，**完全不傳送 JS 到客戶端** (Zero JS)。
   - 適合：廣告 Banner、複雜的 Footer、純靜態的側邊欄。
-- **Build Cache**: 智慧快取構建結果，CI/CD 速度提升 50%。
-- **Lazy Hydration**: 只在元件進入視口 (Viewport) 時才執行 JS，首屏 TTI 分數爆表。
+- **Build Cache**: 智慧快取建置結果，CI/CD 速度提升 50%。
+- **Lazy Hydration**: 只在元件進入視窗 (Viewport) 時才執行 JS，首屏 TTI 分數爆表。
 
 ### 5.4 🧱 微前端架構 (Nuxt Layers)
 
@@ -164,7 +164,7 @@ _別忘了這些 Nuxt 3 內建的神兵利器，開發包中應包含這些範�
 
 - **`useState`**: 簡單的 SSR 友善全域狀態 (比 Pinia 輕量)。
 - **`useCookie`**: 讀寫 Cookie (支援 SSR，自動序列化)。
-- **`<ClientOnly>`**: 包裹只在瀏覽器端渲染的元件 (如图表、地圖)。
+- **`<ClientOnly>`**: 包裹只在瀏覽器端渲染的元件 (如圖表、地圖)。
 - **`<Teleport>`**: 將 Modal/Dialog 傳送到 Body 層級，避免 z-index 問題。
 
 ### SEO 與 Meta
@@ -192,4 +192,4 @@ _別忘了這些 Nuxt 3 內建的神兵利器，開發包中應包含這些範�
 2.  **README.md**: 專案啟動、環境建置說明。
 3.  **API_GUIDE.md**: Smart Client 使用手冊 (已完成)。
 4.  **UI_GUIDE.md**: 元件使用手冊 (建議新增)。
-5.  **Storybook**: 視覺化元件庫文檔 (已配置 script)。
+5.  **Storybook**: 視覺化元件庫文件 (已配置 script)。

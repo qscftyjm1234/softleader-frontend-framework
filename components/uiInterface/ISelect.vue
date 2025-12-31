@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * UI 適配層 - Select 組件
+ * UI 適配層 - Select 元件
  *
  * 用途：統一的 Select 介面，內部使用 Vuetify
  * 未來要換 UI 框架，只需要修改這個檔案
@@ -8,7 +8,7 @@
  * 設計原則：
  * - 提供標準化的 props 介面
  * - 內部適配不同 UI 框架的差異
- * - 業務組件只需要知道這個統一介面
+ * - 業務元件只需要知道這個統一介面
  */
 
 interface SelectOption {

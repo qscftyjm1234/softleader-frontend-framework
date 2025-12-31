@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * CountrySelect - 國家選擇（業務組件）
+ * CountrySelect - 國家選擇（業務元件）
  *
  * 用途：封裝國家選擇的業務邏輯
  * 特點：

@@ -12,7 +12,7 @@ import { cssConfig } from './core/config/css'
 import { typescriptConfig } from './core/config/typescript'
 import { viteConfig } from './core/config/vite'
 
-// Force Nuxt config reload to fix auto-imports
+// 強制重新載入 Nuxt 設定以修復自動導入 (Auto-imports)
 import { devtoolsConfig, telemetryConfig } from './core/config/devtools'
 import { nitroConfig } from './core/config/nitro'
 
@@ -25,27 +25,27 @@ console.table({
 })
 
 /**
- * @功能 建置、邊際nuxt3專案時，所使用之參數和模式
+ * @功能 建置、編譯 nuxt3 專案時，所使用之參數和模式
  * */
 export default defineNuxtConfig({
   /**
-   * @功能 是否需要SSR
+   * @功能 是否需要 SSR
    * */
 
   ssr: false,
 
   /**
-   * @功能 控制專案編譯、打包（build）過程的設定
+   * @功能 控制專案編譯、打包 (build) 過程的設定
    * */
   build: buildConfig,
 
   /**
-   * @功能 標題、meta 預設配置
+   * @功能 標題、meta 預設設定
    * */
   app: appConfig,
 
   /**
-   * @功能 全域`css`設定
+   * @功能 全域 `css` 設定
    * */
   css: cssConfig,
 
@@ -55,12 +55,12 @@ export default defineNuxtConfig({
   modules: modulesConfig,
 
   /**
-   * @功能 使用@nuxtjs/i18n語系相關設置
+   * @功能 使用 @nuxtjs/i18n 語系相關設定
    * */
   i18n: i18nConfig,
 
   /**
-   * @功能 設置可auto import 資料夾
+   * @功能 設定可自動導入 (auto import) 的資料夾
    * */
   imports: importsConfig,
 
@@ -70,7 +70,7 @@ export default defineNuxtConfig({
   components: componentsConfig,
 
   /**
-   * @功能 運行時配置
+   * @功能 執行時設定 (Runtime Config)
    * @description 注入環境變數與公開設定 (public)
    */
   runtimeConfig: projectRuntimeConfig,

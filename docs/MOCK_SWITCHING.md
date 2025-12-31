@@ -16,12 +16,12 @@ NUXT_PUBLIC_MOCK_DELAY=500
 
 **效果**：
 
-- ✅ 所有 API 請求返回假資料
+- ✅ 所有 API 請求回傳假資料
 - ✅ 不需要後端伺服器
 - ✅ 可以模擬網路延遲
 - ✅ Console 會顯示：`Mock API 攔截: /api/users`
 
-**適用場景**：
+**適用情境**：
 
 - 開發環境（前端獨立開發）
 - Demo 模式（展示給客戶看）
@@ -43,7 +43,7 @@ NUXT_PUBLIC_API_BASE_URL=https://api.yourapp.com
 - ✅ 使用真實資料
 - ✅ Console 不會顯示 Mock 攔截訊息
 
-**適用場景**：
+**適用情境**：
 
 - 測試環境（測試真實 API）
 - 正式環境（正常使用）

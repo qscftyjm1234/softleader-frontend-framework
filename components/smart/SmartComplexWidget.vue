@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * SmartComplexWidget - 複雜智能組件
+ * SmartComplexWidget - 複雜智慧元件
  *
- * 業務層：使用 uiInterface 層組件
+ * 業務層：使用 uiInterface 層元件
  * 遵循三層架構：
- * - UI: 使用 ICard, ISheet, IButton 等介面層組件
+ * - UI: 使用 ICard, ISheet, IButton 等介面層元件
  */
 import ICard from '~/components/uiInterface/ICard.vue'
 import ISheet from '~/components/uiInterface/ISheet.vue'
@@ -37,7 +37,7 @@ const reset = () => {
     <div class="widget-header">
       <div class="widget-header__info">
         <div class="widget-overline">SMART WIDGET</div>
-        <h2 class="widget-title">複雜組件範例</h2>
+        <h2 class="widget-title">複雜元件範例</h2>
         <p class="widget-subtitle">展示內部狀態管理與互動邏輯</p>
       </div>
       <IAvatar
@@ -71,7 +71,7 @@ const reset = () => {
             size="large"
             @click="increment"
           >
-            ➕ 增加數值
+            增加數值
           </IButton>
           <IButton
             variant="text"

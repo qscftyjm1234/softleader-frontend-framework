@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * SmartTable - 智能表格組件
+ * SmartTable - 智慧表格元件
  *
- * 業務層：使用 uiInterface 層組件 + composables
+ * 業務層：使用 uiInterface 層元件 + composables
  * 遵循三層架構：
- * - UI: 使用 ICard, IDataTable, ITextField 等介面層組件
+ * - UI: 使用 ICard, IDataTable, ITextField 等介面層元件
  * - Logic: 使用 useTableData 管理資料載入
  */
 import ICard from '~/components/uiInterface/ICard.vue'
@@ -77,7 +77,7 @@ const getTagColor = (value: string): string => {
       v-if="tableData.loading.value"
       class="table-loading"
     >
-      ⏳ 載入中...
+      載入中...
     </div>
 
     <!-- Table Content -->

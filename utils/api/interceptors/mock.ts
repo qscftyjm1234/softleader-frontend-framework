@@ -1,7 +1,7 @@
 /**
  * Mock 資料攔截器
  *
- * 在 useApi 的請求攔截器中使用，判斷是否返回 Mock 資料
+ * 在 useApi 的請求攔截器中使用，判斷是否回傳 Mock 資料
  */
 
 import { createMockUsers, createMockUser } from '~/mock/factories/user.factory'
@@ -12,7 +12,7 @@ import {
 } from '~/mock/factories/dashboard.factory'
 
 /**
- * 檢查是否需要返回 Mock 資料
+ * 檢查是否需要回傳 Mock 資料
  *
  * @param url - 請求的 URL
  * @param options - 請求選項
@@ -78,7 +78,7 @@ async function delay(config: any) {
 }
 
 /**
- * 根據 URL 返回對應的 Mock 資料
+ * 根據 URL 回傳對應的 Mock 資料
  * @param url
  * @param options
  */
@@ -119,7 +119,7 @@ function getMockDataByUrl(url: string, options: any): any {
     }
   }
 
-  // GET /api/users/:id - 使用者詳情
+  // GET /api/users/:id - 使用者詳細
   if (method === 'GET' && url.match(/\/users\/\d+/)) {
     const id = parseInt(url.match(/\/users\/(\d+)/)?.[1] || '1')
     return {
@@ -181,7 +181,7 @@ function getMockDataByUrl(url: string, options: any): any {
     }
   }
 
-  // GET /api/orders/:id - 訂單詳情
+  // GET /api/orders/:id - 訂單詳細
   if (method === 'GET' && url.match(/\/orders\/\d+/)) {
     const id = parseInt(url.match(/\/orders\/(\d+)/)?.[1] || '1')
     return {
@@ -195,7 +195,7 @@ function getMockDataByUrl(url: string, options: any): any {
 
   // GET /dashboard/stats - 統計資料
   if (method === 'GET' && url.includes('/dashboard/stats')) {
-    console.log('📊 返回 Dashboard Stats Mock 資料')
+    console.log('📊 回傳 Dashboard Stats Mock 資料')
     return {
       data: createMockDashboardStats()
     }
@@ -206,7 +206,7 @@ function getMockDataByUrl(url: string, options: any): any {
     const params = extractQueryParams(url)
     const limit = parseInt(params.limit || '10')
 
-    console.log('📋 返回 Dashboard Activities Mock 資料, limit:', limit)
+    console.log('📋 回傳 Dashboard Activities Mock 資料, limit:', limit)
     return {
       data: createMockDashboardActivities(limit)
     }
@@ -217,7 +217,7 @@ function getMockDataByUrl(url: string, options: any): any {
   // ========================================
 
   console.warn('⚠️ 未找到對應的 Mock 資料:', url)
-  return null // 返回 null，讓請求繼續發送到真實 API
+  return null // 回傳 null，讓請求繼續發送到真實 API
 }
 
 /**

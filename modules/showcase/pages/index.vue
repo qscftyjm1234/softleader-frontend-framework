@@ -23,7 +23,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🔍</span>
+          <span class="icon"></span>
           資料檢視器 (Data Inspector)
         </div>
         <div class="card-text">
@@ -37,7 +37,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📋</span>
+          <span class="icon"></span>
           選項系統 (Options)
         </div>
         <div class="card-text">
@@ -51,7 +51,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📤</span>
+          <span class="icon"></span>
           檔案上傳 (File Upload)
         </div>
         <div class="card-text">展示檔案上傳介面與預覽功能，支援拖放、驗證與進度追蹤。</div>
@@ -63,7 +63,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">💾</span>
+          <span class="icon"></span>
           檔案下載 (File Download)
         </div>
         <div class="card-text">展示檔案下載功能，支援 PDF、Excel、圖片等多種檔案類型。</div>
@@ -75,7 +75,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📅</span>
+          <span class="icon"></span>
           日期時間 (DateTime)
         </div>
         <div class="card-text">展示日期時間處理功能，包含格式化、計算、比較與驗證。</div>
@@ -87,7 +87,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">✅</span>
+          <span class="icon"></span>
           表單驗證 (Validation)
         </div>
         <div class="card-text">展示表單驗證功能，包含 Email、電話、身分證等常用驗證規則。</div>
@@ -99,7 +99,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🎨</span>
+          <span class="icon"></span>
           資料格式化 (Formatter)
         </div>
         <div class="card-text">展示資料格式化功能，包含數字、貨幣、電話號碼、字串等格式化。</div>
@@ -111,7 +111,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">💾</span>
+          <span class="icon"></span>
           本地儲存 (Storage)
         </div>
         <div class="card-text">
@@ -125,7 +125,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">⏱️</span>
+          <span class="icon"></span>
           防抖/節流 (Debounce)
         </div>
         <div class="card-text">展示防抖與節流功能，用於效能優化與減少函數執行頻率。</div>
@@ -137,7 +137,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📄</span>
+          <span class="icon"></span>
           分頁管理 (Pagination)
         </div>
         <div class="card-text">展示分頁管理功能，包含頁碼計算、範圍管理與陣列分頁。</div>
@@ -149,7 +149,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🛡️</span>
+          <span class="icon"></span>
           權限管理 (Permission)
         </div>
         <div class="card-text">展示權限管理功能，包含角色驗證、功能權限控制與多重權限檢查。</div>
@@ -161,7 +161,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🪟</span>
+          <span class="icon"></span>
           彈窗管理 (Modal)
         </div>
         <div class="card-text">展示彈窗管理功能，包含統一彈窗控制、多層彈窗管理與確認對話框。</div>
@@ -173,7 +173,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🔐</span>
+          <span class="icon"></span>
           加密工具 (Encryption)
         </div>
         <div class="card-text">
@@ -187,7 +187,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📋</span>
+          <span class="icon"></span>
           日誌系統 (Logger)
         </div>
         <div class="card-text">展示日誌系統功能，包含分級日誌、效能追蹤與環境區分。</div>
@@ -199,7 +199,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">⚠️</span>
+          <span class="icon"></span>
           錯誤處理 (Error Handler)
         </div>
         <div class="card-text">展示錯誤處理功能，包含錯誤捕捉、分類、記錄與重試機制。</div>
@@ -211,7 +211,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">📡</span>
+          <span class="icon"></span>
           網路狀態 (Network)
         </div>
         <div class="card-text">展示網路狀態監控，包含線上/離線狀態、網路類型與速度偵測。</div>
@@ -223,7 +223,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">⏱️</span>
+          <span class="icon"></span>
           閒置偵測 (Idle)
         </div>
         <div class="card-text">展示閒置偵測功能，包含活動監控、自動登出與暫停/恢復機制。</div>
@@ -235,7 +235,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🔒</span>
+          <span class="icon"></span>
           資安防護 (Security)
         </div>
         <div class="card-text">
@@ -249,11 +249,11 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🎨</span>
-          組件展示 (Component Showcase)
+          <span class="icon"></span>
+          元件展示 (Component Showcase)
         </div>
         <div class="card-text">
-          展示三層架構設計:Composables、UI 適配層、業務組件,實現框架無關的開發模式。
+          展示三層架構設計:Composables、UI 適配層、業務元件,實現框架無關的開發模式。
         </div>
       </router-link>
 
@@ -263,7 +263,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🔌</span>
+          <span class="icon"></span>
           Mock API 展示
         </div>
         <div class="card-text">
@@ -277,7 +277,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">🔗</span>
+          <span class="icon"></span>
           API 管理展示 (API Demo)
         </div>
         <div class="card-text">
@@ -291,7 +291,7 @@ definePageMeta({
         class="card hover-card"
       >
         <div class="card-title">
-          <span class="icon">⏳</span>
+          <span class="icon"></span>
           Loading 展示 (Queue 模式)
         </div>
         <div class="card-text">展示全域 Loading 機制，支援多重請求堆疊 (Queue) 與防閃爍設計。</div>
@@ -332,7 +332,7 @@ definePageMeta({
   line-height: 1.6;
 }
 
-/* 網格佈局 */
+/* 元件網格 */
 .showcase-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
