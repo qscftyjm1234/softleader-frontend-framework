@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import DataPreview from '../components/DataPreview.vue'
+import { computed, ref } from 'vue'
 import { useUserStore } from '~/stores/user'
 import { useFeatureStore } from '~/stores/features'
 import { useAppDevice } from '~/composables/useAppDevice'
+
+// Components
+import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import IButton from '@/components/uiInterface/IButton.vue'
+import IStack from '@/components/uiInterface/IStack.vue'
 
 // --- 1. 平台與裝置資訊 (即時) ---
 const device = useAppDevice()
@@ -86,240 +93,104 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
+  <ShowcasePage
+    title="資料檢視器 (Data Inspector)"
+    description="展示系統即時狀態 (Environment, Stores) 與各模組的資料結構 (Schema, Mock)。"
+  >
+    <template #header-extra>
+      <IStack
+        gap="0.5"
+        class="mt-4"
+      >
+        <IButton
+          variant="outlined"
+          @click="expandAll"
         >
-          返回
-        </router-link>
-        <h1 class="page-title">資料檢視器 (Data Inspector)</h1>
-      </div>
-      <div class="header-actions">
-        <p class="page-desc">
-          展示系統即時狀態 (Environment, Stores) 與各模組的資料結構 (Schema, Mock)。
-        </p>
-        <div class="action-buttons">
-          <button
-            class="btn-action"
-            @click="expandAll"
-          >
-            展開全部
-          </button>
-          <button
-            class="btn-action"
-            @click="collapseAll"
-          >
-            收合全部
-          </button>
-        </div>
-      </div>
-    </div>
+          展開全部
+        </IButton>
+        <IButton
+          variant="outlined"
+          @click="collapseAll"
+        >
+          收合全部
+        </IButton>
+      </IStack>
+    </template>
 
-    <div class="inspector-content">
-      <!-- 系統環境區塊 (Environment) -->
-      <section class="module-section env-section">
-        <h2 class="section-title">
-          <span class="icon">⚙️</span>
-          Environment & System (環境資訊)
-        </h2>
-        <div class="card-content">
-          <DataPreview
-            ref="devicePreview"
-            title="Device Info (裝置資訊)"
-            :data="deviceInfo"
-          />
-          <div class="divider"></div>
-          <DataPreview
-            ref="i18nPreview"
-            title="i18n Settings (多語系設定)"
-            :data="i18nInfo"
-          />
-          <div class="divider"></div>
-          <DataPreview
-            ref="configPreview"
-            title="Runtime Config (Public) (執行時參數)"
-            :data="configData"
-          />
-        </div>
-      </section>
+    <!-- 系統環境區塊 (Environment) -->
+    <ShowcaseSection
+      title="Environment & System (環境資訊)"
+      icon="⚙️"
+    >
+      <IStack
+        direction="column"
+        gap="1"
+        style="padding: 1.5rem"
+      >
+        <DataPreview
+          ref="devicePreview"
+          title="Device Info (裝置資訊)"
+          :data="deviceInfo"
+        />
+        <DataPreview
+          ref="i18nPreview"
+          title="i18n Settings (多語系設定)"
+          :data="i18nInfo"
+        />
+        <DataPreview
+          ref="configPreview"
+          title="Runtime Config (Public) (執行時參數)"
+          :data="configData"
+        />
+      </IStack>
+    </ShowcaseSection>
 
-      <!-- 全域狀態區塊 (State) -->
-      <section class="module-section state-section">
-        <h2 class="section-title">
-          <span class="icon">📦</span>
-          Global State (全域狀態 - Pinia)
-        </h2>
-        <div class="card-content">
-          <DataPreview
-            ref="userStorePreview"
-            title="User Store State ($state)"
-            :data="userStore.$state"
-          />
-          <div class="divider"></div>
-          <DataPreview
-            ref="featuresStorePreview"
-            title="Features Store State ($state)"
-            :data="featuresStore.$state"
-          />
-        </div>
-      </section>
+    <!-- 全域狀態區塊 (State) -->
+    <ShowcaseSection
+      title="Global State (全域狀態 - Pinia)"
+      icon="📦"
+    >
+      <IStack
+        direction="column"
+        gap="1"
+        style="padding: 1.5rem"
+      >
+        <DataPreview
+          ref="userStorePreview"
+          title="User Store State ($state)"
+          :data="userStore.$state"
+        />
+        <DataPreview
+          ref="featuresStorePreview"
+          title="Features Store State ($state)"
+          :data="featuresStore.$state"
+        />
+      </IStack>
+    </ShowcaseSection>
 
-      <!-- 模組資料結構區塊 (Modules Mock) -->
-      <section class="module-section mock-section">
-        <h2 class="section-title">
-          <span class="icon">🧩</span>
-          Module Data Structures (模組資料結構)
-        </h2>
-        <div class="card-content">
-          <p class="section-desc">以下展示各業務模組 API 預期的回傳格式範例</p>
-          >
-          <DataPreview
-            ref="authMockPreview"
-            title="Auth Module - User Profile (Mock)"
-            :data="authMockData"
-          />
-          <div class="divider"></div>
-          <DataPreview
-            ref="policyPreview"
-            title="Insurance Module - Policy Schema"
-            :data="policySchema"
-          />
-        </div>
-      </section>
-    </div>
-  </div>
+    <!-- 模組資料結構區塊 (Modules Mock) -->
+    <ShowcaseSection
+      title="Module Data Structures (模組資料結構)"
+      icon="🧩"
+    >
+      <IStack
+        direction="column"
+        gap="1"
+        style="padding: 1.5rem"
+      >
+        <p style="color: #666; font-size: 0.9rem">以下展示各業務模組 API 預期的回傳格式範例</p>
+
+        <DataPreview
+          ref="authMockPreview"
+          title="Auth Module - User Profile (Mock)"
+          :data="authMockData"
+        />
+        <DataPreview
+          ref="policyPreview"
+          title="Insurance Module - Policy Schema"
+          :data="policySchema"
+        />
+      </IStack>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
-
-<style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-/* Header */
-.page-header {
-  margin-bottom: 2.5rem;
-}
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1.5rem;
-  font-weight: 500;
-  padding: 0.5rem;
-  border-radius: 4px;
-  background: #f5f5f5;
-  transition: all 0.2s;
-}
-.back-link:hover {
-  background: #e0e0e0;
-  color: #333;
-}
-.page-title {
-  font-size: 2rem;
-  font-weight: 400;
-  margin: 0;
-}
-.page-desc {
-  color: #666;
-  font-size: 1.05rem;
-  margin-left: 0.5rem;
-}
-
-/* Content */
-.inspector-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  margin: 0;
-  font-size: 1.25rem;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  background: #fafafa;
-}
-.icon {
-  margin-right: 0.75rem;
-}
-
-/* Section Colors */
-.env-section .section-title {
-  color: #5c6bc0;
-} /* Indigo */
-.state-section .section-title {
-  color: #ef5350;
-} /* Red */
-.mock-section .section-title {
-  color: #66bb6a;
-} /* Green */
-
-.card-content {
-  padding: 1.5rem;
-}
-.section-desc {
-  margin-bottom: 1rem;
-  color: #666;
-  font-size: 0.9rem;
-}
-.divider {
-  height: 1px;
-  background-color: #eee;
-  margin: 0.8rem 0;
-}
-
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-action {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.btn-action:hover {
-  background: #f0f0f0;
-  border-color: #bbb;
-}
-
-.btn-action:active {
-  background: #e0e0e0;
-}
-</style>

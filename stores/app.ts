@@ -2,12 +2,12 @@ import { defineStore } from 'pinia'
 import { defaultLayoutConfig, type LayoutConfig } from '~/core/config/layout'
 
 export const useAppStore = defineStore('app', () => {
-  // 狀態 (State)
+  // 狀態
   const config = ref<LayoutConfig>({ ...defaultLayoutConfig })
   const drawer = ref(true)
   const loading = ref(false)
 
-  // 動作 (Actions)
+  // 動作
   /**
    *
    */

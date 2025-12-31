@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * App Sidebar - 使用三層架構
+ * 應用程式側邊欄 - 使用三層架構
  * 業務層：整合 Store、權限控制、導航邏輯
  * UI 層：使用 IDrawer + IMenuItem (可替換 UI 框架)
  */

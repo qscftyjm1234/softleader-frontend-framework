@@ -2,7 +2,7 @@
 /**
  * SmartComplexWidget - 複雜智慧元件
  *
- * 業務層：使用 uiInterface 層元件
+ * 業務層 (Business Layer)：使用 uiInterface 層元件
  * 遵循三層架構：
  * - UI: 使用 ICard, ISheet, IButton 等介面層元件
  */
@@ -10,7 +10,6 @@ import ICard from '~/components/uiInterface/ICard.vue'
 import ISheet from '~/components/uiInterface/ISheet.vue'
 import IButton from '~/components/uiInterface/IButton.vue'
 import IAvatar from '~/components/uiInterface/IAvatar.vue'
-import IIcon from '~/components/uiInterface/IIcon.vue'
 import IChip from '~/components/uiInterface/IChip.vue'
 
 // 狀態管理
@@ -19,7 +18,7 @@ const history = ref<string[]>([])
 
 const increment = () => {
   count.value++
-  history.value.unshift(`Count increased to ${count.value} at ${new Date().toLocaleTimeString()}`)
+  history.value.unshift(`數值增加至 ${count.value} 於 ${new Date().toLocaleTimeString()}`)
 }
 
 const reset = () => {
@@ -33,10 +32,10 @@ const reset = () => {
     elevation="0"
     class="complex-widget"
   >
-    <!-- Header -->
+    <!-- 標題區 -->
     <div class="widget-header">
       <div class="widget-header__info">
-        <div class="widget-overline">SMART WIDGET</div>
+        <div class="widget-overline">智慧組件</div>
         <h2 class="widget-title">複雜元件範例</h2>
         <p class="widget-subtitle">展示內部狀態管理與互動邏輯</p>
       </div>
@@ -44,15 +43,10 @@ const reset = () => {
         :size="48"
         color="#E3F2FD"
         rounded="8px"
-      >
-        <IIcon
-          icon="📊"
-          :size="24"
-        />
-      </IAvatar>
+      ></IAvatar>
     </div>
 
-    <!-- Main Content -->
+    <!-- 主要內容區 -->
     <ISheet
       color="#F5F5F5"
       rounded="12px"
@@ -61,7 +55,7 @@ const reset = () => {
     >
       <div class="content-display">
         <div>
-          <div class="content-label">CURRENT VALUE</div>
+          <div class="content-label">目前數值</div>
           <div class="content-value">{{ count }}</div>
         </div>
 
@@ -84,7 +78,7 @@ const reset = () => {
       </div>
     </ISheet>
 
-    <!-- History Section -->
+    <!-- 歷史紀錄區 -->
     <div class="widget-history">
       <div class="history-header">
         <span class="history-title">操作紀錄</span>
@@ -103,10 +97,6 @@ const reset = () => {
             :key="log"
             class="history-item"
           >
-            <IIcon
-              icon="🟢"
-              :size="12"
-            />
             <span class="history-text">{{ log }}</span>
           </div>
         </TransitionGroup>

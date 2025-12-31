@@ -38,7 +38,6 @@ const handleClick = async () => {
 <template>
   <ILoadingButton
     variant="primary"
-    icon="⚡"
     @click="handleClick"
   >
     {{ label }}

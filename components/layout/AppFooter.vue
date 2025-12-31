@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * App Footer - Framework Agnostic
+ * 應用程式頁尾 - 框架無關
  * 框架無關的頁尾
  */
 import { useAppStore } from '~/stores/app'

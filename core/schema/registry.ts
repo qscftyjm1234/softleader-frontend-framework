@@ -7,9 +7,9 @@ import type { Component } from 'vue'
 /**
  * Registry mapping string keys to Vue components.
  */
-import SmartTable from '~/components/smart/SmartTable.vue'
-import SmartCard from '~/components/smart/SmartCard.vue'
-import SmartComplexWidget from '~/components/smart/SmartComplexWidget.vue'
+import SmartTable from '~/components/uiBusiness/SmartTable.vue'
+import SmartCard from '~/components/uiBusiness/SmartCard.vue'
+import SmartComplexWidget from '~/components/uiBusiness/SmartComplexWidget.vue'
 import LoginForm from '~/components/auth/LoginForm.vue'
 
 const registry: Record<string, Component | string> = {

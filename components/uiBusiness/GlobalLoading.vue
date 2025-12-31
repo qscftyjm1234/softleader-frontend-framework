@@ -33,17 +33,17 @@ const { isLoading } = useLoading()
   left: 0;
   width: 100vw;
   height: 100vh;
-  /* Darker overlay for better contrast */
+  /* 深色遮罩以提供更好的對比度 */
   background: rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  /* Glassmorphism effect */
+  /* 毛玻璃效果 */
   backdrop-filter: blur(4px);
 }
 
-/* Transition Effects */
+/* 過渡效果 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

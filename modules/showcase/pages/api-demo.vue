@@ -4,12 +4,11 @@
  *
  * 展示如何使用 useRepository 進行 API 呼叫
  * 包含分頁、搜尋、載入狀態等功能
- *
- * 為什麼需要 useRepositoryHelpers?
- * - waitForData: 在 SSR 環境下等待資料載入完成
- * - waitForAll: 等待多個 API 同時載入完成
- * - fetchData: 直接使用 $fetch 取得資料（適合一次性請求）
  */
+import { ref } from 'vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+
 const { user } = useRepository()
 
 const page = ref(1)
@@ -25,97 +24,96 @@ const { data, pending, error } = await user.getUsers({
 </script>
 
 <template>
-  <div class="showcase-page">
-    <h1 class="page-title">API Management Demo</h1>
-    <p class="page-description">
-      展示如何使用 Repository 模式進行 API 呼叫,包含分頁、搜尋、載入狀態等功能
-    </p>
+  <ShowcasePage
+    title="API Management Demo"
+    description="展示如何使用 Repository 模式進行 API 呼叫,包含分頁、搜尋、載入狀態等功能"
+  >
+    <ShowcaseSection title="Repository Pattern Demo">
+      <!-- Controls -->
+      <div class="controls">
+        <div class="control-group">
+          <label>Search:</label>
+          <input
+            v-model="search"
+            placeholder="Search users..."
+            class="search-input"
+          />
+        </div>
 
-    <!-- Controls -->
-    <div class="controls">
-      <div class="control-group">
-        <label>Search:</label>
-        <input
-          v-model="search"
-          placeholder="Search users..."
-          class="search-input"
-        />
-      </div>
-
-      <div class="control-group">
-        <button
-          :disabled="page <= 1"
-          class="btn btn-secondary"
-          @click="page--"
-        >
-          Prev
-        </button>
-        <span class="page-info">Page {{ page }}</span>
-        <button
-          class="btn btn-secondary"
-          @click="page++"
-        >
-          Next
-        </button>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div
-      v-if="pending"
-      class="state-message loading"
-    >
-      ⏳ Loading...
-    </div>
-
-    <!-- Error State -->
-    <div
-      v-else-if="error"
-      class="state-message error"
-    >
-      ❌ Error: {{ error.message }}
-    </div>
-
-    <!-- Data Table -->
-    <div
-      v-else
-      class="data-table-container"
-    >
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in (data as any)?.items"
-            :key="item.id"
+        <div class="control-group">
+          <button
+            :disabled="page <= 1"
+            class="btn btn-secondary"
+            @click="page--"
           >
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.email }}</td>
-            <td>
-              <span
-                class="role-badge"
-                :class="`role-${item.role.toLowerCase()}`"
-              >
-                {{ item.role }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="table-footer">Total: {{ (data as any)?.total }} users</div>
-    </div>
+            Prev
+          </button>
+          <span class="page-info">Page {{ page }}</span>
+          <button
+            class="btn btn-secondary"
+            @click="page++"
+          >
+            Next
+          </button>
+        </div>
+      </div>
 
-    <!-- Usage Code -->
-    <div class="code-section">
-      <h3>使用方式</h3>
-      <pre><code>// 基本用法
+      <!-- Loading State -->
+      <div
+        v-if="pending"
+        class="state-message loading"
+      >
+        ⏳ Loading...
+      </div>
+
+      <!-- Error State -->
+      <div
+        v-else-if="error"
+        class="state-message error"
+      >
+        ❌ Error: {{ error.message }}
+      </div>
+
+      <!-- Data Table -->
+      <div
+        v-else
+        class="data-table-container"
+      >
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in (data as any)?.items"
+              :key="item.id"
+            >
+              <td>{{ item.id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.email }}</td>
+              <td>
+                <span
+                  class="role-badge"
+                  :class="`role-${item.role.toLowerCase()}`"
+                >
+                  {{ item.role }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="table-footer">Total: {{ (data as any)?.total }} users</div>
+      </div>
+    </ShowcaseSection>
+
+    <ShowcaseSection title="使用方式">
+      <div class="code-section">
+        <pre><code>// 基本用法
 const { user } = useRepository()
 
 const page = ref(1)
@@ -144,30 +142,12 @@ console.log('所有資料都已載入')
 // 3. fetchData - 直接取得資料（適合一次性請求）
 const activities = await fetchData('/api/dashboard/activities', { limit: 10 })
 console.log('資料:', activities)</code></pre>
-    </div>
-  </div>
+      </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.showcase-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
-}
-
-.page-description {
-  color: #7f8c8d;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
 /* Controls */
 .controls {
   display: flex;
@@ -320,23 +300,13 @@ console.log('資料:', activities)</code></pre>
 }
 
 /* Code Section */
-.code-section {
-  margin-top: 2rem;
-}
-
-.code-section h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
 .code-section pre {
   background: #f5f5f5;
   padding: 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   border: 1px solid #e0e0e0;
+  margin: 0;
 }
 
 .code-section code {

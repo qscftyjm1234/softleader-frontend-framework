@@ -2,7 +2,7 @@
 /**
  * SmartTable - 智慧表格元件
  *
- * 業務層：使用 uiInterface 層元件 + composables
+ * 業務層 (Business Layer)：使用 uiInterface 層元件 + composables
  * 遵循三層架構：
  * - UI: 使用 ICard, IDataTable, ITextField 等介面層元件
  * - Logic: 使用 useTableData 管理資料載入
@@ -60,7 +60,7 @@ const getTagColor = (value: string): string => {
     elevation="0"
     class="smart-table"
   >
-    <!-- Header with Search -->
+    <!-- 搜尋標題區 -->
     <div class="table-header">
       <h3 class="table-title">{{ title }}</h3>
       <ITextField
@@ -72,7 +72,7 @@ const getTagColor = (value: string): string => {
 
     <IDivider />
 
-    <!-- Loading State -->
+    <!-- 載入狀態 -->
     <div
       v-if="tableData.loading.value"
       class="table-loading"
@@ -80,7 +80,7 @@ const getTagColor = (value: string): string => {
       載入中...
     </div>
 
-    <!-- Table Content -->
+    <!-- 表格內容 -->
     <div
       v-else
       class="table-wrapper"
@@ -106,7 +106,7 @@ const getTagColor = (value: string): string => {
               v-for="col in columns"
               :key="col.field"
             >
-              <!-- Tag Type -->
+              <!-- 標籤類型 -->
               <IChip
                 v-if="col.type === 'tag'"
                 size="small"
@@ -115,7 +115,7 @@ const getTagColor = (value: string): string => {
                 {{ item[col.field] }}
               </IChip>
 
-              <!-- Default Text -->
+              <!-- 預設文字 -->
               <span v-else>
                 {{ item[col.field] }}
               </span>
@@ -124,7 +124,7 @@ const getTagColor = (value: string): string => {
         </tbody>
       </table>
 
-      <!-- Empty State -->
+      <!-- 空狀態 -->
       <div
         v-if="tableData.items.value.length === 0"
         class="table-empty"
@@ -133,7 +133,7 @@ const getTagColor = (value: string): string => {
       </div>
     </div>
 
-    <!-- Pagination Info -->
+    <!-- 分頁資訊 -->
     <div
       v-if="api && tableData.totalItems.value > 0"
       class="table-footer"

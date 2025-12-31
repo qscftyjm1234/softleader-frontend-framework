@@ -26,9 +26,9 @@ const pageSchema: PageSchema = {
       type: 'div', // 使用標準 HTML 標籤
       props: { class: 'mb-4' },
       children: [
-        { 
-          type: 'h1', 
-          props: { class: 'text-h4' }, 
+        {
+          type: 'h1',
+          props: { class: 'text-h4' }
           // 目前文字內容需透過子元件或特定 prop 處理，
           // 或是擴充 renderer 支援純文字節點。
           // 這裡示範用 SmartTable，它是此架構的核心。
@@ -62,17 +62,20 @@ const pageSchema: PageSchema = {
 ```html
 <template>
   <div>
-    <SchemaRenderer 
-      v-for="(block, index) in pageSchema.blocks" 
-      :key="index" 
-      :schema="block" 
+    <SchemaRenderer
+      v-for="(block, index) in pageSchema.blocks"
+      :key="index"
+      :schema="block"
     />
   </div>
 </template>
 
-<script setup lang="ts">
-import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
-// ... (上面的 schema 定義)
+<script
+  setup
+  lang="ts"
+>
+  import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
+  // ... (上面的 schema 定義)
 </script>
 ```
 
@@ -80,16 +83,16 @@ import SchemaRenderer from '~/components/renderer/SchemaRenderer.vue'
 
 如果您需要新的元件 (例如 `SmartCard` 或 `SmartForm`)：
 
-1.  **建立元件**: 在 `components/smart/` 下建立 `SmartCard.vue`。
+1.  **建立元件**: 在 `components/business/` 下建立 `SmartCard.vue`。
 2.  **註冊元件**: 打開 `core/schema/registry.ts`，將其加入註冊表。
 
 ```typescript
 // core/schema/registry.ts
-import SmartCard from '~/components/smart/SmartCard.vue'
+import SmartCard from '~/components/business/SmartCard.vue'
 
 const registry = {
   // ...
-  'SmartCard': SmartCard
+  SmartCard: SmartCard
 }
 ```
 

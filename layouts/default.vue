@@ -1,19 +1,18 @@
 <script setup lang="ts">
 /**
- * Default Layout - Framework Agnostic
- * 框架無關的預設佈局
+ * 預設佈局 - 框架無關
  *
- * 此佈局不依賴任何 UI 框架,使用純 HTML + CSS 實現
+ * 此佈局不依賴任何 UI 框架，使用純 HTML + CSS 實現
  */
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import AppSidebar from '~/components/layout/AppSidebar.vue'
-import GlobalSnackbar from '~/components/business/GlobalSnackbar.vue'
+import GlobalSnackbar from '~/components/uiBusiness/GlobalSnackbar.vue'
 import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()
 
-// Initialize app (load config)
+// 初始化應用程式 (載入設定)
 onMounted(() => {
   appStore.initApp()
 })
@@ -24,28 +23,28 @@ onMounted(() => {
     class="app-layout"
     :class="{ 'has-sidebar': appStore.config.sidebar.visible }"
   >
-    <!-- Header -->
+    <!-- 頁首 -->
     <AppHeader />
 
-    <!-- Sidebar -->
+    <!-- 側邊欄 -->
     <AppSidebar v-model="appStore.drawer" />
 
-    <!-- Backdrop for mobile -->
+    <!-- 手機版遮罩 -->
     <div
       class="backdrop"
       :class="{ 'is-visible': appStore.drawer }"
       @click="appStore.drawer = false"
     />
 
-    <!-- Main Content -->
+    <!-- 主要內容 -->
     <main class="app-main">
       <slot />
     </main>
 
-    <!-- Footer -->
+    <!-- 頁尾 -->
     <AppFooter />
 
-    <!-- Global Snackbar -->
+    <!-- 全域通知 Snackbar -->
     <GlobalSnackbar />
   </div>
 </template>

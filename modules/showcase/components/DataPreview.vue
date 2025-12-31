@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import ICard from '@/components/uiInterface/ICard.vue'
 
 // 定義元件 Props
 const props = defineProps<{
@@ -37,7 +38,11 @@ defineExpose({
 </script>
 
 <template>
-  <div class="data-preview">
+  <ICard
+    class="data-preview"
+    variant="outlined"
+    :elevation="0"
+  >
     <!-- 標題欄：包含標題與展開按鈕 -->
     <div
       class="header"
@@ -58,59 +63,56 @@ defineExpose({
         <pre><code>{{ formattedData }}</code></pre>
       </div>
     </div>
-  </div>
+  </ICard>
 </template>
 
 <style scoped>
 .data-preview {
   margin-bottom: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
   overflow: hidden;
+}
+
+/* 覆蓋 ICard 預設內距，讓 Header 貼齊邊緣 */
+.data-preview :deep(.card-content) {
+  padding: 0 !important;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.25rem 0.75rem; /* Reduced header padding */
+  padding: 0.5rem 1rem;
   background-color: #f8f9fa;
   cursor: pointer;
   user-select: none;
   border-bottom: 1px solid transparent;
   transition: background-color 0.2s;
-  height: 2rem; /* Fixed low height */
+  min-height: 2.5rem;
 }
 
 .header:hover {
   background-color: #f0f0f0;
 }
 
-.data-preview:has(.content[style*='display: none']) .header {
-  border-bottom: none;
-}
-
+/* 當內容展開時，Header 加底線 */
 .data-preview:has(.content:not([style*='display: none'])) .header {
   border-bottom: 1px solid #e0e0e0;
 }
 
 .title {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #444;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  color: #2c3e50;
 }
 
 .toggle-btn {
   background: none;
   border: none;
-  font-size: 0.75rem;
-  color: #777;
+  font-size: 0.8rem;
+  color: #666;
   cursor: pointer;
+  padding: 0;
 }
 
 .content {
@@ -119,14 +121,13 @@ defineExpose({
 
 /* 內容區：JSON 程式碼 */
 .code-block {
-  padding: 0.5rem; /* Reduced code block padding */
+  padding: 1rem;
   margin: 0;
-  overflow-x: auto; /* 支援橫向捲動 */
-  background-color: #1e1e1e; /* Dark background for better contrast */
-  color: #e0e0e0; /* Light text */
-  border-radius: 0 0 4px 4px;
-  max-height: 720px; /* 限制最大高度，避免佔用太多版面 */
-  overflow-y: auto; /* 內容過長時顯示垂直卷軸 */
+  overflow-x: auto;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 pre {
@@ -135,8 +136,8 @@ pre {
 
 code {
   font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
-  font-size: 0.85rem; /* Slightly smaller font */
-  line-height: 1.25; /* Tighter line height */
-  white-space: pre; /* Ensure correct formatting */
+  font-size: 0.85rem;
+  line-height: 1.4;
+  white-space: pre;
 }
 </style>

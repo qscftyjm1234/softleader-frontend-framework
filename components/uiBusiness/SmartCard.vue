@@ -2,7 +2,7 @@
 /**
  * SmartCard - 智慧卡片元件
  *
- * 業務層：使用 uiInterface 層元件，提供便捷的卡片封裝
+ * 業務層 (Business Layer)：使用 uiInterface 層元件，提供便捷的卡片封裝
  * 遵循三層架構：不直接依賴 UI 框架
  */
 import ICard from '~/components/uiInterface/ICard.vue'
@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
   title: '',
   subtitle: '',
   text: '',
-  icon: '📋',
+  icon: '',
   color: 'white',
   elevation: 1
 })
@@ -35,7 +35,7 @@ withDefaults(defineProps<Props>(), {
     :elevation="elevation"
     class="smart-card"
   >
-    <!-- Icon Header -->
+    <!-- 圖標標題 -->
     <div
       v-if="icon"
       class="smart-card__icon"
@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
       />
     </div>
 
-    <!-- Text Content -->
+    <!-- 文字內容 -->
     <p
       v-if="text"
       class="smart-card__text"
@@ -54,7 +54,7 @@ withDefaults(defineProps<Props>(), {
       {{ text }}
     </p>
 
-    <!-- 支援 Children 渲染 -->
+    <!-- 支援子組件渲染 -->
     <div
       v-if="$slots.default"
       class="smart-card__content"

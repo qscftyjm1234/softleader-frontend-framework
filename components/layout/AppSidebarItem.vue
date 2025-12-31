@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * App Sidebar Item - Framework Agnostic
+ * 應用程式側邊欄項目 - 框架無關
  * 框架無關的側邊欄項目 (支援遞迴巢狀選單)
  */
 import type { SidebarItem } from '~/core/sidebar/buildSidebar'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ApiLoadingButton from '@/components/business/ApiLoadingButton.vue'
+import ApiLoadingButton from '@/components/uiBusiness/ApiLoadingButton.vue'
 
 definePageMeta({
   title: 'Loading 展示',

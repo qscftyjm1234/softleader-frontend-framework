@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
 import DataPreview from '../components/DataPreview.vue'
 
 const {
@@ -139,30 +141,15 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
-        >
-          返回
-        </router-link>
-        <h1 class="page-title">檔案上傳系統 (File Upload System)</h1>
-      </div>
-      <p class="page-desc">
-        統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。
-        <br />
-        核心特色：完整驗證、Loading 狀態管理、FormData 自動處理。
-      </p>
-    </div>
-
+  <ShowcasePage
+    title="檔案上傳系統 (File Upload System)"
+    description="統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。核心特色：完整驗證、Loading 狀態管理、FormData 自動處理。"
+  >
     <!-- General Usage Section -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">📝</span>
-        General Usage (一般使用範例)
-      </h2>
+    <ShowcaseSection
+      title="General Usage (一般使用範例)"
+      icon="📝"
+    >
       <div class="card-content">
         <p class="demo-desc">
           最常見的情境：從 input 元素上傳檔案。
@@ -217,14 +204,13 @@ const handleUpload = async (event: Event) => {
           </div>
         </div>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Interactive Upload Area -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🚀</span>
-        Interactive Upload Demo (互動式上傳演示)
-      </h2>
+    <ShowcaseSection
+      title="Interactive Upload Demo (互動式上傳演示)"
+      icon="🚀"
+    >
       <div class="card-content">
         <!-- Upload Area -->
         <div
@@ -369,14 +355,13 @@ const handleUpload = async (event: Event) => {
           />
         </div>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- API Methods Section -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        API Methods (方法說明)
-      </h2>
+    <ShowcaseSection
+      title="API Methods (方法說明)"
+      icon="🎮"
+    >
       <div class="card-content">
         <div class="method-demos">
           <!-- 1. uploadFile -->
@@ -546,81 +531,11 @@ accept: [...FILE_TYPE_GROUPS.image, ...FILE_TYPE_GROUPS.document]</code></pre>
           </div>
         </div>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.back-link:hover {
-  background: #e0e0e0;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
 .card-content {
   padding: 1.5rem;
 }
@@ -799,173 +714,102 @@ accept: [...FILE_TYPE_GROUPS.image, ...FILE_TYPE_GROUPS.document]</code></pre>
 
 /* Validation Summary */
 .validation-summary {
-  padding: 0.75rem;
-  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .validation-summary.valid {
-  background: #d1fae5;
-  color: #065f46;
-  border-left: 3px solid #10b981;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
 }
 
 .validation-summary.invalid {
   background: #fee2e2;
   color: #991b1b;
-  border-left: 3px solid #ef4444;
+  border: 1px solid #fecaca;
 }
 
-/* File Grid Styles */
+/* File Grid */
 .file-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .file-card {
-  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: white;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
-  background: white;
+  position: relative;
   transition: all 0.2s;
 }
 
 .file-card:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .file-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .file-name {
-  font-size: 0.9rem;
   font-weight: 500;
   color: #334155;
+  margin-bottom: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 0.25rem;
 }
 
 .file-meta {
   font-size: 0.8rem;
   color: #94a3b8;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  justify-content: space-between;
 }
 
 .file-type {
-  font-size: 0.75rem;
-  color: #cbd5e1;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  background: #f1f5f9;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
 }
 
 .remove-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: transparent;
+  background: none;
   border: none;
-  color: #cbd5e1;
+  color: #94a3b8;
   cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0;
-  line-height: 1;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
 .remove-btn:hover {
+  background: #fee2e2;
   color: #ef4444;
-}
-
-/* Action Buttons */
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-  font-size: 0.9rem;
-}
-
-.action-btn:hover:not(:disabled) {
-  background: #0b5ed7;
-}
-
-.action-btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.action-btn:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.action-btn.secondary {
-  background: #6c757d;
-}
-
-.action-btn.secondary:hover:not(:disabled) {
-  background: #5a6268;
-}
-
-.action-btn.danger {
-  background: #dc3545;
-}
-
-.action-btn.danger:hover:not(:disabled) {
-  background: #c82333;
-}
-
-/* Method Demos */
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.demo-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.15rem 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
 }
 
 /* Results Section */
 .results-section {
   margin-top: 2rem;
-  padding-top: 2rem;
   border-top: 1px solid #eee;
+  padding-top: 2rem;
 }
 
 .results-section h3 {
@@ -974,7 +818,69 @@ accept: [...FILE_TYPE_GROUPS.image, ...FILE_TYPE_GROUPS.document]</code></pre>
   color: #2c3e50;
 }
 
-/* Animations */
+/* Action Buttons */
+.action-btn {
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-btn.secondary {
+  background: #64748b;
+}
+
+.action-btn.secondary:hover:not(:disabled) {
+  background: #475569;
+}
+
+.action-btn.danger {
+  background: #ef4444;
+}
+
+.action-btn.danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+/* Method Demos */
+.method-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.demo-card {
+  padding: 1.5rem;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.demo-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Animation */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -984,13 +890,5 @@ accept: [...FILE_TYPE_GROUPS.image, ...FILE_TYPE_GROUPS.document]</code></pre>
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.mt-8 {
-  margin-top: 2rem;
 }
 </style>

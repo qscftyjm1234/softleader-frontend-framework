@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * App Header - 使用三層架構
+ * 應用程式頁首 - 使用三層架構
  * 業務層：整合 Store、子元件
  * UI 層：使用 IAppBar (可替換 UI 框架)
  */
@@ -22,7 +22,7 @@ const appStore = useAppStore()
     :elevation="2"
     color="white"
   >
-    <!-- Mobile Menu Toggle -->
+    <!-- 手機版選單切換 -->
     <button
       class="header-nav-toggle"
       aria-label="Toggle navigation"
@@ -58,21 +58,21 @@ const appStore = useAppStore()
     </button>
 
     <div class="header-content">
-      <!-- Breadcrumbs -->
+      <!-- 麵包屑導航 -->
       <HeaderBreadcrumbs />
 
       <div class="header-spacer" />
 
-      <!-- Global Search -->
+      <!-- 全域搜尋 -->
       <HeaderSearch />
 
-      <!-- Generic Header Actions -->
+      <!-- 通用頁首動作 -->
       <HeaderActions />
 
-      <!-- Notifications -->
+      <!-- 通知中心 -->
       <HeaderNotifications />
 
-      <!-- User Menu -->
+      <!-- 使用者選單 -->
       <HeaderUserMenu />
     </div>
   </IAppBar>
