@@ -284,6 +284,18 @@ definePageMeta({
           展示如何使用 Repository 模式進行 API 呼叫,包含分頁、搜尋、載入狀態等功能。
         </div>
       </router-link>
+
+      <!-- 導航卡片:前往 Loading 展示 -->
+      <router-link
+        to="/showcase/loading"
+        class="card hover-card"
+      >
+        <div class="card-title">
+          <span class="icon">⏳</span>
+          Loading 展示 (Queue 模式)
+        </div>
+        <div class="card-text">展示全域 Loading 機制，支援多重請求堆疊 (Queue) 與防閃爍設計。</div>
+      </router-link>
     </div>
   </div>
 </template>

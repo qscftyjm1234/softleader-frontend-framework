@@ -15,7 +15,7 @@ import {
   checkRefreshToken
 } from '~/utils/api/interceptors/response'
 import { checkMockData } from '~/utils/api/interceptors/mock'
-import { useLoadingStore } from '~/stores/loading'
+// import { useLoadingStore } from '~/stores/loading' // Removed
 
 // 擴充 UseFetchOptions 以包含自定義選項
 type UseApiOptions<T> = UseFetchOptions<T> & {
@@ -40,7 +40,7 @@ export function useApi<T>(
   options: UseApiOptions<T> = {}
 ): ReturnType<typeof useFetch<T>> {
   const config = useRuntimeConfig()
-  const loadingStore = useLoadingStore()
+  const loading = useLoading()
 
   // 定義預設選項
   const defaults: UseApiOptions<ApiResponse<T>> = {
@@ -66,7 +66,7 @@ export function useApi<T>(
 
       // 處理 Loading
       if ((options as any).globalLoading) {
-        loadingStore.startLoading()
+        loading.start()
       }
 
       // 處理 Button Loading
@@ -93,7 +93,7 @@ export function useApi<T>(
       const opts = options as any
       // 處理 Loading
       if (opts.globalLoading) {
-        loadingStore.finishLoading()
+        loading.finish()
       }
       if (opts.loadingRef) {
         opts.loadingRef.value = false
@@ -123,7 +123,7 @@ export function useApi<T>(
       const opts = context.options as any
       // 處理 Loading
       if (opts.globalLoading) {
-        loadingStore.finishLoading()
+        loading.finish()
       }
       if (opts.loadingRef) {
         opts.loadingRef.value = false

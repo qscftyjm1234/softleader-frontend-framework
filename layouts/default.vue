@@ -8,7 +8,7 @@
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import AppSidebar from '~/components/layout/AppSidebar.vue'
-import GlobalSnackbar from '~/components/common/GlobalSnackbar.vue'
+import GlobalSnackbar from '~/components/business/GlobalSnackbar.vue'
 import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()

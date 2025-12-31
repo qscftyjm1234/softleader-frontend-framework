@@ -124,7 +124,7 @@ function downloadBlob(blob: Blob, filename: string): void {
  */
 export function useFileDownload() {
   const notify = useNotify()
-  const loadingStore = useLoadingStore()
+  const loading = useLoading()
 
   /**
    * 從 URL 下載檔案
@@ -144,7 +144,7 @@ export function useFileDownload() {
 
     try {
       // 開始 Loading
-      if (globalLoading) loadingStore.startLoading()
+      if (globalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 發送請求
@@ -183,7 +183,7 @@ export function useFileDownload() {
       throw error
     } finally {
       // 結束 Loading
-      if (globalLoading) loadingStore.finishLoading()
+      if (globalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
@@ -213,7 +213,7 @@ export function useFileDownload() {
 
     try {
       // 開始 Loading
-      if (globalLoading) loadingStore.startLoading()
+      if (globalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 發送 API 請求
@@ -245,7 +245,7 @@ export function useFileDownload() {
       throw error
     } finally {
       // 結束 Loading
-      if (globalLoading) loadingStore.finishLoading()
+      if (globalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }

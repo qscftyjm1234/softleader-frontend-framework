@@ -191,7 +191,7 @@ function validateFiles(
  */
 export function useFileUpload() {
   const notify = useNotify()
-  const loadingStore = useLoadingStore()
+  const loading = useLoading()
   const config = useRuntimeConfig()
 
   /**
@@ -219,7 +219,7 @@ export function useFileUpload() {
 
     try {
       // 開始 Loading
-      if (globalLoading) loadingStore.startLoading()
+      if (globalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 驗證檔案
@@ -275,7 +275,7 @@ export function useFileUpload() {
       }
     } finally {
       // 結束 Loading
-      if (globalLoading) loadingStore.finishLoading()
+      if (globalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
@@ -308,7 +308,7 @@ export function useFileUpload() {
 
     try {
       // 開始 Loading
-      if (globalLoading) loadingStore.startLoading()
+      if (globalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 驗證檔案
@@ -367,7 +367,7 @@ export function useFileUpload() {
       ]
     } finally {
       // 結束 Loading
-      if (globalLoading) loadingStore.finishLoading()
+      if (globalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
