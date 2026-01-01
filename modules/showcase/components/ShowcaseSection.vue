@@ -4,7 +4,6 @@
  * 業務邏輯層元件 (Business Layer)
  * 使用 ICard 封裝展示區塊
  */
-import ICard from '@/components/uiInterface/ICard.vue'
 
 interface Props {
   title?: string
@@ -16,30 +15,62 @@ defineProps<Props>()
 
 <template>
   <div class="showcase-section-wrapper">
-    <ICard
-      :title="title"
-      :subtitle="icon ? undefined : undefined"
-      variant="outlined"
-      class="section-card"
-    >
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="title-text">{{ title }}</span>
+        <span
+          v-if="icon"
+          class="title-icon"
+        >
+          {{ icon }}
+        </span>
+      </h2>
+      <div class="title-decoration"></div>
+    </div>
+    <div class="section-content">
       <slot />
-    </ICard>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .showcase-section-wrapper {
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.section-header {
   margin-bottom: 2rem;
+  position: relative;
 }
 
-/* 覆寫 ICard 標題樣式以符合設計 */
-.section-card :deep(.card-header) {
-  background: #fafafa;
-  border-bottom: 1px solid #e0e0e0;
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.02em;
 }
 
-.section-card :deep(.card-title) {
-  font-size: 1.25rem;
-  color: #2c3e50;
+.title-decoration {
+  height: 1px;
+  background: linear-gradient(90deg, #38bdf8 0%, rgba(56, 189, 248, 0) 100%);
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+
+.title-decoration::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 32px;
+  height: 3px;
+  background: #38bdf8;
+  border-radius: 2px;
 }
 </style>

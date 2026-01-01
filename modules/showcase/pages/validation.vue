@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 const {
   required,
@@ -9,14 +12,10 @@ const {
   url,
   taiwanId,
   number,
-  integer,
-  positive,
   minLength,
   maxLength,
   range,
-  pattern,
   sameAs,
-  validate,
   validateFields,
   isAllValid
 } = useValidation()
@@ -62,199 +61,221 @@ const isFormValid = computed(() => {
 })
 
 definePageMeta({
-  title: '表單驗證 (Validation)',
-  icon: 'mdi-check-circle'
+  title: '資料驗證 (Validation)',
+  icon: 'mdi-check-all',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
-        >
-          返回
-        </router-link>
-        <h1 class="page-title">表單驗證系統 (Validation System)</h1>
-      </div>
-      <p class="page-desc">
-        完整的表單驗證模組，提供常用驗證規則與自訂驗證功能。
-        <br />
-        核心特色：台灣本地化驗證、批次驗證、自訂規則。
-      </p>
-    </div>
-
+  <ShowcasePage
+    title="表單驗證系統 (Validation System)"
+    description="完整的表單驗證模組，提供常用驗證規則與自訂驗證功能。核心特色包含台灣本地化驗證、批次驗證、自訂規則。"
+  >
     <!-- Interactive Form Demo -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Form Demo (互動式表單演示)
-      </h2>
-      <div class="card-content">
-        <div class="form-demo">
-          <div class="form-row">
-            <label>使用者名稱 *</label>
-            <input
-              v-model="formData.username"
-              type="text"
-              class="input-field"
-              placeholder="3-20 個字元"
-            />
-            <span
-              v-if="validationResults.username && !validationResults.username.valid"
-              class="error-msg"
-            >
-              {{ validationResults.username.message }}
-            </span>
-          </div>
+    <ShowcaseSection
+      title="Interactive Form Demo (互動式表單演示)"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Validation Form"
+          description="填寫表單以測試驗證規則"
+          full-width
+        >
+          <div class="max-w-2xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <!-- Username -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">使用者名稱 *</label>
+                <input
+                  v-model="formData.username"
+                  type="text"
+                  class="glass-input w-full"
+                  placeholder="3-20 個字元"
+                />
+                <span
+                  v-if="validationResults.username && !validationResults.username.valid"
+                  class="text-red-400 text-xs mt-1 block"
+                >
+                  {{ validationResults.username.message }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>Email *</label>
-            <input
-              v-model="formData.email"
-              type="email"
-              class="input-field"
-              placeholder="example@email.com"
-            />
-            <span
-              v-if="validationResults.email && !validationResults.email.valid"
-              class="error-msg"
-            >
-              {{ validationResults.email.message }}
-            </span>
-            <span class="live-result">
-              即時驗證: {{ emailResult.valid ? '✓ 有效' : '✗ ' + emailResult.message }}
-            </span>
-          </div>
+              <!-- Email -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">Email *</label>
+                <input
+                  v-model="formData.email"
+                  type="email"
+                  class="glass-input w-full"
+                  placeholder="example@email.com"
+                />
+                <div class="flex justify-between items-start mt-1">
+                  <span
+                    v-if="validationResults.email && !validationResults.email.valid"
+                    class="text-red-400 text-xs block"
+                  >
+                    {{ validationResults.email.message }}
+                  </span>
+                  <span
+                    class="text-xs ml-auto"
+                    :class="emailResult.valid ? 'text-green-400' : 'text-slate-500'"
+                  >
+                    即時: {{ emailResult.valid ? '✓ 有效' : 'Checking...' }}
+                  </span>
+                </div>
+              </div>
 
-          <div class="form-row">
-            <label>手機號碼</label>
-            <input
-              v-model="formData.phone"
-              type="tel"
-              class="input-field"
-              placeholder="0912-345678"
-            />
-            <span class="live-result">
-              即時驗證: {{ phoneResult.valid ? '✓ 有效' : '✗ ' + phoneResult.message }}
-            </span>
-          </div>
+              <!-- Phone -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">手機號碼</label>
+                <input
+                  v-model="formData.phone"
+                  type="tel"
+                  class="glass-input w-full"
+                  placeholder="0912-345678"
+                />
+                <span
+                  class="text-xs block mt-1 text-right"
+                  :class="phoneResult.valid ? 'text-green-400' : 'text-slate-500'"
+                >
+                  即時: {{ phoneResult.valid ? '✓ 有效' : phoneResult.message || '格式檢查中' }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>身分證字號</label>
-            <input
-              v-model="formData.taiwanId"
-              type="text"
-              class="input-field"
-              placeholder="A123456789"
-            />
-            <span class="live-result">
-              即時驗證: {{ taiwanIdResult.valid ? '✓ 有效' : '✗ ' + taiwanIdResult.message }}
-            </span>
-          </div>
+              <!-- Taiwan ID -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">身分證字號</label>
+                <input
+                  v-model="formData.taiwanId"
+                  type="text"
+                  class="glass-input w-full"
+                  placeholder="A123456789"
+                />
+                <span
+                  class="text-xs block mt-1 text-right"
+                  :class="taiwanIdResult.valid ? 'text-green-400' : 'text-slate-500'"
+                >
+                  即時:
+                  {{ taiwanIdResult.valid ? '✓ 有效' : taiwanIdResult.message || '格式檢查中' }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>年齡</label>
-            <input
-              v-model="formData.age"
-              type="number"
-              class="input-field"
-              placeholder="18-100"
-            />
-            <span
-              v-if="validationResults.age && !validationResults.age.valid"
-              class="error-msg"
-            >
-              {{ validationResults.age.message }}
-            </span>
-          </div>
+              <!-- Age -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">年齡</label>
+                <input
+                  v-model="formData.age"
+                  type="number"
+                  class="glass-input w-full"
+                  placeholder="18-100"
+                />
+                <span
+                  v-if="validationResults.age && !validationResults.age.valid"
+                  class="text-red-400 text-xs mt-1 block"
+                >
+                  {{ validationResults.age.message }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>密碼 *</label>
-            <input
-              v-model="formData.password"
-              type="password"
-              class="input-field"
-              placeholder="至少 6 個字元"
-            />
-            <span
-              v-if="validationResults.password && !validationResults.password.valid"
-              class="error-msg"
-            >
-              {{ validationResults.password.message }}
-            </span>
-          </div>
+              <!-- Website -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">網站</label>
+                <input
+                  v-model="formData.website"
+                  type="url"
+                  class="glass-input w-full"
+                  placeholder="https://example.com"
+                />
+                <span
+                  class="text-xs block mt-1 text-right"
+                  :class="urlResult.valid ? 'text-green-400' : 'text-slate-500'"
+                >
+                  即時: {{ urlResult.valid ? '✓ 有效' : urlResult.message || '格式檢查中' }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>確認密碼 *</label>
-            <input
-              v-model="formData.confirmPassword"
-              type="password"
-              class="input-field"
-            />
-            <span
-              v-if="validationResults.confirmPassword && !validationResults.confirmPassword.valid"
-              class="error-msg"
-            >
-              {{ validationResults.confirmPassword.message }}
-            </span>
-          </div>
+              <!-- Password -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">密碼 *</label>
+                <input
+                  v-model="formData.password"
+                  type="password"
+                  class="glass-input w-full"
+                  placeholder="至少 6 個字元"
+                />
+                <span
+                  v-if="validationResults.password && !validationResults.password.valid"
+                  class="text-red-400 text-xs mt-1 block"
+                >
+                  {{ validationResults.password.message }}
+                </span>
+              </div>
 
-          <div class="form-row">
-            <label>網站</label>
-            <input
-              v-model="formData.website"
-              type="url"
-              class="input-field"
-              placeholder="https://example.com"
-            />
-            <span class="live-result">
-              即時驗證: {{ urlResult.valid ? '✓ 有效' : '✗ ' + urlResult.message }}
-            </span>
-          </div>
+              <!-- Confirm Password -->
+              <div class="flex flex-col gap-1">
+                <label class="block text-slate-300 mb-1 text-sm font-bold">確認密碼 *</label>
+                <input
+                  v-model="formData.confirmPassword"
+                  type="password"
+                  class="glass-input w-full"
+                />
+                <span
+                  v-if="
+                    validationResults.confirmPassword && !validationResults.confirmPassword.valid
+                  "
+                  class="text-red-400 text-xs mt-1 block"
+                >
+                  {{ validationResults.confirmPassword.message }}
+                </span>
+              </div>
+            </div>
 
-          <div class="form-actions">
-            <button
-              class="action-btn"
-              @click="handleValidateForm"
-            >
-              驗證表單
-            </button>
-            <span
-              v-if="Object.keys(validationResults).length > 0"
-              :class="['validation-status', { valid: isFormValid, invalid: !isFormValid }]"
-            >
-              {{ isFormValid ? '✓ 表單驗證通過' : '✗ 表單驗證失敗' }}
-            </span>
-          </div>
+            <div class="flex items-center gap-4 mb-6">
+              <button
+                class="glass-btn primary"
+                @click="handleValidateForm"
+              >
+                驗證表單
+              </button>
+              <div
+                v-if="Object.keys(validationResults).length > 0"
+                class="px-4 py-2 rounded font-medium text-sm transition-colors"
+                :class="
+                  isFormValid
+                    ? 'bg-green-900/40 text-green-400 border border-green-800'
+                    : 'bg-red-900/40 text-red-400 border border-red-800'
+                "
+              >
+                {{ isFormValid ? '✓ 表單驗證通過' : '✗ 表單驗證失敗' }}
+              </div>
+            </div>
 
-          <div
-            v-if="Object.keys(validationResults).length > 0"
-            class="results-section"
-          >
-            <DataPreview
-              title="驗證結果"
-              :data="validationResults"
-            />
+            <div v-if="Object.keys(validationResults).length > 0">
+              <ShowcaseCodeBlock
+                :code="JSON.stringify(validationResults, null, 2)"
+                language="json"
+                label="Validation Results"
+              />
+            </div>
           </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- API Methods -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">📋</span>
-        Validation Rules (驗證規則)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <div class="demo-card">
-            <h3 class="demo-title">基本驗證</h3>
-            <div class="code-content">
-              <pre><code>// 必填
+    <ShowcaseSection
+      title="Validation Rules (驗證規則)"
+      icon="📋"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Basic Validation"
+          description="基本驗證規則範例"
+        >
+          <ShowcaseCodeBlock
+            code="// 必填
 required(value, '此欄位為必填')
 
 // Email
@@ -276,28 +297,35 @@ number(value, '必須為數字')
 integer(value, '必須為整數')
 
 // 正數
-positive(value, '必須為正數')</code></pre>
-            </div>
-          </div>
+positive(value, '必須為正數')"
+            label="Example Code"
+          />
+        </ShowcaseCard>
 
-          <div class="demo-card">
-            <h3 class="demo-title">長度與範圍驗證</h3>
-            <div class="code-content">
-              <pre><code>// 最小長度
+        <ShowcaseCard
+          title="Length & Range"
+          description="長度與範圍驗證"
+        >
+          <ShowcaseCodeBlock
+            code="// 最小長度
 minLength(6)(value)  // 至少 6 個字元
 
 // 最大長度
 maxLength(20)(value)  // 最多 20 個字元
 
 // 數字範圍
-range(18, 100)(value)  // 18 到 100 之間</code></pre>
-            </div>
-          </div>
+range(18, 100)(value)  // 18 到 100 之間"
+            label="Example Code"
+          />
+        </ShowcaseCard>
 
-          <div class="demo-card">
-            <h3 class="demo-title">進階驗證</h3>
-            <div class="code-content">
-              <pre><code>// 正則表達式
+        <ShowcaseCard
+          title="Advanced"
+          description="進階驗證與批次處理"
+          full-width
+        >
+          <ShowcaseCodeBlock
+            code="// 正則表達式
 pattern(/^[A-Z0-9]+$/)(value)
 
 // 相同值驗證（確認密碼）
@@ -318,221 +346,58 @@ const results = validateFields(formData, {
 })
 
 // 檢查是否全部有效
-const allValid = isAllValid(results)</code></pre>
-            </div>
-          </div>
-        </div>
+const allValid = isAllValid(results)"
+            label="Example Code"
+          />
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.95rem;
   transition: all 0.2s;
 }
 
-.back-link:hover {
-  background: #e0e0e0;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
 }
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.form-demo {
-  max-width: 600px;
-}
-
-.form-row {
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-row label {
-  font-weight: 500;
-  color: #555;
-}
-
-.input-field {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: #0d6efd;
-}
-
-.error-msg {
-  color: #dc3545;
-  font-size: 0.875rem;
-}
-
-.live-result {
-  font-size: 0.875rem;
-  color: #666;
-}
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.action-btn:hover {
-  background: #0b5ed7;
-}
-
-.validation-status {
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-}
-
-.validation-status.valid {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.validation-status.invalid {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.results-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #eee;
-}
-
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-}
-
-.demo-title {
-  font-size: 1rem;
+  transition: all 0.2s;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin: 0 0 0.75rem 0;
-  color: #2c3e50;
 }
 
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
 }
 
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  line-height: 1.5;
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
 }
 
-.code-content pre {
-  margin: 0;
-}
-
-.code-content code {
-  color: #abb2bf;
-}
-
-.mt-8 {
-  margin-top: 2rem;
+.glass-btn.primary:hover {
+  background: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 </style>

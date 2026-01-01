@@ -2,9 +2,11 @@
 /**
  * ShowcasePage
  * 業務邏輯層元件 (Business Layer)
- * 頁面標準佈局，使用 IButton 處理返回導航
+ * 頁面標準佈局 - Dark Mode / Glassmorphism Style
  */
 import IButton from '@/components/uiInterface/IButton.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 interface Props {
   title: string
@@ -13,98 +15,242 @@ interface Props {
   backText?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   description: '',
   backTo: '/showcase',
-  backText: '← 返回'
+  backText: '返回列表'
+})
+
+const route = useRoute()
+
+// 自動生成麵包屑
+const breadcrumbs = computed(() => {
+  const parts = route.path.split('/').filter((p) => p)
+
+  const items = parts.map((part, index) => {
+    const isLast = index === parts.length - 1
+    const path = '/' + parts.slice(0, index + 1).join('/')
+
+    // 簡單的標題映射 (可擴充)
+    let title = part.charAt(0).toUpperCase() + part.slice(1)
+    if (part === 'showcase') title = '展示中心'
+
+    // 如果是當前頁面，使用 props title
+    if (isLast && props.title) {
+      // 嘗試移除括號內的英文，只保留中文 (如果有)
+      const match = props.title.match(/(.*)\s\(/)
+      title = match ? match[1] : props.title
+    }
+
+    return {
+      title,
+      path,
+      disabled: isLast
+    }
+  })
+
+  // 確保首頁在最前
+  return [{ title: '首頁', path: '/', disabled: false }, ...items]
 })
 </script>
 
 <template>
-  <div class="showcase-page">
-    <div class="page-header">
-      <div class="header-main">
-        <NuxtLink
-          v-slot="{ navigate }"
-          :to="backTo"
-          custom
+  <div class="showcase-page-dark">
+    <!-- Background Decoration -->
+    <div class="bg-decoration"></div>
+
+    <div class="page-container">
+      <!-- Header Section -->
+      <header class="page-header">
+        <!-- Breadcrumbs -->
+        <nav
+          class="breadcrumbs"
+          aria-label="Breadcrumb"
         >
-          <IButton
-            variant="text"
-            class="back-btn"
-            @click="navigate"
-          >
-            {{ backText }}
-          </IButton>
-        </NuxtLink>
-        <h1 class="page-title">{{ title }}</h1>
-      </div>
+          <ol>
+            <li
+              v-for="(item, index) in breadcrumbs"
+              :key="item.path"
+            >
+              <span
+                v-if="index > 0"
+                class="separator"
+              >
+                /
+              </span>
+              <NuxtLink
+                v-if="!item.disabled"
+                :to="item.path"
+                class="crumb-link"
+              >
+                {{ item.title }}
+              </NuxtLink>
+              <span
+                v-else
+                class="crumb-current"
+              >
+                {{ item.title }}
+              </span>
+            </li>
+          </ol>
+        </nav>
 
-      <p
-        v-if="description"
-        class="page-desc"
-      >
-        {{ description }}
-      </p>
+        <div class="header-content">
+          <div class="title-group">
+            <h1 class="page-title">{{ title }}</h1>
+            <p
+              v-if="description"
+              class="page-desc"
+            >
+              {{ description }}
+            </p>
+          </div>
 
-      <div
-        v-if="$slots['header-extra']"
-        class="header-extra"
-      >
-        <slot name="header-extra" />
-      </div>
-    </div>
+          <div class="header-actions">
+            <slot name="header-extra" />
+            <NuxtLink
+              v-slot="{ navigate }"
+              :to="backTo"
+              custom
+            >
+              <IButton
+                variant="outlined"
+                prepend-icon="mdi-arrow-left"
+                class="back-btn"
+                @click="navigate"
+              >
+                {{ backText }}
+              </IButton>
+            </NuxtLink>
+          </div>
+        </div>
+      </header>
 
-    <div class="page-content">
-      <slot />
+      <!-- Content Section -->
+      <main class="page-content">
+        <slot />
+      </main>
     </div>
   </div>
 </template>
 
 <style scoped>
-.showcase-page {
+.showcase-page-dark {
+  min-height: 100vh;
+  background: #0f172a;
+  color: #e2e8f0;
+  position: relative;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.15), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-container {
+  position: relative;
+  z-index: 1;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
 }
 
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
+/* Breadcrumbs */
+.breadcrumbs ol {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  font-size: 0.9rem;
+  color: #94a3b8;
 }
 
-.back-btn {
-  margin-right: 0.5rem;
-  color: #666;
+.crumb-link {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.crumb-link:hover {
+  color: #38bdf8;
+}
+
+.crumb-current {
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.separator {
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+/* Header */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 2rem;
+}
+
+.title-group {
+  flex: 1;
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .page-desc {
   font-size: 1.1rem;
-  color: #666;
+  color: #94a3b8;
   line-height: 1.6;
-  margin: 0.5rem 0 0;
+  max-width: 800px;
+  margin: 0;
 }
 
-.header-extra {
-  margin-top: 1rem;
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.back-btn {
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Page Content usually contains stacked sections */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 </style>

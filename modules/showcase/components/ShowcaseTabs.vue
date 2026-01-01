@@ -2,7 +2,7 @@
 /**
  * ShowcaseTabs
  * 業務邏輯層元件 (Business Layer)
- * 封裝 ITabs 用於展示頁面導航
+ * 封裝 ITabs 用於展示頁面導航 (Dark Mode)
  */
 import ITabs from '@/components/uiInterface/ITabs.vue'
 
@@ -37,5 +37,6 @@ const handleUpdate = (value: string | number) => {
 <style scoped>
 .showcase-tabs-wrapper {
   margin: 2rem 0;
+  /* Dark mode specific tweaks if needed, but ITabs handles the look */
 }
 </style>

@@ -15,6 +15,7 @@ import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseArchitecture from '../components/ShowcaseArchitecture.vue'
 import ShowcaseAlert from '../components/ShowcaseAlert.vue'
 import ShowcaseTabs from '../components/ShowcaseTabs.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 // 引入所有業務元件
 import EmailInput from '@/components/uiBusiness/EmailInput.vue'
@@ -112,8 +113,9 @@ const tableData = [
 ]
 
 definePageMeta({
-  title: '元件展示 (Component Showcase)',
-  icon: 'mdi-layers'
+  title: '基礎元件展示',
+  icon: 'mdi-cube-outline',
+  layout: 'portal'
 })
 
 // Tab 狀態管理
@@ -137,11 +139,21 @@ const tabOptions = [
       <ShowcaseAlert
         title="核心優勢"
         type="info"
+        class="mt-6"
       >
-        <ul>
-          <li>換 UI 框架時，只需修改 uiInterface 層</li>
-          <li>業務邏輯集中管理，不會散落各處</li>
-          <li>頁面程式碼極簡，開發效率高</li>
+        <ul class="benefit-list">
+          <li>
+            <strong class="text-sky-400">彈性適配</strong>
+            - 換 UI 框架時，只需修改 uiInterface 層
+          </li>
+          <li>
+            <strong class="text-sky-400">邏輯統一</strong>
+            - 業務邏輯集中管理，不會散落各處
+          </li>
+          <li>
+            <strong class="text-sky-400">開發極速</strong>
+            - 頁面程式碼極簡，開發效率高
+          </li>
         </ul>
       </ShowcaseAlert>
     </ShowcaseSection>
@@ -171,10 +183,16 @@ const tabOptions = [
               required
             />
           </div>
-          <template #code>
-            <code>&lt;EmailInput v-model="email" required /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<EmailInput v-model="email" required />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ email || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ email || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- PhoneInput -->
@@ -188,10 +206,16 @@ const tabOptions = [
               required
             />
           </div>
-          <template #code>
-            <code>&lt;PhoneInput v-model="phone" required /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<PhoneInput v-model="phone" required />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ phone || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ phone || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- PasswordInput -->
@@ -205,10 +229,16 @@ const tabOptions = [
               required
             />
           </div>
-          <template #code>
-            <code>&lt;PasswordInput v-model="password" required /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<PasswordInput v-model="password" required />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ password ? '***' : '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ password ? '***' : '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- GenderRadio -->
@@ -222,10 +252,16 @@ const tabOptions = [
               required
             />
           </div>
-          <template #code>
-            <code>&lt;GenderRadio v-model="gender" required /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<GenderRadio v-model="gender" required />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ gender || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ gender || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- CitySelect -->
@@ -236,10 +272,16 @@ const tabOptions = [
           <div class="demo-area">
             <CitySelect v-model="city" />
           </div>
-          <template #code>
-            <code>&lt;CitySelect v-model="city" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<CitySelect v-model="city" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ city || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ city || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- CountrySelect -->
@@ -250,10 +292,16 @@ const tabOptions = [
           <div class="demo-area">
             <CountrySelect v-model="country" />
           </div>
-          <template #code>
-            <code>&lt;CountrySelect v-model="country" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<CountrySelect v-model="country" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ country || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ country || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- DateRangePicker -->
@@ -265,11 +313,17 @@ const tabOptions = [
           <div class="demo-area">
             <DateRangePicker v-model="dateRange" />
           </div>
-          <template #code>
-            <code>&lt;DateRangePicker v-model="dateRange" /&gt;</code>
-          </template>
-          <template #result>
-            開始: {{ dateRange.start || '(空)' }} | 結束: {{ dateRange.end || '(空)' }}
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<DateRangePicker v-model="dateRange" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              開始:
+              <span class="value">{{ dateRange.start || '(空)' }}</span>
+              | 結束:
+              <span class="value">{{ dateRange.end || '(空)' }}</span>
+            </div>
           </template>
         </ShowcaseCard>
 
@@ -284,11 +338,14 @@ const tabOptions = [
               subtitle="2024 Q1"
               text="目前進度良好，預計下週完成第一階段。"
               :elevation="0"
-              style="border: 1px solid #eee"
+              icon="mdi-rocket-launch"
             />
           </div>
-          <template #code>
-            <code>&lt;SmartCard title="標題" text="內容" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<SmartCard title="標題" text="內容" icon="mdi-rocket" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -301,8 +358,11 @@ const tabOptions = [
           <div class="demo-area">
             <SmartComplexWidget />
           </div>
-          <template #code>
-            <code>&lt;SmartComplexWidget /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="<SmartComplexWidget />"
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -319,8 +379,11 @@ const tabOptions = [
               :data="smartTableData"
             />
           </div>
-          <template #code>
-            <code>&lt;SmartTable :columns="cols" :data="data" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<SmartTable :columns="cols" :data="data" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -332,8 +395,11 @@ const tabOptions = [
           <div class="demo-area">
             <ApiLoadingButton label="測試 API 請求" />
           </div>
-          <template #code>
-            <code>&lt;ApiLoadingButton label="測試" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ApiLoadingButton label="測試" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -348,21 +414,24 @@ const tabOptions = [
                 variant="primary"
                 @click="testGlobalLoading"
               >
-                測試 Loading (2秒)
+                測試 Loading
               </IButton>
               <IButton
-                variant="success"
+                variant="outlined"
                 @click="testGlobalSnackbar"
               >
                 測試 Snackbar
               </IButton>
             </div>
-            <!-- 這裡放置 Global 元件以便在此頁面展示效果，實際專案應放在 App.vue 或 Layout -->
+            <!-- Global 元件展示 -->
             <GlobalLoading />
             <GlobalSnackbar />
           </div>
-          <template #code>
-            <code>useLoading().start() / useNotify().show()</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="useLoading().start() / useNotify().show()"
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
       </div>
@@ -390,8 +459,11 @@ const tabOptions = [
               clearable
             />
           </div>
-          <template #code>
-            <code>&lt;IInput v-model="value" clearable /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IInput v-model="value" clearable />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -402,14 +474,17 @@ const tabOptions = [
         >
           <div class="demo-area">
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
-              <IButton variant="primary">主要按鈕</IButton>
-              <IButton variant="secondary">次要按鈕</IButton>
-              <IButton variant="success">成功</IButton>
-              <IButton variant="danger">危險</IButton>
+              <IButton variant="primary">Primary</IButton>
+              <IButton variant="secondary">Secondary</IButton>
+              <IButton variant="success">Success</IButton>
+              <IButton variant="danger">Danger</IButton>
             </div>
           </div>
-          <template #code>
-            <code>&lt;IButton variant="primary"&gt;按鈕&lt;/IButton&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IButton variant="primary">按鈕</IButton>'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -434,18 +509,19 @@ const tabOptions = [
                 value="B"
                 label="選項 B"
               />
-              <ICheckbox
-                v-model="checkboxArray"
-                value="C"
-                label="選項 C"
-              />
             </div>
           </div>
-          <template #code>
-            <code>&lt;ICheckbox v-model="value" label="選項" /&gt;</code>
-          </template>
-          <template #result>
-            單選: {{ checkboxValue }} | 多選: {{ checkboxArray.join(', ') || '(空)' }}
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ICheckbox v-model="value" label="選項" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              單選:
+              <span class="value">{{ checkboxValue }}</span>
+              | 多選:
+              <span class="value">{{ checkboxArray.join(', ') || '(空)' }}</span>
+            </div>
           </template>
         </ShowcaseCard>
 
@@ -467,17 +543,17 @@ const tabOptions = [
               label="選項 2"
               name="demo"
             />
-            <IRadio
-              v-model="radioValue"
-              value="3"
-              label="選項 3"
-              name="demo"
-            />
           </div>
-          <template #code>
-            <code>&lt;IRadio v-model="value" value="1" label="選項 1" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IRadio v-model="value" value="1" label="選項 1" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ radioValue || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ radioValue || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- ISwitch -->
@@ -491,10 +567,16 @@ const tabOptions = [
               label="開關"
             />
           </div>
-          <template #code>
-            <code>&lt;ISwitch v-model="value" label="開關" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ISwitch v-model="value" label="開關" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ switchValue }}</span>
+            </div>
           </template>
-          <template #result>值: {{ switchValue }}</template>
         </ShowcaseCard>
 
         <!-- ITextarea -->
@@ -507,12 +589,13 @@ const tabOptions = [
               v-model="textareaValue"
               placeholder="請輸入多行文字"
               :rows="3"
-              show-count
-              :maxlength="200"
             />
           </div>
-          <template #code>
-            <code>&lt;ITextarea v-model="value" show-count /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ITextarea v-model="value" :rows="3" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -527,10 +610,16 @@ const tabOptions = [
               clearable
             />
           </div>
-          <template #code>
-            <code>&lt;IDatePicker v-model="value" clearable /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IDatePicker v-model="value" clearable />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ dateValue || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ dateValue || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- ISelect -->
@@ -545,10 +634,16 @@ const tabOptions = [
               placeholder="請選擇"
             />
           </div>
-          <template #code>
-            <code>&lt;ISelect v-model="value" :options="options" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ISelect v-model="value" :options="options" />'
+              label="Usage"
+            />
+            <div class="result-text">
+              值:
+              <span class="value">{{ selectValue || '(空)' }}</span>
+            </div>
           </template>
-          <template #result>值: {{ selectValue || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- ICard -->
@@ -559,14 +654,18 @@ const tabOptions = [
           <div class="demo-area">
             <ICard
               title="卡片標題"
-              subtitle="卡片副標題"
-              :elevation="2"
+              subtitle="此為無陰影模式"
+              :elevation="0"
+              variant="outlined"
             >
               <p>這是卡片內容</p>
             </ICard>
           </div>
-          <template #code>
-            <code>&lt;ICard title="標題" subtitle="副標題"&gt;內容&lt;/ICard&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ICard title="標題" variant="outlined">內容</ICard>'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -577,24 +676,23 @@ const tabOptions = [
         >
           <div class="demo-area">
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
-              <IChip label="預設" />
+              <IChip label="Default" />
               <IChip
-                label="成功"
-                color="#4caf50"
+                label="Primary"
+                color="#38bdf8"
               />
               <IChip
-                label="警告"
-                color="#ff9800"
-              />
-              <IChip
-                label="外框"
-                color="#3498db"
+                label="Outlined"
                 variant="outlined"
+                color="#94a3b8"
               />
             </div>
           </div>
-          <template #code>
-            <code>&lt;IChip label="標籤" color="#3498db" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IChip label="標籤" color="#38bdf8" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
 
@@ -608,14 +706,16 @@ const tabOptions = [
               v-model="textFieldValue"
               label="標籤"
               placeholder="請輸入文字"
-              prepend-icon="🔍"
+              prepend-icon="mdi-magnify"
               clearable
             />
           </div>
-          <template #code>
-            <code>&lt;ITextField v-model="value" label="標籤" clearable /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<ITextField v-model="value" prepend-icon="mdi-magnify" />'
+              label="Usage"
+            />
           </template>
-          <template #result>值: {{ textFieldValue || '(空)' }}</template>
         </ShowcaseCard>
 
         <!-- IDataTable -->
@@ -631,8 +731,11 @@ const tabOptions = [
               :hover="true"
             />
           </div>
-          <template #code>
-            <code>&lt;IDataTable :columns="columns" :items="data" /&gt;</code>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<IDataTable :columns="columns" :items="data" />'
+              label="Usage"
+            />
           </template>
         </ShowcaseCard>
       </div>
@@ -659,16 +762,14 @@ const tabOptions = [
           <div class="step-number">2</div>
           <div class="step-content">
             <h3>替換內部實作</h3>
-            <div class="code-example">
-              <div class="code-label">從原生 HTML:</div>
-              <code>&lt;input v-model="value" /&gt;</code>
-
-              <div class="code-label">改成 Vuetify:</div>
-              <code>&lt;VTextField v-model="value" /&gt;</code>
-
-              <div class="code-label">或改成 Element UI:</div>
-              <code>&lt;ElInput v-model="value" /&gt;</code>
-            </div>
+            <ShowcaseCodeBlock
+              code='<!-- 範例：將原生 input 替換為 Vuetify -->
+<template>
+  <VTextField v-model="value" v-bind="$attrs" />
+</template>'
+              label="IInput.vue"
+              language="vue"
+            />
           </div>
         </div>
 
@@ -678,13 +779,9 @@ const tabOptions = [
             <h3>完成！</h3>
             <ShowcaseAlert
               type="success"
-              style="margin-top: 0.5rem"
+              style="margin-top: 1rem"
             >
-              所有頁面自動使用新的 UI 框架
-              <br />
-              業務元件不用改
-              <br />
-              頁面程式碼不用改
+              所有頁面自動使用新的 UI 框架，業務邏輯完全不用改！
             </ShowcaseAlert>
           </div>
         </div>
@@ -697,48 +794,112 @@ const tabOptions = [
 /* 元件網格 */
 .component-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
 }
 
+/* Demo Area - Enterprise Clean Look */
 .demo-area {
-  background: white;
-  padding: 1rem;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 0.75rem;
-}
-
-.section-desc {
-  color: #666;
-  margin-bottom: 1.5rem;
-}
-
-/* 遷移指南 */
-.migration-guide {
+  background: transparent; /* Remove inner box background */
+  padding: 0.5rem 0.5rem 2rem 0.5rem; /* Add breathing room bottom */
+  border-radius: 0;
+  border: none;
+  margin-bottom: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  /* Centering demo content for better presentation */
+  min-height: 120px;
+}
+
+/* Result Text */
+.result-text {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-text .value {
+  color: #38bdf8; /* Sky 400 */
+  font-weight: 600;
+}
+
+/* Section Description */
+.section-desc {
+  color: #cbd5e1;
+  margin-bottom: 32px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  font-weight: 300;
+}
+
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.benefit-list li {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  flex: 1;
+  min-width: 250px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.text-sky-400 {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1.1em;
+}
+
+/* Migration Guide */
+.migration-guide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .step {
   display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
 }
 
 .step-number {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  background: #3498db;
-  color: white;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  font-family: 'Inter', sans-serif;
+  border-radius: 8px; /* Slightly squarer for tech feel */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.5rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 .step-content {
@@ -746,41 +907,26 @@ const tabOptions = [
 }
 
 .step-content h3 {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
+  margin: 0 0 1rem 0;
+  color: #f1f5f9;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .step-content p {
   margin: 0;
-  color: #666;
+  color: #94a3b8;
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
 .step-content code {
-  background: #f0f0f0;
-  padding: 0.25rem 0.5rem;
+  color: #e2e8f0;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Fira Code', monospace;
-}
-
-.code-example {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.code-label {
-  font-size: 0.85rem;
-  color: #888;
-  font-weight: 500;
-}
-
-.code-example code {
-  display: block;
-  background: #282c34;
-  color: #61dafb;
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
 }
 </style>

@@ -173,72 +173,82 @@ defineOptions({
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.4);
   transition: all 0.2s;
 }
 
 .input-wrapper:hover:not(.is-disabled) {
-  border-color: #3498db;
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(15, 23, 42, 0.6);
 }
 
 .input-wrapper:focus-within {
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+  background: rgba(15, 23, 42, 0.8);
 }
 
 .input-wrapper.has-error {
-  border-color: #e74c3c;
+  border-color: #ef4444;
 }
 
 .input-wrapper.has-error:focus-within {
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
 .input-wrapper.is-disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
-
-.input-field {
-  flex: 1;
-  padding: 0.5rem;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  background: transparent;
-}
-
-.input-field:disabled {
+  background: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
+.input-field {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #e2e8f0;
+}
+
+.input-field::placeholder {
+  color: #64748b;
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+}
+
 .prefix-icon,
 .suffix-icon {
-  padding: 0 0.5rem;
-  color: #666;
-  font-size: 1.2rem;
+  padding: 0 0.75rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
 }
 
 .clear-btn {
   padding: 0 0.5rem;
   border: none;
   background: transparent;
-  color: #999;
+  color: #64748b;
   cursor: pointer;
-  font-size: 1.2rem;
   transition: color 0.2s;
+  display: flex;
+  align-items: center;
 }
 
 .clear-btn:hover {
-  color: #666;
+  color: #e2e8f0;
 }
 
 .error-message {
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #e74c3c;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #ef4444;
+  margin-left: 0.25rem;
 }
 </style>

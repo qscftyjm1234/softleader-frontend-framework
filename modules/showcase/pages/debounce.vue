@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 const { debounce, throttle, useDebouncedRef, useThrottledRef } = useDebounce()
 
@@ -41,255 +44,204 @@ const handleScroll = (e: Event) => {
 
 definePageMeta({
   title: '防抖/節流 (Debounce)',
-  icon: 'mdi-timer'
+  icon: 'mdi-timer',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
-        >
-          返回
-        </router-link>
-        <h1 class="page-title">防抖/節流系統 (Debounce/Throttle System)</h1>
-      </div>
-      <p class="page-desc">效能優化工具，減少函數執行頻率。</p>
-    </div>
-
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Demo
-      </h2>
-      <div class="card-content">
+  <ShowcasePage
+    title="防抖/節流系統 (Debounce/Throttle System)"
+    description="效能優化工具，提供防抖 (Debounce) 與節流 (Throttle) 機制，減少高頻事件觸發頻率。"
+  >
+    <ShowcaseSection
+      title="Interactive Demo (互動演示)"
+      icon="🎮"
+    >
+      <div class="component-grid">
         <!-- Button Demo -->
-        <div class="demo-section">
-          <h3>按鈕點擊測試</h3>
-          <p class="hint">快速點擊按鈕，觀察計數器差異</p>
-          <div class="button-group">
-            <div class="demo-item">
+        <ShowcaseCard
+          title="Click Handlers"
+          description="快速點擊按鈕，觀察計數器差異"
+          full-width
+        >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 bg-slate-800 rounded-lg text-center">
               <button
-                class="action-btn"
+                class="glass-btn w-full mb-3"
                 @click="handleNormalClick"
               >
                 Normal Click
               </button>
-              <div class="counter">Count: {{ normalCount }}</div>
+              <div class="text-2xl font-bold text-white mb-1">
+                {{ normalCount }}
+              </div>
+              <p class="text-xs text-slate-400">立即執行</p>
             </div>
-            <div class="demo-item">
+
+            <div class="p-4 bg-slate-800 rounded-lg text-center">
               <button
-                class="action-btn"
+                class="glass-btn primary w-full mb-3"
                 @click="handleDebounceClick"
               >
                 Debounced (500ms)
               </button>
-              <div class="counter">Count: {{ debounceCount }}</div>
-              <p class="note">只在停止點擊 500ms 後執行</p>
+              <div class="text-2xl font-bold text-blue-400 mb-1">
+                {{ debounceCount }}
+              </div>
+              <p class="text-xs text-slate-400">停止點擊 500ms 後執行</p>
             </div>
-            <div class="demo-item">
+
+            <div class="p-4 bg-slate-800 rounded-lg text-center">
               <button
-                class="action-btn"
+                class="glass-btn primary w-full mb-3"
                 @click="handleThrottleClick"
               >
                 Throttled (500ms)
               </button>
-              <div class="counter">Count: {{ throttleCount }}</div>
-              <p class="note">每 500ms 最多執行一次</p>
+              <div class="text-2xl font-bold text-pink-400 mb-1">
+                {{ throttleCount }}
+              </div>
+              <p class="text-xs text-slate-400">每 500ms 最多執行一次</p>
             </div>
           </div>
-        </div>
+        </ShowcaseCard>
 
         <!-- Input Demo -->
-        <div class="demo-section">
-          <h3>輸入框防抖測試</h3>
-          <input
-            v-model="immediateInput"
-            placeholder="Type something..."
-            class="input-field"
+        <ShowcaseCard
+          title="Debounced Ref"
+          description="輸入框防抖測試 (Delay: 500ms)"
+        >
+          <div class="mb-4">
+            <input
+              v-model="immediateInput"
+              placeholder="Type something..."
+              class="glass-input w-full"
+            />
+          </div>
+          <ShowcaseCodeBlock
+            :code="
+              JSON.stringify(
+                {
+                  immediate: immediateInput,
+                  debounced: debouncedInput,
+                  status: immediateInput === debouncedInput ? 'Synced' : 'Waiting...'
+                },
+                null,
+                2
+              )
+            "
+            language="json"
+            label="Reactive Values"
           />
-          <DataPreview
-            title="Values"
-            :data="{
-              immediate: immediateInput,
-              debounced: debouncedInput,
-              note: '防抖值會在停止輸入 500ms 後更新'
-            }"
-          />
-        </div>
+        </ShowcaseCard>
 
         <!-- Scroll Demo -->
-        <div class="demo-section">
-          <h3>滾動節流測試</h3>
+        <ShowcaseCard
+          title="Throttled Ref"
+          description="滾動節流測試 (Delay: 300ms)"
+        >
           <div
-            class="scroll-box"
+            class="h-[200px] overflow-y-auto rounded-md bg-slate-900/40 border border-slate-700/10 mb-4"
             @scroll="handleScroll"
           >
-            <div class="scroll-content">
+            <div class="p-4">
               <p
-                v-for="i in 50"
+                v-for="i in 20"
                 :key="i"
+                class="py-1 text-slate-400 text-sm border-b border-slate-700/50"
               >
-                Scroll me! Line {{ i }}
+                Scroll Item {{ i }} - Move faster!
               </p>
             </div>
           </div>
-          <DataPreview
-            title="Scroll Position"
-            :data="{
-              immediate: immediateScroll,
-              throttled: throttledScroll,
-              note: '節流值每 300ms 最多更新一次'
-            }"
+          <ShowcaseCodeBlock
+            :code="
+              JSON.stringify(
+                {
+                  immediate: immediateScroll,
+                  throttled: throttledScroll
+                },
+                null,
+                2
+              )
+            "
+            language="json"
+            label="Scroll Position"
           />
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+
+    <ShowcaseSection
+      title="Code Examples"
+      icon="💻"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Usage"
+          description="如何在 setup 中使用"
+          full-width
+        >
+          <ShowcaseCodeBlock
+            code="const { debounce, throttle, useDebouncedRef, useThrottledRef } = useDebounce()
+
+// Functions
+const handleClick = debounce(() => {
+  console.log('Clicked!')
+}, 500)
+
+// Refs
+const { immediate, debounced } = useDebouncedRef('', 500)"
+            label="Composition API"
+          />
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.95rem;
 }
 
-.page-header {
-  margin-bottom: 2rem;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
 }
 
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
   padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.demo-section {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #eee;
-}
-
-.demo-section:last-child {
-  border-bottom: none;
-}
-
-.demo-section h3 {
-  margin: 0 0 0.5rem 0;
-}
-
-.hint {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.button-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.demo-item {
-  text-align: center;
-}
-
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  width: 100%;
-  margin-bottom: 0.5rem;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
-.counter {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 0.5rem 0;
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
 }
 
-.note {
-  font-size: 0.8rem;
-  color: #666;
-  margin: 0;
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
 }
 
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
-.scroll-box {
-  height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
-.scroll-content {
-  padding: 1rem;
+.glass-btn.primary:hover {
+  background: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 </style>

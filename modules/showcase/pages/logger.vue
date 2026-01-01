@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 const { debug, info, warn, error, startTimer, endTimer, setLevel, clearLogs, logs, currentLevel } =
   useLogger('ShowcaseDemo')
@@ -46,508 +49,294 @@ const tryParseJSON = (str: string) => {
 }
 
 definePageMeta({
-  title: '日誌系統 (Logger)',
-  icon: 'mdi-file-document-outline'
+  title: '日誌記錄 (Logger)',
+  icon: 'mdi-console',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
+  <ShowcasePage
+    title="日誌系統 (Logger System)"
+    description="完整的日誌管理模組，提供分級日誌記錄、效能追蹤和環境區分功能。核心特色：分級日誌、效能追蹤、環境區分、日誌過濾。"
+  >
+    <!-- General Usage -->
+    <ShowcaseSection
+      title="General Usage"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="核心功能"
+          description="日誌記錄與效能監控"
+          full-width
         >
-          返回
-        </router-link>
-        <h1 class="page-title">日誌系統 (Logger System)</h1>
-      </div>
-      <p class="page-desc">
-        完整的日誌管理模組，提供分級日誌記錄、效能追蹤和環境區分功能。
-        <br />
-        核心特色：分級日誌、效能追蹤、環境區分、日誌過濾。
-      </p>
-    </div>
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-4 flex-wrap">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold border bg-slate-400/20 text-slate-400 border-slate-400/30"
+              >
+                Debug
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold border bg-sky-400/20 text-sky-400 border-sky-400/30"
+              >
+                Info
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold border bg-amber-400/20 text-amber-400 border-amber-400/30"
+              >
+                Warn
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-400/20 text-red-400 border-red-400/30"
+              >
+                Error
+              </span>
+            </div>
+            <ShowcaseCodeBlock
+              code="const logger = useLogger('ComponentName')
 
-    <!-- General Usage Section -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">📝</span>
-        General Usage (一般使用範例)
-      </h2>
-      <div class="card-content">
-        <p class="demo-desc">
-          最常見的情境：記錄應用程式的運行狀態和錯誤資訊。
-          <br />
-          使用
-          <code>info</code>
-          、
-          <code>error</code>
-          方法快速記錄日誌。
-        </p>
-
-        <div class="demo-grid">
-          <div class="usage-block">
-            <div class="block-header">Example Code</div>
-            <div class="code-content">
-              <pre><code>&lt;script setup&gt;
-// 1. 引入 composable
-const logger = useLogger('ComponentName')
-
-// 2. 記錄資訊
+// 記錄資訊
 logger.info('User logged in', { userId: 123 })
 
-// 3. 記錄錯誤
+// 記錄錯誤
 logger.error('API failed', { error, context })
 
-// 4. 效能追蹤
+// 效能追蹤
 logger.startTimer('data-fetch')
 await fetchData()
-logger.endTimer('data-fetch')
-&lt;/script&gt;</code></pre>
-            </div>
-          </div>
-
-          <div class="output-block">
-            <DataPreview
-              title="當前狀態"
-              :data="{
-                currentLevel: currentLevel,
-                totalLogs: logs.length,
-                recentLogs: recentLogs.length
-              }"
+logger.endTimer('data-fetch')"
+              label="Usage Example"
             />
           </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Interactive Playground -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Playground (互動式演示)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- 1. Log Levels -->
-          <div class="demo-card">
-            <h3 class="demo-title">1. 分級日誌</h3>
-            <p class="demo-desc">記錄不同等級的日誌訊息。</p>
-
-            <div class="control-row mb-4">
-              <label>訊息:</label>
+    <ShowcaseSection
+      title="Interactive Playground"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <!-- 1. Log Levels -->
+        <ShowcaseCard
+          title="1. 分級日誌"
+          description="記錄不同等級的日誌訊息"
+        >
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Message</label>
               <input
                 v-model="logMessage"
                 type="text"
-                class="input-field"
-                style="flex: 1"
+                class="glass-input w-full"
               />
             </div>
-            <div class="control-row mb-4">
-              <label>資料:</label>
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Data (JSON)</label>
               <input
                 v-model="logData"
                 type="text"
-                class="input-field"
+                class="glass-input w-full"
                 placeholder='{ "key": "value" }'
-                style="flex: 1"
               />
             </div>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>const logger = useLogger('Demo')
-
-logger.debug('{{ logMessage }}', {{ logData }})
-logger.info('{{ logMessage }}', {{ logData }})
-logger.warn('{{ logMessage }}', {{ logData }})
-logger.error('{{ logMessage }}', {{ logData }})</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    style="background: #909399"
-                    @click="handleDebug"
-                  >
-                    Debug
-                  </button>
-                  <button
-                    class="action-btn"
-                    @click="handleInfo"
-                  >
-                    Info
-                  </button>
-                  <button
-                    class="action-btn"
-                    style="background: #e6a23c"
-                    @click="handleWarn"
-                  >
-                    Warn
-                  </button>
-                  <button
-                    class="action-btn danger"
-                    @click="handleError"
-                  >
-                    Error
-                  </button>
-                </div>
-              </div>
+            <div class="flex gap-2 flex-wrap">
+              <button
+                class="glass-btn"
+                @click="handleDebug"
+              >
+                Debug
+              </button>
+              <button
+                class="glass-btn"
+                @click="handleInfo"
+              >
+                Info
+              </button>
+              <button
+                class="glass-btn warn"
+                @click="handleWarn"
+              >
+                Warn
+              </button>
+              <button
+                class="glass-btn danger"
+                @click="handleError"
+              >
+                Error
+              </button>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 2. Performance Tracking -->
-          <div class="demo-card">
-            <h3 class="demo-title">2. 效能追蹤</h3>
-            <p class="demo-desc">使用計時器追蹤操作耗時。</p>
-
-            <div class="control-row mb-4">
-              <label>計時器標籤:</label>
+        <!-- 2. Performance Tracking -->
+        <ShowcaseCard
+          title="2. 效能追蹤"
+          description="使用計時器追蹤操作耗時"
+        >
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Timer Label</label>
               <input
                 v-model="timerLabel"
                 type="text"
-                class="input-field"
-                style="width: 200px"
+                class="glass-input w-full"
               />
             </div>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>logger.startTimer('{{ timerLabel }}')
-// 執行操作...
-logger.endTimer('{{ timerLabel }}')</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    @click="handleStartTimer"
-                  >
-                    開始計時
-                  </button>
-                  <button
-                    class="action-btn secondary"
-                    @click="handleEndTimer"
-                  >
-                    結束計時
-                  </button>
-                </div>
-              </div>
+            <div class="flex gap-2">
+              <button
+                class="glass-btn primary"
+                @click="handleStartTimer"
+              >
+                Start Timer
+              </button>
+              <button
+                class="glass-btn secondary"
+                @click="handleEndTimer"
+              >
+                End Timer
+              </button>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 3. Log Level Control -->
-          <div class="demo-card">
-            <h3 class="demo-title">3. 日誌等級控制</h3>
-            <p class="demo-desc">設定最低日誌等級，過濾不需要的日誌。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 設定日誌等級
-logger.setLevel('warn')
-
-// 只會記錄 warn 和 error
-logger.debug('不會顯示')
-logger.info('不會顯示')
-logger.warn('會顯示')
-logger.error('會顯示')</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    @click="setLevel('debug')"
-                  >
-                    Debug
-                  </button>
-                  <button
-                    class="action-btn"
-                    @click="setLevel('info')"
-                  >
-                    Info
-                  </button>
-                  <button
-                    class="action-btn"
-                    @click="setLevel('warn')"
-                  >
-                    Warn
-                  </button>
-                  <button
-                    class="action-btn"
-                    @click="setLevel('error')"
-                  >
-                    Error
-                  </button>
-                </div>
-                <DataPreview
-                  title="當前等級"
-                  :data="{ currentLevel: currentLevel }"
-                />
-              </div>
+        <!-- 3. Log Level Control -->
+        <ShowcaseCard
+          title="3. 日誌等級控制"
+          description="設定最低日誌等級"
+        >
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-2">
+              <button
+                class="glass-btn"
+                :class="{ active: currentLevel === 'debug' }"
+                @click="setLevel('debug')"
+              >
+                Debug
+              </button>
+              <button
+                class="glass-btn"
+                :class="{ active: currentLevel === 'info' }"
+                @click="setLevel('info')"
+              >
+                Info
+              </button>
+              <button
+                class="glass-btn"
+                :class="{ active: currentLevel === 'warn' }"
+                @click="setLevel('warn')"
+              >
+                Warn
+              </button>
+              <button
+                class="glass-btn"
+                :class="{ active: currentLevel === 'error' }"
+                @click="setLevel('error')"
+              >
+                Error
+              </button>
+            </div>
+            <div class="flex items-center">
+              <span class="text-slate-400">Current Level:</span>
+              <span class="text-sky-300 font-bold ml-2 uppercase">{{ currentLevel }}</span>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 4. Log History -->
-          <div class="demo-card">
-            <h3 class="demo-title">4. 日誌歷史</h3>
-            <p class="demo-desc">查看最近的日誌記錄。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 取得所有日誌
-const { logs } = useLogger()
-
-// 清除日誌
-logger.clearLogs()</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <button
-                  class="action-btn danger"
-                  style="margin-bottom: 1rem"
-                  @click="clearLogs"
-                >
-                  清除日誌
-                </button>
-                <DataPreview
-                  title="最近 10 筆日誌"
-                  :data="recentLogs"
-                />
-              </div>
+        <!-- 4. Log History -->
+        <ShowcaseCard
+          title="4. 日誌歷史"
+          description="查看與清除日誌"
+          full-width
+        >
+          <div class="flex flex-col gap-4">
+            <div>
+              <button
+                class="glass-btn danger"
+                @click="clearLogs"
+              >
+                Clear All Logs
+              </button>
             </div>
+            <ShowcaseCodeBlock
+              :code="JSON.stringify(recentLogs, null, 2)"
+              language="json"
+              label="Recent Logs (Last 10)"
+              :max-height="300"
+            />
           </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.95rem;
   transition: all 0.2s;
 }
 
-.back-link:hover {
-  background: #e0e0e0;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
 }
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.demo-desc {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0 0 1rem 0;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.control-row label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-}
-
-.input-field {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  flex: 1;
-}
-
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.demo-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.15rem 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
-}
-
-.demo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.usage-block,
-.output-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.block-header {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  margin-bottom: 0.15rem;
-  font-weight: 600;
-}
-
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  color: #e06c75;
-  line-height: 1.25;
-  max-height: 360px;
-}
-
-.code-content pre {
-  margin: 0;
-}
-
-.code-content code {
-  color: #abb2bf;
-}
-
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
   transition: all 0.2s;
   font-size: 0.9rem;
 }
 
-.action-btn:hover {
-  opacity: 0.9;
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
 }
 
-.action-btn.secondary {
-  background: #6c757d;
+.glass-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
 }
 
-.action-btn.danger {
-  background: #dc3545;
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
 }
 
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+.glass-btn.secondary {
+  background: rgba(148, 163, 184, 0.2);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #e2e8f0;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
+.glass-btn.warn:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: #fbbf24;
+  color: #fbbf24;
 }
 
-.mt-8 {
-  margin-top: 2rem;
+.glass-btn.danger {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.glass-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
 }
 </style>

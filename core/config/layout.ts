@@ -147,7 +147,7 @@ export const defaultLayoutConfig: LayoutConfig = {
   footer: {
     visible: true,
     fixed: false,
-    content: '© 2026 松凌科技股份有限公司 保留所有權利.'
+    content: 'Copyright © 2026 SoftLeader. All rights reserved.'
   },
   theme: {
     defaultTheme: 'light',

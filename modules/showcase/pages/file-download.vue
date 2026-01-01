@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
+import IButton from '@/components/uiInterface/IButton.vue'
+import { useFileDownload } from '~/composables/useFileDownload'
 
 const {
   downloadFromUrl,
@@ -117,714 +122,235 @@ const handleDownloadFromCanvas = () => {
 
 definePageMeta({
   title: '檔案下載 (File Download)',
-  icon: 'mdi-download'
+  icon: 'mdi-download',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
+  <ShowcasePage
+    title="檔案下載系統 (File Download System)"
+    description="統一的檔案下載處理模組，支援多種下載方式與檔案類型。"
+  >
+    <!-- General Usage -->
+    <ShowcaseSection
+      title="General Usage"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="基礎用法"
+          description="最常見的情境：從 API 下載檔案。"
+          full-width
         >
-          返回
-        </router-link>
-        <h1 class="page-title">檔案下載系統 (File Download System)</h1>
-      </div>
-      <p class="page-desc">
-        統一的檔案下載處理模組，支援多種下載方式與檔案類型。
-        <br />
-        核心特色：自動 MIME Type 偵測、Loading 狀態管理、完整錯誤處理。
-      </p>
-    </div>
-
-    <!-- General Usage Section -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">📝</span>
-        General Usage (一般使用範例)
-      </h2>
-      <div class="card-content">
-        <p class="demo-desc">
-          最常見的情境：從 API 下載檔案。
-          <br />
-          使用
-          <code>downloadFromApi</code>
-          方法，自動處理 Loading 狀態與錯誤訊息。
-        </p>
-
-        <div class="demo-grid">
-          <div class="usage-block">
-            <div class="block-header">程式碼範例</div>
-            <div class="code-content">
-              <pre><code>&lt;script setup&gt;
-// 1. 引入 composable
-const { downloadFromApi } = useFileDownload()
-const isDownloading = ref(false)
-
-// 2. 下載檔案
-const handleDownload = async () => {
-  await downloadFromApi('/api/reports/export', {
-    filename: 'report.xlsx',
-    loadingRef: isDownloading,
-    method: 'GET'
-  })
-}
-&lt;/script&gt;
-
-&lt;template&gt;
-  &lt;button 
-    @click="handleDownload"
-    :disabled="isDownloading"
-  &gt;
-    <span v-pre>{{ isDownloading ? '下載中...' : '下載報表' }}</span>
-  &lt;/button&gt;
-&lt;/template&gt;</code></pre>
-            </div>
+          <div class="demo-area">
+            <ul class="benefit-list">
+              <li>
+                <strong>API Download:</strong>
+                支援 GET/POST 與自訂 Headers
+              </li>
+              <li>
+                <strong>Blob/Base64:</strong>
+                支援前端生成的內容下載
+              </li>
+              <li>
+                <strong>Auto MIME:</strong>
+                自動偵測並設定正確的 MIME Type
+              </li>
+            </ul>
           </div>
-
-          <div class="output-block">
-            <DataPreview
-              title="支援的檔案類型"
-              :data="{
-                documents: ['PDF', 'DOC', 'DOCX'],
-                spreadsheets: ['XLS', 'XLSX', 'CSV'],
-                images: ['JPG', 'PNG', 'GIF', 'BMP', 'WEBP', 'SVG'],
-                archives: ['ZIP', 'RAR', '7Z'],
-                others: ['TXT', 'JSON', 'XML', 'MP4', 'MP3']
-              }"
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromApi } = useFileDownload()
+await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
+              label="Composable Usage"
             />
-          </div>
-        </div>
+          </template>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Interactive Playground -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Playground (互動式演示)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- 1. downloadFromUrl -->
-          <div class="demo-card">
-            <h3 class="demo-title">1. downloadFromUrl(url, options)</h3>
-            <p class="demo-desc">從外部 URL 下載檔案。</p>
-
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                :disabled="isDownloadingUrl"
-                @click="handleDownloadFromUrl"
-              >
-                {{ isDownloadingUrl ? '下載中...' : '下載 PDF 範例' }}
-              </button>
+    <ShowcaseSection
+      title="Interactive Playground"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <!-- 1. downloadFromUrl -->
+        <ShowcaseCard
+          title="1. downloadFromUrl"
+          description="從外部 URL 下載檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              :loading="isDownloadingUrl"
+              class="w-full mb-4"
+              @click="handleDownloadFromUrl"
+            >
+              下載 PDF 範例
+            </IButton>
+            <div class="result-text">
+              <span class="label">Method:</span>
+              <span class="value">downloadFromUrl(url, options)</span>
             </div>
+          </div>
+        </ShowcaseCard>
 
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 從外部 URL 下載檔案
-await downloadFromUrl(
-  'https://example.com/sample.pdf',
-  {
-    filename: 'sample.pdf',
-    globalLoading: true,
-    autoSuccess: true
-  }
-)</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Method Signature"
-                  :data="{
-                    method: 'downloadFromUrl',
-                    params: {
-                      url: 'string',
-                      options: {
-                        filename: 'string (optional)',
-                        globalLoading: 'boolean (optional)',
-                        loadingRef: 'Ref<boolean> (optional)',
-                        autoSuccess: 'boolean (optional)',
-                        autoError: 'boolean (optional)',
-                        onSuccess: '(filename: string) => void (optional)',
-                        onError: '(error: Error) => void (optional)'
-                      }
-                    },
-                    returns: 'Promise<void>'
-                  }"
-                />
+        <!-- 2. downloadFromApi -->
+        <ShowcaseCard
+          title="2. downloadFromApi"
+          description="從 API 下載檔案（支援 GET/POST）。"
+        >
+          <div class="demo-area">
+            <IButton
+              :loading="isDownloadingApi"
+              class="w-full mb-4"
+              @click="handleDownloadFromApi"
+            >
+              從 API 下載
+            </IButton>
+            <div class="result-text">
+              <span class="label">Method:</span>
+              <span class="value">downloadFromApi(apiUrl, options)</span>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- 3. downloadFromBase64 -->
+        <ShowcaseCard
+          title="3. downloadFromBase64"
+          description="從 Base64 字串下載檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              :loading="isDownloadingBase64"
+              class="w-full mb-4"
+              @click="handleDownloadFromBase64"
+            >
+              下載 Base64 圖片
+            </IButton>
+            <div class="result-text">
+              <span class="label">Input Size:</span>
+              <span class="value">{{ demoBase64.length }} chars</span>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- 4. downloadFromText -->
+        <ShowcaseCard
+          title="4. downloadFromText"
+          description="從文字內容建立並下載檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              variant="outlined"
+              class="w-full mb-4"
+              @click="handleDownloadFromText"
+            >
+              下載文字檔案
+            </IButton>
+            <div class="result-text">
+              <div style="font-size: 0.8rem; opacity: 0.7; white-space: pre-wrap">
+                {{ demoTextContent }}
               </div>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 2. downloadFromApi -->
-          <div class="demo-card">
-            <h3 class="demo-title">2. downloadFromApi(apiUrl, options)</h3>
-            <p class="demo-desc">從 API 下載檔案（支援 GET/POST）。</p>
+        <!-- 5. downloadFromJson -->
+        <ShowcaseCard
+          title="5. downloadFromJson"
+          description="從 JSON 物件建立並下載檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              variant="outlined"
+              class="w-full mb-4"
+              @click="handleDownloadFromJson"
+            >
+              下載 JSON 檔案
+            </IButton>
+            <ShowcaseCodeBlock
+              :code="JSON.stringify(demoJsonData, null, 2)"
+              language="json"
+              label="Data Preview"
+              :max-height="100"
+            />
+          </div>
+        </ShowcaseCard>
 
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                :disabled="isDownloadingApi"
-                @click="handleDownloadFromApi"
-              >
-                {{ isDownloadingApi ? '下載中...' : '從 API 下載' }}
-              </button>
-              <span class="note">（此為示範，需要實際 API 端點）</span>
-            </div>
-
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// GET 方法
-await downloadFromApi('/api/files/export', {
-  filename: 'export.xlsx',
-  method: 'GET'
-})
-
-// POST 方法帶參數
-await downloadFromApi('/api/reports/generate', {
-  filename: 'report.pdf',
-  method: 'POST',
-  body: {
-    startDate: '2024-01-01',
-    endDate: '2024-12-31'
-  }
-})</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Method Signature"
-                  :data="{
-                    method: 'downloadFromApi',
-                    params: {
-                      apiUrl: 'string',
-                      options: {
-                        filename: 'string (optional)',
-                        method: 'GET | POST (選填, 預設: GET)',
-                        body: 'any (optional)',
-                        '...other options': 'same as downloadFromUrl'
-                      }
-                    },
-                    returns: 'Promise<void>'
-                  }"
-                />
-              </div>
+        <!-- 6. downloadFromBlob -->
+        <ShowcaseCard
+          title="6. downloadFromBlob"
+          description="從 Blob 物件下載檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              variant="outlined"
+              class="w-full mb-4"
+              @click="handleDownloadFromCanvas"
+            >
+              下載 Canvas 圖片
+            </IButton>
+            <div class="result-text">
+              <span class="value">Sources: Canvas, Screenshot, Generated Content</span>
             </div>
           </div>
-
-          <!-- 3. downloadFromBase64 -->
-          <div class="demo-card">
-            <h3 class="demo-title">3. downloadFromBase64(base64, filename, options)</h3>
-            <p class="demo-desc">從 Base64 字串下載檔案。</p>
-
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                @click="handleDownloadFromBase64"
-              >
-                下載 Base64 圖片
-              </button>
-            </div>
-
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 支援帶 data URI 前綴或純 Base64
-const base64 = 'data:image/png;base64,iVBORw0KG...'
-
-downloadFromBase64(
-  base64,
-  'image.png',
-  { autoSuccess: true }
-)</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Demo Base64 Data"
-                  :data="{
-                    base64: demoBase64.substring(0, 50) + '...',
-                    length: demoBase64.length,
-                    type: 'image/png'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 4. downloadFromText -->
-          <div class="demo-card">
-            <h3 class="demo-title">4. downloadFromText(content, filename, options)</h3>
-            <p class="demo-desc">從文字內容建立並下載檔案。</p>
-
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                @click="handleDownloadFromText"
-              >
-                下載文字檔案
-              </button>
-            </div>
-
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 建立並下載文字檔案
-const content = '這是一個測試文字檔案'
-
-downloadFromText(
-  content,
-  'test.txt',
-  { autoSuccess: true }
-)</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Demo Text Content"
-                  :data="demoTextContent"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. downloadFromJson -->
-          <div class="demo-card">
-            <h3 class="demo-title">5. downloadFromJson(data, filename, options)</h3>
-            <p class="demo-desc">從 JSON 物件建立並下載檔案。</p>
-
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                @click="handleDownloadFromJson"
-              >
-                下載 JSON 檔案
-              </button>
-            </div>
-
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 自動格式化 JSON 並下載
-const data = {
-  name: '測試資料',
-  items: [...]
-}
-
-downloadFromJson(
-  data,
-  'data.json',
-  { autoSuccess: true }
-)</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Demo JSON Data"
-                  :data="demoJsonData"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 6. downloadFromBlob -->
-          <div class="demo-card">
-            <h3 class="demo-title">6. downloadFromBlob(blob, filename, options)</h3>
-            <p class="demo-desc">從 Blob 物件下載檔案（例如：Canvas 轉圖片）。</p>
-
-            <div class="control-row mb-4">
-              <button
-                class="action-btn"
-                @click="handleDownloadFromCanvas"
-              >
-                下載 Canvas 圖片
-              </button>
-            </div>
-
-            <div class="demo-grid">
-              <!-- Usage -->
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 從 Canvas 建立 Blob 並下載
-const canvas = document.createElement('canvas')
-// ... 繪製內容 ...
-
-canvas.toBlob((blob) => {
-  if (blob) {
-    downloadFromBlob(blob, 'canvas.png')
-  }
-})</code></pre>
-                </div>
-              </div>
-              <!-- Output -->
-              <div class="output-block">
-                <DataPreview
-                  title="Use Cases"
-                  :data="{
-                    canvas: 'Canvas 轉圖片',
-                    screenshot: '螢幕截圖',
-                    generated: '動態生成的檔案',
-                    cropped: '裁切後的圖片'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Advanced Features -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">⚙️</span>
-        Advanced Features (進階功能)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- Loading States -->
-          <div class="demo-card">
-            <h3 class="demo-title">Loading 狀態管理</h3>
-            <p class="demo-desc">支援全域 Loading 和自訂 Loading Ref。</p>
+    <ShowcaseSection
+      title="Advanced Features"
+      icon="⚙️"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Loading 狀態管理"
+          description="整合全域或局部 Loading 狀態。"
+        >
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 全域 Loading
+await downloadFromApi('/url', { globalLoading: true })
 
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 全域 Loading（使用 Loading Store）
-await downloadFromApi('/api/file', {
-  globalLoading: true
-})
+// 局部 Loading Ref
+await downloadFromApi('/url', { loadingRef: myRef })"
+              label="Configuration"
+            />
+          </template>
+        </ShowcaseCard>
 
-// 自訂 Loading Ref（用於按鈕狀態）
-const isDownloading = ref(false)
-await downloadFromApi('/api/file', {
-  loadingRef: isDownloading
-})</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Loading Options"
-                  :data="{
-                    globalLoading: '使用全域 Loading Store',
-                    loadingRef: '綁定到特定按鈕或元件',
-                    both: '可同時使用兩者'
-                  }"
-                />
-              </div>
-            </div>
+        <ShowcaseCard
+          title="錯誤處理與 MIME"
+          description="自動錯誤提示與類型偵測。"
+        >
+          <div class="demo-area">
+            <ul class="benefit-list">
+              <li>
+                <strong>autoError:</strong>
+                自動顯示 Snackbar 錯誤
+              </li>
+              <li>
+                <strong>onError:</strong>
+                自訂錯誤回呼函數
+              </li>
+              <li>
+                <strong>MIME:</strong>
+                自動判斷 .pdf, .json, .png 等類型
+              </li>
+            </ul>
           </div>
-
-          <!-- Error Handling -->
-          <div class="demo-card">
-            <h3 class="demo-title">錯誤處理</h3>
-            <p class="demo-desc">完整的錯誤處理機制，支援自訂錯誤回調。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">使用程式碼</div>
-                <div class="code-content">
-                  <pre><code>// 自訂錯誤處理
-await downloadFromUrl('https://invalid-url.com/file.pdf', {
-  autoError: false, // 關閉自動錯誤訊息
-  onError: (error) => {
-    console.error('下載失敗:', error)
-    // 自訂錯誤處理邏輯
-  }
-})
-
-// 使用 try-catch
-try {
-  await downloadFromApi('/api/file')
-} catch (error) {
-  // 額外的錯誤處理
-}</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Error Handling Options"
-                  :data="{
-                    autoError: '自動顯示錯誤訊息（預設：true）',
-                    onError: '自訂錯誤回調函數',
-                    tryCatch: '支援標準 try-catch 語法'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- MIME Type Detection -->
-          <div class="demo-card">
-            <h3 class="demo-title">自動 MIME Type 偵測</h3>
-            <p class="demo-desc">根據檔案副檔名自動設定正確的 MIME Type。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">支援的 MIME 類型</div>
-                <div class="code-content">
-                  <pre><code>// 文件類型
-.pdf  → application/pdf
-.doc  → application/msword
-.docx → application/vnd.openxmlformats...
-
-// 試算表類型
-.xls  → application/vnd.ms-excel
-.xlsx → application/vnd.openxmlformats...
-.csv  → text/csv
-
-// 圖片類型
-.jpg  → image/jpeg
-.png  → image/png
-.gif  → image/gif
-.svg  → image/svg+xml
-
-// 其他類型
-.zip  → application/zip
-.json → application/json
-.txt  → text/plain</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Auto Detection"
-                  :data="{
-                    feature: '自動偵測',
-                    fallback: 'application/octet-stream',
-                    customizable: '可擴充支援更多類型'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.back-link:hover {
-  background: #e0e0e0;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.demo-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.15rem 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
-}
-
-.demo-desc {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
-}
-
-.demo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.usage-block,
-.output-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.block-header {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  margin-bottom: 0.15rem;
-  font-weight: 600;
-}
-
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  color: #e06c75;
-  line-height: 1.25;
-  max-height: 360px;
-}
-
-.code-content pre {
-  margin: 0;
-}
-
-.code-content code {
-  color: #abb2bf;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.mb-4 {
-  margin-bottom: 0.5rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
-}
-
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.action-btn:hover:not(:disabled) {
-  background: #0b5ed7;
-}
-
-.action-btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.action-btn:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.note {
-  font-size: 0.85rem;
-  color: #666;
-  font-style: italic;
+/* Scoped styles mainly for specific tweaks, largely relying on global Showcase styles */
+.w-full {
+  width: 100%;
 }
 </style>

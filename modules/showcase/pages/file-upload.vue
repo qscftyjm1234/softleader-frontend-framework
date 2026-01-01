@@ -2,17 +2,10 @@
 import { ref, computed } from 'vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
-import DataPreview from '../components/DataPreview.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-const {
-  uploadFile,
-  uploadFiles,
-  uploadFromInput,
-  validate,
-  validateMultiple,
-  formatFileSize,
-  FILE_TYPE_GROUPS
-} = useFileUpload()
+const { uploadFiles, validate, validateMultiple, formatFileSize } = useFileUpload()
 
 // State
 const selectedFiles = ref<File[]>([])
@@ -26,9 +19,6 @@ const acceptedTypes = ref<string[]>(['image/*', '.pdf'])
 const maxFilesCount = ref(5)
 
 // Computed
-const totalSize = computed(() => {
-  return selectedFiles.value.reduce((sum, file) => sum + file.size, 0)
-})
 
 const validationSummary = computed(() => {
   if (selectedFiles.value.length === 0) return null
@@ -78,28 +68,6 @@ const clearAll = () => {
 }
 
 // Upload actions
-const handleUploadSingle = async () => {
-  if (selectedFiles.value.length === 0) return
-
-  const file = selectedFiles.value[0]
-  const result = await uploadFile(file, {
-    endpoint: '/api/upload',
-    loadingRef: isUploading,
-    autoSuccess: true,
-    autoError: true,
-    maxSize: maxFileSize.value,
-    accept: acceptedTypes.value,
-    data: {
-      category: 'demo',
-      timestamp: new Date().toISOString()
-    }
-  })
-
-  uploadResults.value.push({
-    file: file.name,
-    result
-  })
-}
 
 const handleUploadMultiple = async () => {
   if (selectedFiles.value.length === 0) return
@@ -136,693 +104,466 @@ const handleValidateOnly = () => {
 
 definePageMeta({
   title: '檔案上傳 (File Upload)',
-  icon: 'mdi-upload'
+  icon: 'mdi-upload',
+  layout: 'portal'
 })
 </script>
 
 <template>
   <ShowcasePage
     title="檔案上傳系統 (File Upload System)"
-    description="統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。核心特色：完整驗證、Loading 狀態管理、FormData 自動處理。"
+    description="統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。"
   >
-    <!-- General Usage Section -->
+    <!-- General Usage -->
     <ShowcaseSection
-      title="General Usage (一般使用範例)"
+      title="基礎用法"
       icon="📝"
     >
-      <div class="card-content">
-        <p class="demo-desc">
-          最常見的情境：從 input 元素上傳檔案。
-          <br />
-          使用
-          <code>uploadFromInput</code>
-          方法，自動處理檔案選擇與上傳。
-        </p>
-
-        <div class="demo-grid">
-          <div class="usage-block">
-            <div class="block-header">Example Code</div>
-            <div class="code-content">
-              <pre><code>&lt;script setup&gt;
-// 1. 引入 composable
-const { uploadFromInput } = useFileUpload()
-const isUploading = ref(false)
-
-// 2. 處理檔案上傳
-const handleUpload = async (event: Event) => {
-  const result = await uploadFromInput(event, {
-    endpoint: '/api/upload',
-    loadingRef: isUploading,
-    maxSize: 5 * 1024 * 1024, // 5MB
-    accept: ['image/*', '.pdf'],
-    autoSuccess: true
-  })
-}
-&lt;/script&gt;
-
-&lt;template&gt;
-  &lt;input 
-    type="file" 
-    @change="handleUpload"
-    :disabled="isUploading"
-  &gt;
-&lt;/template&gt;</code></pre>
-            </div>
+      <div class="component-grid">
+        <ShowcaseCard
+          title="核心功能"
+          description="全方位上傳解決方案"
+          full-width
+        >
+          <div class="demo-area">
+            <ul class="benefit-list">
+              <li>
+                <strong>Smart Input:</strong>
+                自動處理 `uploadFromInput`
+              </li>
+              <li>
+                <strong>完整驗證:</strong>
+                完整的大小、類型、數量驗證
+              </li>
+              <li>
+                <strong>拖放支援:</strong>
+                內建拖放支援
+              </li>
+              <li>
+                <strong>表單資料:</strong>
+                自動封裝與額外欄位處理
+              </li>
+            </ul>
           </div>
-
-          <div class="output-block">
-            <DataPreview
-              title="支援的功能"
-              :data="{
-                validation: '檔案大小、類型、數量驗證',
-                loading: '全域 Loading 或自訂 Loading Ref',
-                formData: '自動建立 FormData，支援額外欄位',
-                callbacks: 'onSuccess、onError、onProgress',
-                multipleFiles: '支援單檔或多檔上傳'
-              }"
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { uploadFromInput } = useFileUpload()
+// <input type='file' @change='e => uploadFromInput(e, options)' />"
+              label="快速開始"
             />
-          </div>
-        </div>
+          </template>
+        </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <!-- Interactive Upload Area -->
+    <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Upload Demo (互動式上傳演示)"
+      title="互動體驗區"
       icon="🚀"
     >
-      <div class="card-content">
-        <!-- Upload Area -->
-        <div
-          class="upload-area"
-          :class="{ dragging: isDragging }"
-          @dragover.prevent="isDragging = true"
-          @dragleave.prevent="isDragging = false"
-          @drop.prevent="handleDrop"
-        >
-          <input
-            id="file-upload"
-            type="file"
-            multiple
-            class="hidden-input"
-            @change="handleFileSelect"
-          />
-          <label
-            for="file-upload"
-            class="upload-label"
+      <ShowcaseCard
+        title="實時演示"
+        description="互動式檔案上傳區塊"
+        full-width
+      >
+        <div class="demo-area">
+          <!-- Upload Area -->
+          <div
+            class="upload-dropzone"
+            :class="{ 'is-dragging': isDragging }"
+            @dragover.prevent="isDragging = true"
+            @dragleave.prevent="isDragging = false"
+            @drop.prevent="handleDrop"
           >
-            <div class="upload-icon">☁️</div>
-            <p class="upload-text">點擊此處 或 將檔案拖曳至此</p>
-            <p class="upload-hint">支援各種格式圖片與文件</p>
-          </label>
-        </div>
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              class="hidden"
+              @change="handleFileSelect"
+            />
+            <label
+              for="file-upload"
+              class="dropzone-content"
+            >
+              <div class="icon-wrapper">☁️</div>
+              <div class="text-main">點擊此處 或 將檔案拖曳至此</div>
+              <div class="text-sub">支援各種格式圖片與文件</div>
+            </label>
+          </div>
 
-        <!-- Validation Settings -->
-        <div class="settings-panel">
-          <h3 class="settings-title">驗證設定</h3>
-          <div class="settings-grid">
-            <div class="setting-item">
-              <label>檔案大小限制</label>
-              <select v-model.number="maxFileSize">
+          <!-- Settings -->
+          <div class="settings-bar">
+            <div class="setting-group">
+              <label>最大檔案:</label>
+              <select
+                v-model.number="maxFileSize"
+                class="glass-input"
+              >
                 <option :value="1 * 1024 * 1024">1 MB</option>
                 <option :value="5 * 1024 * 1024">5 MB</option>
                 <option :value="10 * 1024 * 1024">10 MB</option>
-                <option :value="50 * 1024 * 1024">50 MB</option>
               </select>
             </div>
-            <div class="setting-item">
-              <label>檔案數量限制</label>
+            <div class="setting-group">
+              <label>最大數量:</label>
               <input
                 v-model.number="maxFilesCount"
                 type="number"
+                class="glass-input"
                 min="1"
-                max="20"
+                max="10"
               />
             </div>
           </div>
-        </div>
 
-        <!-- Selected Files Preview -->
-        <div
-          v-if="selectedFiles.length > 0"
-          class="files-section"
-        >
-          <div class="files-header">
-            <h3>已選擇的檔案 ({{ selectedFiles.length }})</h3>
-            <div class="files-actions">
-              <button
-                class="action-btn secondary"
-                @click="handleValidateOnly"
-              >
-                驗證檔案
-              </button>
-              <button
-                class="action-btn"
-                :disabled="isUploading"
-                @click="handleUploadSingle"
-              >
-                {{ isUploading ? '上傳中...' : '上傳第一個' }}
-              </button>
-              <button
-                class="action-btn"
-                :disabled="isUploading"
-                @click="handleUploadMultiple"
-              >
-                {{ isUploading ? '上傳中...' : '上傳全部' }}
-              </button>
-              <button
-                class="action-btn danger"
-                @click="clearAll"
-              >
-                清除全部
-              </button>
-            </div>
-          </div>
-
-          <!-- Validation Summary -->
+          <!-- File List -->
           <div
-            v-if="validationSummary"
-            class="validation-summary"
-            :class="{ valid: validationSummary.valid, invalid: !validationSummary.valid }"
+            v-if="selectedFiles.length > 0"
+            class="file-list"
           >
-            <strong>驗證結果:</strong>
-            {{ validationSummary.valid ? '✓ 所有檔案驗證通過' : `✗ ${validationSummary.error}` }}
-          </div>
-
-          <div class="files-info">
-            <span>總大小: {{ formatFileSize(totalSize) }}</span>
-          </div>
-
-          <div class="file-grid">
-            <div
-              v-for="(file, index) in selectedFiles"
-              :key="index"
-              class="file-card fade-in"
-            >
-              <div class="file-icon">{{ getFileIcon(file) }}</div>
-              <div class="file-info">
-                <div
-                  class="file-name"
-                  :title="file.name"
+            <div class="list-header">
+              <h3>已選檔案 ({{ selectedFiles.length }})</h3>
+              <div class="actions">
+                <button
+                  class="glass-btn small"
+                  @click="handleValidateOnly"
                 >
-                  {{ file.name }}
-                </div>
-                <div class="file-meta">
-                  {{ formatFileSize(file.size) }}
-                  <span class="file-type">{{ file.type || 'unknown' }}</span>
-                </div>
+                  驗證
+                </button>
+                <button
+                  class="glass-btn small primary"
+                  :disabled="isUploading"
+                  @click="handleUploadMultiple"
+                >
+                  {{ isUploading ? '上傳中...' : '全部上傳' }}
+                </button>
+                <button
+                  class="glass-btn small danger"
+                  @click="clearAll"
+                >
+                  清除
+                </button>
               </div>
-              <button
-                class="remove-btn"
-                title="Remove"
-                @click="removeFile(index)"
+            </div>
+
+            <!-- Validation Status -->
+            <div
+              v-if="validationSummary"
+              class="status-alert"
+              :class="validationSummary.valid ? 'success' : 'error'"
+            >
+              <strong>
+                {{ validationSummary.valid ? '✓ 準備上傳' : '⚠ 驗證失敗' }}
+              </strong>
+              <span
+                v-if="!validationSummary.valid"
+                class="ml-2"
               >
-                ✕
-              </button>
+                {{ validationSummary.error }}
+              </span>
+            </div>
+
+            <div class="files-grid">
+              <div
+                v-for="(file, index) in selectedFiles"
+                :key="index"
+                class="file-item"
+              >
+                <div class="file-icon">{{ getFileIcon(file) }}</div>
+                <div class="file-details">
+                  <div class="name">{{ file.name }}</div>
+                  <div class="meta">{{ formatFileSize(file.size) }}</div>
+                </div>
+                <button
+                  class="delete-btn"
+                  @click="removeFile(index)"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Upload Results -->
-        <div
-          v-if="uploadResults.length > 0"
-          class="results-section"
-        >
-          <h3>上傳結果</h3>
-          <DataPreview
-            title="Results"
-            :data="uploadResults"
-          />
+          <!-- Results -->
+          <div
+            v-if="uploadResults.length > 0"
+            class="results-area"
+          >
+            <h3>上傳結果</h3>
+            <ShowcaseCodeBlock
+              :code="JSON.stringify(uploadResults, null, 2)"
+              language="json"
+              label="伺服器回應"
+            />
+          </div>
         </div>
-      </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
-    <!-- API Methods Section -->
+    <!-- API Reference -->
     <ShowcaseSection
-      title="API Methods (方法說明)"
-      icon="🎮"
+      title="API 方法"
+      icon="📚"
     >
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- 1. uploadFile -->
-          <div class="demo-card">
-            <h3 class="demo-title">1. uploadFile(file, options)</h3>
-            <p class="demo-desc">上傳單個檔案。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 上傳單個檔案
-const result = await uploadFile(file, {
-  endpoint: '/api/upload',
-  fieldName: 'file',
-  data: { userId: '123' },
-  maxSize: 5 * 1024 * 1024,
-  accept: ['image/*'],
-  onProgress: (progress) => {
-    console.log(`進度: ${progress}%`)
-  }
-})</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Options"
-                  :data="{
-                    endpoint: 'API 端點 (default: /api/upload)',
-                    method: 'HTTP 方法 (default: POST)',
-                    fieldName: 'FormData 欄位名稱 (default: file)',
-                    data: '額外的表單資料',
-                    maxSize: '檔案大小限制（bytes）',
-                    accept: '允許的檔案類型',
-                    loadingRef: '自訂 Loading Ref',
-                    globalLoading: '使用全域 Loading'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. uploadFiles -->
-          <div class="demo-card">
-            <h3 class="demo-title">2. uploadFiles(files, options)</h3>
-            <p class="demo-desc">上傳多個檔案。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 上傳多個檔案
-const results = await uploadFiles(files, {
-  endpoint: '/api/upload/multiple',
-  fieldName: 'files',
-  maxSize: 10 * 1024 * 1024,
-  accept: ['image/*', '.pdf']
-})</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Return Type"
-                  :data="{
-                    type: 'Promise<UploadResult[]>',
-                    UploadResult: {
-                      success: 'boolean',
-                      data: 'any (response data)',
-                      error: 'string (error message)'
-                    }
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. uploadFromInput -->
-          <div class="demo-card">
-            <h3 class="demo-title">3. uploadFromInput(inputElement, options)</h3>
-            <p class="demo-desc">從 input 元素上傳（自動判斷單檔或多檔）。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 從 input 元素上傳
-const handleChange = async (event: Event) => {
-  const result = await uploadFromInput(event, {
-    endpoint: '/api/upload',
-    autoSuccess: true,
-    autoError: true
-  })
-}</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Features"
-                  :data="{
-                    autoDetect: '自動判斷單檔或多檔',
-                    validation: '自動驗證檔案',
-                    convenient: '最方便的上傳方式'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 4. validate -->
-          <div class="demo-card">
-            <h3 class="demo-title">4. validate(file, options)</h3>
-            <p class="demo-desc">驗證單個檔案（不上傳）。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 驗證檔案
-const result = validate(file, {
-  maxSize: 5 * 1024 * 1024,
-  accept: ['image/jpeg', 'image/png']
-})
-
-if (!result.valid) {
-  console.error(result.error)
-}</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Validation Result"
-                  :data="{
-                    valid: 'boolean',
-                    error: 'string (if invalid)'
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. FILE_TYPE_GROUPS -->
-          <div class="demo-card">
-            <h3 class="demo-title">5. FILE_TYPE_GROUPS (常數)</h3>
-            <p class="demo-desc">預定義的檔案類型分類。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 使用預定義的檔案類型
-const { FILE_TYPE_GROUPS } = useFileUpload()
-
-// 只接受圖片
-accept: FILE_TYPE_GROUPS.image
-
-// 接受圖片和文件
-accept: [...FILE_TYPE_GROUPS.image, ...FILE_TYPE_GROUPS.document]</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <DataPreview
-                  title="Available Groups"
-                  :data="FILE_TYPE_GROUPS"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="component-grid">
+        <ShowcaseCard
+          title="1. uploadFile"
+          description="單檔上傳"
+        >
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="uploadFile(file, { endpoint: '/api/upload', data: { id: 1 } })"
+              label="方法簽名"
+            />
+          </template>
+        </ShowcaseCard>
+        <ShowcaseCard
+          title="2. uploadFiles"
+          description="多檔上傳"
+        >
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="uploadFiles(files, { endpoint: '/api/multi', maxSize: 1024*1024 })"
+              label="方法簽名"
+            />
+          </template>
+        </ShowcaseCard>
+        <ShowcaseCard
+          title="3. uploadFromInput"
+          description="Input 事件處理"
+        >
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="uploadFromInput(event, { autoSuccess: true })"
+              label="方法簽名"
+            />
+          </template>
+        </ShowcaseCard>
       </div>
     </ShowcaseSection>
   </ShowcasePage>
 </template>
 
 <style scoped>
-.card-content {
-  padding: 1.5rem;
-}
-
-.demo-desc {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0 0 1rem 0;
-}
-
-.demo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.usage-block,
-.output-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.block-header {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  margin-bottom: 0.15rem;
-  font-weight: 600;
-}
-
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  color: #e06c75;
-  line-height: 1.25;
-  max-height: 360px;
-}
-
-.code-content pre {
-  margin: 0;
-}
-
-.code-content code {
-  color: #abb2bf;
-}
-
-/* Upload Area Styles */
-.upload-area {
-  border: 2px dashed #cbd5e1;
+.upload-dropzone {
+  border: 2px dashed rgba(148, 163, 184, 0.4);
   border-radius: 12px;
-  padding: 4rem 2rem;
+  padding: 3rem 2rem;
   text-align: center;
   transition: all 0.3s ease;
-  background-color: #f8fafc;
-  cursor: default;
-  margin-bottom: 1.5rem;
-}
-
-.upload-area:hover {
-  border-color: #94a3b8;
-  background-color: #f1f5f9;
-}
-
-.upload-area.dragging {
-  border-color: #3b82f6;
-  background-color: #eff6ff;
-  transform: scale(1.01);
-}
-
-.hidden-input {
-  display: none;
-}
-
-.upload-label {
+  background-color: rgba(30, 41, 59, 0.3);
   cursor: pointer;
-  display: inline-block;
-  width: 100%;
-  height: 100%;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
-.upload-icon {
-  font-size: 4rem;
+.upload-dropzone:hover,
+.upload-dropzone.is-dragging {
+  border-color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.dropzone-content {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon-wrapper {
+  font-size: 3rem;
   margin-bottom: 1rem;
-  opacity: 0.8;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
 }
 
-.upload-text {
+.text-main {
   font-size: 1.2rem;
-  color: #334155;
-  margin-bottom: 0.5rem;
+  color: #f1f5f9;
   font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
-.upload-hint {
+.text-sub {
   color: #94a3b8;
   font-size: 0.9rem;
 }
 
-/* Settings Panel */
-.settings-panel {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+.hidden {
+  display: none;
 }
 
-.settings-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-  color: #2c3e50;
-}
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.setting-item {
+/* Settings Bar */
+.settings-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.4);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.setting-item label {
+.setting-group {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.setting-group label {
+  color: #cbd5e1;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #555;
 }
 
-.setting-item select,
-.setting-item input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  outline: none;
   font-size: 0.9rem;
 }
 
-/* Files Section */
-.files-section {
-  margin-top: 1.5rem;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
 }
 
-.files-header {
+/* Glass Buttons */
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
+}
+
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+}
+
+.glass-btn.primary:hover {
+  background: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.glass-btn.danger {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.glass-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
+.glass-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* File List */
+.file-list {
+  margin-top: 2rem;
+}
+
+.list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 1rem;
 }
 
-.files-header h3 {
-  margin: 0;
+.list-header h3 {
+  color: #f1f5f9;
   font-size: 1.1rem;
-  color: #2c3e50;
+  margin: 0;
 }
 
-.files-actions {
+.actions {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
 }
 
-.files-info {
-  margin-bottom: 1rem;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-/* Validation Summary */
-.validation-summary {
-  padding: 0.75rem 1rem;
+.status-alert {
+  padding: 0.8rem;
   border-radius: 6px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-}
-
-.validation-summary.valid {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-}
-
-.validation-summary.invalid {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-/* File Grid */
-.file-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.file-card {
   display: flex;
   align-items: center;
-  padding: 1rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  position: relative;
-  transition: all 0.2s;
 }
 
-.file-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+.status-alert.success {
+  background: rgba(22, 163, 74, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  color: #4ade80;
+}
+
+.status-alert.error {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #f87171;
+}
+
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.file-item {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
 }
 
 .file-icon {
-  font-size: 2rem;
-  margin-right: 1rem;
+  font-size: 1.8rem;
 }
 
-.file-info {
+.file-details {
   flex: 1;
-  min-width: 0;
+  overflow: hidden;
 }
 
-.file-name {
+.name {
+  color: #e2e8f0;
   font-weight: 500;
-  color: #334155;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.file-meta {
+.meta {
+  color: #94a3b8;
   font-size: 0.8rem;
-  color: #94a3b8;
-  display: flex;
-  justify-content: space-between;
+  margin-top: 0.2rem;
 }
 
-.file-type {
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  background: #f1f5f9;
-  padding: 0.125rem 0.375rem;
-  border-radius: 4px;
-}
-
-.remove-btn {
+.delete-btn {
   background: none;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-.remove-btn:hover {
-  background: #fee2e2;
-  color: #ef4444;
-}
-
-/* Results Section */
-.results-section {
-  margin-top: 2rem;
-  border-top: 1px solid #eee;
-  padding-top: 2rem;
-}
-
-.results-section h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
-  color: #2c3e50;
-}
-
-/* Action Buttons */
-.action-btn {
-  padding: 0.5rem 1rem;
-  background: #3b82f6;
-  color: white;
   border: none;
   border-radius: 6px;
   font-size: 0.9rem;

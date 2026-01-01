@@ -148,9 +148,10 @@ const getTagColor = (value: string): string => {
 
 <style scoped>
 .smart-table {
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow: hidden;
+  background: rgba(30, 41, 59, 0.4);
 }
 
 /* Header */
@@ -159,13 +160,14 @@ const getTagColor = (value: string): string => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .table-title {
   margin: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #424242;
+  color: #f1f5f9;
 }
 
 .table-search {
@@ -183,27 +185,27 @@ const getTagColor = (value: string): string => {
 }
 
 .data-table thead {
-  background: #f5f5f5;
+  background: rgba(15, 23, 42, 0.6);
 }
 
 .data-table th {
   padding: 0.75rem 1rem;
   text-align: left;
   font-weight: 600;
-  color: #757575;
+  color: #94a3b8;
   font-size: 0.875rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .data-table td {
   padding: 0.75rem 1rem;
-  color: #424242;
+  color: #e2e8f0;
   font-size: 0.875rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .table-row:hover {
-  background: #f9f9f9;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .table-row:last-child td {
@@ -215,19 +217,19 @@ const getTagColor = (value: string): string => {
 .table-empty {
   padding: 3rem;
   text-align: center;
-  color: #9e9e9e;
+  color: #64748b;
   font-size: 0.875rem;
 }
 
 /* Footer */
 .table-footer {
   padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-top: 1px solid #e0e0e0;
+  background: rgba(15, 23, 42, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .pagination-info {
   font-size: 0.875rem;
-  color: #757575;
+  color: #94a3b8;
 }
 </style>

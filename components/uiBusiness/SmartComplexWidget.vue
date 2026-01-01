@@ -41,14 +41,19 @@ const reset = () => {
       </div>
       <IAvatar
         :size="48"
-        color="#E3F2FD"
+        color="rgba(56, 189, 248, 0.1)"
         rounded="8px"
-      ></IAvatar>
+      >
+        <v-icon
+          icon="mdi-cube-scan"
+          color="#38bdf8"
+        />
+      </IAvatar>
     </div>
 
     <!-- 主要內容區 -->
     <ISheet
-      color="#F5F5F5"
+      color="rgba(255, 255, 255, 0.05)"
       rounded="12px"
       padding="1.5rem"
       class="widget-content"
@@ -70,6 +75,7 @@ const reset = () => {
           <IButton
             variant="text"
             size="small"
+            color="#94a3b8"
             @click="reset"
           >
             重置狀態
@@ -84,7 +90,8 @@ const reset = () => {
         <span class="history-title">操作紀錄</span>
         <IChip
           size="small"
-          color="#90A4AE"
+          color="#475569"
+          text-color="white"
         >
           {{ history.length }}
         </IChip>
@@ -116,8 +123,9 @@ const reset = () => {
 .complex-widget {
   max-width: 600px;
   margin: 0 auto;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
+  background: rgba(30, 41, 59, 0.4);
 }
 
 /* Header */
@@ -135,7 +143,7 @@ const reset = () => {
 .widget-overline {
   font-size: 0.75rem;
   font-weight: bold;
-  color: #9e9e9e;
+  color: #38bdf8;
   letter-spacing: 0.5px;
   margin-bottom: 0.25rem;
 }
@@ -143,19 +151,20 @@ const reset = () => {
 .widget-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #424242;
+  color: #f8fafc;
   margin: 0;
 }
 
 .widget-subtitle {
   font-size: 0.875rem;
-  color: #757575;
+  color: #94a3b8;
   margin: 0.25rem 0 0;
 }
 
 /* Content */
 .widget-content {
   margin: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .content-display {
@@ -168,14 +177,14 @@ const reset = () => {
 .content-label {
   font-size: 0.75rem;
   font-weight: bold;
-  color: #757575;
+  color: #94a3b8;
   margin-bottom: 0.25rem;
 }
 
 .content-value {
   font-size: 3rem;
   font-weight: 900;
-  color: #1565c0;
+  color: #38bdf8;
 }
 
 .content-actions {
@@ -199,7 +208,8 @@ const reset = () => {
 .history-title {
   font-size: 0.875rem;
   font-weight: bold;
-  color: #424242;
+  color: #ecc;
+  color: #e2e8f0;
 }
 
 .history-list {
@@ -213,26 +223,26 @@ const reset = () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
 }
 
 .history-text {
   font-size: 0.875rem;
-  color: #424242;
+  color: #cbd5e1;
 }
 
 .history-empty {
   text-align: center;
   padding: 2rem;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
 
 .history-empty__text {
   font-size: 0.875rem;
-  color: #bdbdbd;
+  color: #64748b;
 }
 
 /* Transitions */

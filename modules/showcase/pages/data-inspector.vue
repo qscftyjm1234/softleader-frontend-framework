@@ -87,8 +87,9 @@ const collapseAll = () => {
 }
 
 definePageMeta({
-  title: '資料檢視器',
-  icon: 'mdi-database-search'
+  title: '資料檢測器 (Data Inspector)',
+  icon: 'mdi-eye-check-outline',
+  layout: 'portal'
 })
 </script>
 
@@ -98,10 +99,7 @@ definePageMeta({
     description="展示系統即時狀態 (Environment, Stores) 與各模組的資料結構 (Schema, Mock)。"
   >
     <template #header-extra>
-      <IStack
-        gap="0.5"
-        class="mt-4"
-      >
+      <div style="display: flex; gap: 12px; margin-top: 24px">
         <IButton
           variant="outlined"
           @click="expandAll"
@@ -114,35 +112,55 @@ definePageMeta({
         >
           收合全部
         </IButton>
-      </IStack>
+      </div>
     </template>
 
     <!-- 系統環境區塊 (Environment) -->
     <ShowcaseSection
-      title="Environment & System (環境資訊)"
+      title="Environment & System"
       icon="⚙️"
     >
-      <IStack
-        direction="column"
-        gap="1"
-        style="padding: 1.5rem"
-      >
-        <DataPreview
-          ref="devicePreview"
-          title="Device Info (裝置資訊)"
-          :data="deviceInfo"
-        />
-        <DataPreview
-          ref="i18nPreview"
-          title="i18n Settings (多語系設定)"
-          :data="i18nInfo"
-        />
-        <DataPreview
-          ref="configPreview"
-          title="Runtime Config (Public) (執行時參數)"
-          :data="configData"
-        />
-      </IStack>
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Device Info"
+          description="裝置資訊"
+        >
+          <div class="demo-area">
+            <DataPreview
+              ref="devicePreview"
+              title="Details"
+              :data="deviceInfo"
+            />
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="i18n Settings"
+          description="多語系設定"
+        >
+          <div class="demo-area">
+            <DataPreview
+              ref="i18nPreview"
+              title="Details"
+              :data="i18nInfo"
+            />
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="Runtime Config"
+          description="執行時參數"
+          full-width
+        >
+          <div class="demo-area">
+            <DataPreview
+              ref="configPreview"
+              title="Public Config"
+              :data="configData"
+            />
+          </div>
+        </ShowcaseCard>
+      </div>
     </ShowcaseSection>
 
     <!-- 全域狀態區塊 (State) -->

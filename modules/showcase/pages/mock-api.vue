@@ -1,25 +1,25 @@
 <script setup lang="ts">
-/**
- * Mock API 展示頁面
- *
- * 展示如何使用專案中的 Mock API
- */
+import { ref } from 'vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-// 上傳相關
+// Upload
 const uploadFile = ref<File | null>(null)
 const uploadLoading = ref(false)
 const uploadResult = ref<any>(null)
 
-// 檔案匯出相關
+// Export
 const exportFormat = ref('csv')
 const exportLoading = ref(false)
 
-// 報表生成相關
+// Report
 const reportType = ref('monthly')
 const reportLoading = ref(false)
 const reportResult = ref<any>(null)
 
-// API 呼叫記錄
+// Logs
 const apiLogs = ref<any[]>([])
 
 const addLog = (method: string, url: string, status: string, data?: any) => {
@@ -32,7 +32,7 @@ const addLog = (method: string, url: string, status: string, data?: any) => {
   })
 }
 
-// 單檔案上傳
+// Upload Handler
 const handleUpload = async () => {
   if (!uploadFile.value) {
     alert('請選擇檔案')
@@ -60,7 +60,7 @@ const handleUpload = async () => {
   }
 }
 
-// 檔案匯出
+// Export Handler
 const handleExport = async () => {
   exportLoading.value = true
 
@@ -69,7 +69,7 @@ const handleExport = async () => {
       method: 'GET'
     })
 
-    // 建立下載
+    // Create Download
     const blob = new Blob([response as string], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -86,7 +86,7 @@ const handleExport = async () => {
   }
 }
 
-// 報表生成
+// Report Handler
 const handleGenerateReport = async () => {
   reportLoading.value = true
   reportResult.value = null
@@ -110,535 +110,376 @@ const handleGenerateReport = async () => {
   }
 }
 
-// 清除記錄
 const clearLogs = () => {
   apiLogs.value = []
 }
 
 definePageMeta({
-  title: 'Mock API 展示',
-  icon: 'mdi-api'
+  title: 'Mock API 管理',
+  icon: 'mdi-web',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="mock-api-page">
-    <!-- 頁面標題 -->
-    <div class="page-header">
-      <router-link
-        to="/showcase"
-        class="back-link"
-      >
-        ← 返回
-      </router-link>
-      <h1 class="page-title">🔌 Mock API 展示</h1>
-      <p class="page-desc">展示專案中可用的 Mock API 端點及其使用方式</p>
-    </div>
+  <ShowcasePage
+    title="Mock API 管理系統"
+    description="展示專案中可用的 Mock API 端點，包含檔案上傳、資料匯出與報表生成功能。"
+  >
+    <!-- Available APIs -->
+    <ShowcaseSection
+      title="Available APIs (可用端點)"
+      icon="📋"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="File Upload"
+          description="/api/upload"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
+            >
+              POST
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/upload</span>
+          </div>
+          <p class="text-sm text-slate-400">單檔案上傳測試端點</p>
+        </ShowcaseCard>
 
-    <!-- API 列表 -->
-    <section class="section">
-      <h2 class="section-title">📋 可用的 Mock API</h2>
-      <div class="api-grid">
-        <div class="api-card">
-          <div class="api-method post">POST</div>
-          <div class="api-info">
-            <h3>/api/upload</h3>
-            <p>單檔案上傳</p>
+        <ShowcaseCard
+          title="Multiple Upload"
+          description="/api/upload/multiple"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
+            >
+              POST
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/upload/multiple</span>
           </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">POST</div>
-          <div class="api-info">
-            <h3>/api/upload/multiple</h3>
-            <p>多檔案上傳</p>
+          <p class="text-sm text-slate-400">多檔案批次上傳端點</p>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="File Export"
+          description="/api/files/export"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-blue-900/40 text-blue-400 border border-blue-800"
+            >
+              GET
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/files/export</span>
           </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method get">GET</div>
-          <div class="api-info">
-            <h3>/api/files/export</h3>
-            <p>檔案匯出 (CSV/JSON/XLSX)</p>
+          <p class="text-sm text-slate-400">支援 CSV/JSON/XLSX 格式匯出</p>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="Report Export"
+          description="/api/reports/export"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
+            >
+              POST
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/reports/export</span>
           </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">POST</div>
-          <div class="api-info">
-            <h3>/api/reports/export</h3>
-            <p>報表匯出 (PDF)</p>
+          <p class="text-sm text-slate-400">PDF 報表匯出功能</p>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="Generate Report"
+          description="/api/reports/generate"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
+            >
+              POST
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/reports/generate</span>
           </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method post">POST</div>
-          <div class="api-info">
-            <h3>/api/reports/generate</h3>
-            <p>報表生成</p>
+          <p class="text-sm text-slate-400">動態報表資料生成</p>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="File Download"
+          description="/api/file"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold bg-blue-900/40 text-blue-400 border border-blue-800"
+            >
+              GET
+            </span>
+            <span class="text-sm font-mono text-slate-300">/api/file</span>
           </div>
-        </div>
-        <div class="api-card">
-          <div class="api-method get">GET</div>
-          <div class="api-info">
-            <h3>/api/file</h3>
-            <p>通用檔案下載</p>
-          </div>
-        </div>
+          <p class="text-sm text-slate-400">通用檔案下載服務</p>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
-    <!-- 互動測試 -->
-    <section class="section">
-      <h2 class="section-title">🧪 互動測試</h2>
-
-      <div class="test-grid">
-        <!-- 檔案上傳測試 -->
-        <div class="test-card">
-          <h3>📤 檔案上傳</h3>
-          <div class="test-content">
+    <!-- Interactive Tests -->
+    <ShowcaseSection
+      title="Interactive Tests (互動測試)"
+      icon="🧪"
+    >
+      <div class="component-grid">
+        <!-- Upload Test -->
+        <ShowcaseCard
+          title="檔案上傳測試"
+          description="測試檔案上傳 API"
+        >
+          <div class="flex flex-col gap-4">
             <input
               type="file"
+              class="glass-input"
               @change="(e: any) => (uploadFile = e.target.files[0])"
             />
             <button
-              class="btn btn-primary"
+              class="glass-btn primary w-full"
               :disabled="uploadLoading || !uploadFile"
               @click="handleUpload"
             >
               {{ uploadLoading ? '上傳中...' : '上傳檔案' }}
             </button>
-            <div
-              v-if="uploadResult"
-              class="result-box success"
-            >
-              <strong>✅ 上傳成功</strong>
-              <pre>{{ JSON.stringify(uploadResult, null, 2) }}</pre>
+            <div v-if="uploadResult">
+              <ShowcaseCodeBlock
+                :code="JSON.stringify(uploadResult, null, 2)"
+                language="json"
+                label="Result"
+              />
             </div>
           </div>
-        </div>
+        </ShowcaseCard>
 
-        <!-- 檔案匯出測試 -->
-        <div class="test-card">
-          <h3>📥 檔案匯出</h3>
-          <div class="test-content">
-            <select v-model="exportFormat">
+        <!-- Export Test -->
+        <ShowcaseCard
+          title="檔案匯出測試"
+          description="測試不同格式匯出"
+        >
+          <div class="flex flex-col gap-4">
+            <select
+              v-model="exportFormat"
+              class="glass-input"
+            >
               <option value="csv">CSV</option>
               <option value="json">JSON</option>
               <option value="xlsx">XLSX</option>
             </select>
             <button
-              class="btn btn-primary"
+              class="glass-btn primary w-full"
               :disabled="exportLoading"
               @click="handleExport"
             >
               {{ exportLoading ? '匯出中...' : '匯出檔案' }}
             </button>
           </div>
-        </div>
+        </ShowcaseCard>
 
-        <!-- 報表生成測試 -->
-        <div class="test-card">
-          <h3>📊 報表生成</h3>
-          <div class="test-content">
-            <select v-model="reportType">
+        <!-- Report Test -->
+        <ShowcaseCard
+          title="報表生成測試"
+          description="測試報表資料生成"
+        >
+          <div class="flex flex-col gap-4">
+            <select
+              v-model="reportType"
+              class="glass-input"
+            >
               <option value="daily">每日報表</option>
               <option value="weekly">每週報表</option>
               <option value="monthly">每月報表</option>
             </select>
             <button
-              class="btn btn-primary"
+              class="glass-btn primary w-full"
               :disabled="reportLoading"
               @click="handleGenerateReport"
             >
               {{ reportLoading ? '生成中...' : '生成報表' }}
             </button>
+            <div v-if="reportResult">
+              <ShowcaseCodeBlock
+                :code="JSON.stringify(reportResult, null, 2)"
+                language="json"
+                label="Result"
+              />
+            </div>
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- API Logs -->
+    <ShowcaseSection
+      title="API Logs (呼叫記錄)"
+      icon="📝"
+    >
+      <div class="bg-slate-900/50 rounded-lg border border-slate-700/50 overflow-hidden">
+        <div
+          class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/50"
+        >
+          <span class="text-sm font-semibold text-slate-300">Request History</span>
+          <button
+            class="glass-btn text-xs py-1 px-3"
+            @click="clearLogs"
+          >
+            清除記錄
+          </button>
+        </div>
+
+        <div class="logs-container max-h-[400px] overflow-y-auto p-4 space-y-3">
+          <div
+            v-if="apiLogs.length === 0"
+            class="text-center text-slate-500 py-8"
+          >
+            尚無 API 呼叫記錄
+          </div>
+          <div
+            v-for="(log, index) in apiLogs"
+            :key="index"
+            class="log-item p-3 rounded bg-slate-800/30 border border-slate-700/30 text-sm"
+          >
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-slate-500 font-mono text-xs">{{ log.time }}</span>
+              <span
+                class="font-bold px-1.5 py-0.5 rounded text-xs"
+                :class="
+                  log.method === 'GET'
+                    ? 'bg-blue-900/30 text-blue-400'
+                    : 'bg-green-900/30 text-green-400'
+                "
+              >
+                {{ log.method }}
+              </span>
+              <span class="font-mono text-slate-300 break-all">{{ log.url }}</span>
+              <span
+                class="ml-auto font-bold"
+                :class="log.status === 'Success' ? 'text-green-400' : 'text-red-400'"
+              >
+                {{ log.status }}
+              </span>
+            </div>
             <div
-              v-if="reportResult"
-              class="result-box success"
+              v-if="log.data"
+              class="mt-2 bg-slate-950/50 p-2 rounded overflow-x-auto"
             >
-              <strong>✅ 生成成功</strong>
-              <pre>{{ JSON.stringify(reportResult, null, 2) }}</pre>
+              <pre class="text-xs text-slate-400 font-mono">{{
+                JSON.stringify(log.data, null, 2)
+              }}</pre>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </ShowcaseSection>
 
-    <!-- API 呼叫記錄 -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">📝 API 呼叫記錄</h2>
-        <button
-          class="btn btn-secondary"
-          @click="clearLogs"
+    <!-- Code Examples -->
+    <ShowcaseSection
+      title="Code Examples (程式範例)"
+      icon="💻"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="File Upload Usage"
+          description="上傳檔案程式碼範例"
+          full-width
         >
-          清除記錄
-        </button>
-      </div>
-      <div class="logs-container">
-        <div
-          v-if="apiLogs.length === 0"
-          class="empty-state"
-        >
-          尚無 API 呼叫記錄
-        </div>
-        <div
-          v-for="(log, index) in apiLogs"
-          :key="index"
-          class="log-item"
-          :class="log.status.toLowerCase()"
-        >
-          <div class="log-time">{{ log.time }}</div>
-          <div class="log-method">{{ log.method }}</div>
-          <div class="log-url">{{ log.url }}</div>
-          <div class="log-status">{{ log.status }}</div>
-          <div
-            v-if="log.data"
-            class="log-data"
-          >
-            <pre>{{ JSON.stringify(log.data, null, 2) }}</pre>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 使用範例 -->
-    <section class="section">
-      <h2 class="section-title">💻 使用範例</h2>
-      <div class="code-examples">
-        <div class="code-example">
-          <h3>檔案上傳</h3>
-          <pre><code>const formData = new FormData()
+          <ShowcaseCodeBlock
+            code="const formData = new FormData()
 formData.append('file', file)
 
 const response = await $fetch('/api/upload', {
   method: 'POST',
   body: formData
-})</code></pre>
-        </div>
+})"
+            label="TypeScript"
+          />
+        </ShowcaseCard>
 
-        <div class="code-example">
-          <h3>檔案匯出</h3>
-          <pre><code>const response = await $fetch('/api/files/export?format=csv', {
+        <ShowcaseCard
+          title="File Export Usage"
+          description="匯出檔案程式碼範例"
+          full-width
+        >
+          <ShowcaseCodeBlock
+            code="const response = await $fetch('/api/files/export?format=csv', {
   method: 'GET'
 })
 
-// 建立下載
+// Build download link
 const blob = new Blob([response], { type: 'text/csv' })
 const url = URL.createObjectURL(blob)
 const a = document.createElement('a')
 a.href = url
 a.download = 'export.csv'
-a.click()</code></pre>
-        </div>
-
-        <div class="code-example">
-          <h3>報表生成</h3>
-          <pre><code>const response = await $fetch('/api/reports/generate', {
-  method: 'POST',
-  body: {
-    type: 'monthly',
-    startDate: '2024-01-01',
-    endDate: '2024-12-31'
-  }
-})</code></pre>
-        </div>
+a.click()"
+            label="TypeScript"
+          />
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-.mock-api-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.page-header {
-  margin-bottom: 3rem;
-}
-
-.back-link {
-  display: inline-block;
-  color: #3498db;
-  text-decoration: none;
-  margin-bottom: 1rem;
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  outline: none;
   font-size: 0.95rem;
+  width: 100%;
 }
 
-.back-link:hover {
-  text-decoration: underline;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
 }
 
-.page-title {
-  font-size: 2.5rem;
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-}
-
-.page-desc {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-  margin: 0;
-}
-
-.section {
-  margin-bottom: 3rem;
-}
-
-.section-title {
-  font-size: 1.75rem;
-  margin: 0 0 1.5rem 0;
-  color: #2c3e50;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-/* API 卡片 */
-.api-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.api-card {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
-}
-
-.api-method {
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.75rem;
-  height: fit-content;
-}
-
-.api-method.get {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.api-method.post {
-  background: #e8f5e9;
-  color: #388e3c;
-}
-
-.api-info h3 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1rem;
-  color: #2c3e50;
-  font-family: 'Fira Code', monospace;
-}
-
-.api-info p {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #7f8c8d;
-}
-
-/* 測試卡片 */
-.test-grid {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.test-card {
-  padding: 1.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
-}
-
-.test-card h3 {
-  margin: 0 0 1rem 0;
-  color: #2c3e50;
-}
-
-.test-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.test-content input,
-.test-content select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
-.btn-primary {
-  background: #3498db;
-  color: white;
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: #2980b9;
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
 }
 
-.btn-primary:disabled {
+.glass-btn.primary:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.glass-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
-.btn-secondary {
-  background: #95a5a6;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #7f8c8d;
-}
-
-.result-box {
-  padding: 1rem;
-  border-radius: 4px;
-  margin-top: 1rem;
-}
-
-.result-box.success {
-  background: #e8f5e9;
-  border: 1px solid #4caf50;
-}
-
-.result-box strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #2e7d32;
-}
-
-.result-box pre {
-  margin: 0;
-  font-size: 0.875rem;
-  overflow-x: auto;
-}
-
-/* 記錄 */
+/* Custom Scrollbar for logs */
 .logs-container {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.empty-state {
-  padding: 2rem;
-  text-align: center;
-  color: #999;
-}
-
-.log-item {
-  padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  display: grid;
-  grid-template-columns: 100px 80px 1fr 100px;
-  gap: 1rem;
-  align-items: center;
-}
-
-.log-item:last-child {
-  border-bottom: none;
-}
-
-.log-item.success {
-  background: #f1f8f4;
-}
-
-.log-item.error {
-  background: #fef5f5;
-}
-
-.log-time {
-  font-size: 0.875rem;
-  color: #999;
-}
-
-.log-method {
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-.log-url {
-  font-family: 'Fira Code', monospace;
-  font-size: 0.875rem;
-}
-
-.log-status {
-  font-weight: 500;
-}
-
-.log-item.success .log-status {
-  color: #4caf50;
-}
-
-.log-item.error .log-status {
-  color: #f44336;
-}
-
-.log-data {
-  grid-column: 1 / -1;
-  background: #f5f5f5;
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  overflow-x: auto;
-}
-
-.log-data pre {
-  margin: 0;
-}
-
-/* 程式碼範例 */
-.code-examples {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.code-example {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.code-example h3 {
-  margin: 0;
-  padding: 1rem;
-  background: #f5f5f5;
-  color: #2c3e50;
-  font-size: 1rem;
-}
-
-.code-example pre {
-  margin: 0;
-  padding: 1rem;
-  background: #282c34;
-  overflow-x: auto;
-}
-
-.code-example code {
-  color: #abb2bf;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) rgba(15, 23, 42, 0.4);
 }
 </style>

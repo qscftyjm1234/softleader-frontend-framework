@@ -2,7 +2,7 @@
 /**
  * ShowcaseArchitecture
  * 業務邏輯層元件 (Business Layer)
- * 使用 ICard 展示架構圖
+ * 使用 ICard 展示架構圖 - Dark Mode Style
  */
 import ICard from '@/components/uiInterface/ICard.vue'
 </script>
@@ -24,7 +24,13 @@ import ICard from '@/components/uiInterface/ICard.vue'
       </ICard>
     </div>
 
-    <div class="arrow">↓ 使用</div>
+    <div class="arrow">
+      <v-icon
+        icon="mdi-arrow-down"
+        color="#38bdf8"
+      />
+      <span class="use-text">使用</span>
+    </div>
 
     <!-- Business Layer -->
     <div class="layer-wrapper">
@@ -41,7 +47,13 @@ import ICard from '@/components/uiInterface/ICard.vue'
       </ICard>
     </div>
 
-    <div class="arrow">↓ 使用</div>
+    <div class="arrow">
+      <v-icon
+        icon="mdi-arrow-down"
+        color="#38bdf8"
+      />
+      <span class="use-text">使用</span>
+    </div>
 
     <!-- Interface Layer -->
     <div class="layer-wrapper">
@@ -65,90 +77,109 @@ import ICard from '@/components/uiInterface/ICard.vue'
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .layer-wrapper {
   display: flex;
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .layer-number {
   flex-shrink: 0;
-  width: 48px;
+  width: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-radius: 8px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  border-radius: 12px;
   color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .page-num {
-  background: #4caf50;
+  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
 }
 
 .business-num {
-  background: #2196f3;
+  background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
 }
 
 .interface-num {
-  background: #ff9800;
+  background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
 }
 
 .layer-card {
   flex: 1;
+  border-width: 1px !important;
+  backdrop-filter: blur(12px);
+  background: rgba(30, 41, 59, 0.4) !important;
 }
 
+/* Specific Border Colors for Layers */
 .page-layer {
-  background: #e8f5e9;
-  border-color: #4caf50;
+  border-color: rgba(76, 175, 80, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
 }
 
 .business-layer {
-  background: #e3f2fd;
-  border-color: #2196f3;
+  border-color: rgba(33, 150, 243, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
 }
 
 .interface-layer {
-  background: #fff3e0;
-  border-color: #ff9800;
+  border-color: rgba(255, 152, 0, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1);
 }
 
 .card-content h3 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1.1rem;
-  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f1f5f9;
 }
 
 .card-content p {
-  margin: 0 0 0.5rem 0;
-  color: #666;
-  font-size: 0.9rem;
+  margin: 0 0 0.75rem 0;
+  color: #94a3b8;
+  font-size: 1rem;
 }
 
 .card-content code {
-  background: rgba(0, 0, 0, 0.05);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
   font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  color: #a5d6ff;
   display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Override ICard padding for tighter fit if needed */
-.layer-card :deep(.card-content) {
-  padding: 1rem 1.5rem;
+/* Deep selector to ensure padding is right */
+.layer-card :deep(.v-card-text),
+.layer-card :deep(.card-body) {
+  padding: 1.5rem !important;
 }
 
 .arrow {
-  text-align: center;
-  padding: 0.25rem;
-  color: #3498db;
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-left: 48px; /* Align with content, skipping number width */
+  display: flex;
+  align-items: center;
+  margin-left: 28px; /* Center under the 56px number box */
+  padding-left: 1.5rem; /* Space from aligned center */
+  gap: 0.5rem;
+  height: 2rem;
+}
+
+.use-text {
+  color: #38bdf8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 </style>

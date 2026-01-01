@@ -8,6 +8,8 @@
 import { ref } from 'vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 const { user } = useRepository()
 
@@ -21,6 +23,12 @@ const { data, pending, error } = await user.getUsers({
   q: search,
   itemsPerPage: 5
 })
+
+definePageMeta({
+  title: 'API Demo',
+  icon: 'mdi-api',
+  layout: 'portal'
+})
 </script>
 
 <template>
@@ -28,92 +36,147 @@ const { data, pending, error } = await user.getUsers({
     title="API Management Demo"
     description="展示如何使用 Repository 模式進行 API 呼叫,包含分頁、搜尋、載入狀態等功能"
   >
-    <ShowcaseSection title="Repository Pattern Demo">
-      <!-- Controls -->
-      <div class="controls">
-        <div class="control-group">
-          <label>Search:</label>
-          <input
-            v-model="search"
-            placeholder="Search users..."
-            class="search-input"
-          />
-        </div>
+    <ShowcaseSection
+      title="Repository Pattern Demo"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="User Management"
+          description="分頁與搜尋展示"
+          full-width
+        >
+          <div class="flex flex-col gap-6">
+            <!-- Controls -->
+            <div class="flex flex-wrap gap-4 items-end justify-between">
+              <div class="flex flex-col gap-2 flex-grow max-w-sm">
+                <label class="text-xs text-slate-400 uppercase tracking-wide">Search</label>
+                <input
+                  v-model="search"
+                  placeholder="Search users..."
+                  class="glass-input w-full"
+                />
+              </div>
 
-        <div class="control-group">
-          <button
-            :disabled="page <= 1"
-            class="btn btn-secondary"
-            @click="page--"
-          >
-            Prev
-          </button>
-          <span class="page-info">Page {{ page }}</span>
-          <button
-            class="btn btn-secondary"
-            @click="page++"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div
-        v-if="pending"
-        class="state-message loading"
-      >
-        ⏳ Loading...
-      </div>
-
-      <!-- Error State -->
-      <div
-        v-else-if="error"
-        class="state-message error"
-      >
-        ❌ Error: {{ error.message }}
-      </div>
-
-      <!-- Data Table -->
-      <div
-        v-else
-        class="data-table-container"
-      >
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="item in (data as any)?.items"
-              :key="item.id"
-            >
-              <td>{{ item.id }}</td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.email }}</td>
-              <td>
-                <span
-                  class="role-badge"
-                  :class="`role-${item.role.toLowerCase()}`"
+              <div class="flex items-center gap-2">
+                <button
+                  :disabled="page <= 1"
+                  class="glass-btn px-4 py-2"
+                  @click="page--"
                 >
-                  {{ item.role }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="table-footer">Total: {{ (data as any)?.total }} users</div>
+                  Prev
+                </button>
+                <span class="text-slate-200 font-mono px-2">Page {{ page }}</span>
+                <button
+                  class="glass-btn px-4 py-2"
+                  @click="page++"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading State -->
+            <div
+              v-if="pending"
+              class="flex justify-center items-center p-12 bg-slate-900/30 rounded-lg border border-slate-700/30 text-sky-400 gap-3"
+            >
+              <span class="animate-spin text-xl">⏳</span>
+              Loading...
+            </div>
+
+            <!-- Error State -->
+            <div
+              v-else-if="error"
+              class="flex justify-center items-center p-12 bg-red-900/10 rounded-lg border border-red-500/30 text-red-400 gap-3"
+            >
+              ❌ Error: {{ error.message }}
+            </div>
+
+            <!-- Data Table -->
+            <div
+              v-else
+              class="border border-slate-700/30 rounded-lg overflow-hidden"
+            >
+              <table class="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th
+                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
+                    >
+                      ID
+                    </th>
+                    <th
+                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
+                    >
+                      Name
+                    </th>
+                    <th
+                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
+                    >
+                      Email
+                    </th>
+                    <th
+                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
+                    >
+                      Role
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in (data as any)?.items"
+                    :key="item.id"
+                    class="hover:bg-slate-700/10 transition-colors"
+                  >
+                    <td class="p-3 border-b border-slate-700/10 text-slate-200">{{ item.id }}</td>
+                    <td class="p-3 border-b border-slate-700/10 text-slate-200">{{ item.name }}</td>
+                    <td class="p-3 border-b border-slate-700/10 text-slate-400">
+                      {{ item.email }}
+                    </td>
+                    <td class="p-3 border-b border-slate-700/10">
+                      <span
+                        class="px-3 py-1 rounded-full text-xs font-semibold"
+                        :class="{
+                          'bg-blue-900/30 text-blue-300 border border-blue-500/30':
+                            item.role === 'Admin',
+                          'bg-green-900/30 text-green-300 border border-green-500/30':
+                            item.role === 'Editor',
+                          'bg-slate-700/30 text-slate-300 border border-slate-500/30':
+                            item.role === 'Viewer'
+                        }"
+                      >
+                        {{ item.role }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                class="p-4 bg-slate-800/40 text-right text-sm text-slate-400 border-t border-slate-700/30"
+              >
+                Total:
+                <span class="text-slate-200 font-semibold">{{ (data as any)?.total }}</span>
+                users
+              </div>
+            </div>
+          </div>
+        </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <ShowcaseSection title="使用方式">
-      <div class="code-section">
-        <pre><code>// 基本用法
+    <ShowcaseSection
+      title="使用方式 (Usage)"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Code Example"
+          description="Repository Pattern Usage"
+          full-width
+        >
+          <ShowcaseCodeBlock
+            code="// 基本用法
 const { user } = useRepository()
 
 const page = ref(1)
@@ -141,178 +204,49 @@ console.log('所有資料都已載入')
 
 // 3. fetchData - 直接取得資料（適合一次性請求）
 const activities = await fetchData('/api/dashboard/activities', { limit: 10 })
-console.log('資料:', activities)</code></pre>
+console.log('資料:', activities)"
+            label="Composition API"
+          />
+        </ShowcaseCard>
       </div>
     </ShowcaseSection>
   </ShowcasePage>
 </template>
 
 <style scoped>
-/* Controls */
-.controls {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.control-group label {
-  font-weight: 500;
-  color: #555;
-}
-
-.search-input {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  min-width: 200px;
-}
-
-.search-input:focus {
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
   outline: none;
-  border-color: #3498db;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   transition: all 0.2s;
 }
 
-.btn:hover:not(:disabled) {
-  background: #f5f5f5;
+.glass-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
 }
 
-.btn:disabled {
-  opacity: 0.5;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #94a3b8;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.glass-btn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.glass-btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: white;
-  color: #555;
-}
-
-.page-info {
-  padding: 0 0.5rem;
-  color: #555;
-  font-weight: 500;
-}
-
-/* State Messages */
-.state-message {
-  padding: 2rem;
-  text-align: center;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-}
-
-.state-message.loading {
-  background: #f0f9ff;
-  color: #0369a1;
-}
-
-.state-message.error {
-  background: #fef2f2;
-  color: #dc2626;
-}
-
-/* Data Table */
-.data-table-container {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.data-table thead {
-  background: #f5f5f5;
-}
-
-.data-table th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: #555;
-  font-size: 0.875rem;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.data-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  color: #333;
-  font-size: 0.875rem;
-}
-
-.data-table tbody tr:hover {
-  background: #f9f9f9;
-}
-
-.data-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.role-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.role-badge.role-admin {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.role-badge.role-editor {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.role-badge.role-viewer {
-  background: #f3f4f6;
-  color: #6b7280;
-}
-
-.table-footer {
-  padding: 1rem;
-  background: #f9fafb;
-  text-align: right;
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-/* Code Section */
-.code-section pre {
-  background: #f5f5f5;
-  padding: 1.5rem;
-  border-radius: 8px;
-  overflow-x: auto;
-  border: 1px solid #e0e0e0;
-  margin: 0;
-}
-
-.code-section code {
-  font-family: 'Courier New', monospace;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: #2c3e50;
 }
 </style>

@@ -1,6 +1,15 @@
+```vue
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+import { ref } from 'vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
+import ShowcaseAlert from '../components/ShowcaseAlert.vue'
+import IButton from '@/components/uiInterface/IButton.vue'
+import IInput from '@/components/uiInterface/IInput.vue'
+import IStack from '@/components/uiInterface/IStack.vue'
+import { useEncryption } from '@/composables/useEncryption'
 
 const { base64Encode, base64Decode, aesEncrypt, aesDecrypt, md5Hash, sha256Hash } = useEncryption()
 
@@ -14,12 +23,6 @@ const aesDecrypted = ref('')
 const hashText = ref('password123')
 const md5Result = ref('')
 const sha256Result = ref('')
-
-// Computed examples
-const base64Example = computed(() => {
-  if (!plainText.value) return ''
-  return base64Encode(plainText.value)
-})
 
 const handleBase64Encode = () => {
   base64Result.value = base64Encode(plainText.value)
@@ -57,360 +60,208 @@ const handleHashBoth = async () => {
 
 definePageMeta({
   title: '加密工具 (Encryption)',
-  icon: 'mdi-lock'
+  icon: 'mdi-lock',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
+  <ShowcasePage
+    title="加密工具系統 (Encryption System)"
+    description="完整的加密工具模組，提供 Base64 編碼/解碼、AES 加密/解密和 MD5/SHA256 雜湊功能。"
+  >
+    <!-- General Usage -->
+    <ShowcaseSection
+      title="General Usage"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="加密核心概覽"
+          description="常用加密情境展示"
+          full-width
         >
-          返回
-        </router-link>
-        <h1 class="page-title">加密工具系統 (Encryption System)</h1>
-      </div>
-      <p class="page-desc">
-        完整的加密工具模組，提供 Base64 編碼/解碼、AES 加密/解密和 MD5/SHA256 雜湊功能。
-        <br />
-        核心特色：多種加密方式、UTF-8 支援、非同步雜湊、簡單易用。
-      </p>
-    </div>
-
-    <!-- General Usage Section -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">📝</span>
-        General Usage (一般使用範例)
-      </h2>
-      <div class="card-content">
-        <p class="demo-desc">
-          最常見的情境：Base64 編碼資料傳輸、密碼雜湊儲存。
-          <br />
-          使用
-          <code>base64Encode</code>
-          、
-          <code>sha256Hash</code>
-          方法快速處理。
-        </p>
-
-        <div class="demo-grid">
-          <div class="usage-block">
-            <div class="block-header">Example Code</div>
-            <div class="code-content">
-              <pre><code>&lt;script setup&gt;
-// 1. 引入 composable
-const { base64Encode, sha256Hash, aesEncrypt } = useEncryption()
-
-// 2. Base64 編碼
-const encoded = base64Encode('Hello, World!')
-// => "SGVsbG8sIFdvcmxkIQ=="
-
-// 3. SHA256 雜湊（密碼儲存）
-const hashed = await sha256Hash('password123')
-// => "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f"
-
-// 4. AES 加密（敏感資料）
-const encrypted = aesEncrypt('secret data', 'my-key')
-// => "base64-encoded-encrypted-string"
-&lt;/script&gt;</code></pre>
-            </div>
+          <div class="demo-area">
+            <ul class="benefit-list">
+              <li>
+                <strong>Base64:</strong>
+                資料傳輸編碼
+              </li>
+              <li>
+                <strong>SHA256:</strong>
+                密碼雜湊儲存
+              </li>
+              <li>
+                <strong>AES:</strong>
+                對稱式敏感資料加密
+              </li>
+            </ul>
+            <ShowcaseAlert
+              type="warning"
+              title="重要提示"
+              class="mt-4"
+            >
+              本模組的 AES 加密使用 XOR 運算模擬，僅供示範使用。實際專案請使用 crypto-js。
+            </ShowcaseAlert>
           </div>
-
-          <div class="output-block">
-            <DataPreview
-              title="範例輸出"
-              :data="{
-                plainText: plainText,
-                base64Encoded: base64Example
-              }"
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { base64Encode, sha256Hash, aesEncrypt } = useEncryption()"
+              label="Composable Usage"
             />
-          </div>
-        </div>
-
-        <div class="warning-box">
-          <strong>⚠️ 重要提示：</strong>
-          <ul>
-            <li>本模組的 AES 加密使用 XOR 運算模擬，僅供示範使用</li>
-            <li>MD5 使用 SHA-1 模擬（瀏覽器限制）</li>
-            <li>
-              實際專案請使用
-              <code>crypto-js</code>
-              等專業加密庫
-            </li>
-          </ul>
-        </div>
+          </template>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Interactive Playground -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Playground (互動式演示)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- 1. Base64 Encoding -->
-          <div class="demo-card">
-            <h3 class="demo-title">1. Base64 編碼/解碼</h3>
-            <p class="demo-desc">將文字轉換為 Base64 格式，支援 UTF-8 字元。</p>
+    <ShowcaseSection
+      title="Interactive Playground"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <!-- 1. Base64 -->
+        <ShowcaseCard
+          title="1. Base64 編碼/解碼"
+          description="支援 UTF-8 字元轉換。"
+        >
+          <div class="demo-area">
+            <IInput
+              v-model="plainText"
+              label="輸入文字"
+              placeholder="輸入要編碼的文字"
+              class="mb-4"
+            />
 
-            <div class="control-row mb-4">
-              <label>文字內容:</label>
-              <input
-                v-model="plainText"
-                type="text"
-                class="input-field"
-                placeholder="輸入要編碼的文字"
-                style="flex: 1"
-              />
+            <div style="display: flex; gap: 8px; margin-bottom: 16px">
+              <IButton @click="handleBase64Encode">編碼</IButton>
+              <IButton
+                variant="secondary"
+                @click="handleBase64Decode"
+              >
+                解碼
+              </IButton>
             </div>
 
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// Base64 編碼
-const encoded = base64Encode('{{ plainText }}')
-
-// Base64 解碼
-const decoded = base64Decode(encoded)</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    @click="handleBase64Encode"
-                  >
-                    編碼
-                  </button>
-                  <button
-                    class="action-btn secondary"
-                    @click="handleBase64Decode"
-                  >
-                    解碼
-                  </button>
-                </div>
-                <DataPreview
-                  v-if="base64Result || decodedResult"
-                  title="編碼/解碼結果"
-                  :data="{
-                    encoded: base64Result,
-                    decoded: decodedResult
-                  }"
-                />
-              </div>
+            <div
+              v-if="base64Result"
+              class="result-text"
+            >
+              <span class="label">Encoded:</span>
+              <span class="value">{{ base64Result }}</span>
+            </div>
+            <div
+              v-if="decodedResult"
+              class="result-text"
+            >
+              <span class="label">Decoded:</span>
+              <span class="value">{{ decodedResult }}</span>
             </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="base64Encode('Hello')"
+              label="Function"
+            />
+          </template>
+        </ShowcaseCard>
 
-          <!-- 2. AES Encryption -->
-          <div class="demo-card">
-            <h3 class="demo-title">2. AES 加密/解密</h3>
-            <p class="demo-desc">使用金鑰加密資料（簡化版示範）。</p>
-
-            <div class="control-row mb-4">
-              <label>加密金鑰:</label>
-              <input
+        <!-- 2. AES -->
+        <ShowcaseCard
+          title="2. AES 加密/解密"
+          description="對稱式加密演示。"
+        >
+          <div class="demo-area">
+            <IStack
+              direction="column"
+              gap="1"
+              class="mb-4"
+            >
+              <IInput
                 v-model="aesKey"
-                type="text"
-                class="input-field"
-                placeholder="輸入加密金鑰"
-                style="width: 200px"
+                label="加密金鑰"
               />
-              <label>文字內容:</label>
-              <input
+              <IInput
                 v-model="plainText"
-                type="text"
-                class="input-field"
-                placeholder="輸入要加密的文字"
-                style="flex: 1"
+                label="原始文字"
               />
+            </IStack>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 16px">
+              <IButton @click="handleAesEncrypt">加密</IButton>
+              <IButton
+                variant="secondary"
+                @click="handleAesDecrypt"
+              >
+                解密
+              </IButton>
             </div>
 
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// AES 加密
-const encrypted = aesEncrypt(
-  '{{ plainText }}',
-  '{{ aesKey }}'
-)
-
-// AES 解密
-const decrypted = aesDecrypt(
-  encrypted,
-  '{{ aesKey }}'
-)</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    @click="handleAesEncrypt"
-                  >
-                    加密
-                  </button>
-                  <button
-                    class="action-btn secondary"
-                    @click="handleAesDecrypt"
-                  >
-                    解密
-                  </button>
-                </div>
-                <DataPreview
-                  v-if="aesEncrypted || aesDecrypted"
-                  title="加密/解密結果"
-                  :data="{
-                    encrypted: aesEncrypted,
-                    decrypted: aesDecrypted
-                  }"
-                />
-              </div>
+            <div
+              v-if="aesEncrypted"
+              class="result-text"
+            >
+              <span class="label">Encrypted:</span>
+              <span
+                class="value"
+                style="word-break: break-all"
+              >
+                {{ aesEncrypted }}
+              </span>
+            </div>
+            <div
+              v-if="aesDecrypted"
+              class="result-text"
+            >
+              <span class="label">Decrypted:</span>
+              <span class="value">{{ aesDecrypted }}</span>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 3. MD5 Hash -->
-          <div class="demo-card">
-            <h3 class="demo-title">3. MD5 雜湊</h3>
-            <p class="demo-desc">生成 MD5 雜湊值（使用 SHA-1 模擬）。</p>
+        <!-- 3. Hashing -->
+        <ShowcaseCard
+          title="3. 雜湊運算 (Hash)"
+          description="不可逆的雜湊生成。"
+          full-width
+        >
+          <div class="demo-area">
+            <IInput
+              v-model="hashText"
+              label="輸入文字"
+              class="mb-4"
+            />
 
-            <div class="control-row mb-4">
-              <label>文字內容:</label>
-              <input
-                v-model="hashText"
-                type="text"
-                class="input-field"
-                placeholder="輸入要雜湊的文字"
-                style="flex: 1"
-              />
+            <div style="display: flex; gap: 8px; margin-bottom: 16px">
+              <IButton @click="handleMd5Hash">生成 MD5</IButton>
+              <IButton @click="handleSha256Hash">生成 SHA256</IButton>
+              <IButton
+                variant="outlined"
+                @click="handleHashBoth"
+              >
+                生成兩者
+              </IButton>
             </div>
 
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// MD5 雜湊（使用 SHA-1 模擬）
-const hash = await md5Hash('{{ hashText }}')
-
-// 返回 40 字元的十六進位字串</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <button
-                  class="action-btn"
-                  style="margin-top: 1rem"
-                  @click="handleMd5Hash"
-                >
-                  生成 MD5 雜湊
-                </button>
-                <div
-                  v-if="md5Result"
-                  class="result-box"
-                >
-                  <strong>MD5 (SHA-1):</strong>
-                  <pre>{{ md5Result }}</pre>
-                </div>
-              </div>
+            <div
+              v-if="md5Result"
+              class="result-text"
+            >
+              <span class="label">MD5:</span>
+              <span class="value">{{ md5Result }}</span>
+            </div>
+            <div
+              v-if="sha256Result"
+              class="result-text"
+            >
+              <span class="label">SHA256:</span>
+              <span class="value">{{ sha256Result }}</span>
             </div>
           </div>
-
-          <!-- 4. SHA256 Hash -->
-          <div class="demo-card">
-            <h3 class="demo-title">4. SHA256 雜湊</h3>
-            <p class="demo-desc">生成 SHA256 雜湊值，常用於密碼儲存。</p>
-
-            <div class="control-row mb-4">
-              <label>文字內容:</label>
-              <input
-                v-model="hashText"
-                type="text"
-                class="input-field"
-                placeholder="輸入要雜湊的文字"
-                style="flex: 1"
-              />
-            </div>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// SHA256 雜湊
-const hash = await sha256Hash('{{ hashText }}')
-
-// 返回 64 字元的十六進位字串</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <button
-                  class="action-btn"
-                  style="margin-top: 1rem"
-                  @click="handleSha256Hash"
-                >
-                  生成 SHA256 雜湊
-                </button>
-                <div
-                  v-if="sha256Result"
-                  class="result-box"
-                >
-                  <strong>SHA256:</strong>
-                  <pre>{{ sha256Result }}</pre>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. Hash Comparison -->
-          <div class="demo-card">
-            <h3 class="demo-title">5. 雜湊比較</h3>
-            <p class="demo-desc">同時生成 MD5 和 SHA256 雜湊值進行比較。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 同時生成兩種雜湊
-const [md5, sha256] = await Promise.all([
-  md5Hash('{{ hashText }}'),
-  sha256Hash('{{ hashText }}')
-])
-
-console.log('MD5:', md5)
-console.log('SHA256:', sha256)</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <button
-                  class="action-btn"
-                  style="margin-top: 1rem"
-                  @click="handleHashBoth"
-                >
-                  生成兩種雜湊
-                </button>
-                <DataPreview
-                  v-if="md5Result && sha256Result"
-                  title="雜湊比較"
-                  :data="{
-                    input: hashText,
-                    md5: md5Result,
-                    sha256: sha256Result,
-                    md5Length: md5Result.length,
-                    sha256Length: sha256Result.length
-                  }"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>

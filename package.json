@@ -20,7 +20,8 @@
     "commit": "cz",
     "release": "standard-version --config configs/git/versionrc.json",
     "doc:history": "node scripts/gen-history.cjs",
-    "gen:history": "node scripts/gen-history.cjs"
+    "gen:history": "node scripts/gen-history.cjs",
+    "lint:fix": "eslint . --fix"
   },
   "config": {
     "commitizen": {

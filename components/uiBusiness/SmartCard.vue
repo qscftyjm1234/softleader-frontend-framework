@@ -75,11 +75,12 @@ withDefaults(defineProps<Props>(), {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: #38bdf8; /* Sky Blue highlight */
 }
 
 .smart-card__text {
   margin: 0;
-  color: #555;
+  color: #94a3b8; /* Slate 400 */
   line-height: 1.6;
 }
 

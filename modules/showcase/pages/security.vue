@@ -3,6 +3,11 @@
  * @功能 資安防護展示頁面
  * @description 展示所有前端資安防護機制與配置
  */
+import { ref, computed } from 'vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
 // 從 runtime config 讀取資安設定
 const config = useRuntimeConfig()
@@ -272,633 +277,311 @@ const testScreenshotProtection = () => {
 const testIdleTimeout = () => {
   alert('請保持 3 分鐘不操作來測試閒置鎖定功能')
 }
+
+definePageMeta({
+  title: '資安防護 (Security)',
+  icon: 'mdi-shield-lock',
+  layout: 'portal'
+})
 </script>
 
 <template>
-  <div class="security-showcase">
-    <!-- 頁面標題 -->
-    <div class="page-header">
-      <h1>🔒 前端資安防護系統</h1>
-      <p class="subtitle">企業級前端安全防護機制 - 完整的資料保護與防洩漏方案</p>
-    </div>
-
+  <ShowcasePage
+    title="前端資安防護系統 (Security System)"
+    description="企業級前端安全防護機制 - 完整的資料保護與防洩漏方案。"
+  >
     <!-- 資安狀態總覽 -->
-    <div class="security-status">
-      <div class="status-card">
-        <div class="status-icon">
-          {{ isSecurityEnabled ? '✅' : '⚠️' }}
-        </div>
-        <div class="status-info">
-          <div class="status-label">資安模式</div>
-          <div class="status-value">
-            {{ isSecurityEnabled ? '已啟用' : '已關閉' }}
+    <ShowcaseSection
+      title="Security Status (資安狀態)"
+      icon="📊"
+    >
+      <div class="component-grid">
+        <!-- Mode Status -->
+        <ShowcaseCard
+          title="Security Mode"
+          :description="isSecurityEnabled ? '已啟用 (Enabled)' : '已關閉 (Disabled)'"
+        >
+          <div class="flex items-center justify-center p-4">
+            <div
+              class="text-6xl"
+              :class="isSecurityEnabled ? 'text-green-400' : 'text-yellow-400'"
+            >
+              {{ isSecurityEnabled ? '✅' : '⚠️' }}
+            </div>
           </div>
-        </div>
-      </div>
+        </ShowcaseCard>
 
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-value">{{ stats.total }}</div>
-          <div class="stat-label">總功能數</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ stats.enabled }}</div>
-          <div class="stat-label">已啟用</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ stats.highLevel }}</div>
-          <div class="stat-label">高級防護</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ stats.coverage }}%</div>
-          <div class="stat-label">覆蓋率</div>
-        </div>
+        <!-- Stats -->
+        <ShowcaseCard
+          title="Overview Stats"
+          description="防護功能統計"
+          full-width
+        >
+          <div class="stats-container grid grid-cols-2 md:grid-cols-4 gap-4 p-4 text-center">
+            <div class="stat-item p-4 bg-slate-800 rounded-lg">
+              <div class="text-3xl font-bold text-white mb-2">
+                {{ stats.total }}
+              </div>
+              <div class="text-slate-400 text-sm">總功能數</div>
+            </div>
+            <div class="stat-item p-4 bg-slate-800 rounded-lg">
+              <div class="text-3xl font-bold text-green-400 mb-2">
+                {{ stats.enabled }}
+              </div>
+              <div class="text-slate-400 text-sm">已啟用</div>
+            </div>
+            <div class="stat-item p-4 bg-slate-800 rounded-lg">
+              <div class="text-3xl font-bold text-red-400 mb-2">
+                {{ stats.highLevel }}
+              </div>
+              <div class="text-slate-400 text-sm">高級防護</div>
+            </div>
+            <div class="stat-item p-4 bg-slate-800 rounded-lg">
+              <div class="text-3xl font-bold text-blue-400 mb-2">{{ stats.coverage }}%</div>
+              <div class="text-slate-400 text-sm">覆蓋率</div>
+            </div>
+          </div>
+        </ShowcaseCard>
       </div>
-    </div>
+    </ShowcaseSection>
 
     <!-- 功能分類展示 -->
-    <div
+    <ShowcaseSection
       v-for="category in categorizedFeatures"
       :key="category.name"
-      class="category-section"
+      :title="category.name"
+      icon="🛡️"
     >
-      <h2 class="category-title">{{ category.name }}</h2>
-      <div class="features-grid">
-        <div
+      <div class="component-grid">
+        <ShowcaseCard
           v-for="feature in category.features"
           :key="feature.id"
-          class="feature-card"
-          :class="{ enabled: feature.enabled, disabled: !feature.enabled }"
+          :title="feature.name"
+          :description="feature.description"
         >
-          <div class="feature-header">
-            <div class="feature-status">
-              <span
-                class="status-badge"
-                :class="feature.enabled ? 'active' : 'inactive'"
-              >
-                {{ feature.enabled ? '啟用' : '停用' }}
-              </span>
-              <span
-                class="level-badge"
-                :class="`level-${feature.level}`"
-              >
-                {{ feature.level === 'high' ? '高' : feature.level === 'medium' ? '中' : '低' }}
-              </span>
-            </div>
-            <h3 class="feature-name">{{ feature.name }}</h3>
+          <!-- Status Badges -->
+          <div class="flex gap-2 mb-4">
+            <span
+              class="px-2 py-1 rounded text-xs font-bold"
+              :class="
+                feature.enabled ? 'bg-green-900/50 text-green-400' : 'bg-slate-700 text-slate-400'
+              "
+            >
+              {{ feature.enabled ? '啟用' : '停用' }}
+            </span>
+            <span
+              class="px-2 py-1 rounded text-xs font-bold"
+              :class="{
+                'bg-red-900/50 text-red-300': feature.level === 'high',
+                'bg-orange-900/50 text-orange-300': feature.level === 'medium',
+                'bg-blue-900/50 text-blue-300': feature.level === 'low'
+              }"
+            >
+              {{ feature.level === 'high' ? '高' : feature.level === 'medium' ? '中' : '低' }}
+            </span>
           </div>
 
-          <p class="feature-description">{{ feature.description }}</p>
-
-          <div class="feature-details">
-            <div class="detail-row">
-              <span class="detail-label">實作方式:</span>
-              <code class="detail-value">{{ feature.implementation }}</code>
+          <!-- Details -->
+          <div class="space-y-2 text-sm">
+            <div class="flex gap-2">
+              <span class="text-slate-500 w-16 text-right shrink-0">實作:</span>
+              <code class="text-pink-300 bg-slate-800 px-1 rounded break-all">
+                {{ feature.implementation }}
+              </code>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">影響範圍:</span>
-              <span class="detail-value">{{ feature.impact }}</span>
+            <div class="flex gap-2">
+              <span class="text-slate-500 w-16 text-right shrink-0">影響:</span>
+              <span class="text-slate-300">{{ feature.impact }}</span>
             </div>
           </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </div>
+    </ShowcaseSection>
 
     <!-- HTTP 安全標頭 -->
-    <div class="category-section">
-      <h2 class="category-title">HTTP 安全標頭</h2>
-      <div class="headers-list">
-        <div
+    <ShowcaseSection
+      title="HTTP Headers (安全標頭)"
+      icon="🔒"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
           v-for="header in securityHeaders"
           :key="header.name"
-          class="header-item"
+          :title="header.name"
+          :description="header.description"
+          full-width
         >
-          <div class="header-name">{{ header.name }}</div>
-          <div class="header-value">{{ header.value }}</div>
-          <div class="header-description">{{ header.description }}</div>
-        </div>
+          <div class="result-display w-full">
+            {{ header.value }}
+          </div>
+        </ShowcaseCard>
       </div>
-    </div>
+    </ShowcaseSection>
 
     <!-- 測試區域 -->
-    <div
+    <ShowcaseSection
       v-if="isSecurityEnabled"
-      class="category-section"
+      title="Test Playground (功能測試)"
+      icon="🧪"
     >
-      <h2 class="category-title">功能測試</h2>
-      <div class="test-buttons">
-        <button
-          class="test-btn"
-          @click="testScreenshotProtection"
+      <div class="component-grid">
+        <ShowcaseCard
+          title="Interactive Tests"
+          description="手動觸發安全機制測試"
+          full-width
         >
-          測試截圖防護
-        </button>
-        <button
-          class="test-btn"
-          @click="testIdleTimeout"
+          <div class="flex flex-wrap gap-4 mb-6">
+            <button
+              class="glass-btn primary"
+              @click="testScreenshotProtection"
+            >
+              測試截圖防護
+            </button>
+            <button
+              class="glass-btn primary"
+              @click="testIdleTimeout"
+            >
+              測試閒置鎖定
+            </button>
+          </div>
+
+          <div class="instructions p-4 bg-slate-800/50 rounded-lg text-slate-300 text-sm">
+            <h3 class="font-bold text-white mb-2">測試說明：</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>
+                按下
+                <kbd>PrintScreen</kbd>
+                或
+                <kbd>Win</kbd>
+                +
+                <kbd>Shift</kbd>
+                +
+                <kbd>S</kbd>
+                測試截圖防護
+              </li>
+              <li>
+                按下
+                <kbd>F12</kbd>
+                測試開發者工具禁用
+              </li>
+              <li>嘗試右鍵點擊測試右鍵選單禁用</li>
+              <li>切換視窗測試失焦模糊</li>
+              <li>閒置 3 分鐘測試自動鎖定</li>
+            </ul>
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 配置與檔案 -->
+    <ShowcaseSection
+      title="Configuration & References"
+      icon="⚙️"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="How to Enable"
+          description="啟用資安模式 (.env)"
         >
-          測試閒置鎖定
-        </button>
-      </div>
-      <div class="test-instructions">
-        <h3>測試說明：</h3>
-        <ul>
-          <li>
-            按下
-            <kbd>PrintScreen</kbd>
-            或
-            <kbd>Win</kbd>
-            +
-            <kbd>Shift</kbd>
-            +
-            <kbd>S</kbd>
-            測試截圖防護
-          </li>
-          <li>
-            按下
-            <kbd>F12</kbd>
-            測試開發者工具禁用
-          </li>
-          <li>嘗試右鍵點擊測試右鍵選單禁用</li>
-          <li>切換視窗測試失焦模糊</li>
-          <li>閒置 3 分鐘測試自動鎖定</li>
-        </ul>
-      </div>
-    </div>
+          <ShowcaseCodeBlock
+            code="NUXT_PUBLIC_ENABLE_SECURITY_MODE=true"
+            language="bash"
+            label=".env"
+          />
+        </ShowcaseCard>
 
-    <!-- 配置說明 -->
-    <div class="category-section">
-      <h2 class="category-title">配置說明</h2>
-      <div class="config-info">
-        <div class="config-item">
-          <h3>啟用資安模式</h3>
-          <p>
-            在
-            <code>.env</code>
-            檔案中設定：
-          </p>
-          <pre><code>NUXT_PUBLIC_ENABLE_SECURITY_MODE=true</code></pre>
-        </div>
-
-        <div class="config-item">
-          <h3>調整功能開關</h3>
-          <p>
-            編輯
-            <code>plugins/security.client.ts</code>
-            中的
-            <code>securityOptions</code>
-            ：
-          </p>
-          <pre><code>const securityOptions = {
+        <ShowcaseCard
+          title="Feature Toggles"
+          description="調整功能開關 (plugins/security.client.ts)"
+        >
+          <ShowcaseCodeBlock
+            code="const securityOptions = {
   disableContextMenu: true,
   disableDevTools: true,
   disableTextSelection: false,
   // ... 更多選項
-}</code></pre>
-        </div>
+}"
+            label="security.client.ts"
+          />
+        </ShowcaseCard>
 
-        <div class="config-item">
-          <h3>HTTP 標頭配置</h3>
-          <p>
-            編輯
-            <code>core/config/security.ts</code>
-            設定安全標頭
-          </p>
-        </div>
+        <ShowcaseCard
+          title="Related Files"
+          description="相關檔案路徑參考"
+          full-width
+        >
+          <div class="space-y-3">
+            <div
+              class="flex items-center justify-between p-3 bg-slate-800 rounded border border-slate-700"
+            >
+              <code class="text-blue-400">plugins/security.client.ts</code>
+              <span class="text-slate-400 text-sm">客戶端資安防護主程式</span>
+            </div>
+            <div
+              class="flex items-center justify-between p-3 bg-slate-800 rounded border border-slate-700"
+            >
+              <code class="text-blue-400">core/config/security.ts</code>
+              <span class="text-slate-400 text-sm">HTTP 安全標頭配置</span>
+            </div>
+            <div
+              class="flex items-center justify-between p-3 bg-slate-800 rounded border border-slate-700"
+            >
+              <code class="text-blue-400">docs/TOKEN_SECURITY.md</code>
+              <span class="text-slate-400 text-sm">Token 安全管理文檔</span>
+            </div>
+          </div>
+        </ShowcaseCard>
       </div>
-    </div>
-
-    <!-- 檔案路徑參考 -->
-    <div class="category-section">
-      <h2 class="category-title">相關檔案</h2>
-      <div class="file-list">
-        <div class="file-item">
-          <code>plugins/security.client.ts</code>
-          <span class="file-desc">客戶端資安防護主程式（785 行）</span>
-        </div>
-        <div class="file-item">
-          <code>core/config/security.ts</code>
-          <span class="file-desc">HTTP 安全標頭配置</span>
-        </div>
-        <div class="file-item">
-          <code>docs/TOKEN_SECURITY.md</code>
-          <span class="file-desc">Token 安全管理文檔</span>
-        </div>
-      </div>
-    </div>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
-/* 頁面容器 */
-.security-showcase {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px;
-  font-family:
-    'Microsoft JhengHei',
-    -apple-system,
-    sans-serif;
-}
-
-/* 頁面標題 */
-.page-header {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.page-header h1 {
-  font-size: 36px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 12px;
-}
-
-.subtitle {
-  font-size: 16px;
-  color: #666;
-  margin: 0;
-}
-
-/* 資安狀態 */
-.security-status {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  padding: 32px;
-  margin-bottom: 48px;
-  color: white;
-}
-
-.status-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.status-icon {
-  font-size: 48px;
-}
-
-.status-label {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.status-value {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-}
-
-.stat-item {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.stat-label {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-/* 分類區塊 */
-.category-section {
-  margin-bottom: 48px;
-}
-
-.category-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 3px solid #667eea;
-}
-
-/* 功能卡片網格 */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-
-.feature-card {
-  background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 24px;
-  transition: all 0.3s ease;
-}
-
-.feature-card.enabled {
-  border-color: #4caf50;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
-}
-
-.feature-card.disabled {
-  opacity: 0.6;
-  border-color: #ccc;
-}
-
-.feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.feature-header {
-  margin-bottom: 16px;
-}
-
-.feature-status {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-badge.active {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-badge.inactive {
-  background: #f5f5f5;
-  color: #757575;
-}
-
-.level-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.level-badge.level-high {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.level-badge.level-medium {
-  background: #fff3e0;
-  color: #ef6c00;
-}
-
-.level-badge.level-low {
-  background: #e3f2fd;
-  color: #1565c0;
-}
-
-.feature-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0;
-}
-
-.feature-description {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-.feature-details {
-  border-top: 1px solid #e0e0e0;
-  padding-top: 16px;
-}
-
-.detail-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-
-.detail-label {
-  color: #999;
-  min-width: 80px;
-}
-
-.detail-value {
-  color: #333;
-  flex: 1;
-}
-
-.detail-value code {
-  background: #f5f5f5;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-/* HTTP 標頭列表 */
-.headers-list {
-  display: grid;
-  gap: 16px;
-}
-
-.header-item {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.header-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-}
-
-.header-value {
-  font-size: 14px;
-  color: #667eea;
-  font-family: 'Courier New', monospace;
-  margin-bottom: 8px;
-}
-
-.header-description {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.6;
-}
-
-/* 測試區域 */
-.test-buttons {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.test-btn {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+.glass-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
+  font-size: 0.9rem;
 }
 
-.test-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+.glass-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #94a3b8;
 }
 
-.test-instructions {
-  background: #f8f9fa;
-  border-left: 4px solid #667eea;
-  padding: 20px;
-  border-radius: 8px;
+.glass-btn.primary {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
 }
 
-.test-instructions h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 16px;
+.glass-btn.primary:hover {
+  background: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-.test-instructions ul {
-  margin: 0;
-  padding-left: 24px;
+.result-display {
+  font-family: 'Fira Code', monospace;
+  color: #38bdf8;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.test-instructions li {
-  margin-bottom: 8px;
-  line-height: 1.6;
-}
-
-.test-instructions kbd {
+kbd {
   display: inline-block;
   padding: 2px 6px;
-  background: white;
-  border: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 0.85em;
   font-family: monospace;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* 配置說明 */
-.config-info {
-  display: grid;
-  gap: 24px;
-}
-
-.config-item {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 24px;
-}
-
-.config-item h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 18px;
-  color: #1a1a1a;
-}
-
-.config-item p {
-  margin-bottom: 12px;
-  color: #666;
-}
-
-.config-item pre {
-  background: #1e1e1e;
-  color: #d4d4d4;
-  padding: 16px;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 0;
-}
-
-.config-item code {
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
-}
-
-/* 檔案列表 */
-.file-list {
-  display: grid;
-  gap: 12px;
-}
-
-.file-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.file-item code {
-  background: #f5f5f5;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 13px;
-  color: #667eea;
-  font-weight: 600;
-}
-
-.file-desc {
-  font-size: 13px;
-  color: #999;
-}
-
-/* 響應式設計 */
-@media (max-width: 768px) {
-  .security-showcase {
-    padding: 16px;
-  }
-
-  .page-header h1 {
-    font-size: 28px;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .test-buttons {
-    flex-direction: column;
-  }
-
-  .file-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
+  color: #e2e8f0;
 }
 </style>

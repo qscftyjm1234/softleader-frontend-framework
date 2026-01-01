@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import DataPreview from '../components/DataPreview.vue'
+import ShowcasePage from '../components/ShowcasePage.vue'
+import ShowcaseSection from '../components/ShowcaseSection.vue'
+import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
+import IButton from '@/components/uiInterface/IButton.vue'
+import IInput from '@/components/uiInterface/IInput.vue'
 
-const { captureError, handleApiError, showError, retry, errors, clearErrors } = useErrorHandler()
+const { captureError, showError, retry, errors, clearErrors } = useErrorHandler()
 
 // Demo state
 const errorMessage = ref('測試錯誤訊息')
@@ -73,236 +79,164 @@ const handleRetryFail = async () => {
 
 definePageMeta({
   title: '錯誤處理 (Error Handler)',
-  icon: 'mdi-alert-circle'
+  icon: 'mdi-alert-circle',
+  layout: 'portal'
 })
 </script>
 
 <template>
-  <div class="inspector-container">
-    <div class="page-header">
-      <div class="header-main">
-        <router-link
-          to="/showcase"
-          class="back-link"
+  <ShowcasePage
+    title="錯誤處理系統 (Error Handler System)"
+    description="完整的錯誤處理模組，提供錯誤捕捉、分類、記錄和重試機制。"
+  >
+    <!-- General Usage -->
+    <ShowcaseSection
+      title="General Usage"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="核心功能"
+          description="系統錯誤處理的三大支柱"
+          full-width
         >
-          返回
-        </router-link>
-        <h1 class="page-title">錯誤處理系統 (Error Handler System)</h1>
-      </div>
-      <p class="page-desc">
-        完整的錯誤處理模組，提供錯誤捕捉、分類、記錄和重試機制。
-        <br />
-        核心特色：錯誤分類、API 錯誤處理、自動重試、錯誤追蹤。
-      </p>
-    </div>
-
-    <!-- General Usage Section -->
-    <section class="module-section">
-      <h2 class="section-title">
-        <span class="icon">📝</span>
-        General Usage (一般使用範例)
-      </h2>
-      <div class="card-content">
-        <p class="demo-desc">
-          最常見的情境：捕捉和處理應用程式中的錯誤。
-          <br />
-          使用
-          <code>captureError</code>
-          、
-          <code>handleApiError</code>
-          方法統一處理錯誤。
-        </p>
-
-        <div class="demo-grid">
-          <div class="usage-block">
-            <div class="block-header">Example Code</div>
-            <div class="code-content">
-              <pre><code>&lt;script setup&gt;
-const { captureError, handleApiError, retry } = useErrorHandler()
-
-// 1. 捕捉錯誤
-try {
-  await someOperation()
-} catch (error) {
-  captureError(error, { context: 'operation' })
-}
-
-// 2. API 錯誤處理
-handleApiError(context, true)
-
-// 3. 重試機制
-const data = await retry(() => api.call(), {
-  maxRetries: 3,
-  delay: 1000
-})
-&lt;/script&gt;</code></pre>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <div class="text-sky-400 font-bold mb-2">1. 錯誤捕捉</div>
+              <div class="text-slate-400 text-sm">自動捕捉與分類，記錄錯誤來源與時間戳。</div>
+            </div>
+            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <div class="text-sky-400 font-bold mb-2">2. API 整合</div>
+              <div class="text-slate-400 text-sm">統一處理 API 回傳錯誤，避免 try-catch 地獄。</div>
+            </div>
+            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <div class="text-sky-400 font-bold mb-2">3. 自動重試</div>
+              <div class="text-slate-400 text-sm">
+                提供指數退避 (Exponential Backoff) 重試機制。
+              </div>
             </div>
           </div>
-
-          <div class="output-block">
-            <DataPreview
-              title="當前狀態"
-              :data="{
-                totalErrors: errors.length,
-                recentErrors: recentErrors.length
-              }"
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { captureError, retry } = useErrorHandler()"
+              label="Composable Usage"
             />
-          </div>
-        </div>
+          </template>
+        </ShowcaseCard>
       </div>
-    </section>
+    </ShowcaseSection>
 
     <!-- Interactive Playground -->
-    <section class="module-section mt-8">
-      <h2 class="section-title">
-        <span class="icon">🎮</span>
-        Interactive Playground (互動式演示)
-      </h2>
-      <div class="card-content">
-        <div class="method-demos">
-          <!-- 1. Capture Error -->
-          <div class="demo-card">
-            <h3 class="demo-title">1. 錯誤捕捉</h3>
-            <p class="demo-desc">捕捉並記錄錯誤資訊。</p>
-
-            <div class="control-row mb-4">
-              <label>錯誤訊息:</label>
-              <input
-                v-model="errorMessage"
-                type="text"
-                class="input-field"
-                style="flex: 1"
-              />
-            </div>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>const error = new Error('{{ errorMessage }}')
-captureError(error, { 
-  source: 'demo',
-  timestamp: new Date()
-})</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    @click="handleCaptureError"
-                  >
-                    捕捉錯誤
-                  </button>
-                  <button
-                    class="action-btn secondary"
-                    @click="handleShowError"
-                  >
-                    顯示錯誤訊息
-                  </button>
-                </div>
-              </div>
+    <ShowcaseSection
+      title="Interactive Playground"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <!-- 1. Capture -->
+        <ShowcaseCard
+          title="1. 錯誤捕捉"
+          description="模擬並記錄錯誤。"
+        >
+          <div class="demo-area">
+            <IInput
+              v-model="errorMessage"
+              label="錯誤訊息"
+              class="mb-4"
+            />
+            <div class="flex gap-2">
+              <IButton @click="handleCaptureError">捕捉錯誤</IButton>
+              <IButton
+                variant="secondary"
+                @click="handleShowError"
+              >
+                顯示通知
+              </IButton>
             </div>
           </div>
+        </ShowcaseCard>
 
-          <!-- 2. Retry Mechanism -->
-          <div class="demo-card">
-            <h3 class="demo-title">2. 重試機制</h3>
-            <p class="demo-desc">自動重試失敗的操作，支援指數退避。</p>
-
-            <div class="control-row mb-4">
-              <label>重試次數:</label>
-              <input
+        <!-- 2. Retry -->
+        <ShowcaseCard
+          title="2. 重試機制"
+          description="自動重試失敗的操作。"
+        >
+          <div class="demo-area">
+            <div class="flex gap-4 mb-4">
+              <IInput
                 v-model.number="retryCount"
                 type="number"
-                class="input-field"
+                label="重試次數"
                 style="width: 100px"
               />
-              <label>延遲時間 (ms):</label>
-              <input
+              <IInput
                 v-model.number="retryDelay"
                 type="number"
-                class="input-field"
-                style="width: 100px"
+                label="延遲 (ms)"
+                style="width: 120px"
               />
             </div>
 
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>const result = await retry(
-  () => api.call(),
-  {
-    maxRetries: {{ retryCount }},
-    delay: {{ retryDelay }},
-    backoff: 2
-  }
-)</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <div class="button-group">
-                  <button
-                    class="action-btn"
-                    :disabled="isRetrying"
-                    @click="handleRetrySuccess"
-                  >
-                    {{ isRetrying ? '重試中...' : '測試重試（成功）' }}
-                  </button>
-                  <button
-                    class="action-btn danger"
-                    :disabled="isRetrying"
-                    @click="handleRetryFail"
-                  >
-                    {{ isRetrying ? '重試中...' : '測試重試（失敗）' }}
-                  </button>
-                </div>
-                <div
-                  v-if="retryResult"
-                  class="result-box"
-                >
-                  {{ retryResult }}
-                </div>
-              </div>
+            <div class="flex gap-2 mb-4">
+              <IButton
+                :disabled="isRetrying"
+                @click="handleRetrySuccess"
+              >
+                {{ isRetrying ? '重試中...' : '測試重試 (成功)' }}
+              </IButton>
+              <IButton
+                variant="danger"
+                :disabled="isRetrying"
+                @click="handleRetryFail"
+              >
+                {{ isRetrying ? '重試中...' : '測試重試 (失敗)' }}
+              </IButton>
+            </div>
+
+            <div
+              v-if="retryResult"
+              class="result-text"
+            >
+              <span class="value">{{ retryResult }}</span>
             </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="await retry(() => api.call(), { maxRetries: 3 })"
+              label="Retry Code"
+            />
+          </template>
+        </ShowcaseCard>
 
-          <!-- 3. Error History -->
-          <div class="demo-card">
-            <h3 class="demo-title">3. 錯誤歷史</h3>
-            <p class="demo-desc">查看最近的錯誤記錄。</p>
-
-            <div class="demo-grid">
-              <div class="usage-block">
-                <div class="block-header">Usage code</div>
-                <div class="code-content">
-                  <pre><code>// 取得所有錯誤
-const { errors } = useErrorHandler()
-
-// 清除錯誤
-clearErrors()</code></pre>
-                </div>
-              </div>
-              <div class="output-block">
-                <button
-                  class="action-btn danger"
-                  style="margin-bottom: 1rem"
-                  @click="clearErrors"
-                >
-                  清除錯誤歷史
-                </button>
-                <DataPreview
-                  title="最近 5 筆錯誤"
-                  :data="recentErrors"
-                />
-              </div>
+        <!-- 3. History -->
+        <ShowcaseCard
+          title="3. 錯誤歷史"
+          description="查看與管理最近的錯誤。"
+          full-width
+        >
+          <div class="demo-area">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-slate-400 text-sm">
+                Total Errors:
+                <strong class="text-sky-400">{{ errors.length }}</strong>
+              </span>
+              <IButton
+                variant="danger"
+                size="small"
+                @click="clearErrors"
+              >
+                清除歷史
+              </IButton>
             </div>
+
+            <DataPreview
+              title="最近 5 筆錯誤"
+              :data="recentErrors"
+            />
           </div>
-        </div>
+        </ShowcaseCard>
       </div>
-    </section>
-  </div>
+    </ShowcaseSection>
+  </ShowcasePage>
 </template>
 
 <style scoped>
