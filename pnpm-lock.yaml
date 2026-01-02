@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mdi/font':
+        specifier: ^7.4.47
+        version: 7.4.47
       '@nuxtjs/device':
         specifier: ^3.2.4
         version: 3.2.4
@@ -1151,6 +1154,9 @@ packages:
     resolution: {integrity: sha512-llMXd39jtP0HpQLVI37Bf1m2ADlEb35GYSh1SDSLsBhR+5iCxiNGlT31yqbNtVHygHAtMy6dWFERpU2JgufhPg==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@mdi/font@7.4.47':
+    resolution: {integrity: sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==}
 
   '@miyaneee/rollup-plugin-json5@1.2.0':
     resolution: {integrity: sha512-JjTIaXZp9WzhUHpElrqPnl1AzBi/rvRs065F71+aTmlqvTMVkdbjZ8vfFl4nRlgJy+TPBw69ZK4pwFdmOAt4aA==}
@@ -7821,6 +7827,8 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@mdi/font@7.4.47': {}
 
   '@miyaneee/rollup-plugin-json5@1.2.0(rollup@4.54.0)':
     dependencies:

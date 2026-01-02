@@ -23,7 +23,7 @@ export interface ModalConfig {
 export interface ModalInstance {
   /** 彈窗 ID */
   id: string
-  /** 彈窗配置 */
+  /** 彈窗設定 */
   config: ModalConfig
   /** 是否顯示 */
   isVisible: boolean
@@ -76,7 +76,7 @@ export function useModal(): UseModalReturn {
 
   /**
    * 開啟彈窗
-   * @param config - 彈窗配置
+   * @param config - 彈窗設定
    * @returns Promise，解析為使用者是否確認
    */
   const open = (config: ModalConfig): Promise<boolean> => {
@@ -132,7 +132,7 @@ export function useModal(): UseModalReturn {
 
   /**
    * 確認對話框
-   * @param config - 彈窗配置
+   * @param config - 彈窗設定
    * @returns Promise，解析為使用者是否確認
    */
   const confirm = (config: ModalConfig): Promise<boolean> => {
@@ -144,7 +144,7 @@ export function useModal(): UseModalReturn {
 
   /**
    * 警告對話框
-   * @param config - 彈窗配置
+   * @param config - 彈窗設定
    * @returns Promise，在使用者確認後解析
    */
   const alert = (config: ModalConfig): Promise<void> => {

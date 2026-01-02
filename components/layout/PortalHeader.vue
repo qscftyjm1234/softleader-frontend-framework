@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import IButton from '@/components/uiInterface/IButton.vue'
-import HeaderUserMenu from '~/components/layout/header/HeaderUserMenu.vue' // Reuse existing user menu or adapt
-import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue' // Reuse existing language switcher
+import HeaderUserMenu from '~/components/layout/header/HeaderUserMenu.vue'
+import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
 
 const config = useRuntimeConfig()
 const appName = config.public.app.productConfig?.meta?.title || 'Frontend Kit'
 
-// Simple navigation
+// 簡單導航
 const navItems = [
   { label: '首頁', to: '/' },
   { label: '模組', to: '/showcase' },
@@ -17,21 +17,20 @@ const navItems = [
 <template>
   <header class="portal-header">
     <div class="header-container">
-      <!-- Logo / Brand -->
+      <!-- Logo / 品牌 -->
       <NuxtLink
         to="/"
         class="brand-link"
       >
-        <div class="brand-logo">
-          <v-icon
-            icon="mdi-code-braces"
-            size="24"
-          />
-        </div>
+        <IIcon
+          size="64"
+          color="primary"
+          icon="svg-softleader"
+        />
         <span class="brand-text">{{ appName }}</span>
       </NuxtLink>
 
-      <!-- Navigation -->
+      <!-- 導航 -->
       <nav class="header-nav">
         <NuxtLink
           v-for="item in navItems"
@@ -45,11 +44,11 @@ const navItems = [
 
       <div class="header-spacer" />
 
-      <!-- Right Actions -->
+      <!-- 右側操作區 -->
       <div class="header-actions">
-        <!-- Reusing Language Switcher (Might need style adaptation via deep selector or wrapper) -->
+        <!-- 重用語言切換器 (若樣式衝突可能需透過 deep selector 或 wrapper 調整) -->
         <div class="action-item">
-          <!-- Temporary placeholder icon for language if component style clashes, or try to integrate -->
+          <!-- 語言切換器的臨時佔位圖示，若元件樣式衝突或嘗試整合 -->
           <HeaderLanguage />
         </div>
 
@@ -58,12 +57,13 @@ const navItems = [
             variant="text"
             icon="mdi-github"
             color="white"
+            size="large"
             href="https://github.com/example/repo"
             target="_blank"
           />
         </div>
 
-        <!-- User Menu -->
+        <!-- 使用者選單 -->
         <div class="action-item">
           <HeaderUserMenu />
         </div>
@@ -144,7 +144,7 @@ const navItems = [
 .nav-link.router-link-active,
 .nav-link.router-link-exact-active {
   color: white;
-  background: rgba(56, 189, 248, 0.15); /* Sky blue tint */
+  background: rgba(56, 189, 248, 0.15); /* 天藍色淡彩 */
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
 }
 
@@ -164,7 +164,7 @@ const navItems = [
   align-items: center;
 }
 
-/* Deep selector to override child component styles if necessary for dark mode */
+/* Deep selector 用於覆蓋子元件樣式 (若暗色模式需要) */
 :deep(.v-btn) {
   color: #e2e8f0 !important;
 }

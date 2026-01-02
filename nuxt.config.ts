@@ -12,6 +12,7 @@ import { cssConfig } from './core/config/css'
 import { typescriptConfig } from './core/config/typescript'
 import { viteConfig } from './core/config/vite'
 
+// Force reload for new routes
 // 強制重新載入 Nuxt 設定以修復自動導入 (Auto-imports)
 import { devtoolsConfig, telemetryConfig } from './core/config/devtools'
 import { nitroConfig } from './core/config/nitro'

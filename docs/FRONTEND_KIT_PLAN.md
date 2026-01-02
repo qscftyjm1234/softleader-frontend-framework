@@ -85,7 +85,7 @@ _以下為「完整開發包」建議補強的項目，讓專案更臻完美：_
 
 **建議加入**: `nuxt-security`
 
-- **功能**: 自動配置嚴格的 Security Headers (HSTS, CSP, X-Frame-Options)。
+- **功能**: 自動設定嚴格的 Security Headers (HSTS, CSP, X-Frame-Options)。
 - **效益**: 通過滲透測試與資安稽核的必備利器。
 
 ### 4.4 👮 程式碼品質守門員 (ESLint + Husky)
@@ -181,7 +181,7 @@ _別忘了這些 Nuxt 3 內建的神兵利器，開發包中應包含這些範�
 ### 工具類
 
 - **`useError` / `createError` / `clearError`**: 統一錯誤處理流程。
-- **`useAppConfig`**: 讀取執行時配置 (Reactive, Public)。
+- **`useAppConfig`**: 讀取執行時設定 (Reactive, Public)。
 - **`onNuxtReady`**: 當 Nuxt 完成掛載時觸發 (適合初始化 analytics)。
 
 ---
@@ -192,4 +192,4 @@ _別忘了這些 Nuxt 3 內建的神兵利器，開發包中應包含這些範�
 2.  **README.md**: 專案啟動、環境建置說明。
 3.  **API_GUIDE.md**: Smart Client 使用手冊 (已完成)。
 4.  **UI_GUIDE.md**: 元件使用手冊 (建議新增)。
-5.  **Storybook**: 視覺化元件庫文件 (已配置 script)。
+5.  **Storybook**: 視覺化元件庫文件 (已設定 script)。

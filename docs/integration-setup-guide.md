@@ -1,26 +1,26 @@
-# Vue + TypeScript + Prettier + ESLint 整合配置指南
+# Vue + TypeScript + Prettier + ESLint 整合設定指南
 
 ## 📋 概述
 
-本專案已完成 Vue、TypeScript、Prettier 和 ESLint 的完整整合配置，確保程式碼品質和一致性。
+本專案已完成 Vue、TypeScript、Prettier 和 ESLint 的完整整合設定，確保程式碼品質和一致性。
 
-## ✅ 已配置的工具
+## ✅ 已設定的工具
 
 ### 1. **Prettier** - 程式碼格式化
 
-- 配置檔：`.prettierrc.json`
+- 設定檔：`.prettierrc.json`
 - 忽略檔：`.prettierignore`
 - 自動格式化：儲存時自動執行
 
 ### 2. **ESLint** - 程式碼檢查
 
-- 配置檔：`eslint.config.mjs`
+- 設定檔：`eslint.config.mjs`
 - 整合：Nuxt 官方 `@nuxt/eslint`
 - 規則：JSDoc、Vue、TypeScript
 
 ### 3. **TypeScript** - 類型檢查
 
-- 由 Nuxt 自動配置
+- 由 Nuxt 自動設定
 - 支援 `.vue` 檔案中的 TypeScript
 
 ### 4. **Vue** - 框架支援
@@ -75,7 +75,7 @@ plugins: {
 ]
 ```
 
-3. **取消註解 Prettier 配置**（最後一行）：
+3. **取消註解 Prettier 設定**（最後一行）：
 
 ```javascript
 .append((await import('eslint-config-prettier')).default)
@@ -89,9 +89,9 @@ plugins: {
 
 ---
 
-## 🔧 配置說明
+## 🔧 設定說明
 
-### Prettier 配置 (`.prettierrc.json`)
+### Prettier 設定 (`.prettierrc.json`)
 
 ```json
 {
@@ -108,7 +108,7 @@ plugins: {
 }
 ```
 
-### ESLint 配置重點
+### ESLint 設定重點
 
 #### JSDoc 規則（強制）
 
@@ -124,7 +124,7 @@ plugins: {
 
 #### TypeScript 規則
 
-- 由 `@nuxt/eslint` 自動配置
+- 由 `@nuxt/eslint` 自動設定
 - 支援 `.vue` 檔案中的 TypeScript
 
 ---

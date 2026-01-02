@@ -14,7 +14,6 @@ textarea {
   font-size: 14px;
   resize: vertical;
   box-sizing: border-box;
-  min-height: 720px;
 }
 pre {
   color: #d4d4d4;
@@ -24,6 +23,5 @@ pre {
   white-space: pre-wrap;
   word-wrap: break-word;
   margin-top: 20px;
-  min-height: 720px;
   overflow-x: auto;
 }

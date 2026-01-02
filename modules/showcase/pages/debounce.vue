@@ -52,7 +52,7 @@ definePageMeta({
 <template>
   <ShowcasePage
     title="防抖/節流系統 (Debounce/Throttle System)"
-    description="效能優化工具，提供防抖 (Debounce) 與節流 (Throttle) 機制，減少高頻事件觸發頻率。"
+    description="效能最佳化工具，提供防抖 (Debounce) 與節流 (Throttle) 機制，減少高頻事件觸發頻率。"
   >
     <ShowcaseSection
       title="Interactive Demo (互動演示)"

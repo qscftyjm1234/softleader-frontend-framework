@@ -17,7 +17,7 @@ const props = defineProps<{
 const route = useRoute()
 const isExpanded = ref(false)
 
-// 判斷是否為當前活動項目
+// 判斷是否為目前活動項目
 const isActive = computed(() => {
   if (!props.item.to) return false
   return route.path === props.item.to

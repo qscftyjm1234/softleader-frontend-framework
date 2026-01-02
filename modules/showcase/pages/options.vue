@@ -461,7 +461,7 @@ const label = ${usageCodePrefix}.label('${demoValue}')`"
             />
             <template #footer>
               <ShowcaseCodeBlock
-                :code="`// 查找完整物件
+                :code="`// 尋找完整物件
 const item = ${usageCodePrefix}.findByValue('${demoValue}')`"
                 label="Usage Code"
               />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * @功能 資安防護展示頁面
- * @description 展示所有前端資安防護機制與配置
+ * @description 展示所有前端資安防護機制與設定
  */
 import { ref, computed } from 'vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
@@ -473,7 +473,7 @@ definePageMeta({
       </div>
     </ShowcaseSection>
 
-    <!-- 配置與檔案 -->
+    <!-- 設定與檔案 -->
     <ShowcaseSection
       title="Configuration & References"
       icon="⚙️"
@@ -521,13 +521,13 @@ definePageMeta({
               class="flex items-center justify-between p-3 bg-slate-800 rounded border border-slate-700"
             >
               <code class="text-blue-400">core/config/security.ts</code>
-              <span class="text-slate-400 text-sm">HTTP 安全標頭配置</span>
+              <span class="text-slate-400 text-sm">HTTP 安全標頭設定</span>
             </div>
             <div
               class="flex items-center justify-between p-3 bg-slate-800 rounded border border-slate-700"
             >
               <code class="text-blue-400">docs/TOKEN_SECURITY.md</code>
-              <span class="text-slate-400 text-sm">Token 安全管理文檔</span>
+              <span class="text-slate-400 text-sm">Token 安全管理文件</span>
             </div>
           </div>
         </ShowcaseCard>

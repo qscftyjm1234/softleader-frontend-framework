@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Header Notifications - Framework Agnostic
+ * Header 通知中心 - 框架無關
  * 框架無關的通知中心
  */
 import { useAppStore } from '~/stores/app'

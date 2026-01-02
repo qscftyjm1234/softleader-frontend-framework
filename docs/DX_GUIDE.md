@@ -24,7 +24,7 @@ npm run prepare
 
 ### ✅ 自動排版 (ESLint + Prettier)
 
-- 我們已配置 `eslint.config.mjs` 與 VS Code 設定。
+- 我們已設定 `eslint.config.mjs` 與 VS Code 設定。
 - **只要按下存檔 (Ctrl+S)**，程式碼就會自動排版並修復錯誤。
 - 若要手動全域檢查：`npm run lint`
 

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**
- * Header User Menu - Framework Agnostic
+ * Header 使用者選單 - 框架無關
  * 框架無關的使用者選單
  */
 import { useAppStore } from '~/stores/app'
+import IIcon from '@/components/uiInterface/IIcon.vue'
 
 const appStore = useAppStore()
 const isOpen = ref(false)
@@ -61,72 +62,196 @@ onMounted(() => {
       class="dropdown-toggle btn-icon"
       @click.stop="toggleMenu"
     >
-      <img
-        src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-        alt="User avatar"
-        style="width: 36px; height: 36px; border-radius: var(--radius-full); object-fit: cover"
-      />
+      <div class="user-avatar">
+        <IIcon
+          icon="mdi-account-circle"
+          size="32"
+          color="#cbd5e1"
+        />
+      </div>
     </button>
 
     <div class="dropdown-menu">
-      <!-- User Info -->
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          padding: 1rem;
-          border-bottom: 1px solid var(--color-gray-200);
-        "
-      >
-        <img
-          src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-          alt="User avatar"
-          style="width: 40px; height: 40px; border-radius: var(--radius-full); object-fit: cover"
-        />
-        <div>
-          <div style="font-weight: 600; font-size: 0.875rem">Admin User</div>
-          <div style="font-size: 0.75rem; color: var(--color-gray-600)">admin@example.com</div>
+      <!-- 使用者資訊 -->
+      <div class="user-info">
+        <div class="info-avatar">
+          <IIcon
+            icon="mdi-account"
+            size="24"
+            color="#fff"
+          />
+        </div>
+        <div class="info-text">
+          <div class="user-name">Admin User</div>
+          <div class="user-email">admin@example.com</div>
         </div>
       </div>
 
-      <!-- Menu Items -->
-      <div style="padding: 0.5rem 0">
+      <!-- 選單項目 -->
+      <div class="menu-items">
         <template
           v-for="(item, i) in appStore.config.header.userMenu.items"
           :key="i"
         >
           <div
             v-if="item.divider"
-            class="dropdown-menu-divider"
+            class="menu-divider"
           />
-          <a
+          <button
             v-else
-            href="#"
-            class="dropdown-menu-item"
-            :style="{ color: item.color === 'error' ? 'var(--color-error)' : 'inherit' }"
-            @click.prevent="handleAction(item)"
+            class="menu-item"
+            @click="handleAction(item)"
           >
-            <svg
+            <IIcon
               v-if="item.icon"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              style="margin-right: 0.75rem"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-              />
-            </svg>
+              :icon="item.icon"
+              size="18"
+              class="item-icon"
+            />
             {{ item.title }}
-          </a>
+          </button>
         </template>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 240px;
+  background: #1e293b; /* Dark slate matching portal theme */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown.is-open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #5a5a5a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-text {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-items {
+  padding: 0.5rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 0.5rem 0;
+}
+
+.item-icon {
+  opacity: 0.7;
+}
+
+.menu-item:hover .item-icon {
+  opacity: 1;
+}
+</style>

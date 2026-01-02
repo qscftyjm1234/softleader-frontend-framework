@@ -199,7 +199,7 @@ const delay = url.includes('/api/slow') ? 3000 : 500
 await new Promise((resolve) => setTimeout(resolve, delay))
 ```
 
-## 📊 環境配置
+## 📊 環境設定
 
 ### 開發環境
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Header Search - Framework Agnostic
+ * Header 搜尋欄 - 框架無關
  * 框架無關的搜尋欄
  */
 import { useAppStore } from '~/stores/app'
@@ -8,7 +8,7 @@ import { useAppStore } from '~/stores/app'
 const appStore = useAppStore()
 const searchQuery = ref('')
 
-// Handle input focus/blur for styling
+// 處理輸入框 Focus/Blur 以改變樣式
 const handleSearchFocus = (event: FocusEvent) => {
   const target = event.target as HTMLInputElement
   target.style.backgroundColor = 'var(--color-white)'

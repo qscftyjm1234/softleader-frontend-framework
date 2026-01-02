@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Header Breadcrumbs - Framework Agnostic
+ * Header 麵包屑導航 - 框架無關
  * 框架無關的麵包屑導航
  */
 import { useAppStore } from '~/stores/app'

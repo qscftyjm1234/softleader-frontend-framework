@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * 組件架構展示頁面
+ * 元件架構展示頁面
  *
  * 展示三層架構：
  * 1. uiInterface 層（UI 框架適配層）
@@ -31,6 +31,7 @@ import SmartComplexWidget from '@/components/uiBusiness/SmartComplexWidget.vue'
 import ApiLoadingButton from '@/components/uiBusiness/ApiLoadingButton.vue'
 import GlobalLoading from '@/components/uiBusiness/GlobalLoading.vue'
 import GlobalSnackbar from '@/components/uiBusiness/GlobalSnackbar.vue'
+import OptionSelect from '@/components/uiBusiness/OptionSelect.vue'
 
 // 引入所有介面元件
 import IInput from '@/components/uiInterface/IInput.vue'
@@ -46,13 +47,21 @@ import IChip from '@/components/uiInterface/IChip.vue'
 import ITextField from '@/components/uiInterface/ITextField.vue'
 import IDataTable from '@/components/uiInterface/IDataTable.vue'
 
-// 業務元件示範數據
+definePageMeta({
+  title: '基礎元件展示',
+  icon: 'mdi-cube-outline',
+  layout: 'portal'
+})
+
+// 業務元件示範資料
 const email = ref('')
 const phone = ref('')
 const password = ref('')
+const gender = ref('')
+const job = ref('')
+const interest = ref('')
 const city = ref('')
 const country = ref('')
-const gender = ref('')
 const dateRange = ref({ start: null, end: null })
 
 // SmartTable 範例資料
@@ -83,7 +92,7 @@ const testGlobalSnackbar = () => {
   showToast('這是一則全域通知訊息！', 'success')
 }
 
-// 介面元件示範數據
+// 介面元件示範資料
 const inputValue = ref('')
 const textareaValue = ref('')
 const checkboxValue = ref(false)
@@ -112,28 +121,32 @@ const tableData = [
   { name: '王五', role: 'Viewer', status: '停用' }
 ]
 
-definePageMeta({
-  title: '基礎元件展示',
-  icon: 'mdi-cube-outline',
-  layout: 'portal'
-})
-
 // Tab 狀態管理
 const activeTab = ref('migration') // architecture, business, interface
 const tabOptions = [
-  { label: '如何替換框架', value: 'migration' },
-  { label: '業務元件 (7個)', value: 'business' },
-  { label: '介面元件 (12個)', value: 'interface' }
+  { label: '架構與框架替換', value: 'migration' },
+  { label: '業務邏輯層展示', value: 'business' },
+  { label: '介面層展示', value: 'interface' }
 ]
 </script>
 
 <template>
   <ShowcasePage
-    title="元件展示 (Component Showcase)"
-    description="展示三層架構設計：uiInterface 層（可替換 UI 框架）、uiBusiness 層（穩定業務邏輯）、頁面層（簡潔使用）"
+    title="元件展示"
+    description="本專案採用「三層式前端架構」，將業務邏輯與 UI 實作完全分離。當需要更換 UI 框架（如從 Vuetify 換到 Element Plus）時，僅需替換最底層的介面元件，完全不影響業務邏輯與頁面結構。"
   >
+    <!-- Tab 導航 -->
+    <ShowcaseTabs
+      v-model="activeTab"
+      :options="tabOptions"
+      class="mb-8"
+    />
+
     <!-- 架構說明 -->
-    <ShowcaseSection title="架構說明">
+    <ShowcaseSection
+      v-show="activeTab === 'migration'"
+      title="架構與框架替換展示"
+    >
       <ShowcaseArchitecture />
 
       <ShowcaseAlert
@@ -143,31 +156,512 @@ const tabOptions = [
       >
         <ul class="benefit-list">
           <li>
-            <strong class="text-sky-400">彈性適配</strong>
-            - 換 UI 框架時，只需修改 uiInterface 層
+            <strong class="text-sky-400">無痛框架替換</strong>
+            - 抽換 UI 框架 (如 Vuetify 換 Element) 完全不動業務邏輯，輕鬆適應不同專案風格
           </li>
           <li>
-            <strong class="text-sky-400">邏輯統一</strong>
-            - 業務邏輯集中管理，不會散落各處
+            <strong class="text-sky-400">跨專案共用</strong>
+            - 核心業務組件可直接複製到新專案，僅需替換 UI 層即可運作
           </li>
           <li>
             <strong class="text-sky-400">開發極速</strong>
-            - 頁面程式碼極簡，開發效率高
+            - 頁面程式碼極簡，無需重複撰寫驗證與處理邏輯
           </li>
         </ul>
       </ShowcaseAlert>
-    </ShowcaseSection>
 
-    <!-- Tab 導航 -->
-    <ShowcaseTabs
-      v-model="activeTab"
-      :options="tabOptions"
-    />
+      <!-- 實戰範例 -->
+      <div class="mt-12 pt-8 border-t border-slate-700/50">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          範例：如何實作「會員狀態標籤」？
+        </h3>
+
+        <div class="example-container">
+          <!-- Top Row: Code Flow (Horizontal) -->
+          <div class="code-flow">
+            <!-- Step 1: Page Layer -->
+            <div class="example-card">
+              <div class="layer-badge page">頁面層</div>
+              <p class="role-desc">
+                「不管顏色或邏輯，
+                <br />
+                直接把資料丟進去就好。」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- UserList.vue -->
+<script setup lang="ts">
+// 乾淨的頁面，沒有複雜邏輯
+const users = ref([
+  { name: "John", status: "active" },
+  { name: "Bob", status: "inactive" }
+])
+</script>
+
+<template>
+  <div v-for="user in users" :key="user.name">
+    <span>{{ user.name }}</span>
+    <!-- 只要傳入 status，其他交給業務層 -->
+    <UserStatusChip :status="user.status" />
+  </div>
+</template>'
+                :show-copy="false"
+              />
+            </div>
+
+            <!-- Arrow Right -->
+            <div class="flow-arrow horizontal">
+              <v-icon
+                icon="mdi-arrow-right"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">使用</span>
+            </div>
+
+            <!-- Step 2: Business Layer -->
+            <div class="example-card featured">
+              <div class="layer-badge business">業務邏輯層</div>
+              <p class="role-desc">
+                「我負責判斷
+                <span class="text-green-400">啟用=綠色</span>
+                <br />
+                要把邏輯封裝在這裡。」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- UserStatusChip.vue -->
+<script setup lang="ts">
+// 1. 定義明確的介面
+interface Props {
+  status: "active" | "inactive" | "banned"
+}
+const props = defineProps<Props>()
+
+// 2. 集中管理業務邏輯 (狀態 -> 顏色/文字)
+const color = computed(() => {
+  switch (props.status) {
+    case "active": return "success"
+    case "inactive": return "grey"
+    case "banned": return "error"
+  }
+})
+
+const label = computed(() => {
+  // 可以整合 i18n
+  return props.status === "active" ? "啟用" : "停用"
+})
+</script>
+
+<template>
+  <!-- 3. 將處理好的資料傳給 UI -->
+  <IChip :label="label" :color="color" />
+</template>'
+                :show-copy="false"
+              />
+            </div>
+
+            <!-- Arrow Right -->
+            <div class="flow-arrow horizontal">
+              <v-icon
+                icon="mdi-arrow-right"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">渲染</span>
+            </div>
+
+            <!-- Step 3: Interface Layer -->
+            <div class="example-card">
+              <div class="layer-badge interface">介面層</div>
+              <p class="role-desc">
+                「我只管畫出顏色，
+                <br />
+                不知道什麼是會員。」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- IChip.vue -->
+<script setup lang="ts">
+// 純粹的 UI 定義，不包含業務邏輯
+defineProps<{
+  label?: string
+  color: "success" | "error" | "grey"
+}>()
+</script>
+
+<template>
+  <!-- [方案 A] 原生 CSS 實作 -->
+  <div class="chip" :class="`bg-${color}-500`">
+    <!-- 支援 Slot，讓內容更彈性 -->
+    <slot>{{ label }}</slot>
+  </div>
+
+  <!-- [Option B] 想換成 Vuetify? 直接替換 Template 即可！ -->
+  <!--
+  <v-chip :color="color">
+    <slot>{{ label }}</slot>
+  </v-chip>
+  -->
+</template>'
+                :show-copy="false"
+              />
+            </div>
+          </div>
+
+          <!-- Result Flow (Vertical) -->
+          <div class="result-flow">
+            <div class="flow-arrow vertical">
+              <v-icon
+                icon="mdi-arrow-down"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">輸出</span>
+            </div>
+
+            <!-- Final Result (Visual) -->
+            <div class="example-card result-card">
+              <div class="layer-badge result">最終畫面</div>
+              <p class="role-desc">
+                「使用者看到的樣子。
+                <br />
+                漂亮的 UI 與正確的狀態。」
+              </p>
+
+              <div class="browser-mockup">
+                <div class="mockup-header">
+                  <div class="dot red"></div>
+                  <div class="dot yellow"></div>
+                  <div class="dot green"></div>
+                </div>
+                <div class="mockup-content">
+                  <!-- John: Active -->
+                  <div class="flex items-center justify-between p-2 border-b border-slate-700/50">
+                    <span class="text-slate-300">John</span>
+                    <div
+                      class="px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/30"
+                    >
+                      啟用
+                    </div>
+                  </div>
+                  <!-- Bob: Inactive -->
+                  <div class="flex items-center justify-between p-2">
+                    <span class="text-slate-300">Bob</span>
+                    <div
+                      class="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30"
+                    >
+                      停用
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 text-xs text-slate-400 text-center">(實際瀏覽器算繪結果)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 2: Slot Penetration -->
+      <div class="mt-12 pt-8 border-t border-slate-700/50">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          範例：Slot 內容穿透 (Card 元件)
+        </h3>
+
+        <div class="example-container">
+          <!-- Top Row: Code Flow -->
+          <div class="code-flow">
+            <!-- Step 1: Page Layer -->
+            <div class="example-card">
+              <div class="layer-badge page">頁面層</div>
+              <p class="role-desc">
+                「我要在卡片裡放按鈕，
+                <br />
+                內容由我決定！」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- UserDetail.vue -->
+<template>
+  <!-- 直接傳入 Slot 內容 -->
+  <UserCard title="個人資料">
+    <div class="actions">
+      <button>編輯</button>
+      <button>刪除</button>
+    </div>
+  </UserCard>
+</template>'
+                :show-copy="false"
+              />
+            </div>
+
+            <div class="flow-arrow horizontal">
+              <v-icon
+                icon="mdi-arrow-right"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">傳入</span>
+            </div>
+
+            <!-- Step 2: Business Layer -->
+            <div class="example-card featured">
+              <div class="layer-badge business">業務邏輯層</div>
+              <p class="role-desc">
+                「我不關心內容是什麼，
+                <br />
+                只負責幫忙傳給 UI。」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- UserCard.vue -->
+<script setup lang="ts">
+defineProps<{ title: string }>()
+</script>
+
+<template>
+  <ICard :title="title">
+    <!-- 接收頁面內容，轉傳給介面層 -->
+    <slot />
+  </ICard>
+</template>'
+                :show-copy="false"
+              />
+            </div>
+
+            <div class="flow-arrow horizontal">
+              <v-icon
+                icon="mdi-arrow-right"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">透傳</span>
+            </div>
+
+            <!-- Step 3: Interface Layer -->
+            <div class="example-card">
+              <div class="layer-badge interface">介面層</div>
+              <p class="role-desc">
+                「我準備好位置 (Slot)，
+                <br />
+                你們塞什麼我就畫什麼。」
+              </p>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<!-- ICard.vue -->
+<template>
+  <div class="card-root">
+    <div class="card-header">{{ title }}</div>
+    <div class="card-body">
+      <!-- 內容最終會出現在這 -->
+      <slot />
+    </div>
+  </div>
+</template>'
+                :show-copy="false"
+              />
+            </div>
+          </div>
+
+          <!-- Result Flow -->
+          <div class="result-flow">
+            <div class="flow-arrow vertical">
+              <v-icon
+                icon="mdi-arrow-down"
+                size="32"
+                color="rgba(255,255,255,0.2)"
+              />
+              <span class="text-xs text-slate-500 mt-1">組合</span>
+            </div>
+
+            <div class="example-card result-card">
+              <div class="layer-badge result">最終畫面</div>
+              <p class="role-desc">
+                「標題來自屬性，
+                <br />
+                按鈕來自 Slot。」
+              </p>
+
+              <div class="browser-mockup">
+                <div class="mockup-header">
+                  <div class="dot red"></div>
+                  <div class="dot yellow"></div>
+                  <div class="dot green"></div>
+                </div>
+                <div class="mockup-content p-4">
+                  <div class="bg-slate-800 rounded border border-slate-700 p-4">
+                    <div class="text-lg font-bold text-white mb-2">個人資料</div>
+                    <div class="flex gap-2">
+                      <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded">編輯</button>
+                      <button class="px-3 py-1 bg-red-600 text-white text-xs rounded">刪除</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-slate-700/50">
+        <div class="section-header mt-16 mb-8">
+          <h2 class="section-title">
+            <span class="title-text">如何替換 UI 框架？</span>
+          </h2>
+          <div class="title-decoration"></div>
+        </div>
+
+        <div class="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg text-blue-200">
+          <div class="flex items-start gap-3">
+            <v-icon
+              icon="mdi-information-outline"
+              class="mt-1"
+            />
+            <div>
+              <h4 class="font-bold mb-1">為什麼這很重要？</h4>
+              <p class="text-sm opacity-90">
+                一般專案如果想換掉 UI 框架，你得一個一個頁面慢慢改，改到懷疑人生。
+                但在這個架構下，你只需要修改
+                <strong>12 個設定檔</strong>
+                ，全站幾百個頁面就會瞬間自動換新！
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Native Implementation -->
+          <div class="border border-slate-700 rounded-lg overflow-hidden">
+            <div
+              class="bg-slate-800 p-3 border-b border-slate-700 flex justify-between items-center"
+            >
+              <span class="font-bold text-green-400">方案 A：原生 CSS (目前)</span>
+              <span class="text-xs bg-slate-700 px-2 py-1 rounded">IButton.vue</span>
+            </div>
+            <div class="p-4 bg-slate-900 h-full">
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<template>
+  <!-- 使用標準 HTML button -->
+  <button
+    class="btn"
+    :class="`btn-${variant}`"
+    @click="$emit(&apos;click&apos;)"
+  >
+    <!-- Slot 讓文字/Icon 可以傳入 -->
+    <slot />
+  </button>
+</template>
+
+<style scoped>
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  /* ... 手刻樣式 ... */
+}
+</style>'
+                :show-copy="false"
+              />
+            </div>
+          </div>
+
+          <!-- Vuetify Implementation -->
+          <div class="border border-slate-700 rounded-lg overflow-hidden">
+            <div
+              class="bg-slate-800 p-3 border-b border-slate-700 flex justify-between items-center"
+            >
+              <span class="font-bold text-pink-400">方案 B：Vuetify (替換後)</span>
+              <span class="text-xs bg-slate-700 px-2 py-1 rounded">IButton.vue</span>
+            </div>
+            <div class="p-4 bg-slate-900 h-full">
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<template>
+  <!-- 直接改用 Vuetify 元件 -->
+  <v-btn
+    :color="variant"
+    variant="elevated"
+    @click="$emit(&apos;click&apos;)"
+  >
+    <!-- 結構完全對應，外層無感 -->
+    <slot />
+  </v-btn>
+</template>
+
+<!-- 樣式直接委託給 Vuetify -->
+<!-- 不再需要手寫 CSS --> '
+                :show-copy="false"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <v-icon
+            icon="mdi-arrow-down"
+            size="large"
+            color="white"
+            class="animate-bounce"
+          />
+          <p class="text-xl font-bold text-white mt-4">
+            「發現了嗎？不管選方案 A 還是 B，
+            <br />
+            <span class="text-amber-400">外面的 Page Layer 完全不用改 code！</span>
+            」
+          </p>
+        </div>
+
+        <!-- Migration Steps Guide -->
+        <div class="mt-12 pt-8 border-t border-slate-700/50">
+          <h3 class="text-xl font-bold text-white mb-6">實作步驟：真的只要 3 步</h3>
+          <div class="migration-guide">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3>只需修改 介面層</h3>
+                <p>
+                  打開任一 介面層 元件，例如
+                  <code>IInput.vue</code>
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3>替換內部實作</h3>
+                <ShowcaseCodeBlock
+                  code='<!-- 範例：將原生 input 替換為 Vuetify -->
+<template>
+  <VTextField v-model="value" v-bind="$attrs" />
+</template>'
+                  label="IInput.vue"
+                  language="vue"
+                />
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3>完成！</h3>
+                <ShowcaseAlert
+                  type="success"
+                  style="margin-top: 1rem"
+                >
+                  所有頁面自動使用新的 UI 框架，業務邏輯完全不用改！
+                </ShowcaseAlert>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ShowcaseSection>
 
     <!-- 業務邏輯層展示 -->
     <ShowcaseSection
       v-show="activeTab === 'business'"
-      title="業務邏輯層元件（推薦使用）"
+      title="業務邏輯層展示"
     >
       <p class="section-desc">這些元件已封裝好業務邏輯，直接使用即可</p>
 
@@ -186,7 +680,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<EmailInput v-model="email" required />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -209,7 +703,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<PhoneInput v-model="phone" required />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -232,7 +726,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<PasswordInput v-model="password" required />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -255,7 +749,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<GenderRadio v-model="gender" required />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -264,10 +758,47 @@ const tabOptions = [
           </template>
         </ShowcaseCard>
 
+        <ShowcaseCard
+          title="OptionSelect (進階)"
+          description="通用選項選擇器，傳入 code 即可自動載入選項"
+          full-width
+        >
+          <div class="demo-area flex gap-4">
+            <div class="flex-1">
+              <OptionSelect
+                v-model="job"
+                code="job"
+                label="職業 (code='job')"
+              />
+            </div>
+            <div class="flex-1">
+              <OptionSelect
+                v-model="interest"
+                code="interest"
+                label="興趣 (code='interest')"
+              />
+            </div>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<!-- 同一個元件，不同 code -->
+<OptionSelect v-model="job" code="job" />
+<OptionSelect v-model="interest" code="interest" />'
+              label="使用範例"
+            />
+            <div class="result-text">
+              職業:
+              <span class="value">{{ job || '(空)' }}</span>
+              | 興趣:
+              <span class="value">{{ interest || '(空)' }}</span>
+            </div>
+          </template>
+        </ShowcaseCard>
+
         <!-- CitySelect -->
         <ShowcaseCard
           title="CitySelect"
-          description="城市選擇，自動載入數據"
+          description="城市選擇，自動載入資料"
         >
           <div class="demo-area">
             <CitySelect v-model="city" />
@@ -275,7 +806,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<CitySelect v-model="city" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -295,7 +826,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<CountrySelect v-model="country" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -316,7 +847,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<DateRangePicker v-model="dateRange" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               開始:
@@ -344,7 +875,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<SmartCard title="標題" text="內容" icon="mdi-rocket" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -352,7 +883,7 @@ const tabOptions = [
         <!-- SmartComplexWidget -->
         <ShowcaseCard
           title="SmartComplexWidget"
-          description="複雜業務組件，包含內部狀態與互動"
+          description="複雜業務元件，包含內部狀態與互動"
           full-width
         >
           <div class="demo-area">
@@ -361,7 +892,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code="<SmartComplexWidget />"
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -382,7 +913,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<SmartTable :columns="cols" :data="data" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -398,14 +929,14 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ApiLoadingButton label="測試" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
 
         <!-- Global Components -->
         <ShowcaseCard
-          title="全域組件 (Global)"
+          title="全域元件"
           description="測試 GlobalLoading 與 GlobalSnackbar"
         >
           <div class="demo-area">
@@ -430,22 +961,23 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code="useLoading().start() / useNotify().show()"
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <!-- 介面適配層展示 -->
+    <!-- 介面層展示 -->
     <ShowcaseSection
       v-show="activeTab === 'interface'"
-      title="介面適配層元件（基礎元件）"
+      title="介面層展示"
     >
       <p class="section-desc">
         這些是基礎 UI 元件，可替換內部實作（原生 HTML / Vuetify / Element UI）
       </p>
 
+      <!-- Component Grid -->
       <div class="component-grid">
         <!-- IInput -->
         <ShowcaseCard
@@ -462,7 +994,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IInput v-model="value" clearable />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -483,7 +1015,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IButton variant="primary">按鈕</IButton>'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -514,7 +1046,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ICheckbox v-model="value" label="選項" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               單選:
@@ -547,7 +1079,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IRadio v-model="value" value="1" label="選項 1" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -570,7 +1102,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ISwitch v-model="value" label="開關" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -594,7 +1126,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ITextarea v-model="value" :rows="3" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -613,7 +1145,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IDatePicker v-model="value" clearable />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -637,7 +1169,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ISelect v-model="value" :options="options" />'
-              label="Usage"
+              label="使用範例"
             />
             <div class="result-text">
               值:
@@ -664,7 +1196,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ICard title="標題" variant="outlined">內容</ICard>'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -691,7 +1223,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IChip label="標籤" color="#38bdf8" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -713,7 +1245,7 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<ITextField v-model="value" prepend-icon="mdi-magnify" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -734,57 +1266,10 @@ const tabOptions = [
           <template #footer>
             <ShowcaseCodeBlock
               code='<IDataTable :columns="columns" :items="data" />'
-              label="Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- 如何替換 UI 框架 -->
-    <ShowcaseSection
-      v-show="activeTab === 'migration'"
-      title="如何替換 UI 框架"
-    >
-      <div class="migration-guide">
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3>只需修改 uiInterface 層</h3>
-            <p>
-              打開任一 uiInterface 元件，例如
-              <code>IInput.vue</code>
-            </p>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3>替換內部實作</h3>
-            <ShowcaseCodeBlock
-              code='<!-- 範例：將原生 input 替換為 Vuetify -->
-<template>
-  <VTextField v-model="value" v-bind="$attrs" />
-</template>'
-              label="IInput.vue"
-              language="vue"
-            />
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3>完成！</h3>
-            <ShowcaseAlert
-              type="success"
-              style="margin-top: 1rem"
-            >
-              所有頁面自動使用新的 UI 框架，業務邏輯完全不用改！
-            </ShowcaseAlert>
-          </div>
-        </div>
       </div>
     </ShowcaseSection>
   </ShowcasePage>
@@ -928,5 +1413,172 @@ const tabOptions = [
   border-radius: 4px;
   font-family: 'Fira Code', monospace;
   font-size: 0.9em;
+}
+
+/* Example Layout Styles */
+.example-container {
+  margin: 0 auto;
+}
+
+.code-flow {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.result-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the result card */
+  margin-top: 1rem;
+}
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.flow-arrow.horizontal {
+  padding-top: 5rem; /* Optical alignment with card center */
+}
+
+.example-card {
+  flex: 1;
+  min-width: 280px;
+  width: 100%;
+
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0; /* Prevent compression */
+}
+
+.example-card.featured {
+  background: rgba(56, 189, 248, 0.05);
+  border-color: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.05);
+}
+
+.layer-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.layer-badge.interface {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.layer-badge.business {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.layer-badge.page {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.layer-badge.result {
+  background: rgba(236, 72, 153, 0.1);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.role-desc {
+  color: #e2e8f0;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  min-height: 3.2em; /* Align cards */
+}
+
+/* Browser Mockup */
+.browser-mockup {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mockup-header {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mockup-header .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.mockup-header .dot.red {
+  background: #ef4444;
+}
+.mockup-header .dot.yellow {
+  background: #eab308;
+}
+.mockup-header .dot.green {
+  background: #22c55e;
+}
+
+.mockup-content {
+  padding: 12px;
+}
+
+/* Section Header Manual Style */
+.section-header {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.title-decoration {
+  height: 1px;
+  background: linear-gradient(90deg, #38bdf8 0%, rgba(56, 189, 248, 0) 100%);
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+
+.title-decoration::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 32px;
+  height: 3px;
+  background: #38bdf8;
+  border-radius: 2px;
 }
 </style>

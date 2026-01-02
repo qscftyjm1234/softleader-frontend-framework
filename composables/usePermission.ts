@@ -45,7 +45,7 @@ export interface UsePermissionReturn {
 
 /**
  * 權限管理 Composable
- * @param initialConfig - 初始權限配置
+ * @param initialConfig - 初始權限設定
  * @returns 權限管理方法和狀態
  */
 export function usePermission(initialConfig?: Partial<PermissionConfig>): UsePermissionReturn {

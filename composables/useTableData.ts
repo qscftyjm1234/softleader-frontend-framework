@@ -24,7 +24,7 @@ export interface TableDataState {
 /**
  * 使用表格資料管理
  *
- * @param options - 配置選項
+ * @param options - 設定選項
  * @returns 表格資料狀態與載入方法
  *
  * @example

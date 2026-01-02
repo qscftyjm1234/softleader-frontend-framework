@@ -5,7 +5,7 @@ import type { NuxtConfig } from 'nuxt/schema'
  *
  * 主要用途：
  * - 關於伺服器引擎的相關設定
- * - 部署相關配置 (Deployment)
+ * - 部署相關設定 (Deployment)
  * - 輸出資源壓縮優化 (Compression)
  *
  * @see https://nitro.unjs.io/config

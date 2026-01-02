@@ -105,9 +105,9 @@ if (!historyEnabled) {
 }
 ```
 
-## ⚙️ 配置方式
+## ⚙️ 設定方式
 
-### 方法 1: 修改配置文件
+### 方法 1: 修改設定文件
 
 編輯 [`core/config/features.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/core/config/features.ts):
 
@@ -134,9 +134,9 @@ NUXT_PUBLIC_FEATURE_HISTORY_GENERATION=false
 NUXT_PUBLIC_FEATURE_PERFORMANCE=true
 ```
 
-> 💡 **提示**: 環境變數的優先級高於配置文件
+> 💡 **提示**: 環境變數的優先級高於設定文件
 
-## 📦 不同客戶/專案配置範例
+## 📦 不同客戶/專案設定範例
 
 ### 範例 1: 精簡版 (小型客戶)
 
@@ -198,7 +198,7 @@ console.log(devTools)
 // { historyGeneration: true, apiMock: true, ... }
 ```
 
-### 獲取功能完整配置
+### 獲取功能完整設定
 
 ```typescript
 const { getFeatureConfig } = useFeatureFlag()
@@ -230,6 +230,6 @@ console.log(config)
 
 ## 🔍 相關文件
 
-- [功能配置文件](file:///c:/Users/gino.huang/Documents/nuxt3-test/core/config/features.ts)
+- [功能設定文件](file:///c:/Users/gino.huang/Documents/nuxt3-test/core/config/features.ts)
 - [Feature Flag Composable](file:///c:/Users/gino.huang/Documents/nuxt3-test/composables/useFeatureFlag.ts)
 - [環境變數範例](file:///c:/Users/gino.huang/Documents/nuxt3-test/.env.example)

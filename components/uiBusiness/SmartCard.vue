@@ -54,7 +54,7 @@ withDefaults(defineProps<Props>(), {
       {{ text }}
     </p>
 
-    <!-- 支援子組件渲染 -->
+    <!-- 支援子元件渲染 -->
     <div
       v-if="$slots.default"
       class="smart-card__content"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Header Actions - Framework Agnostic
+ * Header 動作按鈕 - 框架無關
  * 框架無關的標頭動作按鈕
  */
 import { useAppStore } from '~/stores/app'

@@ -12,6 +12,14 @@ const componentsList = [
     color: '#2979FF'
   },
   {
+    title: '圖示系統',
+    subtitle: 'Icon System',
+    desc: 'MDI 圖示整合與自定義 SVG 支援',
+    icon: 'mdi-emoticon-happy-outline',
+    to: '/showcase/icon',
+    color: '#F50057'
+  },
+  {
     title: '檔案上傳',
     subtitle: 'File Upload',
     desc: '拖曳上傳、預覽與驗證機制',
@@ -121,7 +129,7 @@ const functionsList = [
   {
     title: '防抖節流',
     subtitle: 'Debounce',
-    desc: '效能優化與執行控制',
+    desc: '效能最佳化與執行控制',
     icon: 'mdi-timer-sand',
     to: '/showcase/debounce',
     color: '#78909C'
@@ -209,7 +217,7 @@ const functionsList = [
           <span class="subtitle">Component Modules</span>
         </h1>
         <p class="page-desc">
-          前端開發套件的功能演練與操作手冊，分為「介面組件」與「核心功能」兩大類別。
+          前端開發套件的功能演練與操作手冊，分為「介面元件」與「核心功能」兩大類別。
         </p>
       </div>
 
@@ -219,7 +227,7 @@ const functionsList = [
           <div class="header-icon comp-icon">
             <v-icon icon="mdi-puzzle-outline" />
           </div>
-          <h2 class="section-title">介面組件 (UI Components)</h2>
+          <h2 class="section-title">介面元件 (UI Components)</h2>
         </div>
 
         <div class="grid-layout">

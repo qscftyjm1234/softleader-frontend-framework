@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import IIcon from './IIcon.vue'
 /**
  * IInput - 輸入框介面層
  *
@@ -11,23 +12,23 @@
  */
 
 interface Props {
-  modelValue: string | number
-  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url'
+  modelValue?: string | number
+  type?: string
   placeholder?: string
   disabled?: boolean
   readonly?: boolean
+  error?: boolean
   maxlength?: number
   autocomplete?: string
-  // 驗證相關
-  error?: boolean
   errorMessage?: string
   // 樣式相關
   clearable?: boolean
-  prefixIcon?: string
-  suffixIcon?: string
+  prependIcon?: string | Component
+  appendIcon?: string | Component
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  modelValue: undefined,
   type: 'text',
   placeholder: '',
   disabled: false,
@@ -37,8 +38,8 @@ const props = withDefaults(defineProps<Props>(), {
   maxlength: undefined,
   autocomplete: 'off',
   errorMessage: '',
-  prefixIcon: '',
-  suffixIcon: ''
+  prependIcon: '',
+  appendIcon: ''
 })
 
 const emit = defineEmits<{
@@ -79,12 +80,11 @@ defineOptions({
       :class="{ 'has-error': error, 'is-disabled': disabled }"
     >
       <!-- 前綴圖示 -->
-      <span
-        v-if="prefixIcon"
+      <IIcon
+        v-if="prependIcon"
+        :icon="prependIcon"
         class="prefix-icon"
-      >
-        {{ prefixIcon }}
-      </span>
+      />
 
       <!-- 輸入框 -->
       <input
@@ -111,12 +111,11 @@ defineOptions({
       </button>
 
       <!-- 後綴圖示 -->
-      <span
-        v-if="suffixIcon"
+      <IIcon
+        v-if="appendIcon"
+        :icon="appendIcon"
         class="suffix-icon"
-      >
-        {{ suffixIcon }}
-      </span>
+      />
     </div>
 
     <!-- 錯誤訊息 -->

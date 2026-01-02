@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Header Language Selector - Framework Agnostic
+ * Header 語言選擇器 - 框架無關
  * 框架無關的語言選擇器
  */
 const { locale, locales } = useLanguage()

@@ -14,8 +14,8 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   size: 60,
-  color1: '#3498db', // Primary Blue
-  color2: '#2ecc71' // Secondary Green
+  color1: '#3498db', // 主要藍色
+  color2: '#2ecc71' // 次要綠色
 })
 </script>
 

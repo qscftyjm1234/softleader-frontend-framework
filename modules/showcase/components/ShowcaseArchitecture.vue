@@ -17,19 +17,26 @@ import ICard from '@/components/uiInterface/ICard.vue'
         variant="outlined"
       >
         <div class="card-content">
-          <h3>頁面層 (Page Layer)</h3>
-          <p>直接使用業務元件，程式碼最簡潔</p>
-          <code>&lt;EmailInput v-model="email" /&gt;</code>
+          <h3>頁面層</h3>
+          <ul class="responsibility-list">
+            <li>負責排版與佈局</li>
+            <li>不包含業務邏輯</li>
+            <li>直接使用 Business 元件</li>
+          </ul>
+          <div class="code-preview">
+            <code>&lt;EmailInput v-model="email" /&gt;</code>
+          </div>
         </div>
       </ICard>
     </div>
 
-    <div class="arrow">
+    <div class="arrow-container">
+      <div class="arrow-line" />
+      <div class="arrow-label">使用</div>
       <v-icon
         icon="mdi-arrow-down"
-        color="#38bdf8"
+        class="arrow-icon"
       />
-      <span class="use-text">使用</span>
     </div>
 
     <!-- Business Layer -->
@@ -40,19 +47,55 @@ import ICard from '@/components/uiInterface/ICard.vue'
         variant="outlined"
       >
         <div class="card-content">
-          <h3>業務邏輯層 (Business Layer)</h3>
-          <p>封裝業務邏輯（驗證、格式化、數據處理）</p>
-          <code>components/uiBusiness/EmailInput.vue</code>
+          <h3>業務邏輯層</h3>
+          <ul class="responsibility-list">
+            <li>封裝業務規則 (驗證/格式化)</li>
+            <li>處理 API 互動與狀態</li>
+            <li>跨頁面複用邏輯</li>
+          </ul>
+          <div class="principles-list">
+            <span class="principles-title">開發原則：</span>
+            <ul>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>定義「業務語言」 (如 status)</span>
+              </li>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>屏蔽「實作細節」 (如 color)</span>
+              </li>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>自動轉換對應樣式</span>
+              </li>
+            </ul>
+          </div>
+          <div class="code-preview">
+            <code>components/uiBusiness/EmailInput.vue</code>
+          </div>
         </div>
       </ICard>
     </div>
 
-    <div class="arrow">
+    <div class="arrow-container">
+      <div class="arrow-line" />
+      <div class="arrow-label">呼叫</div>
       <v-icon
         icon="mdi-arrow-down"
-        color="#38bdf8"
+        class="arrow-icon"
       />
-      <span class="use-text">使用</span>
     </div>
 
     <!-- Interface Layer -->
@@ -63,9 +106,44 @@ import ICard from '@/components/uiInterface/ICard.vue'
         variant="outlined"
       >
         <div class="card-content">
-          <h3>介面適配層 (Interface Layer)</h3>
-          <p>UI 框架適配層，可替換（原生 HTML / Vuetify / Element UI）</p>
-          <code>components/uiInterface/IInput.vue</code>
+          <h3>介面層</h3>
+          <ul class="responsibility-list">
+            <li>UI 框架設定入口</li>
+            <li>隔離底層 UI 依賴</li>
+            <li>提供統一 Props 定義</li>
+          </ul>
+          <div class="principles-list">
+            <span class="principles-title">開發原則：</span>
+            <ul>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>只負責顯示畫面</span>
+              </li>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>名字要通用</span>
+              </li>
+              <li>
+                <v-icon
+                  icon="mdi-star-four-points-small"
+                  size="small"
+                  color="amber"
+                />
+                <span>多用 Slot 留彈性</span>
+              </li>
+            </ul>
+          </div>
+          <div class="code-preview">
+            <code>components/uiInterface/IInput.vue</code>
+          </div>
         </div>
       </ICard>
     </div>
@@ -76,40 +154,43 @@ import ICard from '@/components/uiInterface/ICard.vue'
 .architecture-diagram {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .layer-wrapper {
   display: flex;
   align-items: stretch;
   gap: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 .layer-number {
   flex-shrink: 0;
-  width: 56px;
+  width: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
-  border-radius: 12px;
+  border-radius: 16px;
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .page-num {
-  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .business-num {
-  background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 .interface-num {
-  background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
 .layer-card {
@@ -117,69 +198,148 @@ import ICard from '@/components/uiInterface/ICard.vue'
   border-width: 1px !important;
   backdrop-filter: blur(12px);
   background: rgba(30, 41, 59, 0.4) !important;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
-/* Specific Border Colors for Layers */
+.layer-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Specific Styles for Layers */
 .page-layer {
-  border-color: rgba(76, 175, 80, 0.5) !important;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.05);
 }
 
 .business-layer {
-  border-color: rgba(33, 150, 243, 0.5) !important;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.05);
 }
 
 .interface-layer {
-  border-color: rgba(255, 152, 0, 0.5) !important;
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1);
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.05);
 }
 
 .card-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #f1f5f9;
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.card-content p {
-  margin: 0 0 0.75rem 0;
-  color: #94a3b8;
-  font-size: 1rem;
+.responsibility-list {
+  margin: 0 0 1rem 0;
+  padding-left: 1.25rem;
+  color: #cad5e1;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-.card-content code {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.9rem;
-  color: #a5d6ff;
+.responsibility-list li {
+  margin-bottom: 0.25rem;
+}
+
+.code-preview {
+  background: rgba(15, 23, 42, 0.6);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.code-preview code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: #7dd3fc;
 }
 
 /* Deep selector to ensure padding is right */
 .layer-card :deep(.v-card-text),
-.layer-card :deep(.card-body) {
+.layer-card :deep(.icard-body) {
   padding: 1.5rem !important;
 }
 
-.arrow {
+/* Arrow Flow Styling */
+.arrow-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-left: 28px; /* Center under the 56px number box */
-  padding-left: 1.5rem; /* Space from aligned center */
-  gap: 0.5rem;
-  height: 2rem;
+  justify-content: center;
+  height: 2.5rem; /* Space between cards */
+  position: relative;
+  width: 64px; /* Match layer-number width to align center */
+  z-index: 1;
 }
 
-.use-text {
-  color: #38bdf8;
-  font-size: 0.9rem;
-  font-weight: 600;
+.arrow-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-icon {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1.25rem;
+  background: #0f172a; /* Hide line behind icon */
+  z-index: 2;
+}
+
+.arrow-label {
+  position: absolute;
+  left: 70px; /* Offset from the arrow center */
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.principles-list {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.principles-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #fbbf24; /* Amber-400 */
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.principles-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.principles-list li {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  padding-left: 0;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.principles-list li .v-icon {
   opacity: 0.8;
 }
 </style>

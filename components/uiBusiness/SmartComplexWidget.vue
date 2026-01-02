@@ -35,7 +35,7 @@ const reset = () => {
     <!-- 標題區 -->
     <div class="widget-header">
       <div class="widget-header__info">
-        <div class="widget-overline">智慧組件</div>
+        <div class="widget-overline">智慧元件</div>
         <h2 class="widget-title">複雜元件範例</h2>
         <p class="widget-subtitle">展示內部狀態管理與互動邏輯</p>
       </div>

@@ -33,7 +33,7 @@ const breadcrumbs = computed(() => {
 
     // 簡單的標題映射 (可擴充)
     let title = part.charAt(0).toUpperCase() + part.slice(1)
-    if (part === 'showcase') title = '展示中心'
+    if (part === 'showcase') title = '模組'
 
     // 如果是當前頁面，使用 props title
     if (isLast && props.title) {

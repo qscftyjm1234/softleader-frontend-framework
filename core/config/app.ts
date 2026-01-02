@@ -7,7 +7,7 @@ import { productConfig } from '../../scripts/product-loader'
  * 主要用途：
  * - 定義 APP 的基本資訊（標題、描述、圖示等）
  * - 設定 HTML <head> 標籤內容
- * - 配置 SEO 相關的 meta 標籤
+ * - 設定 SEO 相關的 meta 標籤
  *
  * @see https://nuxt.com/docs/api/nuxt-config#app
  */

@@ -21,9 +21,9 @@ type FeaturePath =
   | `logging.${keyof typeof defaultFeatures.logging}`
 
 /**
- * 從環境變數或配置中獲取功能狀態
+ * 從環境變數或設定中獲取功能狀態
  *
- * @param config - 功能配置物件
+ * @param config - 功能設定物件
  * @returns 功能是否啟用
  */
 function getFeatureValue(config: FeatureConfig): boolean {
@@ -54,11 +54,11 @@ function getFeatureValue(config: FeatureConfig): boolean {
 }
 
 /**
- * 從路徑字串獲取功能配置
+ * 從路徑字串獲取功能設定
  *
  * @param path - 功能路徑,格式: 'category.featureName'
- * @param features - 功能配置物件
- * @returns 功能配置物件或 null
+ * @param features - 功能設定物件
+ * @returns 功能設定物件或 null
  */
 function getConfigByPath(
   path: FeaturePath,
@@ -117,10 +117,10 @@ export function useFeatureFlag() {
   }
 
   /**
-   * 獲取功能的完整配置
+   * 獲取功能的完整設定
    *
    * @param featurePath - 功能路徑
-   * @returns 功能配置物件
+   * @returns 功能設定物件
    */
   const getFeatureConfig = (featurePath: FeaturePath): FeatureConfig | null => {
     return getConfigByPath(featurePath, featureStore.config)

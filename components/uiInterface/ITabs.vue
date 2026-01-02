@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * ITabs - UI 介面層分頁導航 (Dark Mode Compatible)
+ * ITabs - UI 介面層分頁導航 (支援深色模式)
  */
 interface TabOption {
   label: string
@@ -12,7 +12,7 @@ interface Props {
   options: TabOption[]
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 const emit = defineEmits(['update:modelValue'])
 
 const updateValue = (value: string | number) => {
@@ -38,7 +38,7 @@ const updateValue = (value: string | number) => {
 .ui-tabs {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Dark mode border */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 深色模式邊框 */
   padding: 0 1rem;
   overflow-x: auto;
   scrollbar-width: none;
@@ -56,22 +56,22 @@ const updateValue = (value: string | number) => {
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  color: #94a3b8; /* Muted text dark mode */
+  color: #94a3b8; /* 深色模式柔和文字 */
   white-space: nowrap;
   transition: all 0.3s ease;
   position: relative;
-  bottom: -1px; /* Align with bottom border */
+  bottom: -1px; /* 對齊底部邊框 */
 }
 
 .tab-item:hover {
   color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.05); /* Subtle hover */
+  background: rgba(255, 255, 255, 0.05); /* 輕微懸停效果 */
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 }
 
 .tab-item.active {
-  color: #38bdf8; /* Sky blue active */
+  color: #38bdf8; /* 天藍色激活狀態 */
   border-bottom-color: #38bdf8;
 }
 </style>

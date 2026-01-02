@@ -56,7 +56,7 @@ definePageMeta({
       <div class="component-grid">
         <!-- Controls & Config -->
         <ShowcaseCard
-          title="設定與配置"
+          title="設定與設定"
           description="調整分頁參數"
           full-width
         >
