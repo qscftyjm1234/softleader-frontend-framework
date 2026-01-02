@@ -13,9 +13,9 @@ export interface FileDownloadOptions {
   globalLoading?: boolean
   /** 自訂 Loading Ref */
   loadingRef?: Ref<boolean>
-  /** 下載成功後的回調 */
+  /** 下載成功後的回呼 */
   onSuccess?: (filename: string) => void
-  /** 下載失敗後的回調 */
+  /** 下載失敗後的回呼 */
   onError?: (error: Error) => void
   /** 是否自動顯示成功訊息 */
   autoSuccess?: boolean
@@ -168,7 +168,7 @@ export function useFileDownload() {
       // 下載檔案
       downloadBlob(blob, finalFilename)
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`檔案 ${finalFilename} 下載成功`)
       }
@@ -230,7 +230,7 @@ export function useFileDownload() {
       // 下載檔案
       downloadBlob(blob, finalFilename)
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`檔案 ${finalFilename} 下載成功`)
       }
@@ -281,7 +281,7 @@ export function useFileDownload() {
       // 下載檔案
       downloadBlob(blob, filename)
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`檔案 ${filename} 下載成功`)
       }
@@ -314,7 +314,7 @@ export function useFileDownload() {
       // 下載檔案
       downloadBlob(blob, filename)
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`檔案 ${filename} 下載成功`)
       }

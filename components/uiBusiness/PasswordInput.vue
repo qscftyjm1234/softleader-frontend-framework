@@ -108,10 +108,17 @@ const handleChange = (value: string | number) => {
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
-  <div class="password-input">
+  <div
+    class="password-input"
+    v-bind="$attrs"
+  >
     <IInput
       :model-value="modelValue"
       :type="inputType"

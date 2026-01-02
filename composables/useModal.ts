@@ -27,9 +27,9 @@ export interface ModalInstance {
   config: ModalConfig
   /** 是否顯示 */
   isVisible: boolean
-  /** 確認回調 */
+  /** 確認回呼 */
   onConfirm?: () => void | Promise<void>
-  /** 取消回調 */
+  /** 取消回呼 */
   onCancel?: () => void | Promise<void>
 }
 

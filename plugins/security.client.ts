@@ -85,8 +85,8 @@ export default defineNuxtPlugin(() => {
     action?: string // 動作提示文字
     clickToDismiss?: boolean // 點擊解除
     pointerEvents?: boolean // 是否可點擊（pointer-events）
-    onShow?: () => void // 顯示時的回調
-    onHide?: () => void // 隱藏時的回調
+    onShow?: () => void // 顯示時的回呼
+    onHide?: () => void // 隱藏時的回呼
   }
 
   /**

@@ -52,11 +52,78 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="本地儲存 (Storage)"
+    title="本地儲存"
     description="LocalStorage 和 SessionStorage 的封裝，支援自動序列化、過期時間管理與響應式資料綁定。"
   >
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="儲存系統的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const {
+  setItem,        // 儲存資料
+  getItem,        // 取得資料
+  removeItem,     // 移除資料
+  clear,          // 清空所有
+  keys,           // 取得所有 key
+  useStorageRef   // 響應式儲存
+} = useStorage('local')  // 'local' 或 'session'"
+            label="useStorage() 提供的方法"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>自動序列化:</strong>
+              自動處理 JSON 序列化/反序列化
+            </li>
+            <li>
+              <strong>過期管理:</strong>
+              支援設定資料過期時間
+            </li>
+            <li>
+              <strong>響應式綁定:</strong>
+              useStorageRef 自動同步資料
+            </li>
+            <li>
+              <strong>雙模式:</strong>
+              支援 localStorage 和 sessionStorage
+            </li>
+          </ul>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="const { setItem, getItem } = useStorage('local')
+
+// 儲存資料
+setItem('user', { name: 'John' })
+
+// 取得資料
+const user = getItem('user')"
+            label="快速開始"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 互動測試 -->
     <ShowcaseSection
-      title="Storage Operations"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">
@@ -204,6 +271,128 @@ definePageMeta({
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
+
+    <!-- API 參考 -->
+    <ShowcaseSection
+      title="API 參考"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="1. setItem()"
+          description="儲存資料"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              儲存資料至 Storage，支援過期時間。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { setItem } = useStorage('local')
+
+// 基本使用
+setItem('user', { name: 'John', age: 30 })
+
+// 設定過期時間（1 小時）
+setItem('token', 'abc123', { expires: 3600000 })"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. getItem()"
+          description="取得資料"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              從 Storage 取得資料，自動檢查過期。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { getItem } = useStorage('local')
+
+const user = getItem('user')
+console.log(user)  // { name: 'John', age: 30 }
+
+// 如果已過期或不存在，回傳 null
+const token = getItem('expired_token')  // null"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. removeItem()"
+          description="移除資料"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              移除指定的 key。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { removeItem } = useStorage('local')
+
+removeItem('user')
+removeItem('token')"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="4. clear()"
+          description="清空所有"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              清空 Storage 中的所有資料。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { clear } = useStorage('local')
+
+clear()  // 清空所有 localStorage"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="5. useStorageRef()"
+          description="響應式儲存"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              建立響應式的 Storage 綁定，自動同步。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { useStorageRef } = useStorage('local')
+
+// 建立響應式綁定
+const user = useStorageRef('user', { name: '', age: 0 })
+
+// 修改會自動同步至 localStorage
+user.value.name = 'Jane'
+user.value.age = 25"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
   </ShowcasePage>
 </template>
 
@@ -269,5 +458,68 @@ definePageMeta({
   border: 1px dashed rgba(148, 163, 184, 0.3);
   padding: 1rem;
   border-radius: 6px;
+}
+
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

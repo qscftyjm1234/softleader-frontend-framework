@@ -1,10 +1,12 @@
 <script setup lang="ts">
 /**
- * SmartComplexWidget - 複雜智慧元件
+ * 業務元件 - 複雜智慧元件
  *
- * 業務層 (Business Layer)：使用 uiInterface 層元件
- * 遵循三層架構：
- * - UI: 使用 ICard, ISheet, IButton 等介面層元件
+ * 用途：封裝複雜的業務邏輯與介面互動
+ * 特點：
+ * - 整合多個介面層元件 (ICard, ISheet, IAvatar...)
+ * - 內部管理狀態 (State) 與操作歷史
+ * - 展示複雜業務場景下的邏輯封裝範例
  */
 import ICard from '~/components/uiInterface/ICard.vue'
 import ISheet from '~/components/uiInterface/ISheet.vue'
@@ -25,10 +27,15 @@ const reset = () => {
   count.value = 0
   history.value = []
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ICard
+    v-bind="$attrs"
     elevation="0"
     class="complex-widget"
   >

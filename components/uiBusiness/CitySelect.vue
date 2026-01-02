@@ -66,11 +66,17 @@ const handleChange = (value: string) => {
   // 業務邏輯：可以在這裡加入其他邏輯
   // 例如：記錄到最近選擇、載入相關資料等
   console.log('城市已選擇:', value)
+  console.log('城市已選擇:', value)
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ISelect
+    v-bind="$attrs"
     :model-value="modelValue"
     :options="cityOptions"
     :placeholder="placeholder"

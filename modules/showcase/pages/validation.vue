@@ -74,8 +74,8 @@ definePageMeta({
   >
     <!-- Interactive Form Demo -->
     <ShowcaseSection
-      title="Interactive Form Demo (互動式表單演示)"
-      icon="🎮"
+      title="互動測試"
+      icon="🚀"
     >
       <div class="component-grid">
         <ShowcaseCard

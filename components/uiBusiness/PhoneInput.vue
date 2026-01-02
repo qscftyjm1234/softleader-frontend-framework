@@ -68,11 +68,17 @@ const handleChange = (value: string | number) => {
   const formatted = formatPhone(String(value))
   emit('update:modelValue', formatted)
   emit('change', formatted)
+  emit('change', formatted)
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <IInput
+    v-bind="$attrs"
     :model-value="modelValue"
     type="tel"
     :placeholder="placeholder"
@@ -80,7 +86,7 @@ const handleChange = (value: string | number) => {
     :error="!isValid"
     :error-message="errorMessage"
     clearable
-    prefix-icon="📱"
+    prepend-icon="📱"
     autocomplete="tel"
     maxlength="12"
     @update:model-value="handleChange"

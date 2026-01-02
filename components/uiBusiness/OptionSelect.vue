@@ -33,10 +33,15 @@ const options = computed(() => {
 
 // 自動決定 Label
 const displayLabel = computed(() => props.label || '請選擇')
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ISelect
+    v-bind="$attrs"
     :model-value="modelValue"
     :label="displayLabel"
     :options="options"

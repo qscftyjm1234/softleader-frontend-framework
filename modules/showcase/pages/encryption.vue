@@ -116,7 +116,7 @@ definePageMeta({
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">

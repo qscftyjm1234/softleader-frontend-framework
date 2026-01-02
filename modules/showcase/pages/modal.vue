@@ -87,18 +87,85 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="彈窗管理系統 (Modal System)"
+    title="彈窗管理系統"
     description="完整的彈窗管理模組，提供統一彈窗控制、多層彈窗管理和確認對話框功能。支援 Promise 回傳與狀態追蹤。"
   >
-    <!-- Interactive Demo -->
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="彈窗管理的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const {
+  // 彈窗方法
+  open,        // 開啟自訂彈窗
+  confirm,     // 確認對話框
+  alert,       // 警告對話框
+  closeAll,    // 關閉所有彈窗
+  
+  // 狀態追蹤
+  modals,      // 所有彈窗列表
+  hasModal,    // 是否有彈窗開啟
+  modalCount   // 彈窗數量
+} = useModal()"
+            label="useModal() 提供的方法"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>Promise 回傳:</strong>
+              支援 async/await，輕鬆處理使用者選擇
+            </li>
+            <li>
+              <strong>多層堆疊:</strong>
+              自動管理多個彈窗的顯示順序
+            </li>
+            <li>
+              <strong>狀態追蹤:</strong>
+              即時追蹤所有彈窗的開啟狀態
+            </li>
+            <li>
+              <strong>自訂內容:</strong>
+              靈活設定標題、內容、按鈕文字
+            </li>
+          </ul>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="const { open, confirm, alert } = useModal()
+
+// 快速使用
+await confirm({ title: '確認', content: '確定執行？' })"
+            label="快速開始"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 互動測試 -->
     <ShowcaseSection
-      title="Interactive Playground (互動式演示)"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">
-        <!-- Basic Usage -->
+        <!-- 基本彈窗 -->
         <ShowcaseCard
-          title="Basic & Alerts"
+          title="1. 基本彈窗"
           description="基本彈窗與警告對話框"
         >
           <div class="flex flex-col gap-3">
@@ -130,9 +197,9 @@ definePageMeta({
           </div>
         </ShowcaseCard>
 
-        <!-- Custom Modal -->
+        <!-- 自訂彈窗 -->
         <ShowcaseCard
-          title="Custom Configuration"
+          title="2. 自訂彈窗"
           description="自訂彈窗內容與按鈕"
         >
           <div class="flex flex-col gap-4">
@@ -161,9 +228,9 @@ definePageMeta({
           </div>
         </ShowcaseCard>
 
-        <!-- Multiple Modals -->
+        <!-- 多層彈窗 -->
         <ShowcaseCard
-          title="Multiple Modals"
+          title="3. 多層彈窗"
           description="多層彈窗堆疊管理"
           full-width
         >
@@ -194,46 +261,153 @@ definePageMeta({
       </div>
     </ShowcaseSection>
 
-    <!-- Usage Examples -->
+    <!-- API 參考 -->
     <ShowcaseSection
-      title="Usage Examples (使用範例)"
+      title="API 參考"
       icon="📝"
     >
       <div class="component-grid">
+        <!-- open() -->
         <ShowcaseCard
-          title="Common Methods"
-          description="常用方法範例"
-          full-width
+          title="1. open()"
+          description="開啟自訂彈窗"
         >
-          <ShowcaseCodeBlock
-            code="// 1. 引入 composable
-const { confirm, alert, open } = useModal()
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              開啟一個可自訂的彈窗，支援確認/取消按鈕。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { open } = useModal()
 
-// 2. 確認對話框
-const result = await confirm({
-  title: '確認操作',
-  content: '您確定要執行此操作嗎？'
+const result = await open({
+  title: '自訂標題',
+  content: '自訂內容',
+  confirmText: '確定',
+  cancelText: '取消'
 })
 
 if (result) {
-  console.log('使用者已確認')
-}
+  console.log('使用者點擊確定')
+} else {
+  console.log('使用者點擊取消')
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
 
-// 3. 警告對話框
-await alert({
-  title: '提示',
-  content: '這是一個警告訊息'
+        <!-- confirm() -->
+        <ShowcaseCard
+          title="2. confirm()"
+          description="確認對話框"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              快速開啟確認對話框，預設按鈕為「確認」和「取消」。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { confirm } = useModal()
+
+const result = await confirm({
+  title: '確認操作',
+  content: '您確定要刪除此項目嗎？'
 })
 
-// 4. 自訂彈窗
-const customResult = await open({
-  title: '自訂標題',
-  content: '自訂內容',
-  confirmText: '好的',
-  cancelText: '不要'
-})"
-            label="Composition API"
-          />
+if (result) {
+  // 執行刪除
+  deleteItem()
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- alert() -->
+        <ShowcaseCard
+          title="3. alert()"
+          description="警告對話框"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              顯示警告訊息，只有一個「確定」按鈕。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { alert } = useModal()
+
+await alert({
+  title: '提示',
+  content: '操作已完成！'
+})
+
+console.log('使用者已關閉警告')"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- closeAll() -->
+        <ShowcaseCard
+          title="4. closeAll()"
+          description="關閉所有彈窗"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              一次關閉所有開啟的彈窗（用於多層彈窗情境）。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { closeAll } = useModal()
+
+// 開啟多個彈窗後
+open({ title: '彈窗 1', content: '...' })
+open({ title: '彈窗 2', content: '...' })
+open({ title: '彈窗 3', content: '...' })
+
+// 一次全部關閉
+closeAll()"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- 狀態追蹤 -->
+        <ShowcaseCard
+          title="5. 狀態追蹤"
+          description="即時追蹤彈窗狀態"
+          full-width
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              取得目前所有彈窗的狀態資訊。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { hasModal, modalCount, modals } = useModal()
+
+// hasModal: 是否有彈窗開啟
+console.log(hasModal.value)  // true/false
+
+// modalCount: 彈窗數量
+console.log(modalCount.value)  // 0, 1, 2...
+
+// modals: 所有彈窗的詳細資訊
+console.log(modals.value)  // [{ id, config, isVisible }]"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
@@ -296,5 +470,68 @@ const customResult = await open({
 .glass-btn.danger:hover {
   background: rgba(239, 68, 68, 0.3);
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

@@ -7,7 +7,6 @@
 
 interface Props {
   title?: string
-  icon?: string
 }
 
 defineProps<Props>()
@@ -18,12 +17,6 @@ defineProps<Props>()
     <div class="section-header">
       <h2 class="section-title">
         <span class="title-text">{{ title }}</span>
-        <span
-          v-if="icon"
-          class="title-icon"
-        >
-          {{ icon }}
-        </span>
       </h2>
       <div class="title-decoration"></div>
     </div>

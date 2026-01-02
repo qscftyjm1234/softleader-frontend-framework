@@ -19,7 +19,6 @@ import IButton from '@/components/uiInterface/IButton.vue'
 import IInput from '@/components/uiInterface/IInput.vue'
 
 import { iconCategories } from '../data/mdi-icons'
-// import { SoftLeaderIcon } from '@/assets/icons' // 已改為自動引入
 
 // Tab 狀態管理
 const activeTab = ref('concept') // concept, usage, playground
@@ -104,8 +103,8 @@ definePageMeta({
             就是個殼，負責處理大小和顏色，裡面放什麼都行。
           </li>
           <li>
-            <strong class="text-sky-400">建議用 SVG</strong>
-            - 雖然有內建 MDI，但 SVG 縮放品質更好，顏色也好控制。
+            <strong class="text-sky-400">雙模支援</strong>
+            - 完整支援內建 **MDI (Material Design Icons)** 與 **自定義 SVG**，滿足所有情境。
           </li>
           <li>
             <strong class="text-sky-400">想放啥放啥</strong>
@@ -223,10 +222,10 @@ definePageMeta({
           </template>
         </ShowcaseCard>
 
-        <!-- SoftLeader Icon -->
+        <!-- Custom Icon -->
         <ShowcaseCard
-          title="公司Icon"
-          description="使用 assets/icons 中的 SVG 檔案，支援自動去除非標準尺寸與智慧變色"
+          title="自定義 SVG (Custom Icons)"
+          description="使用 assets/icons 中的 SVG 檔案，必須使用 `svg-` 前綴 (例如: svg-softleader)"
         >
           <div class="demo-area d-flex align-center gap-4 flex-wrap">
             <!-- 1. 原始 Logo (多色) -->
@@ -303,6 +302,17 @@ definePageMeta({
               placeholder="Email Address"
             />
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<!-- 按鈕整合 -->
+<IButton prepend-icon="mdi-check" color="success">Save</IButton>
+<IButton prepend-icon="mdi-delete" variant="text" color="error" />
+
+<!-- 輸入框整合 -->
+<IInput prepend-icon="mdi-email" placeholder="Email Address" />'
+              label="使用方式"
+            />
+          </template>
         </ShowcaseCard>
       </div>
 

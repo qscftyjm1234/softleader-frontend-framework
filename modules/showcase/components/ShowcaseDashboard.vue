@@ -4,16 +4,14 @@ import ICard from '@/components/uiInterface/ICard.vue'
 
 const componentsList = [
   {
-    title: '元件展示',
-    subtitle: 'Component Showcase',
+    title: '元件架構',
     desc: '三層架構設計與基礎元件總覽',
     icon: 'mdi-view-dashboard',
     to: '/showcase/component-showcase',
     color: '#2979FF'
   },
   {
-    title: '圖示系統',
-    subtitle: 'Icon System',
+    title: 'Icon',
     desc: 'MDI 圖示整合與自定義 SVG 支援',
     icon: 'mdi-emoticon-happy-outline',
     to: '/showcase/icon',
@@ -21,7 +19,6 @@ const componentsList = [
   },
   {
     title: '檔案上傳',
-    subtitle: 'File Upload',
     desc: '拖曳上傳、預覽與驗證機制',
     icon: 'mdi-upload',
     to: '/showcase/file-upload',
@@ -29,7 +26,6 @@ const componentsList = [
   },
   {
     title: '檔案下載',
-    subtitle: 'File Download',
     desc: '多格式檔案下載與匯出',
     icon: 'mdi-download',
     to: '/showcase/file-download',
@@ -37,23 +33,27 @@ const componentsList = [
   },
   {
     title: '彈窗管理',
-    subtitle: 'Modal System',
     desc: '統一的彈窗與對話框控制',
     icon: 'mdi-window-maximize',
     to: '/showcase/modal',
     color: '#AB47BC'
   },
   {
+    title: '業務表單',
+    desc: 'Email、手機與日期選擇等業務元件',
+    icon: 'mdi-form-textbox',
+    to: '/showcase/business-form',
+    color: '#43a047'
+  },
+  {
     title: '載入狀態',
-    subtitle: 'Loading State',
     desc: '全域 Loading Queue 管理',
     icon: 'mdi-progress-clock',
     to: '/showcase/loading',
     color: '#EC407A'
   },
   {
-    title: '資料檢測器',
-    subtitle: 'Data Inspector',
+    title: '假資料',
     desc: 'Mock Data 與狀態檢視工具',
     icon: 'mdi-eye-outline',
     to: '/showcase/data-inspector',
@@ -61,7 +61,6 @@ const componentsList = [
   },
   {
     title: '通知系統',
-    subtitle: 'Notify System',
     desc: '全域 Snackbar 通知管理',
     icon: 'mdi-bell-ring-outline',
     to: '/showcase/notify',
@@ -72,7 +71,6 @@ const componentsList = [
 const functionsList = [
   {
     title: 'API 管理',
-    subtitle: 'API Management',
     desc: 'Repository 模式與攔截器',
     icon: 'mdi-api',
     to: '/showcase/api-demo',
@@ -80,7 +78,6 @@ const functionsList = [
   },
   {
     title: 'Mock API',
-    subtitle: 'Mock Server',
     desc: '前端模擬資料伺服器',
     icon: 'mdi-server-network',
     to: '/showcase/mock-api',
@@ -88,7 +85,6 @@ const functionsList = [
   },
   {
     title: '日期時間',
-    subtitle: 'DateTime',
     desc: '格式化、計算與時區處理',
     icon: 'mdi-calendar-clock',
     to: '/showcase/datetime',
@@ -96,7 +92,6 @@ const functionsList = [
   },
   {
     title: '表單驗證',
-    subtitle: 'Validation',
     desc: '常用規則與客製化驗證',
     icon: 'mdi-checkbox-marked-circle-outline',
     to: '/showcase/validation',
@@ -104,7 +99,6 @@ const functionsList = [
   },
   {
     title: '格式化工具',
-    subtitle: 'Formatter',
     desc: '數字、貨幣與字串格式化',
     icon: 'mdi-format-text',
     to: '/showcase/formatter',
@@ -112,7 +106,6 @@ const functionsList = [
   },
   {
     title: '選項系統',
-    subtitle: 'Options System',
     desc: '集中式枚舉資料管理',
     icon: 'mdi-form-select',
     to: '/showcase/options',
@@ -120,7 +113,6 @@ const functionsList = [
   },
   {
     title: '本地儲存',
-    subtitle: 'Storage',
     desc: 'LocalStorage / Session 封裝',
     icon: 'mdi-database-outline',
     to: '/showcase/storage',
@@ -128,7 +120,6 @@ const functionsList = [
   },
   {
     title: '防抖節流',
-    subtitle: 'Debounce',
     desc: '效能最佳化與執行控制',
     icon: 'mdi-timer-sand',
     to: '/showcase/debounce',
@@ -136,7 +127,6 @@ const functionsList = [
   },
   {
     title: '分頁管理',
-    subtitle: 'Pagination',
     desc: '資料分頁邏輯與計算',
     icon: 'mdi-book-open-page-variant',
     to: '/showcase/pagination',
@@ -144,7 +134,6 @@ const functionsList = [
   },
   {
     title: '權限管理',
-    subtitle: 'Permission',
     desc: '角色與功能權限控制',
     icon: 'mdi-shield-account',
     to: '/showcase/permission',
@@ -152,7 +141,6 @@ const functionsList = [
   },
   {
     title: '加解密',
-    subtitle: 'Encryption',
     desc: 'AES、Base64 與雜湊',
     icon: 'mdi-lock-outline',
     to: '/showcase/encryption',
@@ -160,7 +148,6 @@ const functionsList = [
   },
   {
     title: '日誌系統',
-    subtitle: 'Logger',
     desc: '分級日誌與除錯追蹤',
     icon: 'mdi-console',
     to: '/showcase/logger',
@@ -168,7 +155,6 @@ const functionsList = [
   },
   {
     title: '錯誤處理',
-    subtitle: 'Error Handler',
     desc: '全域錯誤捕捉與回報',
     icon: 'mdi-alert-circle-outline',
     to: '/showcase/error-handler',
@@ -176,7 +162,6 @@ const functionsList = [
   },
   {
     title: '網路監控',
-    subtitle: 'Network',
     desc: '連線狀態與速度偵測',
     icon: 'mdi-wifi',
     to: '/showcase/network',
@@ -184,7 +169,6 @@ const functionsList = [
   },
   {
     title: '閒置偵測',
-    subtitle: 'Idle Detect',
     desc: '使用者活動監控',
     icon: 'mdi-sleep',
     to: '/showcase/idle',
@@ -192,7 +176,6 @@ const functionsList = [
   },
   {
     title: '資安防護',
-    subtitle: 'Security',
     desc: 'XSS、Headers 與安全機制',
     icon: 'mdi-security',
     to: '/showcase/security',
@@ -212,10 +195,7 @@ const functionsList = [
     >
       <!-- Header -->
       <div class="header-section">
-        <h1 class="page-title">
-          元件模組
-          <span class="subtitle">Component Modules</span>
-        </h1>
+        <h1 class="page-title">元件模組</h1>
         <p class="page-desc">
           前端開發套件的功能演練與操作手冊，分為「介面元件」與「核心功能」兩大類別。
         </p>
@@ -246,12 +226,11 @@ const functionsList = [
                   >
                     <v-icon
                       :icon="item.icon"
-                      size="24"
+                      size="20"
                     />
                   </div>
                   <div>
                     <h3 class="card-title">{{ item.title }}</h3>
-                    <div class="card-subtitle">{{ item.subtitle }}</div>
                   </div>
                 </div>
               </template>
@@ -286,12 +265,11 @@ const functionsList = [
                   >
                     <v-icon
                       :icon="item.icon"
-                      size="24"
+                      size="20"
                     />
                   </div>
                   <div>
                     <h3 class="card-title">{{ item.title }}</h3>
-                    <div class="card-subtitle">{{ item.subtitle }}</div>
                   </div>
                 </div>
               </template>
@@ -438,8 +416,8 @@ const functionsList = [
 }
 
 .icon-box {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;

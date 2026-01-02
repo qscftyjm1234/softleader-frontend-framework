@@ -60,37 +60,154 @@ definePageMeta({
     title="網路狀態 (Network)"
     description="完整的網路狀態監控模組，提供線上/離線狀態、網路類型和速度偵測。核心特色：即時監控、網路類型、下載速度、省流量模式。"
   >
-    <!-- General Usage -->
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="網路狀態監控的核心能力"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用屬性：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const { isOnline, effectiveType, downlink, rtt, saveData } = useNetwork()
+
+// 1. 監聽連線狀態
+watch(isOnline, (online) => {
+  if (online) {
+    syncData() // 恢復連線時同步資料
+  } else {
+    pauseUpload() // 斷線時暫停上傳
+  }
+})
+
+// 2. 根據網速調整體驗
+if (effectiveType.value === '4g') {
+  loadHighQualityVideo()
+} else {
+  loadLowQualityVideo()
+}"
+            label="useNetwork() 功能總覽"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>即時狀態:</strong>
+              Reactive 的線上/離線狀態偵測，支援 Watch 監聽
+            </li>
+            <li>
+              <strong>連線品質:</strong>
+              偵測網路類型 (4g/3g/2g)、下行速度 (Mbps) 與延遲 (RTT)
+            </li>
+            <li>
+              <strong>流量感知:</strong>
+              支援 Save-Data 模式偵測，協助實現適應性體驗
+            </li>
+            <li>
+              <strong>跨瀏覽器:</strong>
+              自動處理不同瀏覽器的 API 相容性問題
+            </li>
+          </ul>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- API 參考 -->
     <ShowcaseSection
-      title="General Usage"
+      title="API 參考"
       icon="📝"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="監控機制"
-          description="即時反應網路變化"
+          title="1. Connection Status"
+          description="連線狀態屬性"
         >
           <div class="demo-area">
-            <ShowcaseCodeBlock
-              code="const { isOnline, effectiveType, saveData } = useNetwork()
-
-// 監控網路狀態
-watch(isOnline, (online) => {
-  if (!online) {
-    showError('網路連線中斷')
-  } else {
-    showSuccess('網路已恢復')
-  })"
-              label="Basic Usage"
-            />
+            <p class="method-desc">
+              <strong>isOnline</strong>
+              (Boolean)
+              <br />
+              當前是否連上網路。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>offlineAt</strong>
+              (Timestamp)
+              <br />
+              最後一次離線的時間點。
+            </p>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const isConnected = computed(() => isOnline.value)"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. Network Quality"
+          description="網路品質與速度"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>effectiveType</strong>
+              ('slow-2g' | '2g' | '3g' | '4g')
+              <br />
+              有效網路連線類型。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>downlink</strong>
+              (Number)
+              <br />
+              預估下行速度 (Mbps)。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>rtt</strong>
+              (Number)
+              <br />
+              預估往返延遲 (ms)。
+            </p>
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. User Preference"
+          description="使用者偏好"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>saveData</strong>
+              (Boolean)
+              <br />
+              使用者是否開啟了「省流量模式」。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="if (saveData.value) {
+  images.value = lowResImages
+}"
+              label="適應性載入"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">
@@ -193,5 +310,66 @@ watch(isOnline, (online) => {
 </template>
 
 <style scoped>
-/* Scoped styles replaced by Tailwind utilities */
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
 </style>

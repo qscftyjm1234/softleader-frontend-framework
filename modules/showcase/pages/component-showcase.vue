@@ -55,6 +55,8 @@ definePageMeta({
 
 // 業務元件示範資料
 const email = ref('')
+const corporateEmail = ref('')
+const personalEmail = ref('')
 const phone = ref('')
 const password = ref('')
 const gender = ref('')
@@ -125,6 +127,7 @@ const tableData = [
 const activeTab = ref('migration') // architecture, business, interface
 const tabOptions = [
   { label: '架構與框架替換', value: 'migration' },
+  { label: '開發原則', value: 'principles' },
   { label: '業務邏輯層展示', value: 'business' },
   { label: '介面層展示', value: 'interface' }
 ]
@@ -658,6 +661,426 @@ defineProps<{ title: string }>()
       </div>
     </ShowcaseSection>
 
+    <!-- 開發原則展示 -->
+    <ShowcaseSection
+      v-show="activeTab === 'principles'"
+      title="開發原則與心法"
+    >
+      <p class="section-desc">
+        關於如何在介面層 (Interface Layer) 與不同 UI 框架之間取得平衡的核心觀念。
+      </p>
+
+      <div class="flex flex-col gap-12">
+        <!-- 原則 1: 介面層 Props 設計 -->
+        <ShowcaseCard
+          title="1. 介面層 Props 怎麼定？"
+          description="核心概念：只管長相，不管身分"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            介面層元件要夠
+            <strong>「笨」</strong>
+            ，它只負責畫畫面，完全不知道業務邏輯。
+            <br />
+            <strong>口訣：</strong>
+            如果屬性叫 `isVip` 就錯了！因為介面層不該知道什麼是 VIP，它只知道 `borderColor="gold"`。
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- 錯誤示範 -->
+            <div class="bg-red-900/20 border border-red-500/30 rounded p-4 mb-4">
+              <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
+                <v-icon icon="mdi-close-circle" />
+                錯誤 (跟業務綁死)
+              </div>
+              <ShowcaseCodeBlock
+                language="typescript"
+                code="// IAvatar.vue
+interface Props {
+  isVip: boolean // ❌ 介面層不用知道是不是 VIP
+  role: string   // ❌ 業務邏輯滲透
+}"
+                :show-copy="false"
+              />
+            </div>
+
+            <!-- 正確示範 -->
+            <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
+              <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
+                <v-icon icon="mdi-check-circle" />
+                正確 (只管外觀)
+              </div>
+              <ShowcaseCodeBlock
+                language="typescript"
+                code="// IAvatar.vue
+interface Props {
+  borderColor: string // ✅ 讓業務層決定傳什麼顏色
+  badgeStatus: string // ✅ 通用的狀態燈
+}"
+                :show-copy="false"
+              />
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- 原則 2: 跨框架介接策略 -->
+        <ShowcaseCard
+          title="2. 怎麼讓底層框架「聽懂」我們的標準？"
+          description="核心概念：講我們的話 + 內部偷翻譯"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            不要被框架牽著鼻子走。我們定義一套自己的
+            <strong>「標準」</strong>
+            ，然後在元件肚子裡
+            <strong>「偷偷翻譯」</strong>
+            給底層框架聽。
+            <br />
+            這樣以後換框架，只要改這裡的翻譯邏輯，外面幾百個頁面完全不用動！
+          </div>
+
+          <div class="bg-slate-800 rounded-lg p-4 mb-4">
+            <div class="text-xs text-slate-400 mb-2 font-mono">
+              components/uiInterface/IButton.vue
+            </div>
+            <ShowcaseCodeBlock
+              language="vue"
+              code='<script setup>
+// 1. 定義我們自己的標準 (對外只支援這三種)
+const props = defineProps({
+  size: "small" | "medium" | "large"
+})
+
+// 2. 內部翻譯機 (Mapping)
+const frameworkSize = computed(() => {
+  // 建立翻譯對照表
+  const map = {
+    "small": "x-small",   // 我們叫 small，Vuetify 覺得這叫 x-small
+    "medium": "default",  // 我們叫 medium，Vuetify 叫 default
+    "large": "large"      // 我們叫 large，剛好他也叫 large
+  }
+  // 查表翻譯
+  return map[props.size] || "default"
+})
+</script>
+
+<template>
+  <v-btn :size="frameworkSize">
+    <slot />
+  </v-btn>
+</template>'
+              :show-copy="false"
+            />
+          </div>
+        </ShowcaseCard>
+
+        <!-- 原則 3: 功能對等與取捨 -->
+        <ShowcaseCard
+          title="3. 每個框架功能都不一樣怎麼辦？"
+          description="核心概念：太花俏的不要，為了以後好搬家"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            我們只做「大家都有」的
+            <strong>『最大公約數』</strong>
+            。
+            <br />
+            那些只有某個框架才有的
+            <strong>『獨門絕技』</strong>
+            (例如超炫水波紋)，雖然很帥，但用了你就被框架綁架了。 為了以後想搬家時可以
+            <strong>「說走就走」</strong>
+            ，這些花俏功能我們
+            <strong>一律不碰</strong>
+            。
+          </div>
+
+          <ShowcaseAlert type="warning">
+            <template #title>
+              <div class="font-bold flex items-center gap-2">
+                <v-icon icon="mdi-alert" />
+                給團隊的決策 SOP
+              </div>
+            </template>
+            <ul class="list-disc list-inside text-sm mt-2 space-y-1 text-slate-200">
+              <li>
+                如果是
+                <strong>純裝飾</strong>
+                (如水波紋) ➔ 忽略它 (有就有，沒有就算了)。
+              </li>
+              <li>
+                如果是
+                <strong>一定要有的</strong>
+                (如 Loading) ➔ 一定要做 (框架沒有就自己用 CSS 補)。
+              </li>
+              <li>
+                如果是
+                <strong>太複雜的功能</strong>
+                (如複雜表格排版) ➔ 不要塞進通用元件，另外寫個專用的。
+              </li>
+            </ul>
+          </ShowcaseAlert>
+        </ShowcaseCard>
+
+        <!-- 原則 4: 那剩下 80% 的屬性跟事件怎麼辦？ -->
+        <ShowcaseCard
+          title="4. 那剩下 80% 的屬性跟事件怎麼辦？"
+          description="核心概念：別忙了，讓它自己過"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            我們只定義 20% 最常用的屬性 (Core Props)。剩下的 80% (如 `aria-label`, `data-test`,
+            `@mouseover`, `&lt;v-btn&gt;` 獨有的 `elevation`)， 我們使用 Vue 的
+            <code>$attrs</code>
+            讓它自己
+            <strong>「穿透」</strong>
+            過去。
+            <br />
+            這樣既保持介面乾淨，又保留了底層框架的靈活性。
+          </div>
+
+          <div class="bg-slate-800 rounded-lg p-4">
+            <ShowcaseCodeBlock
+              language="vue"
+              code='<!-- IButton.vue -->
+<template>
+  <!-- 
+    v-bind="$attrs" 就像開了一扇任意門
+    外層傳進來的所有未知屬性和事件 (@click, @hover)，
+    都會自動穿過這扇門，貼到底層元件上。
+  -->
+  <v-btn v-bind="$attrs">
+    <slot />
+  </v-btn>
+</template>'
+              :show-copy="false"
+            />
+          </div>
+        </ShowcaseCard>
+
+        <!-- 原則 5: 介面層膨脹限制 -->
+        <ShowcaseCard
+          title="5. 介面層會一直膨脹嗎？"
+          description="核心概念：有門禁卡的，不是什麼都能進"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            介面層會隨時間
+            <strong>「橫向長大」</strong>
+            (變更多樣式)，但絕對不能
+            <strong>「縱向長大」</strong>
+            (變複雜)。我們有嚴格的門禁：
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
+              <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
+                <v-icon icon="mdi-check-circle" />
+                歡迎光臨 (准入標準)
+              </div>
+              <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                <li>
+                  <strong>全站標準 (Must Have)</strong>
+                  ：設計師下令「全站按鈕都要有毛玻璃效果」，這種就可以進來。
+                </li>
+                <li>
+                  <strong>懶人共識 (High Frequency)</strong>
+                  ：發現工程師 80% 的時間都在手寫
+                  <code>elevation="0"</code>
+                  ，那就乾脆做成
+                  <code>flat</code>
+                  屬性，讓大家早點下班。
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-red-900/20 border border-red-500/30 rounded p-4">
+              <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
+                <v-icon icon="mdi-cancel" />
+                禁止進入 (滾去業務層)
+              </div>
+              <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                <li>
+                  <strong>業務資料</strong>
+                  ：看到
+                  <code>userId</code>
+                  ,
+                  <code>orderStatus</code>
+                  這種變數與屬性，請立刻踢出去。
+                </li>
+                <li>
+                  <strong>一次性特效</strong>
+                  ：只在「雙11活動頁」出現一次的煙火，為了它改全域元件不划算。
+                </li>
+                <li>
+                  <strong>API 邏輯</strong>
+                  ：在介面層裡面寫
+                  <code>fetchData</code>
+                  是死罪。
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <ShowcaseAlert
+            type="success"
+            class="mt-4"
+          >
+            結論：介面層永遠都要保持
+            <strong>「無腦」</strong>
+            ，它只是化妝師，把你畫漂亮就好，管你是要去相親還是面試。
+          </ShowcaseAlert>
+        </ShowcaseCard>
+
+        <!-- 原則 6: 翻譯官 (Event Translation) -->
+        <ShowcaseCard
+          title="6. 如果底層框架事件名稱很奇怪？"
+          description="核心概念：介面層就是翻譯官"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            如果底層框架不講武德，不叫 `blur` 偏偏要叫 `lost-focus` 怎麼辦？
+            <br />
+            <strong>千萬不要</strong>
+            去改你的業務邏輯！請在介面層 (UI Interface) 裡把它
+            <strong>「翻譯」</strong>
+            成標準的 HTML 事件。
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- 業務層 -->
+            <div class="bg-slate-800 rounded p-4 border border-slate-700">
+              <div class="text-xs text-slate-400 mb-2 font-mono">Business Layer (老闆)</div>
+              <div class="text-sm text-white mb-2">「我只會講標準英語 `blur`，其他我不管。」</div>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<IInput @blur="validate" />'
+                :show-copy="false"
+              />
+            </div>
+
+            <!-- 介面層 -->
+            <div class="bg-indigo-900/20 rounded p-4 border border-indigo-500/30">
+              <div class="text-xs text-indigo-300 mb-2 font-mono">Interface Layer (翻譯官)</div>
+              <div class="text-sm text-white mb-2">「沒問題，我來幫你轉接！」</div>
+              <ShowcaseCodeBlock
+                language="vue"
+                code='<template>
+  <!-- 遇到怪框架，手動接起來轉發 -->
+  <WeirdInput 
+    @lost-focus="emit("blur", $event)" 
+  />
+</template>'
+                :show-copy="false"
+              />
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- 原則 7: 邏輯元件怎麼設計？ -->
+        <ShowcaseCard
+          title="7. 邏輯元件怎麼設計？(Disabled 為例)"
+          description="核心概念：資料整包丟進去，邏輯關門自己算"
+        >
+          <div class="text-sm text-slate-300 leading-relaxed my-10">
+            不要讓頁面層 (Page) 去煩惱「餘額不足要不要鎖按鈕」。
+            <br />
+            <strong>錯誤寫法：</strong>
+            頁面層寫了一堆 `if (money &lt; 0 || isFrozen)`，又髒又難維護。
+            <br />
+            <strong>正確寫法：</strong>
+            直接把整包 `User` 資料丟給元件，讓元件自己算出 `disabled` 狀態。
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- 錯誤示範 -->
+            <div class="bg-red-900/20 border border-red-500/30 rounded p-4 mb-4">
+              <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
+                <v-icon icon="mdi-close-circle" />
+                錯誤 (頁面邏輯管太多)
+              </div>
+              <ShowcaseCodeBlock
+                language="html"
+                code='<!-- Page.vue -->
+<PayButton 
+  :disabled="user.money <= 0 || user.isFrozen" 
+/>'
+                :show-copy="false"
+              />
+            </div>
+
+            <!-- 正確示範 -->
+            <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
+              <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
+                <v-icon icon="mdi-check-circle" />
+                正確 (元件自己算)
+              </div>
+              <ShowcaseCodeBlock
+                language="html"
+                code='<!-- Page.vue -->
+<PayButton :user="user" />'
+                :show-copy="false"
+              />
+            </div>
+          </div>
+
+          <!-- override -->
+          <div class="mt-6 bg-slate-800 rounded p-4 border border-slate-700">
+            <div class="flex items-center gap-2 text-sky-400 font-bold mb-2">
+              <v-icon icon="mdi-lightbulb-on" />
+              進階技巧：預留後路 (Override Pattern)
+            </div>
+            <div class="text-sm text-slate-300 mb-2">
+              <strong>緊急狀況專用：</strong>
+              <br />
+              有時候頁面就是想強制介入 (例如整頁卡住 Loading 時)，我們留一個
+              <code>disabled</code>
+              開孔，讓外部可以強制覆蓋 (Override) 內部邏輯。
+            </div>
+            <ShowcaseCodeBlock
+              language="javascript"
+              code='// PayButton.vue (業務層)
+const props = defineProps(["user", "disabled"])
+
+// 1. 內部邏輯：沒錢就鎖
+const isNoMoney = computed(() => props.user.money <= 0)
+
+// 2. 最終結果：(內部沒錢) OR (外部強制鎖)
+const finalDisabled = computed(() => isNoMoney.value || props.disabled)'
+              :show-copy="false"
+            />
+          </div>
+
+          <!-- Q: API 欄位改名怎麼辦？ -->
+          <ShowcaseAlert
+            type="warning"
+            class="mt-6"
+          >
+            <template #title>
+              <div class="font-bold flex items-center gap-2">
+                <v-icon icon="mdi-help-circle" />
+                Q: 萬一 API 欄位從 `disabled` 改成 `disableds` 怎麼辦？
+              </div>
+            </template>
+            <div class="text-sm text-slate-200 mt-2">
+              <strong>A: 請在門口 (API 層) 就把它擋下來！</strong>
+              <br />
+              元件不該配合髒資料。請使用
+              <strong>Adapter Pattern (資料轉接器)</strong>
+              ， 在拿到 API 資料的第一時間，就把它「清洗」成標準格式。
+            </div>
+            <ShowcaseCodeBlock
+              language="javascript"
+              class="mt-2"
+              code='// useUserApi.ts (API 層)
+const fetchUser = async () => {
+  const { data } = await api.get("/user")
+  return {
+    ...data,
+    // 這裡就先洗乾淨，元件永遠只看到標準的 disabled
+    disabled: data.disableds || data.disabled
+  }
+}'
+              :show-copy="false"
+            />
+          </ShowcaseAlert>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
     <!-- 業務邏輯層展示 -->
     <ShowcaseSection
       v-show="activeTab === 'business'"
@@ -685,6 +1108,53 @@ defineProps<{ title: string }>()
             <div class="result-text">
               值:
               <span class="value">{{ email || '(空)' }}</span>
+            </div>
+          </template>
+        </ShowcaseCard>
+
+        <!-- EmailInput Variants -->
+        <ShowcaseCard
+          title="EmailInput (業務變體)"
+          description="透過 Props 啟用特定的業務規則"
+        >
+          <div class="demo-area flex flex-col gap-4">
+            <!-- 1. 公司信箱限制 -->
+            <div>
+              <div class="text-sm text-slate-400 mb-2">1. 限制公司信箱 (corporate-only)</div>
+              <EmailInput
+                v-model="corporateEmail"
+                placeholder="請輸入 @mycompany.com"
+                corporate-only
+              />
+            </div>
+
+            <!-- 2. 指定網域清單 -->
+            <div>
+              <div class="text-sm text-slate-400 mb-2">2. 指定網域 (gmail, outlook)</div>
+              <EmailInput
+                v-model="personalEmail"
+                placeholder="只允許 gmail 或 outlook"
+                :allowed-domains="['gmail.com', 'outlook.com']"
+              />
+            </div>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code='<!-- 變體 1: 公司信箱 -->
+<EmailInput v-model="email" corporate-only />
+
+<!-- 變體 2: 指定網域 -->
+<EmailInput 
+  v-model="email" 
+  :allowed-domains="[&apos;gmail.com&apos;, &apos;outlook.com&apos;]" 
+/>'
+              label="使用範例"
+            />
+            <div class="result-text">
+              公司:
+              <span class="value">{{ corporateEmail || '(空)' }}</span>
+              | 個人:
+              <span class="value">{{ personalEmail || '(空)' }}</span>
             </div>
           </template>
         </ShowcaseCard>

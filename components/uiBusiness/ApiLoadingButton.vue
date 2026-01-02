@@ -33,13 +33,19 @@ const handleClick = async () => {
     console.error(e)
   }
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ILoadingButton
+    v-bind="$attrs"
     variant="primary"
     @click="handleClick"
   >
     {{ label }}
   </ILoadingButton>
 </template>
+```

@@ -7,7 +7,7 @@
  * 檔案上傳選項
  */
 export interface FileUploadOptions {
-  /** API 端點 */
+  /** API URL */
   endpoint?: string
   /** HTTP 方法 */
   method?: 'POST' | 'PUT' | 'PATCH'
@@ -19,11 +19,11 @@ export interface FileUploadOptions {
   globalLoading?: boolean
   /** 自訂 Loading Ref */
   loadingRef?: Ref<boolean>
-  /** 上傳進度回調 */
+  /** 上傳進度回呼 */
   onProgress?: (progress: number) => void
-  /** 上傳成功後的回調 */
+  /** 上傳成功後的回呼 */
   onSuccess?: (response: any) => void
-  /** 上傳失敗後的回調 */
+  /** 上傳失敗後的回呼 */
   onError?: (error: Error) => void
   /** 是否自動顯示成功訊息 */
   autoSuccess?: boolean
@@ -251,7 +251,7 @@ export function useFileUpload() {
         }
       })
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`檔案 ${file.name} 上傳成功`)
       }
@@ -339,7 +339,7 @@ export function useFileUpload() {
         body: formData
       })
 
-      // 成功回調
+      // 成功回呼
       if (autoSuccess) {
         notify.success(`成功上傳 ${files.length} 個檔案`)
       }
@@ -467,6 +467,26 @@ export function useFileUpload() {
     return validateFiles(files, options)
   }
 
+  /**
+   * 從事件中提取檔案（支援 Input change 與 Drag drop）
+   * @param event - Input Event 或 Drag Event
+   * @returns 檔案陣列
+   */
+  const getSelectedFiles = (event: Event | DragEvent): File[] => {
+    let files: FileList | null = null
+
+    if (event.type === 'drop') {
+      // Drag Event
+      files = (event as DragEvent).dataTransfer?.files || null
+    } else {
+      // Input Event
+      const target = event.target as HTMLInputElement
+      files = target.files
+    }
+
+    return files ? Array.from(files) : []
+  }
+
   return {
     uploadFile,
     uploadFiles,
@@ -476,6 +496,7 @@ export function useFileUpload() {
     validate,
     validateMultiple,
     // 工具方法
+    getSelectedFiles,
     formatFileSize,
     FILE_TYPE_GROUPS
   }

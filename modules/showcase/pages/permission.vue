@@ -149,7 +149,7 @@ addPermission('write')
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground (互動式演示)"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">

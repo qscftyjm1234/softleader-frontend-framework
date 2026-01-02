@@ -38,11 +38,11 @@ const demoTextContent = '這是一個測試文字檔案\n包含多行內容\n用
 const handleDownloadFromUrl = async () => {
   isDownloadingUrl.value = true
   try {
-    // 使用真實的公開 PDF 進行演示
+    // 使用JPG
     await downloadFromUrl(
-      'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      'https://images.pexels.com/photos/5462207/pexels-photo-5462207.jpeg?w=600&h=500&dpr=1',
       {
-        filename: 'sample.pdf',
+        filename: 'sample.jpg',
         autoSuccess: true,
         autoError: true
       }
@@ -129,14 +129,11 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="檔案下載系統 (File Download System)"
+    title="檔案下載系統"
     description="統一的檔案下載處理模組，支援多種下載方式與檔案類型。"
   >
-    <!-- General Usage -->
-    <ShowcaseSection
-      title="General Usage"
-      icon="📝"
-    >
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
       <div class="component-grid">
         <ShowcaseCard
           title="基礎用法"
@@ -146,16 +143,16 @@ definePageMeta({
           <div class="demo-area">
             <ul class="benefit-list">
               <li>
-                <strong>API Download:</strong>
+                <strong>API 下載:</strong>
                 支援 GET/POST 與自訂 Headers
               </li>
               <li>
-                <strong>Blob/Base64:</strong>
-                支援前端生成的內容下載
+                <strong>多元來源:</strong>
+                支援 Blob、Base64、文字、JSON
               </li>
               <li>
-                <strong>Auto MIME:</strong>
-                自動偵測並設定正確的 MIME Type
+                <strong>自動偵測:</strong>
+                自動判斷 MIME 類型（.pdf, .json, .png 等）
               </li>
             </ul>
           </div>
@@ -163,18 +160,15 @@ definePageMeta({
             <ShowcaseCodeBlock
               code="const { downloadFromApi } = useFileDownload()
 await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
-              label="Composable Usage"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <!-- Interactive Playground -->
-    <ShowcaseSection
-      title="Interactive Playground"
-      icon="🎮"
-    >
+    <!-- 互動測試 -->
+    <ShowcaseSection title="互動測試">
       <div class="component-grid">
         <!-- 1. downloadFromUrl -->
         <ShowcaseCard
@@ -187,13 +181,52 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
               class="w-full mb-4"
               @click="handleDownloadFromUrl"
             >
-              下載 PDF 範例
+              下載 JPG 範例
             </IButton>
-            <div class="result-text">
-              <span class="label">Method:</span>
-              <span class="value">downloadFromUrl(url, options)</span>
-            </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromUrl } = useFileDownload()
+
+await downloadFromUrl(
+  'https://images.pexels.com/photos/5462207/pexels-photo-5462207.jpeg?w=600&h=500&dpr=1',
+  {
+    filename: 'document.pdf',
+    autoSuccess: true
+  }
+)"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- 1-2. 下載靜態圖片 -->
+        <ShowcaseCard
+          title="1-2. 下載靜態圖片"
+          description="從前端 public 資料夾下載靜態檔案。"
+        >
+          <div class="demo-area">
+            <IButton
+              class="w-full mb-4"
+              @click="
+                () => downloadFromUrl('/favicon.jpg', { filename: 'logo.jpg', autoSuccess: true })
+              "
+            >
+              下載網站 Logo
+            </IButton>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromUrl } = useFileDownload()
+
+// 下載 public 資料夾中的靜態檔案
+await downloadFromUrl('/favicon.jpg', {
+  filename: 'logo.jpg',
+  autoSuccess: true
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
 
         <!-- 2. downloadFromApi -->
@@ -209,11 +242,20 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
             >
               從 API 下載
             </IButton>
-            <div class="result-text">
-              <span class="label">Method:</span>
-              <span class="value">downloadFromApi(apiUrl, options)</span>
-            </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromApi } = useFileDownload()
+
+await downloadFromApi('/api/reports/export', {
+  filename: 'report.xlsx',
+  method: 'POST',
+  data: { year: 2024 },
+  autoSuccess: true
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
 
         <!-- 3. downloadFromBase64 -->
@@ -229,11 +271,19 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
             >
               下載 Base64 圖片
             </IButton>
-            <div class="result-text">
-              <span class="label">Input Size:</span>
-              <span class="value">{{ demoBase64.length }} chars</span>
-            </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromBase64 } = useFileDownload()
+
+const base64 = 'data:image/png;base64,iVBORw0KG...'
+
+downloadFromBase64(base64, 'image.png', {
+  autoSuccess: true
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
 
         <!-- 4. downloadFromText -->
@@ -243,7 +293,6 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
         >
           <div class="demo-area">
             <IButton
-              variant="outlined"
               class="w-full mb-4"
               @click="handleDownloadFromText"
             >
@@ -255,6 +304,18 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
               </div>
             </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromText } = useFileDownload()
+
+const content = '這是文字內容\n多行文字'
+
+downloadFromText(content, 'note.txt', {
+  autoSuccess: true
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
 
         <!-- 5. downloadFromJson -->
@@ -264,7 +325,6 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
         >
           <div class="demo-area">
             <IButton
-              variant="outlined"
               class="w-full mb-4"
               @click="handleDownloadFromJson"
             >
@@ -277,6 +337,21 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
               :max-height="100"
             />
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromJson } = useFileDownload()
+
+const data = {
+  name: '測試資料',
+  items: [{ id: 1, value: 100 }]
+}
+
+downloadFromJson(data, 'data.json', {
+  autoSuccess: true
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
 
         <!-- 6. downloadFromBlob -->
@@ -286,23 +361,32 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
         >
           <div class="demo-area">
             <IButton
-              variant="outlined"
               class="w-full mb-4"
               @click="handleDownloadFromCanvas"
             >
               下載 Canvas 圖片
             </IButton>
-            <div class="result-text">
-              <span class="value">Sources: Canvas, Screenshot, Generated Content</span>
-            </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromBlob } = useFileDownload()
+
+// 從 Canvas 取得 Blob
+canvas.toBlob((blob) => {
+  downloadFromBlob(blob, 'canvas.png', {
+    autoSuccess: true
+  })
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <!-- Advanced Features -->
+    <!-- 進階功能 -->
     <ShowcaseSection
-      title="Advanced Features"
+      title="進階功能"
       icon="⚙️"
     >
       <div class="component-grid">
@@ -310,14 +394,39 @@ await downloadFromApi('/api/reports/export', { filename: 'report.xlsx' })"
           title="Loading 狀態管理"
           description="整合全域或局部 Loading 狀態。"
         >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>相依模組：</strong>
+            </p>
+            <ul class="benefit-list">
+              <li>
+                <strong>useLoading:</strong>
+                全域 Loading 狀態管理
+              </li>
+              <li>
+                <strong>useNotify:</strong>
+                成功/失敗訊息通知
+              </li>
+            </ul>
+          </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="// 全域 Loading
-await downloadFromApi('/url', { globalLoading: true })
+              code="const { downloadFromApi } = useFileDownload()
+const isDownloading = ref(false)
 
-// 局部 Loading Ref
-await downloadFromApi('/url', { loadingRef: myRef })"
-              label="Configuration"
+// 方式 1：全域 Loading（整個畫面遮罩）
+await downloadFromApi('/api/export', { 
+  globalLoading: true  // 使用 useLoading()
+})
+
+// 方式 2：局部 Loading（只有按鈕 loading）
+await downloadFromApi('/api/export', { 
+  loadingRef: isDownloading  // 自訂 ref
+})
+
+// 方式 3：兩者都不用（無 loading 效果）
+await downloadFromApi('/api/export')"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -329,19 +438,59 @@ await downloadFromApi('/url', { loadingRef: myRef })"
           <div class="demo-area">
             <ul class="benefit-list">
               <li>
-                <strong>autoError:</strong>
-                自動顯示 Snackbar 錯誤
+                <strong>自動通知:</strong>
+                失敗時自動顯示錯誤訊息
               </li>
               <li>
-                <strong>onError:</strong>
-                自訂錯誤回呼函數
+                <strong>錯誤回呼:</strong>
+                可自訂錯誤處理函式
               </li>
               <li>
-                <strong>MIME:</strong>
-                自動判斷 .pdf, .json, .png 等類型
+                <strong>類型偵測:</strong>
+                根據副檔名自動設定 MIME Type
               </li>
             </ul>
           </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="取得下載資訊"
+          description="透過回呼函式取得下載結果。"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>可取得的資訊：</strong>
+            </p>
+            <ul class="benefit-list">
+              <li>
+                <strong>onSuccess:</strong>
+                下載成功時回傳檔案名稱
+              </li>
+              <li>
+                <strong>onError:</strong>
+                下載失敗時回傳錯誤物件
+              </li>
+            </ul>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { downloadFromUrl } = useFileDownload()
+
+await downloadFromUrl(url, {
+  filename: 'report.pdf',
+  onSuccess: (filename) => {
+    console.log('✓ 下載成功！')
+    console.log('檔名:', filename)
+    // 可以在這裡做後續處理
+  },
+  onError: (error) => {
+    console.error('✗ 下載失敗:', error.message)
+    // 可以在這裡做錯誤處理
+  }
+})"
+              label="使用範例"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
@@ -352,5 +501,60 @@ await downloadFromApi('/url', { loadingRef: myRef })"
 /* Scoped styles mainly for specific tweaks, largely relying on global Showcase styles */
 .w-full {
   width: 100%;
+}
+
+/* Benefit List - Enhanced styling */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 </style>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 /**
- * SmartTable - 智慧表格元件
+ * 業務元件 - 智慧表格元件
  *
- * 業務層 (Business Layer)：使用 uiInterface 層元件 + composables
- * 遵循三層架構：
- * - UI: 使用 ICard, IDataTable, ITextField 等介面層元件
- * - Logic: 使用 useTableData 管理資料載入
+ * 用途：封裝表格的業務邏輯、搜尋與分頁
+ * 特點：
+ * - 整合 ICard, IDataTable, ITextField 等元件
+ * - 自動處理資料載入與分頁 (useTableData)
+ * - 支援欄位定義與自定義渲染
  */
 import ICard from '~/components/uiInterface/ICard.vue'
 import ITextField from '~/components/uiInterface/ITextField.vue'
@@ -53,10 +54,15 @@ const getTagColor = (value: string): string => {
   if (value === 'Editor') return '#4CAF50'
   return '#9E9E9E'
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ICard
+    v-bind="$attrs"
     elevation="0"
     class="smart-table"
   >

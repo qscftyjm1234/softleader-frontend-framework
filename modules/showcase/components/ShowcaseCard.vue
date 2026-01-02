@@ -86,9 +86,10 @@ defineProps<Props>()
   padding: 1.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* 改為垂直排列 */
+  justify-content: center;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 0.5rem; /* 標題與副標題的間距 */
 }
 
 .header-content {

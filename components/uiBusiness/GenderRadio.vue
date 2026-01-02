@@ -51,11 +51,19 @@ const errorMessage = computed(() => {
 const handleChange = (value: string) => {
   emit('update:modelValue', value)
   emit('change', value)
+  emit('change', value)
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
-  <div class="gender-radio">
+  <div
+    class="gender-radio"
+    v-bind="$attrs"
+  >
     <div
       class="radio-group"
       :class="`radio-group--${layout}`"

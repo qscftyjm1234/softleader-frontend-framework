@@ -226,8 +226,8 @@ definePageMeta({
 
     <!-- Interactive Tests -->
     <ShowcaseSection
-      title="Interactive Tests (互動測試)"
-      icon="🧪"
+      title="互動測試"
+      icon="🎮"
     >
       <div class="component-grid">
         <!-- Upload Test -->

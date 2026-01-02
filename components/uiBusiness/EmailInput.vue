@@ -16,12 +16,18 @@ interface Props {
   placeholder?: string
   disabled?: boolean
   required?: boolean
+  // 1. 基本業務開關：是否為嚴格模式 (例如只能用公司信箱)
+  corporateOnly?: boolean
+  // 2. 進階彈性：允許傳入特定的網域清單
+  allowedDomains?: string[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: '請輸入 Email',
   disabled: false,
-  required: false
+  required: false,
+  corporateOnly: false,
+  allowedDomains: () => []
 })
 
 const emit = defineEmits<{
@@ -37,12 +43,28 @@ const isValid = computed(() => {
 })
 
 const errorMessage = computed(() => {
-  if (!props.modelValue && props.required) {
-    return 'Email 必填'
+  if (!props.modelValue) {
+    return props.required ? 'Email 必填' : ''
   }
-  if (props.modelValue && !isValid.value) {
+  if (!isValid.value) {
     return 'Email 格式錯誤'
   }
+
+  // 特殊業務邏輯：限制網域 (公司信箱)
+  if (props.corporateOnly) {
+    if (!props.modelValue.endsWith('@mycompany.com')) {
+      return '請使用公司信箱 (@mycompany.com)'
+    }
+  }
+
+  // 特殊業務邏輯：自訂網域清單
+  if (props.allowedDomains.length > 0) {
+    const domain = props.modelValue.split('@')[1]
+    if (domain && !props.allowedDomains.includes(domain)) {
+      return `只允許以下信箱: ${props.allowedDomains.join(', ')}`
+    }
+  }
+
   return ''
 })
 
@@ -51,11 +73,18 @@ const handleChange = (value: string | number) => {
   const email = String(value).toLowerCase()
   emit('update:modelValue', email)
   emit('change', email)
+  emit('change', email)
 }
+
+// 避免屬性直接貼在根元素 (如果有的話)，而是精準傳給 IInput
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <IInput
+    v-bind="$attrs"
     :model-value="modelValue"
     type="email"
     :placeholder="placeholder"
@@ -63,7 +92,7 @@ const handleChange = (value: string | number) => {
     :error="!isValid"
     :error-message="errorMessage"
     clearable
-    prefix-icon="📧"
+    prepend-icon="📧"
     autocomplete="email"
     @update:model-value="handleChange"
   />

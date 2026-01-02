@@ -12,6 +12,10 @@ import ILoadingSpinner from '@/components/uiInterface/ILoadingSpinner.vue'
 
 // 1. 取得全域狀態
 const { isLoading } = useLoading()
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
@@ -19,6 +23,7 @@ const { isLoading } = useLoading()
     <div
       v-if="isLoading"
       class="global-loading-overlay"
+      v-bind="$attrs"
     >
       <!-- 2. 引入介面層動畫 -->
       <ILoadingSpinner :size="60" />

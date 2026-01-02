@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
@@ -19,6 +19,14 @@ const retryResult = ref('')
 
 // Computed
 const recentErrors = computed(() => errors.value.slice(-5))
+
+const formatData = (data: any) => {
+  try {
+    return JSON.stringify(data, null, 2)
+  } catch {
+    return String(data)
+  }
+}
 
 const handleCaptureError = () => {
   const error = new Error(errorMessage.value)
@@ -89,37 +97,141 @@ definePageMeta({
     title="錯誤處理系統 (Error Handler System)"
     description="完整的錯誤處理模組，提供錯誤捕捉、分類、記錄和重試機制。"
   >
-    <!-- General Usage -->
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="錯誤處理系統的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const { captureError, showError, retry, errors, clearErrors } = useErrorHandler()
+
+// 1. 捕捉錯誤
+try {
+  await apiCall()
+} catch (e) {
+  captureError(e, { source: 'UserAction' })
+}
+
+// 2. 顯示錯誤通知
+showError('發生未知錯誤', 'error')
+
+// 3. 自動重試
+await retry(() => api.fetchData(), { maxRetries: 3, delay: 1000 })
+
+// 4. 管理歷史
+const allErrors = errors.value
+clearErrors()"
+            label="useErrorHandler() 功能總覽"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>自動捕捉:</strong>
+              整合 Vue 全局錯誤處理，自動捕捉未處理的例外
+            </li>
+            <li>
+              <strong>智能重試:</strong>
+              內建 Exponential Backoff 重試機制，提高 API 穩定性
+            </li>
+            <li>
+              <strong>統一通知:</strong>
+              整合 Notification 系統，提供一致的錯誤提示 UI
+            </li>
+            <li>
+              <strong>完整記錄:</strong>
+              詳細記錄錯誤堆疊、發生時間與來源，便於除錯
+            </li>
+          </ul>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- API 參考 -->
     <ShowcaseSection
-      title="General Usage"
+      title="API 參考"
       icon="📝"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="核心功能"
-          description="系統錯誤處理的三大支柱"
-          full-width
+          title="1. Error Capture"
+          description="錯誤捕捉方法"
         >
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <div class="text-sky-400 font-bold mb-2">1. 錯誤捕捉</div>
-              <div class="text-slate-400 text-sm">自動捕捉與分類，記錄錯誤來源與時間戳。</div>
-            </div>
-            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <div class="text-sky-400 font-bold mb-2">2. API 整合</div>
-              <div class="text-slate-400 text-sm">統一處理 API 回傳錯誤，避免 try-catch 地獄。</div>
-            </div>
-            <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <div class="text-sky-400 font-bold mb-2">3. 自動重試</div>
-              <div class="text-slate-400 text-sm">
-                提供指數退避 (Exponential Backoff) 重試機制。
-              </div>
-            </div>
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>captureError(error, context)</strong>
+              <br />
+              手動捕捉錯誤並記錄。
+            </p>
           </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="const { captureError, retry } = useErrorHandler()"
-              label="Composable Usage"
+              code="captureError(new Error('Validation Failed'), {
+  component: 'LoginForm',
+  timestamp: new Date()
+})"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. Retry Mechanism"
+          description="自動重試機制"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>retry(fn, options)</strong>
+              <br />
+              執行函式並在失敗時自動重試。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="await retry(
+  async () => await fetchUser(), 
+  { 
+    maxRetries: 3, 
+    delay: 500,
+    backoff: true 
+  }
+)"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. UI Feedback"
+          description="錯誤提示"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>showError(message, type)</strong>
+              <br />
+              顯示錯誤通知 Toast。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="showError('連線失敗，請稍後再試')
+// 或指定類型
+showError('警告：資料未儲存', 'warning')"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -128,7 +240,7 @@ definePageMeta({
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">
@@ -228,9 +340,10 @@ definePageMeta({
               </IButton>
             </div>
 
-            <DataPreview
-              title="最近 5 筆錯誤"
-              :data="recentErrors"
+            <ShowcaseCodeBlock
+              :code="formatData(recentErrors)"
+              language="json"
+              label="最近 5 筆錯誤"
             />
           </div>
         </ShowcaseCard>
@@ -240,231 +353,66 @@ definePageMeta({
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.back-link:hover {
-  background: #e0e0e0;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.demo-desc {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0 0 1rem 0;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.control-row label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-}
-
-.input-field {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  flex: 1;
-}
-
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.demo-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.15rem 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
-}
-
-.demo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.usage-block,
-.output-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.block-header {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  margin-bottom: 0.15rem;
-  font-weight: 600;
-}
-
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  color: #e06c75;
-  line-height: 1.25;
-  max-height: 360px;
-}
-
-.code-content pre {
   margin: 0;
 }
 
-.code-content code {
-  color: #abb2bf;
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.action-btn:hover:not(:disabled) {
-  opacity: 0.9;
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
 }
 
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.benefit-list li:hover::before {
+  opacity: 1;
 }
 
-.action-btn.secondary {
-  background: #6c757d;
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
-.action-btn.danger {
-  background: #dc3545;
-}
-
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.result-box {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

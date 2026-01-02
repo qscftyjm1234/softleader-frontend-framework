@@ -46,36 +46,154 @@ definePageMeta({
     title="閒置偵測系統 (Idle Detection)"
     description="完整的閒置偵測模組，提供使用者活動監控和自動登出機制。核心特色：活動偵測、可設定時間、暫停/恢復、閒置警告。"
   >
-    <!-- General Usage -->
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="閒置偵測與自動管理"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const { isIdle, lastActive, reset } = useIdle({ timeout: 5 * 60 * 1000 })
+
+// 監聽閒置狀態
+watch(isIdle, (idle) => {
+  if (idle) {
+    showWarningModal() // 顯示警告
+  }
+})
+
+// 重置計時器 (例如：收到 WebSocket 訊息時)
+onWebSocketMessage(() => {
+  reset()
+})"
+            label="useIdle() 功能總覽"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>活動感知:</strong>
+              自動偵測滑鼠移動、點擊、鍵盤輸入等使用者行為
+            </li>
+            <li>
+              <strong>狀態管理:</strong>
+              提供 Reactive 的閒置狀態與最後活動時間
+            </li>
+            <li>
+              <strong>靈活控制:</strong>
+              支援暫停、恢復與手動重置偵測計時
+            </li>
+            <li>
+              <strong>自動登出:</strong>
+              可輕鬆實作閒置過久自動登出或鎖定螢幕功能
+            </li>
+          </ul>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- API 參考 -->
     <ShowcaseSection
-      title="General Usage"
+      title="API 參考"
       icon="📝"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="監控機制"
-          description="自動偵測使用者是否離開"
-          full-width
+          title="1. State Properties"
+          description="狀態屬性"
         >
           <div class="demo-area">
-            <div class="warning-box mb-4">
-              <strong>💡 提示：</strong>
-              此頁面的閒置時間設定為 10 秒，方便測試。
-            </div>
-            <ShowcaseCodeBlock
-              code="const { isIdle, lastActive } = useIdle({
-  timeout: 5 * 60 * 1000 // 5 分鐘
-})"
-              label="Setup"
-            />
+            <p class="method-desc">
+              <strong>isIdle</strong>
+              (Boolean)
+              <br />
+              當前是否處於閒置狀態。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>lastActive</strong>
+              (Date)
+              <br />
+              最後一次偵測到使用者活動的時間。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>idleTime</strong>
+              (Number)
+              <br />
+              目前累積的閒置時間 (毫秒)。
+            </p>
           </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. Methods"
+          description="控制方法"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>reset()</strong>
+              <br />
+              重置閒置計時器，將 `isIdle` 設為 false。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>pause()</strong>
+              <br />
+              暫停閒置偵測。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>resume()</strong>
+              <br />
+              恢復閒置偵測。
+            </p>
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. Configuration"
+          description="設定選項"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>timeout</strong>
+              (Number)
+              <br />
+              判定為閒置的逾時時間 (毫秒)。預設為 60000 (1分鐘)。
+            </p>
+            <p class="method-desc mt-2">
+              <strong>events</strong>
+              (Array&lt;String&gt;)
+              <br />
+              要監聽的 DOM 事件列表。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="useIdle({
+  timeout: 30000,
+  events: ['mousemove', 'keydown', 'scroll']
+})"
+              label="設定範例"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground"
+      title="互動測試"
       icon="🎮"
     >
       <div class="component-grid">
@@ -175,6 +293,69 @@ definePageMeta({
 </template>
 
 <style scoped>
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
 .warning-box {
   background: rgba(234, 179, 8, 0.1);
   border: 1px solid rgba(234, 179, 8, 0.3);

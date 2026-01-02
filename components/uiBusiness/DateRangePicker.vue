@@ -1,12 +1,17 @@
 <script setup lang="ts">
 /**
- * DateRangePicker - 日期範圍選擇（業務元件）
+ * 業務元件 - 日期範圍選擇器
  *
  * 用途：封裝日期範圍選擇的業務邏輯
  * 特點：
  * - 開始日期和結束日期聯動
  * - 自動驗證日期範圍
  * - 支援快速選擇（今天、本週、本月等）
+ *
+ * 未來維護：
+ * - 要改 UI 框架 → 只需要改 IDatePicker.vue
+ * - 要改業務邏輯 → 只需要改這個檔案
+ * - 頁面完全不用動！
  */
 
 import IDatePicker from '@/components/uiInterface/IDatePicker.vue'
@@ -25,13 +30,16 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
-  quickSelects: true
+  quickSelects: true,
+  maxRange: undefined
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: DateRange]
   change: [value: DateRange]
 }>()
+
+// ... rest of logic stays same
 
 // 開始日期
 const startDate = computed({
@@ -132,13 +140,19 @@ const handleQuickSelect = (value: string) => {
   }
 
   const newRange = { start, end }
-  emit('update:modelValue', newRange)
   emit('change', newRange)
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
-  <div class="date-range-picker">
+  <div
+    class="date-range-picker"
+    v-bind="$attrs"
+  >
     <!-- 快速選擇 -->
     <div
       v-if="quickSelects"

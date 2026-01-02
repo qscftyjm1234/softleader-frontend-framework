@@ -290,6 +290,34 @@ definePageMeta({
     title="前端資安防護系統 (Security System)"
     description="企業級前端安全防護機制 - 完整的資料保護與防洩漏方案。"
   >
+    <!-- 核心特色 -->
+    <ShowcaseSection title="核心特色 (Core Features)">
+      <ShowcaseCard
+        title="全方位防護機制"
+        description="企業級前端資安解決方案"
+        full-width
+      >
+        <ul class="benefit-list">
+          <li>
+            <strong>基礎防護:</strong>
+            或是禁用右鍵、選取、複製與拖曳，防止資料被輕易竊取
+          </li>
+          <li>
+            <strong>防截圖機制:</strong>
+            智能偵測 PrintScreen 與截圖工具，自動模糊畫面保護敏感資訊
+          </li>
+          <li>
+            <strong>開發者限制:</strong>
+            禁用 F12 與開發者工具快捷鍵，並偵測 DevTools 開啟狀態
+          </li>
+          <li>
+            <strong>企業級控管:</strong>
+            支援閒置自動鎖定、浮水印與 Kiosk 模式，符合高規格資安要求
+          </li>
+        </ul>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
     <!-- 資安狀態總覽 -->
     <ShowcaseSection
       title="Security Status (資安狀態)"
@@ -426,7 +454,7 @@ definePageMeta({
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="Interactive Tests"
+          title="互動測試"
           description="手動觸發安全機制測試"
           full-width
         >
@@ -537,51 +565,66 @@ definePageMeta({
 </template>
 
 <style scoped>
-.glass-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
   color: #e2e8f0;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-}
-
-.glass-btn:hover {
-  background: rgba(51, 65, 85, 0.8);
-  border-color: #94a3b8;
-}
-
-.glass-btn.primary {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.5);
-  color: #38bdf8;
-}
-
-.glass-btn.primary:hover {
-  background: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-}
-
-.result-display {
-  font-family: 'Fira Code', monospace;
-  color: #38bdf8;
   font-size: 0.95rem;
-  padding: 0.75rem;
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-kbd {
-  display: inline-block;
-  padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  font-size: 0.85em;
-  font-family: monospace;
-  color: #e2e8f0;
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

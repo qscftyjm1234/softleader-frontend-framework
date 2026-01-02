@@ -1,9 +1,12 @@
 <script setup lang="ts">
 /**
- * SmartCard - 智慧卡片元件
+ * 業務元件 - 智慧卡片元件
  *
- * 業務層 (Business Layer)：使用 uiInterface 層元件，提供便捷的卡片封裝
- * 遵循三層架構：不直接依賴 UI 框架
+ * 用途：封裝卡片的業務邏輯與標準樣式
+ * 特點：
+ * - 整合標題、圖標與內容的標準排版
+ * - 支援透過 props 設定樣式與海拔高度
+ * - Slot 透傳，支援自定義內容
  */
 import ICard from '~/components/uiInterface/ICard.vue'
 import IIcon from '~/components/uiInterface/IIcon.vue'
@@ -25,10 +28,15 @@ withDefaults(defineProps<Props>(), {
   color: 'white',
   elevation: 1
 })
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ICard
+    v-bind="$attrs"
     :title="title"
     :subtitle="subtitle"
     :color="color"

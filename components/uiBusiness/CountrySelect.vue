@@ -52,11 +52,17 @@ const handleChange = (value: string) => {
   emit('change', value)
 
   console.log('國家已選擇:', value)
+  console.log('國家已選擇:', value)
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <ISelect
+    v-bind="$attrs"
     :model-value="modelValue"
     :options="countryOptions"
     :placeholder="isLoading ? '載入中...' : placeholder"

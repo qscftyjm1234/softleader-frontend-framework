@@ -17,11 +17,16 @@ const { show, message, color, timeout } = useNotify()
 const handleUpdateValue = (val: boolean) => {
   show.value = val
 }
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
   <!-- 3. 渲染介面層 -->
   <ISnackbar
+    v-bind="$attrs"
     :model-value="show"
     :message="message"
     :color="color"

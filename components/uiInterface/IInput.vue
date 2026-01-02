@@ -1,45 +1,63 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import IIcon from './IIcon.vue'
+
 /**
- * IInput - 輸入框介面層
+ * Component: IInput (輸入框元件)
  *
- * 用途：統一的 Input 介面，內部可替換 UI 框架
- *
- * 設計原則：
- * - 只定義 props 和 events
- * - 不含業務邏輯
- * - 可替換內部實作（原生 HTML / Vuetify / Element UI）
+ * 介面層 (Interface Layer) 標準元件。
+ * 負責將統一的 Props 轉換為底層 UI 框架 (Vuetify) 的屬性。
+ * 內部保留了「與 UI 框架解耦」的能力，可隨時切換回原生或其他框架。
  */
 
+// ====================================================
+// 框架切換開關 (DEMO USE ONLY)
+// true = 使用 Vuetify 實作
+// false = 使用 原生 HTML/CSS 實作
+// ====================================================
+const USE_FRAMEWORK = true
+
+// 1. 定義標準 Props (20% 核心)
 interface Props {
+  // 綁定的值 (v-model)
   modelValue?: string | number
+  // 輸入框類型 (text, password, number...)
   type?: string
+  // 提示文字 (灰字)
   placeholder?: string
+  // 是否鎖定 (不可點、變灰)
   disabled?: boolean
+  // 是否唯讀 (可點、但不給改)
   readonly?: boolean
+  // 是否顯示錯誤狀態 (變紅)
   error?: boolean
-  maxlength?: number
-  autocomplete?: string
+  // 錯誤訊息文字 (會顯示在下方)
   errorMessage?: string
-  // 樣式相關
+  // 是否顯示清除按鈕 (X)
   clearable?: boolean
-  prependIcon?: string | Component
-  appendIcon?: string | Component
+  // 最大長度限制
+  maxlength?: number
+  // 瀏覽器自動完成建議
+  autocomplete?: string
+  // 前綴圖示 (左邊的 icon)
+  prependIcon?: string
+  // 後綴圖示 (右邊的 icon)
+  appendIcon?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: undefined,
   type: 'text',
-  placeholder: '',
+  placeholder: undefined,
   disabled: false,
   readonly: false,
   error: false,
+  errorMessage: undefined,
   clearable: false,
   maxlength: undefined,
   autocomplete: 'off',
-  errorMessage: '',
-  prependIcon: '',
-  appendIcon: ''
+  prependIcon: undefined,
+  appendIcon: undefined
 })
 
 const emit = defineEmits<{
@@ -50,34 +68,96 @@ const emit = defineEmits<{
   clear: []
 }>()
 
-// 內部值管理
+// 內部值管理 (Computed Setter/Getter)
 const internalValue = computed({
   get: () => props.modelValue,
   set: (val) => {
-    emit('update:modelValue', val)
-    emit('change', val)
+    emit('update:modelValue', val!)
+    emit('change', val!)
   }
 })
 
-// 清除輸入
+// ====================================================
+// 2. 屬性對照表 (把我們的標準轉成 Vuetify 看得懂的樣子)
+// ====================================================
+const vuetifyBindings = computed(() => {
+  const bindings: Record<string, any> = {}
+
+  // 錯誤訊息處理
+  // Vuetify 預設吃 error-messages (陣列或字串)
+  if (props.error || props.errorMessage) {
+    bindings['error'] = true
+    bindings['error-messages'] = props.errorMessage
+  }
+
+  // 圖示對照
+  // Vuetify 的 input 支援 prepend-inner-icon 和 append-inner-icon
+  // 這裡假設我們的 prependIcon 對應到內部的 icon (因為比較常見)
+  if (props.prependIcon) bindings['prepend-inner-icon'] = props.prependIcon
+  if (props.appendIcon) bindings['append-inner-icon'] = props.appendIcon
+
+  return bindings
+})
+
+// ====================================================
+// 3. 原生實作邏輯 (Native Logic)
+// ====================================================
 const handleClear = () => {
   internalValue.value = ''
   emit('clear')
 }
 
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false // 避免屬性直接貼在 wrapper 上
 })
 </script>
 
 <template>
-  <div class="i-input">
-    <!-- 目前使用原生 HTML -->
-    <!-- 未來可以換成 Vuetify / Element UI / Ant Design -->
+  <!-- 
+    實作 A: 底層框架 (Vuetify)
+    原則：功能對等，屬性透傳 ($attrs)
+  -->
+  <v-text-field
+    v-if="USE_FRAMEWORK"
+    v-model="internalValue"
+    v-bind="{ ...vuetifyBindings, ...$attrs }"
+    :type="type"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    :readonly="readonly"
+    :clearable="clearable"
+    :maxlength="maxlength"
+    :autocomplete="autocomplete"
+    variant="outlined"
+    density="compact"
+    hide-details="auto"
+    @blur="emit('blur', $event)"
+    @focus="emit('focus', $event)"
+    @click:clear="emit('clear')"
+  >
+    <!-- 透傳 Slot (例如 prepend, append) -->
+    <template
+      v-for="(_, name) in $slots"
+      #[name]="slotProps"
+    >
+      <slot
+        :name="name"
+        v-bind="slotProps"
+      />
+    </template>
+  </v-text-field>
 
+  <!-- 
+    實作 B: 原生 HTML/CSS
+    完全不依賴任何第三方 UI 庫，證明介面層解耦能力
+  -->
+  <div
+    v-else
+    class="i-input"
+  >
     <div
       class="input-wrapper"
-      :class="{ 'has-error': error, 'is-disabled': disabled }"
+      :class="{ 'has-error': error || errorMessage, 'is-disabled': disabled }"
     >
       <!-- 前綴圖示 -->
       <IIcon
@@ -89,6 +169,7 @@ defineOptions({
       <!-- 輸入框 -->
       <input
         v-model="internalValue"
+        v-bind="$attrs"
         :type="type"
         :placeholder="placeholder"
         :disabled="disabled"
@@ -102,7 +183,7 @@ defineOptions({
 
       <!-- 清除按鈕 -->
       <button
-        v-if="clearable && internalValue"
+        v-if="clearable && internalValue && !disabled && !readonly"
         type="button"
         class="clear-btn"
         @click="handleClear"
@@ -120,50 +201,19 @@ defineOptions({
 
     <!-- 錯誤訊息 -->
     <div
-      v-if="error && errorMessage"
+      v-if="errorMessage"
       class="error-message"
     >
       {{ errorMessage }}
     </div>
   </div>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VTextField
-    v-model="internalValue"
-    :type="type"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :readonly="readonly"
-    :maxlength="maxlength"
-    :error="error"
-    :error-messages="errorMessage"
-    :clearable="clearable"
-    @blur="emit('blur', $event)"
-    @focus="emit('focus', $event)"
-  />
-  -->
-
-  <!-- 未來換成 Element UI 的範例 -->
-  <!--
-  <ElInput
-    v-model="internalValue"
-    :type="type"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :readonly="readonly"
-    :maxlength="maxlength"
-    :clearable="clearable"
-    @blur="emit('blur', $event)"
-    @focus="emit('focus', $event)"
-  >
-    <template v-if="prefixIcon" #prefix>{{ prefixIcon }}</template>
-    <template v-if="suffixIcon" #suffix>{{ suffixIcon }}</template>
-  </ElInput>
-  -->
 </template>
 
 <style scoped>
+/* 
+ 注意：這些樣式僅在使用「原生實作」時才會生效
+ 當切換到 Vuetify 時，這些樣式完全不會被載入
+*/
 .i-input {
   width: 100%;
 }
@@ -192,7 +242,6 @@ defineOptions({
 .input-wrapper.has-error {
   border-color: #ef4444;
 }
-
 .input-wrapper.has-error:focus-within {
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
@@ -211,12 +260,12 @@ defineOptions({
   font-size: 0.95rem;
   background: transparent;
   color: #e2e8f0;
+  width: 100%;
 }
 
 .input-field::placeholder {
   color: #64748b;
 }
-
 .input-field:disabled {
   cursor: not-allowed;
 }
@@ -235,11 +284,9 @@ defineOptions({
   background: transparent;
   color: #64748b;
   cursor: pointer;
-  transition: color 0.2s;
   display: flex;
   align-items: center;
 }
-
 .clear-btn:hover {
   color: #e2e8f0;
 }

@@ -43,21 +43,23 @@ const cardStyle = computed(() => ({
     :style="cardStyle"
   >
     <div
-      v-if="title || subtitle"
+      v-if="title || subtitle || $slots.header"
       class="card-header"
     >
-      <h3
-        v-if="title"
-        class="card-title"
-      >
-        {{ title }}
-      </h3>
-      <p
-        v-if="subtitle"
-        class="card-subtitle"
-      >
-        {{ subtitle }}
-      </p>
+      <slot name="header">
+        <h3
+          v-if="title"
+          class="card-title"
+        >
+          {{ title }}
+        </h3>
+        <p
+          v-if="subtitle"
+          class="card-subtitle"
+        >
+          {{ subtitle }}
+        </p>
+      </slot>
     </div>
     <div class="card-content">
       <slot />

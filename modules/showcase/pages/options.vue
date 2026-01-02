@@ -98,6 +98,81 @@ definePageMeta({
     title="選項系統 (Options System)"
     description="集中管理的選項資料庫，提供一致的選項定義與輔助方法。核心特色包含 Proxy 代理、自動快取、統一擴充方法。"
   >
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="選項系統的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法與屬性：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const options = useOptions()
+
+// 1. 直接存取選項 (自動觸發 API)
+options.status       // 取得 status 列表
+options.countries    // 取得 countries 列表
+
+// 2. 輔助屬性
+options.status.isLoading  // 載入中狀態
+options.status.isLoaded   // 載入完成狀態
+options.status.withAll    // 自動加上 'All' 選項
+options.status.other      // 自動加上 'Other' 選項
+
+// 3. 輔助方法
+options.status.label('ACTIVE')      // 取得標籤
+options.status.findByValue('ACTIVE') // 取得完整物件
+options.status.exclude(['DELETED']) // 排除特定選項
+options.status.only(['ACTIVE'])     // 只保留特定選項
+options.status.reload()             // 強制重新載入"
+            label="useOptions() 功能總覽"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>集中管理:</strong>
+              統一管理所有下拉選單資料，避免散落在各處
+            </li>
+            <li>
+              <strong>自動快取:</strong>
+              API 請求自動快取，避免重複呼叫
+            </li>
+            <li>
+              <strong>Proxy 代理:</strong>
+              直接存取屬性即可觸發載入，使用體驗極佳
+            </li>
+            <li>
+              <strong>豐富輔助:</strong>
+              內建標籤轉換、過濾、排除等常用功能
+            </li>
+          </ul>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code='&lt;!-- Template Usage --&gt;
+&lt;select v-model="form.status"&gt;
+  &lt;option v-for="opt in options.status" :value="opt.value"&gt;
+    {{ opt.label }}
+  &lt;/option&gt;
+&lt;/select&gt;'
+            label="快速開始"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
     <!-- API Examples Section -->
     <ShowcaseSection
       title="API Examples (非同步載入範例)"
@@ -217,8 +292,9 @@ const isLoading = townships.isLoading`"
     </ShowcaseSection>
 
     <!-- 1. 一般使用範例 (General Usage) -->
+    <!-- 1. 一般使用範例 -->
     <ShowcaseSection
-      title="General Usage (一般使用範例)"
+      title="一般使用範例"
       icon="📝"
     >
       <div class="text-slate-400 mb-4 leading-relaxed">
@@ -277,7 +353,7 @@ const form = reactive({ status: &apos;ACTIVE&apos; })
 
     <!-- 2. 全功能演示 -->
     <ShowcaseSection
-      title="Interactive Playground (全功能演示)"
+      title="互動測試"
       icon="🎮"
     >
       <ShowcaseCard
@@ -535,6 +611,107 @@ await ${usageCodePrefix}.reload()`"
         </div>
       </ShowcaseCard>
     </ShowcaseSection>
+
+    <!-- API 參考 -->
+    <ShowcaseSection
+      title="API 參考"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="1. 選項存取"
+          description="存取選項資料"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>語法：</strong>
+              options.[key]
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 靜態選項
+const gender = options.gender
+
+// API 選項 (自動載入)
+const countries = options.countries
+
+// 帶參數 API
+const townships = options.townships('TPE')"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. 狀態檢查"
+          description="載入狀態管理"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>屬性：</strong>
+              isLoading, isLoaded
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="if (options.countries.isLoading) {
+  console.log('載入中...')
+}
+
+if (options.countries.isLoaded) {
+  console.log('載入完成')
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. 擴充選項"
+          description="新增特殊選項"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>屬性：</strong>
+              withAll, other
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 自動在開頭加入 '全部' 選項
+const list = options.status.withAll
+
+// 自動在結尾加入 '其他' 選項
+const list = options.status.other"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="4. 轉換與過濾"
+          description="資料處理輔助"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>方法：</strong>
+              label, findByValue, exclude, only
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 取得顯示文字
+const text = options.status.label('ACTIVE')
+
+// 排除特定選項
+const list = options.status.exclude(['DELETED'])"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
   </ShowcasePage>
 </template>
 
@@ -580,5 +757,68 @@ await ${usageCodePrefix}.reload()`"
 .glass-btn.primary:hover {
   background: rgba(56, 189, 248, 0.3);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

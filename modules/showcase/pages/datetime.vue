@@ -103,18 +103,98 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="日期時間系統 (DateTime System)"
+    title="日期時間系統"
     description="完整的多語系日期時間處理模組，提供格式化、解析、計算與驗證功能。"
   >
-    <!-- General Usage Section -->
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="日期時間系統的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="const {
+  // 格式化
+  formatDate,      // 日期格式化
+  formatTime,      // 時間格式化
+  formatDateTime,  // 日期時間格式化
+  formatRelative,  // 相對時間
+  
+  // 計算
+  add,             // 增加時間
+  subtract,        // 減少時間
+  diff,            // 計算差異
+  
+  // 比較
+  isBefore,        // 檢查是否在之前
+  isAfter,         // 檢查是否在之後
+  isSameDay,       // 檢查是否同日
+  
+  // 輔助
+  isValid,          // 驗證有效性
+  startOfDay,       // 當天開始時間
+  endOfDay          // 當天結束時間
+} = useDateTime()"
+            label="useDateTime() 提供的方法"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>多語系支援:</strong>
+              自動整合 i18n，支援多國語言格式
+            </li>
+            <li>
+              <strong>強大計算:</strong>
+              輕鬆處理日期的加減與比較
+            </li>
+            <li>
+              <strong>相對時間:</strong>
+              支援「幾分鐘前」、「幾天後」等相對描述
+            </li>
+            <li>
+              <strong>邊界處理:</strong>
+              快速取得日/週/月的開始與結束時間
+            </li>
+          </ul>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="const { formatDate, add } = useDateTime()
+
+// 格式化當前日期
+formatDate(new Date()) // '2024-01-01'
+
+// 計算 7 天後
+add(new Date(), 7, 'day') // Date Object"
+            label="快速開始"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 格式化展示 -->
     <ShowcaseSection
-      title="General Usage"
+      title="基礎格式化"
       icon="📝"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="基礎格式化"
-          description="最常見的情境：格式化日期時間顯示。"
+          title="常用格式"
+          description="最常見的日期時間格式化。"
         >
           <div class="demo-area">
             <div class="result-text">
@@ -125,7 +205,7 @@ definePageMeta({
           <template #footer>
             <ShowcaseCodeBlock
               code="formatDate(new Date(), 'YYYY-MM-DD')"
-              label="Usage Code"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -134,7 +214,7 @@ definePageMeta({
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="Interactive Playground"
+      title="互動測試"
       icon="🎮"
     >
       <!-- Control Panel -->
@@ -309,9 +389,9 @@ definePageMeta({
       </div>
     </ShowcaseSection>
 
-    <!-- Format Tokens Section -->
+    <!-- 格式符號 -->
     <ShowcaseSection
-      title="Format Tokens (格式符號)"
+      title="格式符號"
       icon="📋"
     >
       <IStack
@@ -343,5 +423,179 @@ definePageMeta({
         </ICard>
       </IStack>
     </ShowcaseSection>
+
+    <!-- API 參考 -->
+    <ShowcaseSection
+      title="API 參考"
+      icon="📝"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="1. 格式化方法"
+          description="日期與時間顯示"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>方法：</strong>
+              formatDate, formatTime, formatDateTime, formatRelative
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 日期
+formatDate(date) // '2024-01-01'
+
+// 時間
+formatTime(date) // '12:00:00'
+
+// 相對時間
+formatRelative(date) // '2 小時前'"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="2. 計算方法"
+          description="日期運算"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>方法：</strong>
+              add, subtract, diff
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 增加 7 天
+add(date, 7, 'day')
+
+// 減少 1 個月
+subtract(date, 1, 'month')
+
+// 計算差異 (天數)
+diff(date1, date2, 'day') // 5"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="3. 比較與驗證"
+          description="邏輯判斷"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>方法：</strong>
+              isBefore, isAfter, isSameDay, isValid
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="isBefore(date1, date2) // true
+isSameDay(date1, date2) // false
+isValid('invalid-date') // false"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="4. 邊界與快捷"
+          description="快速取得特定時間"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>方法：</strong>
+              startOfDay, endOfMonth, today, yesterday
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="// 今天的開始時間
+startOfDay(today())
+
+// 本月最後一刻
+endOfMonth(today())"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
   </ShowcasePage>
 </template>
+
+<style scoped>
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.label {
+  color: #94a3b8;
+  margin-right: 0.5rem;
+}
+.value {
+  color: #f1f5f9;
+  font-family: monospace;
+}
+</style>

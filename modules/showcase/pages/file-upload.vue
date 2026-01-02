@@ -5,20 +5,28 @@ import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-const { uploadFiles, validate, validateMultiple, formatFileSize } = useFileUpload()
+const {
+  uploadFile,
+  uploadFiles,
+  uploadFromInput,
+  uploadFromBase64,
+  uploadFromBlob,
+  validate,
+  validateMultiple,
+  getSelectedFiles,
+  formatFileSize
+} = useFileUpload()
 
-// State
+// 狀態
 const selectedFiles = ref<File[]>([])
 const isDragging = ref(false)
 const isUploading = ref(false)
 const uploadResults = ref<any[]>([])
 
-// Demo validation options
+// 示範驗證選項
 const maxFileSize = ref(5 * 1024 * 1024) // 5MB
 const acceptedTypes = ref<string[]>(['image/*', '.pdf'])
 const maxFilesCount = ref(5)
-
-// Computed
 
 const validationSummary = computed(() => {
   if (selectedFiles.value.length === 0) return null
@@ -32,7 +40,7 @@ const validationSummary = computed(() => {
   return result
 })
 
-// File icon helper
+// 檔案圖示輔助函式
 const getFileIcon = (file: File) => {
   if (file.type.startsWith('image/')) return '🖼️'
   if (file.type.startsWith('video/')) return '🎥'
@@ -43,19 +51,16 @@ const getFileIcon = (file: File) => {
   return '📁'
 }
 
-// Handlers
+// 事件處理
 const handleDrop = (e: DragEvent) => {
   isDragging.value = false
-  if (e.dataTransfer?.files) {
-    selectedFiles.value = [...selectedFiles.value, ...Array.from(e.dataTransfer.files)]
-  }
+  const files = getSelectedFiles(e)
+  selectedFiles.value = [...selectedFiles.value, ...files]
 }
 
 const handleFileSelect = (e: Event) => {
-  const input = e.target as HTMLInputElement
-  if (input.files) {
-    selectedFiles.value = [...selectedFiles.value, ...Array.from(input.files)]
-  }
+  const files = getSelectedFiles(e)
+  selectedFiles.value = [...selectedFiles.value, ...files]
 }
 
 const removeFile = (index: number) => {
@@ -67,12 +72,34 @@ const clearAll = () => {
   uploadResults.value = []
 }
 
-// Upload actions
+// 上傳操作
 
 const handleUploadMultiple = async () => {
   if (selectedFiles.value.length === 0) return
 
-  const results = await uploadFiles(selectedFiles.value, {
+  // 過濾出符合規則的檔案
+  const validFiles = selectedFiles.value.filter((file) => {
+    const result = validate(file, {
+      maxSize: maxFileSize.value,
+      accept: acceptedTypes.value
+    })
+    return result.valid
+  })
+
+  // 檢查是否有符合規則的檔案
+  if (validFiles.length === 0) {
+    useNotify().error('沒有符合規則的檔案可上傳')
+    return
+  }
+
+  // 如果有檔案被過濾掉，提醒使用者
+  const filteredCount = selectedFiles.value.length - validFiles.length
+  if (filteredCount > 0) {
+    useNotify().warning(`已過濾 ${filteredCount} 個不符合規則的檔案`)
+  }
+
+  // 上傳符合規則的檔案
+  const results = await uploadFiles(validFiles, {
     endpoint: '/api/upload/multiple',
     loadingRef: isUploading,
     autoSuccess: true,
@@ -82,24 +109,23 @@ const handleUploadMultiple = async () => {
   })
 
   uploadResults.value.push({
-    files: selectedFiles.value.map((f) => f.name),
+    files: validFiles.map((f) => f.name),
     results
   })
 }
 
 const handleValidateOnly = () => {
-  selectedFiles.value.forEach((file) => {
-    const result = validate(file, {
-      maxSize: maxFileSize.value,
-      accept: acceptedTypes.value
-    })
-
-    if (!result.valid) {
-      useNotify().error(`${file.name}: ${result.error}`)
-    } else {
-      useNotify().success(`${file.name}: 驗證通過`)
-    }
+  const result = validateMultiple(selectedFiles.value, {
+    maxSize: maxFileSize.value,
+    accept: acceptedTypes.value,
+    maxFiles: maxFilesCount.value
   })
+
+  if (!result.valid) {
+    useNotify().error(`驗證失敗：${result.error}`)
+  } else {
+    useNotify().success(`✓ 所有檔案驗證通過（共 ${selectedFiles.value.length} 個）`)
+  }
 }
 
 definePageMeta({
@@ -111,63 +137,62 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="檔案上傳系統 (File Upload System)"
+    title="檔案上傳系統"
     description="統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。"
   >
-    <!-- General Usage -->
-    <ShowcaseSection
-      title="基礎用法"
-      icon="📝"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="核心功能"
-          description="全方位上傳解決方案"
-          full-width
-        >
-          <div class="demo-area">
-            <ul class="benefit-list">
-              <li>
-                <strong>Smart Input:</strong>
-                自動處理 `uploadFromInput`
-              </li>
-              <li>
-                <strong>完整驗證:</strong>
-                完整的大小、類型、數量驗證
-              </li>
-              <li>
-                <strong>拖放支援:</strong>
-                內建拖放支援
-              </li>
-              <li>
-                <strong>表單資料:</strong>
-                自動封裝與額外欄位處理
-              </li>
-            </ul>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFromInput } = useFileUpload()
-// <input type='file' @change='e => uploadFromInput(e, options)' />"
-              label="快速開始"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- Interactive Playground -->
-    <ShowcaseSection
-      title="互動體驗區"
-      icon="🚀"
-    >
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
       <ShowcaseCard
-        title="實時演示"
-        description="互動式檔案上傳區塊"
+        title="核心功能"
         full-width
       >
         <div class="demo-area">
-          <!-- Upload Area -->
+          <ul class="benefit-list">
+            <li>
+              <strong>快速上傳:</strong>
+              綁定 input 元素，選完即上傳
+            </li>
+            <li>
+              <strong>智慧過濾:</strong>
+              自動過濾不符合規則的檔案，只上傳有效檔案
+            </li>
+            <li>
+              <strong>完整驗證:</strong>
+              大小、類型、數量批次驗證
+            </li>
+            <li>
+              <strong>拖放支援:</strong>
+              內建拖放上傳功能
+            </li>
+            <li>
+              <strong>自動通知:</strong>
+              成功、失敗、警告自動顯示訊息
+            </li>
+            <li>
+              <strong>表單整合:</strong>
+              自動封裝 FormData 與額外欄位
+            </li>
+          </ul>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="const { uploadFromInput } = useFileUpload()
+// <input type='file' @change='e => uploadFromInput(e, options)' />"
+            label="快速開始"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 互動測試 -->
+    <ShowcaseSection title="互動測試">
+      <ShowcaseCard
+        title="測試"
+        description="檔案上傳區塊"
+        full-width
+      >
+        <div class="demo-area">
+          <!-- 上傳區域 -->
           <div
             class="upload-dropzone"
             :class="{ 'is-dragging': isDragging }"
@@ -192,7 +217,7 @@ definePageMeta({
             </label>
           </div>
 
-          <!-- Settings -->
+          <!-- 設定 -->
           <div class="settings-bar">
             <div class="setting-group">
               <label>最大檔案:</label>
@@ -217,7 +242,7 @@ definePageMeta({
             </div>
           </div>
 
-          <!-- File List -->
+          <!-- 檔案清單 -->
           <div
             v-if="selectedFiles.length > 0"
             class="file-list"
@@ -247,7 +272,7 @@ definePageMeta({
               </div>
             </div>
 
-            <!-- Validation Status -->
+            <!-- 驗證狀態 -->
             <div
               v-if="validationSummary"
               class="status-alert"
@@ -285,7 +310,7 @@ definePageMeta({
             </div>
           </div>
 
-          <!-- Results -->
+          <!-- 結果 -->
           <div
             v-if="uploadResults.length > 0"
             class="results-area"
@@ -301,42 +326,310 @@ definePageMeta({
       </ShowcaseCard>
     </ShowcaseSection>
 
-    <!-- API Reference -->
-    <ShowcaseSection
-      title="API 方法"
-      icon="📚"
-    >
+    <!-- API 參考 -->
+    <ShowcaseSection title="API 方法">
       <div class="component-grid">
+        <!-- uploadFile -->
         <ShowcaseCard
           title="1. uploadFile"
-          description="單檔上傳"
+          description="上傳單一檔案（一次傳一個）"
         >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              上傳單一檔案，支援進度追蹤、自動驗證與錯誤處理。
+            </p>
+            <div class="param-list">
+              <div class="param-item">
+                <code>endpoint</code>
+                <span>API 路徑（預設 '/api/upload'）</span>
+              </div>
+              <div class="param-item">
+                <code>method</code>
+                <span>HTTP 方法（預設 'POST'，可選 'PUT', 'PATCH'）</span>
+              </div>
+              <div class="param-item">
+                <code>fieldName</code>
+                <span>檔案欄位名稱（預設 'file'）</span>
+              </div>
+              <div class="param-item">
+                <code>data</code>
+                <span>額外資料（會一起送給後端）</span>
+              </div>
+              <div class="param-item">
+                <code>globalLoading</code>
+                <span>是否顯示全域 Loading（預設 false）</span>
+              </div>
+              <div class="param-item">
+                <code>loadingRef</code>
+                <span>自訂 Loading 狀態的 Ref</span>
+              </div>
+
+              <div class="param-item">
+                <code>onSuccess</code>
+                <span>成功後的回呼函式</span>
+              </div>
+              <div class="param-item">
+                <code>onError</code>
+                <span>失敗後的回呼函式</span>
+              </div>
+              <div class="param-item">
+                <code>autoSuccess</code>
+                <span>成功時自動顯示通知（預設 true）</span>
+              </div>
+              <div class="param-item">
+                <code>autoError</code>
+                <span>失敗時自動顯示通知（預設 true）</span>
+              </div>
+              <div class="param-item">
+                <code>maxSize</code>
+                <span>檔案大小限制（單位：bytes）</span>
+              </div>
+              <div class="param-item">
+                <code>accept</code>
+                <span>允許的檔案類型（如 ['image/*', '.pdf']）</span>
+              </div>
+            </div>
+          </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="uploadFile(file, { endpoint: '/api/upload', data: { id: 1 } })"
-              label="方法簽名"
+              code="const { uploadFile } = useFileUpload()
+
+// 最簡單用法（使用預設值）
+await uploadFile(file)
+
+// 自訂 API 路徑
+await uploadFile(file, {
+  endpoint: '/api/my-upload'
+})
+
+// 完整選項
+await uploadFile(file, {
+  endpoint: '/api/upload',
+  data: { userId: 123 },
+  maxSize: 5 * 1024 * 1024,  // 5MB
+  accept: ['image/*'],
+  onSuccess: (res) => console.log(res)
+})"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
+
+        <!-- uploadFiles -->
         <ShowcaseCard
           title="2. uploadFiles"
-          description="多檔上傳"
+          description="批次上傳多個檔案（一次傳多個）"
         >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              一次上傳多個檔案，自動處理 FormData 封裝。
+            </p>
+          </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="uploadFiles(files, { endpoint: '/api/multi', maxSize: 1024*1024 })"
-              label="方法簽名"
+              code="const { uploadFiles } = useFileUpload()
+
+await uploadFiles(fileArray, {
+  endpoint: '/api/upload/multiple',
+  maxSize: 10 * 1024 * 1024,
+  accept: ['image/*', '.pdf']
+})"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
+
+        <!-- uploadFromInput -->
         <ShowcaseCard
           title="3. uploadFromInput"
-          description="Input 事件處理"
+          description="從 Input 元素直接上傳"
         >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              綁定到
+              <code>&lt;input type="file"&gt;</code>
+              ，選完即上傳。
+            </p>
+          </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="uploadFromInput(event, { autoSuccess: true })"
-              label="方法簽名"
+              code="const { uploadFromInput } = useFileUpload()
+
+// 在 template 中
+<input 
+  type='file' 
+  @change='e => uploadFromInput(e, { 
+    endpoint: '/api/upload',
+    autoSuccess: true 
+  })' 
+/>"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- validate -->
+        <ShowcaseCard
+          title="4. validate"
+          description="驗證單一檔案"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              檢查檔案大小、類型是否符合規則，不執行上傳。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { validate } = useFileUpload()
+
+const result = validate(file, {
+  maxSize: 5 * 1024 * 1024,  // 5MB
+  accept: ['image/*', '.pdf']
+})
+
+if (!result.valid) {
+  console.error(result.error)
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- validateMultiple -->
+        <ShowcaseCard
+          title="5. validateMultiple"
+          description="驗證多個檔案"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              批次驗證檔案陣列，檢查數量、大小、類型。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { validateMultiple } = useFileUpload()
+
+const result = validateMultiple(files, {
+  maxFiles: 5,
+  maxSize: 10 * 1024 * 1024,
+  accept: ['image/*']
+})
+
+if (result.valid) {
+  // 全部通過驗證
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- formatFileSize -->
+        <ShowcaseCard
+          title="6. formatFileSize"
+          description="格式化檔案大小"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              將位元組數轉換為人類可讀的格式（KB、MB、GB）。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { formatFileSize } = useFileUpload()
+
+formatFileSize(1024)        // '1 KB'
+formatFileSize(1048576)     // '1 MB'
+formatFileSize(5242880)     // '5 MB')"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- getSelectedFiles -->
+        <ShowcaseCard
+          title="7. getSelectedFiles"
+          description="從事件提取檔案"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              自動判斷 Input 或 Drag 事件，提取檔案陣列。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { getSelectedFiles } = useFileUpload()
+
+// Input change 事件
+const handleChange = (e) => {
+  const files = getSelectedFiles(e)
+  console.log(files)  // File[]
+}
+
+// Drag drop 事件
+const handleDrop = (e) => {
+  const files = getSelectedFiles(e)
+  selectedFiles.value = files
+}"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- uploadFromBase64 -->
+        <ShowcaseCard
+          title="8. uploadFromBase64"
+          description="從 Base64 字串上傳"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              將 Base64 編碼的資料轉換為檔案並上傳（常用於圖片編輯、Canvas 匯出）。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { uploadFromBase64 } = useFileUpload()
+
+// 從 Canvas 或圖片編輯器取得 Base64
+const base64Data = canvas.toDataURL('image/png')
+
+await uploadFromBase64(base64Data, 'screenshot.png', {
+  endpoint: '/api/upload'
+})"
+              label="使用範例"
+            />
+          </template>
+        </ShowcaseCard>
+
+        <!-- uploadFromBlob -->
+        <ShowcaseCard
+          title="9. uploadFromBlob"
+          description="從 Blob 物件上傳"
+        >
+          <div class="demo-area">
+            <p class="method-desc">
+              <strong>用途：</strong>
+              將 Blob 物件轉換為檔案並上傳（常用於錄音、錄影、API 回傳的二進位資料）。
+            </p>
+          </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { uploadFromBlob } = useFileUpload()
+
+// 從 MediaRecorder 或其他來源取得 Blob
+const blob = new Blob([audioData], { type: 'audio/wav' })
+
+await uploadFromBlob(blob, 'recording.wav', {
+  endpoint: '/api/upload'
+})"
+              label="使用範例"
             />
           </template>
         </ShowcaseCard>
@@ -631,5 +924,90 @@ definePageMeta({
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Benefit List - Consistent with other showcase pages */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.benefit-list li {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  flex: 1;
+  min-width: 200px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1.1em;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.method-desc strong {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.method-desc code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #e2e8f0;
+}
+
+/* Parameter List */
+.param-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.param-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid #38bdf8;
+  border-radius: 4px;
+}
+
+.param-item code {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.param-item span {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 </style>
