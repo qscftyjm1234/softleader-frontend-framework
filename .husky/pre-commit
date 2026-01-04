@@ -17,28 +17,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 2. 自動生成歷史文件
-#    在 commit 前自動生成函數歷史記錄文件，並加入到此次 commit 中
-#    可透過環境變數 NUXT_PUBLIC_FEATURE_HISTORY_GENERATION 控制是否啟用
-
-# 檢查功能開關
-if [ "${NUXT_PUBLIC_FEATURE_HISTORY_GENERATION}" = "false" ]; then
-    echo "[Husky] 歷史文件生成功能已停用"
-else
-    echo "[Husky] 正在生成歷史文件..."
-    npm run gen:history --silent
-    if [ $? -eq 0 ]; then
-        # 檢查是否有新的或修改過的歷史文件
-        if [ -n "$(git status --porcelain docs/history/)" ]; then
-            echo "[Husky] 發現歷史文件變更，自動加入到此次 commit..."
-            git add docs/history/
-        else
-            echo "[Husky] 沒有歷史文件需要更新"
-        fi
-    else
-        echo "[Husky] 歷史文件生成失敗，但不影響 commit 流程"
-    fi
-fi
+# 2. 自動生成歷史文件 (已停用)
+# if [ "${NUXT_PUBLIC_FEATURE_HISTORY_GENERATION}" = "false" ]; then
+# ...
+# fi
+echo "[Husky] 歷史文件生成已停用"
 
 # 3. TypeScript 全域檢查已移動至 commit-msg hook，
 #    確保在訊息格式正確後才執行耗時檢查。

@@ -23,3 +23,12 @@ export const devtoolsConfig: NuxtConfig['devtools'] = {
    */
   enabled: true // Nuxt 3 可以正常使用
 }
+
+/**
+ * 數據收集設定
+ *
+ * 為了內網安全與隱私，建議關閉
+ */
+export const telemetryConfig = {
+  enabled: false
+}

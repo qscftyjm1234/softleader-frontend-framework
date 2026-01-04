@@ -1,4 +1,4 @@
-import { scanModulePages } from './build/routes'
+import { scanModulePages } from './router/routes-scanner'
 import { productConfig } from './scripts/product-loader'
 import { runtimeConfig as projectRuntimeConfig } from './core/config/runtime'
 import { i18nConfig } from './core/config/i18n'

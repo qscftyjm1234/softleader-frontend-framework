@@ -3,11 +3,6 @@ description: 'Standard configuration enabling all modules'
 
 # List of enabled modules
 modules:
-  - auth
-  - example
-  - insurance
-
-  - product
   - showcase
 
 # Theme configuration (example)
