@@ -53,8 +53,8 @@ const componentsList = [
     color: '#EC407A'
   },
   {
-    title: '假資料',
-    desc: 'Mock Data 與狀態檢視工具',
+    title: '狀態檢視工具',
+    desc: '狀態檢視工具',
     icon: 'mdi-eye-outline',
     to: '/showcase/data-inspector',
     color: '#7E57C2'
@@ -132,13 +132,7 @@ const functionsList = [
     to: '/showcase/pagination',
     color: '#5C6BC0'
   },
-  {
-    title: '權限管理',
-    desc: '角色與功能權限控制',
-    icon: 'mdi-shield-account',
-    to: '/showcase/permission',
-    color: '#EF5350'
-  },
+
   {
     title: '加解密',
     desc: 'AES、Base64 與雜湊',

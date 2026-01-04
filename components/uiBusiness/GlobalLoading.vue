@@ -39,13 +39,13 @@ defineOptions({
   width: 100vw;
   height: 100vh;
   /* 深色遮罩以提供更好的對比度 */
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  /* 毛玻璃效果 */
-  backdrop-filter: blur(4px);
 }
 
 /* 過渡效果 */

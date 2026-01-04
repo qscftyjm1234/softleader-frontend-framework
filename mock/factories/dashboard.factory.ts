@@ -4,7 +4,7 @@
  * 生成符合 Schema 的 Mock Dashboard 資料
  */
 
-import type { DashboardStat, DashboardActivity } from '../schemas/dashboard'
+import type { DashboardStat, DashboardActivity } from '../types/dashboard'
 
 /**
  * 生成隨機整數

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ApiLoadingButton from '@/components/uiBusiness/ApiLoadingButton.vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
@@ -13,14 +12,51 @@ definePageMeta({
 
 const loading = useLoading()
 
-const handleStart = () => {
-  loading.start()
-  setTimeout(() => loading.finish(), 2000)
+const { count } = loading
+
+// 模擬資料筆數
+const mockDataCount = ref(0)
+
+const simulateDataChange = () => {
+  // 模擬 Loading 後資料增加
+  const increase = Math.floor(Math.random() * 5) + 1
+  mockDataCount.value += increase
 }
 
-const handleFail = () => {
-  loading.start()
-  setTimeout(() => loading.fail(), 2000)
+const handleStart = async () => {
+  // 呼叫真實 Mock API: 取得儀表板統計
+  // useApi 預設會開啟 globalLoading，所以這裡不需要 loading.start()
+  await useApi('/dashboard/stats', {
+    autoSuccess: true
+  })
+
+  // 模擬收到資料後的變化
+  simulateDataChange()
+}
+
+// 模擬 useApi 的 loadingRef 行為
+const localLoading = ref(false)
+const handleLocalLoading = async () => {
+  // 呼叫真實 Mock API: 取得訂單資料
+  // 透過 loadingRef 自動綁定按鈕狀態
+  await useApi('/orders', {
+    loadingRef: localLoading,
+    autoSuccess: true
+  })
+
+  simulateDataChange()
+}
+
+const handleSimulateStack = async () => {
+  // 同時觸發 3 個請求，測試 Stack 疊加
+  // 注意：不使用 await 讓它們同時發出
+  const timestamp = Date.now()
+  const p1 = useApi('/users', { query: { _t: timestamp } })
+  const p2 = useApi('/dashboard/activities', { query: { _t: timestamp } })
+  const p3 = useApi('/orders', { query: { _t: timestamp } })
+
+  await Promise.all([p1, p2, p3])
+  simulateDataChange()
 }
 </script>
 
@@ -30,7 +66,10 @@ const handleFail = () => {
     description="展示 useLoading Composable 的計數器機制。支援多重請求堆疊 (Stack/Queue)，確保 Loading 遮罩在所有請求完成後才消失，避免畫面閃爍。"
   >
     <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
+    <ShowcaseSection
+      title="基礎用法"
+      icon="📚"
+    >
       <ShowcaseCard
         title="核心功能"
         description="Loading 系統的核心特色"
@@ -47,7 +86,6 @@ const handleFail = () => {
             code="const {
   start,      // 開始 Loading
   finish,     // 結束 Loading
-  fail,       // Loading 失敗
   isLoading   // Loading 狀態
 } = useLoading()"
             label="useLoading() 提供的方法"
@@ -71,10 +109,6 @@ const handleFail = () => {
             <li>
               <strong>自動管理:</strong>
               自動追蹤請求數量
-            </li>
-            <li>
-              <strong>失敗處理:</strong>
-              支援 Loading 失敗狀態
             </li>
           </ul>
         </div>
@@ -100,23 +134,28 @@ loading.finish()"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="Loading 控制"
-          description="測試 Loading 的開始和結束"
+          title="基本操作"
+          description="手動觸發 Loading 狀態"
         >
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-wrap gap-4">
             <button
               class="glass-btn primary"
               @click="handleStart"
             >
-              開始 Loading (2秒後自動結束)
-            </button>
-            <button
-              class="glass-btn danger"
-              @click="handleFail"
-            >
-              Loading 失敗 (2秒後)
+              Start (Get Stats)
             </button>
           </div>
+          <ShowcaseCodeBlock
+            code="const handleStart = async () => {
+  // 單一 API 請求
+  // 系統自動 handle Loading start/finish
+  await useApi('/dashboard/stats')
+}"
+            language="typescript"
+            label="單一請求邏輯"
+            :lines="false"
+            class="mt-4"
+          />
         </ShowcaseCard>
 
         <ShowcaseCard
@@ -124,27 +163,115 @@ loading.finish()"
           description="同時發送多個請求以測試 Queue 機制"
           full-width
         >
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div
-              class="flex flex-col items-center p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
+          <div class="mb-6 flex justify-center">
+            <button
+              class="glass-btn primary w-full md:w-auto"
+              @click="handleSimulateStack"
             >
-              <h3 class="text-sm font-semibold text-slate-300 mb-3">API 請求 1</h3>
-              <ApiLoadingButton label="發送請求 A (2s)" />
+              Simulate Stack (同時發送 3 個請求)
+            </button>
+          </div>
+          <ShowcaseCodeBlock
+            code="const handleSimulateStack = async () => {
+  // 同時觸發 3 個請求，測試 Stack 疊加
+  // 注意：不使用 await 讓它們同時發出
+  const timestamp = Date.now()
+  const p1 = useApi('/users', { query: { _t: timestamp } })
+  const p2 = useApi('/dashboard/activities', { query: { _t: timestamp } })
+  const p3 = useApi('/orders', { query: { _t: timestamp } })
+
+  // Stack Count 瞬間 +3
+  await Promise.all([p1, p2, p3])
+  // 隨請求完成依序 -1
+}"
+            language="typescript"
+            label="堆疊請求邏輯 (Stack Logic)"
+            :lines="false"
+            class="mt-4"
+          />
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- API 整合 -->
+    <ShowcaseSection
+      title="API 模組整合"
+      icon="🔗"
+    >
+      <div class="component-grid">
+        <ShowcaseCard
+          title="全域 Loading 控制"
+          description="useApi 預設會自動觸發全域 Loading"
+        >
+          <div class="flex flex-col gap-4">
+            <div class="text-sm text-slate-400">
+              <code>useApi</code>
+              預設將
+              <code>globalLoading</code>
+              設為
+              <code>true</code>
+              。若該請求不需要阻擋畫面 (例如背景更新)，可將其關閉。
+            </div>
+            <ShowcaseCodeBlock
+              code="// 關閉全域 Loading
+const { data } = await useApi('/api/news', {
+  globalLoading: false
+})"
+              language="typescript"
+              label="Disable Global Loading"
+              :lines="false"
+            />
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="局部 Loading (loadingRef)"
+          description="自動綁定 Loading 狀態至變數 (如按鈕狀態)"
+        >
+          <div class="flex flex-col gap-4">
+            <div class="text-sm text-slate-400">
+              透過
+              <code>loadingRef</code>
+              參數，
+              <code>useApi</code>
+              會在請求期間自動將傳入的 Ref 設為
+              <code>true</code>
+              ，結束後設為
+              <code>false</code>
+              。
             </div>
 
             <div
-              class="flex flex-col items-center p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
+              class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
             >
-              <h3 class="text-sm font-semibold text-slate-300 mb-3">API 請求 2</h3>
-              <ApiLoadingButton label="發送請求 B (2s)" />
+              <button
+                class="glass-btn primary"
+                :disabled="localLoading"
+                @click="handleLocalLoading"
+              >
+                <i
+                  v-if="localLoading"
+                  class="mdi mdi-loading mdi-spin"
+                ></i>
+                <span v-else>送出表單</span>
+                {{ localLoading ? '處理中...' : '' }}
+              </button>
+              <div class="text-xs text-slate-500 font-mono">loadingRef: {{ localLoading }}</div>
             </div>
 
-            <div
-              class="flex flex-col items-center p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
-            >
-              <h3 class="text-sm font-semibold text-slate-300 mb-3">API 請求 3</h3>
-              <ApiLoadingButton label="發送請求 C (2s)" />
-            </div>
+            <ShowcaseCodeBlock
+              code="const isSubmitting = ref(false)
+
+// 自動處理 isSubmitting 的 true/false
+await useApi('/api/submit', {
+  method: 'POST',
+  body: form,
+  loadingRef: isSubmitting
+})"
+              language="typescript"
+              label="Auto Loading Binding"
+              :lines="false"
+            />
           </div>
         </ShowcaseCard>
       </div>
@@ -201,32 +328,6 @@ loading.finish()
         </ShowcaseCard>
 
         <ShowcaseCard
-          title="3. fail()"
-          description="Loading 失敗"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              標記 Loading 為失敗狀態。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const loading = useLoading()
-
-loading.start()
-try {
-  await api.call()
-  loading.finish()
-} catch (error) {
-  loading.fail()
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
           title="使用情境"
           description="實際應用範例"
           full-width
@@ -253,6 +354,23 @@ async function loadData() {
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
+
+    <div class="monitor-widget">
+      <div class="monitor-item">
+        <span class="label">堆疊層數</span>
+        <span
+          class="value"
+          :class="{ active: count > 0 }"
+        >
+          {{ count }}
+        </span>
+      </div>
+      <div class="monitor-divider"></div>
+      <div class="monitor-item">
+        <span class="label">資料筆數</span>
+        <span class="value highlight">{{ mockDataCount }}</span>
+      </div>
+    </div>
   </ShowcasePage>
 </template>
 
@@ -352,11 +470,71 @@ async function loadData() {
   letter-spacing: 0.3px;
 }
 
-/* Method Description */
-.method-desc {
-  color: #cbd5e1;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin: 0;
+/* Monitor Widget */
+.monitor-widget {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  font-family: 'JetBrains Mono', monospace;
+  z-index: 10000;
+  animation: slideIn 0.5s ease-out;
+}
+
+.monitor-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.monitor-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.monitor-widget .label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.monitor-widget .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1;
+  transition: all 0.3s;
+}
+
+.monitor-widget .value.active {
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.monitor-widget .value.highlight {
+  color: #10b981;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

@@ -14,7 +14,7 @@ import {
   checkApiError,
   checkRefreshToken
 } from '~/utils/api/interceptors/response'
-import { checkMockData } from '~/utils/api/interceptors/mock'
+import { checkMockData } from '~/mock/core'
 // import { useLoadingStore } from '~/stores/loading' // Removed
 
 // 擴充 UseFetchOptions 以包含自定義選項
@@ -134,31 +134,136 @@ export function useApi<T>(
     }
   }
 
-  // 合併選項 (使用 defu 進行深層合併，比手動 spread 更安全漂亮)
+  // 合併選項 (使用 defu 進行深層合併)
   const params = defu(options, defaults)
 
-  // [NEW] 處理 Prefix: 自動將 prefix 接在 baseURL 後面
-  // 範例：BaseURL(https://api.com) + Prefix(/jasmine) = https://api.com/jasmine
-  if (params.prefix) {
-    // 確保 baseURL 不會以 / 結尾且 prefix 以 / 開頭
-    // 使用 unref 確保即使傳入 ref 也能正確處理
-    const base = String(unref(params.baseURL) ?? '').replace(/\/$/, '')
-    const pre = params.prefix.startsWith('/') ? params.prefix : `/${params.prefix}`
-
-    // 注意：這裡將組合後的 URL 寫回 baseURL
-    params.baseURL = `${base}${pre}`
+  // [Fix] defu 會 clone 物件導致 Ref 失去響應性，故需手動還原 loadingRef
+  if (options.loadingRef) {
+    ;(params as any).loadingRef = options.loadingRef
   }
 
-  // 回傳原生的 useFetch
-  // 注意：這裡指定 useFetch 的回傳型別為 ApiResponse<T>，但透過 transform 轉成 T
-  // transform 的類型推斷有問題，但運行時是正確的，所以使用 any 繞過
-  return useFetch<ApiResponse<T>>(url, {
-    ...params,
-    transform: (response: ApiResponse<T>) => {
-      // 自動拆包：只回傳 data 部分，處理資料轉換
-      return response.data
+  // 使用 useAsyncData 搭配 $fetch，以便在請求前攔截並處理 Mock
+  // 這是為了滿足「純前端 Mock」需求，同時保留 useFetch 的 DX
+  const key = computed(() => {
+    const _url = typeof url === 'function' ? url() : unref(url)
+    return `api-${_url}-${JSON.stringify(params)}`
+  })
+
+  return useAsyncData<T, Error>(
+    key.value,
+    async () => {
+      const _url = typeof url === 'function' ? url() : unref(url)
+
+      // 處理 Prefix
+      let finalUrl = _url
+      if (params.prefix) {
+        // 使用 unref 確保安全
+        const pre = params.prefix.startsWith('/') ? params.prefix : `/${params.prefix}`
+        // 如果 url 是絕對路徑則不加 base
+        if (_url.startsWith('http')) {
+          finalUrl = _url
+        } else {
+          // 若 params.baseURL 有值，這裡其實 fetch 會自己組，但為了 Mock 我們手動組看看?
+          // 簡化：交給 $fetch 處理 base，我們只處理 prefix
+          finalUrl = `${pre}${_url}`
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 1. Mock 檢查 (Client-side Mocking)
+      // -------------------------------------------------------------
+      // 我們在這裡手動執行 onRequest 邏輯的一部分 (如 Loading) 是比較困難的
+      // 因為 $fetch 的 onRequest 是在內部執行的。
+      // 但為了讓 Mock 看起來像真的，我們需要模擬這部分。
+
+      // 呼叫 Mock 檢查器
+      const mockResult = await checkMockData(finalUrl, {
+        ...params,
+        // 傳入 body 以便 Mock Factory 使用 (如 create user)
+        body: isRef(params.body) ? params.body.value : params.body
+      })
+
+      if (mockResult) {
+        // [模擬] 執行 onRequest 攔截器行為 (Loading Start)
+        if (params.onRequest) {
+          await params.onRequest({ request: finalUrl, options: params } as any)
+        }
+
+        // [模擬] 模擬網路延遲 (將等待移至 onRequest 之後，確保 Loading 狀態已顯示)
+        if (mockResult.delay > 0) {
+          await new Promise((resolve) => setTimeout(resolve, mockResult.delay))
+        }
+
+        // [模擬] 執行 onResponse 攔截器行為 (Loading Finish)
+        // 構造一個假的 response context
+        const mockContext: any = {
+          response: {
+            _data: mockResult.data,
+            status: 200,
+            ok: true,
+            headers: new Headers()
+          },
+          options: params
+        }
+
+        if (params.onResponse) {
+          await params.onResponse(mockContext)
+        }
+
+        return mockResult.data
+      }
+
+      // -------------------------------------------------------------
+      // 2. 真實請求 (Real Request)
+      // -------------------------------------------------------------
+
+      // 調整 params 的 baseURL (因為上面 prefix 邏輯可能需要透過 baseURL 傳遞)
+      // 這裡採用簡單策略：如果用了 prefix，就直接修改 URL，不依賴 axios-style baseURL 拼接
+      // 但 $fetch 支援 baseURL。
+
+      const fetchOptions = { ...params }
+      if (fetchOptions.prefix) {
+        // 把 prefix 拼進 baseURL，這樣 $fetch(url) 依然乾淨
+        const base = String(fetchOptions.baseURL ?? '').replace(/\/$/, '')
+        const pre = fetchOptions.prefix.startsWith('/')
+          ? fetchOptions.prefix
+          : `/${fetchOptions.prefix}`
+        fetchOptions.baseURL = `${base}${pre}`
+        delete fetchOptions.prefix
+      }
+
+      const response = await $fetch<ApiResponse<T>>(
+        typeof url === 'function' ? url() : unref(url),
+        {
+          ...fetchOptions
+        } as any
+      )
+
+      return response // $fetch 會自動拋出錯誤，進入 error 狀態
+    },
+    {
+      // Pass useAsyncData options provided in params
+      server: params.server,
+      lazy: params.lazy,
+      immediate: params.immediate,
+      watch: params.watch,
+      transform: (response: any) => {
+        // 這裡 response 可能是 Mock Data (原本物件) 或 $fetch Response (ApiResponse)
+        // 因為 Mock 我們直接回傳了 data，所以需統一結構
+
+        // 如果是來自 $fetch 的 ApiResponse (通常有 data 屬性包裝)
+        // 或是我們 Mock 直接回傳了 { data: ... }
+
+        const data = response.data || response
+
+        if (params.transform) {
+          return (params.transform as any)(data)
+        }
+        return data
+      },
+      pick: params.pick
     }
-  }) as any
+  ) as any
 }
 
 /**
@@ -166,6 +271,7 @@ export function useApi<T>(
  * 這被認為是「最棒」的管理模式，因為它極度簡化了 Repository 的代碼
  *
  * @param prefix
+ * @returns 包含常用 HTTP 方法 (get, post, put, patch, delete) 的物件
  * @example
  * const api = useClient('/jasmine-mar/policy')
  * api.get('/list') // 自動發送 GET /jasmine-mar/policy/list

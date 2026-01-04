@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import DataPreview from '../components/DataPreview.vue'
+
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
@@ -38,6 +38,8 @@ const {
   toTimestamp,
   DEFAULT_FORMATS
 } = useDateTime()
+
+const formatJSON = (data: any) => JSON.stringify(data, null, 2)
 
 // Demo state
 const demoDate = ref(new Date())
@@ -261,14 +263,17 @@ add(new Date(), 7, 'day') // Date Object"
           description="將日期轉換為指定格式的字串。"
         >
           <div class="demo-area">
-            <DataPreview
-              title="Output Results"
-              :data="{
-                formatDate: formattedDate,
-                formatTime: formattedTime,
-                formatDateTime: formattedDateTime,
-                formatRelative: relativeTime
-              }"
+            <ShowcaseCodeBlock
+              label="Output Results"
+              :code="
+                formatJSON({
+                  formatDate: formattedDate,
+                  formatTime: formattedTime,
+                  formatDateTime: formattedDateTime,
+                  formatRelative: relativeTime
+                })
+              "
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -299,14 +304,17 @@ add(new Date(), 7, 'day') // Date Object"
                 />
               </div>
             </IStack>
-            <DataPreview
-              title="Output Results"
-              :data="{
-                original: formatDateTime(demoDate),
-                added: formatDateTime(addedDate),
-                subtracted: formatDateTime(subtractedDate),
-                diff: `${dateDiff} ${demoUnit}`
-              }"
+            <ShowcaseCodeBlock
+              label="Output Results"
+              :code="
+                formatJSON({
+                  original: formatDateTime(demoDate),
+                  added: formatDateTime(addedDate),
+                  subtracted: formatDateTime(subtractedDate),
+                  diff: `${dateDiff} ${demoUnit}`
+                })
+              "
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -317,9 +325,10 @@ add(new Date(), 7, 'day') // Date Object"
           description="比較兩個日期的先後關係。"
         >
           <div class="demo-area">
-            <DataPreview
-              title="Comparison Results"
-              :data="comparisonResults"
+            <ShowcaseCodeBlock
+              label="Comparison Results"
+              :code="formatJSON(comparisonResults)"
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -330,9 +339,10 @@ add(new Date(), 7, 'day') // Date Object"
           description="取得一天、一週、一月的開始或結束時間。"
         >
           <div class="demo-area">
-            <DataPreview
-              title="Boundary Times"
-              :data="boundaryTimes"
+            <ShowcaseCodeBlock
+              label="Boundary Times"
+              :code="formatJSON(boundaryTimes)"
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -343,9 +353,10 @@ add(new Date(), 7, 'day') // Date Object"
           description="快速取得常用的日期。"
         >
           <div class="demo-area">
-            <DataPreview
-              title="Shortcuts"
-              :data="shortcuts"
+            <ShowcaseCodeBlock
+              label="Shortcuts"
+              :code="formatJSON(shortcuts)"
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -362,9 +373,10 @@ add(new Date(), 7, 'day') // Date Object"
               placeholder="2024-12-25"
               class="mb-4"
             />
-            <DataPreview
-              title="Validation Results"
-              :data="validationResult"
+            <ShowcaseCodeBlock
+              label="Validation Results"
+              :code="formatJSON(validationResult)"
+              language="json"
             />
           </div>
         </ShowcaseCard>
@@ -375,14 +387,17 @@ add(new Date(), 7, 'day') // Date Object"
           description="其他實用的日期處理方法。"
         >
           <div class="demo-area">
-            <DataPreview
-              title="Utility Results"
-              :data="{
-                timezone: getTimezone(),
-                iso: toISO(demoDate),
-                timestamp: toTimestamp(demoDate),
-                dateRange: getDateRange(yesterday(), tomorrow()).map((d) => formatDate(d))
-              }"
+            <ShowcaseCodeBlock
+              label="Utility Results"
+              :code="
+                formatJSON({
+                  timezone: getTimezone(),
+                  iso: toISO(demoDate),
+                  timestamp: toTimestamp(demoDate),
+                  dateRange: getDateRange(yesterday(), tomorrow()).map((d) => formatDate(d))
+                })
+              "
+              language="json"
             />
           </div>
         </ShowcaseCard>

@@ -12,10 +12,12 @@ import ILoadingButton from '@/components/uiInterface/ILoadingButton.vue'
 
 interface Props {
   label?: string
+  url?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  label: '發送 API 請求'
+const props = withDefaults(defineProps<Props>(), {
+  label: '發送 API 請求',
+  url: '/users'
 })
 
 // 使用 useApi，它內部已經整合了 useLoading
@@ -23,9 +25,9 @@ const api = useApi
 
 const handleClick = async () => {
   try {
-    // 呼叫我們剛剛建立的 Mock API
+    // 呼叫傳入的 Mock API URL
     // globalLoading: true (預設值) 會觸發全域 Loading
-    await api('/api/mock/delay', {
+    await api(props.url, {
       globalLoading: true,
       autoSuccess: true // 自動顯示成功訊息
     })

@@ -4,7 +4,7 @@
  * 使用簡單的手寫邏輯生成符合 Schema 的 Mock User 資料
  */
 
-import type { User } from '../schemas/user'
+import type { User } from '../types/user'
 
 // 預定義的假資料池
 const FIRST_NAMES = [

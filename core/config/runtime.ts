@@ -57,6 +57,9 @@ export const runtimeConfig = {
       tokenKey: 'auth_token',
       // Token 的有效期限 (秒)，預設 7 天
       maxAge: 60 * 60 * 24 * 7
-    }
+    },
+
+    // Mock API 開關 (預設開啟以進行展示)
+    featureApiMock: true
   }
 }

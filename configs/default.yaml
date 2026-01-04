@@ -6,7 +6,7 @@ modules:
   - auth
   - example
   - insurance
-  - permission
+
   - product
   - showcase
 

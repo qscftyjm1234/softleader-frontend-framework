@@ -4,7 +4,7 @@
  * 使用簡單的手寫邏輯生成符合 Schema 的 Mock Order 資料
  */
 
-import type { Order, OrderItem, OrderStatus } from '../schemas/order'
+import type { Order, OrderItem, OrderStatus } from '../types/order'
 
 // 預定義的假資料池
 const PRODUCT_NAMES = [

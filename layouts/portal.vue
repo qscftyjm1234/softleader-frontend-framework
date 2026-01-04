@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import PortalHeader from '~/components/layout/PortalHeader.vue'
 import GlobalSnackbar from '~/components/uiBusiness/GlobalSnackbar.vue'
+import GlobalModal from '~/components/uiBusiness/GlobalModal.vue'
+import IApp from '~/components/uiInterface/IApp.vue'
 </script>
 
 <template>
-  <div class="portal-layout">
+  <IApp class="portal-layout">
     <PortalHeader />
 
     <main class="portal-main">
@@ -14,7 +16,8 @@ import GlobalSnackbar from '~/components/uiBusiness/GlobalSnackbar.vue'
     <footer class="portal-footer">Copyright © 2026 SoftLeader. All rights reserved.</footer>
 
     <GlobalSnackbar />
-  </div>
+    <GlobalModal />
+  </IApp>
 </template>
 
 <style scoped>

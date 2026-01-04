@@ -1,31 +1,205 @@
 <script setup lang="ts">
 /**
  * API Demo - API 管理與 Repository 模式展示
- *
- * 展示如何使用 useRepository 進行 API 呼叫
- * 包含分頁、搜尋、載入狀態等功能
  */
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-const { user } = useRepository()
+// ----------------------------------------------------------------
+// Shared State & Helpers
+// ----------------------------------------------------------------
+const apiLogs = ref<{ time: string; method: string; path: string; status: string }[]>([])
+const activeCode = ref(`// 這是互動式教學區塊
+// 請試著點擊左側的「下一頁」或「編輯」按鈕
+// 這裡將會顯示該動作對應的程式碼寫法`)
 
+const addLog = (method: string, path: string, status: string = '200 OK') => {
+  const time = new Date().toLocaleTimeString('zh-TW', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+  const statusText = status === '200 OK' ? '200 成功' : status
+  apiLogs.value.unshift({ time, method, path, status: statusText })
+  if (apiLogs.value.length > 10) apiLogs.value.pop()
+}
+
+const getMethodColor = (method: string) => {
+  switch (method) {
+    case 'GET':
+      return 'text-sky-400'
+    case 'POST':
+      return 'text-emerald-400'
+    case 'PUT':
+      return 'text-amber-400'
+    case 'DELETE':
+      return 'text-rose-400'
+    default:
+      return 'text-slate-400'
+  }
+}
+
+// ----------------------------------------------------------------
+// Scenario 1: CRUD List
+// ----------------------------------------------------------------
+const { user } = useRepository()
 const page = ref(1)
 const search = ref('')
+const itemsPerPage = 5
 
-// 響應式 API 呼叫
-// 當 page 或 search 改變時，會自動重新發送請求
-const { data, pending, error } = await user.getUsers({
+// 響應式 API 呼叫 (CRUD List)
+const { data, pending, error, refresh } = await user.getUsers({
   page,
   q: search,
+  itemsPerPage
+})
+
+watch(pending, (isPending) => {
+  if (!isPending && !error.value && currentTab.value === 'crud') {
+    addLog('GET', `/users/list?page=${page.value}&q=${search.value}`)
+    activeCode.value = `// 1. 自動觸發資料更新 (Auto-fetch)
+await user.getUsers({
+  page: ${page.value},
+  q: '${search.value}',
   itemsPerPage: 5
+})`
+  }
+})
+
+const handleEdit = async (item: any) => {
+  activeCode.value = `// 準備更新資料
+const newData = { ...item, name: 'New Name' }
+
+// 2. 呼叫 Repository 更新
+await user.updateUser(${item.id}, newData)
+
+// 3. 刷新列表
+refresh()`
+
+  const newName = prompt('更新使用者名稱:', item.name)
+  if (!newName) return
+
+  addLog('PUT', `/users/${item.id}`, '處理中...')
+
+  try {
+    await user.updateUser(item.id, { ...item, name: newName })
+    addLog('PUT', `/users/${item.id}`, '200 成功')
+    refresh()
+  } catch (e) {
+    addLog('PUT', `/users/${item.id}`, '錯誤')
+  }
+}
+
+const handleDelete = async (id: number) => {
+  activeCode.value = `// 1. 呼叫 Repository 刪除
+await user.deleteUser(${id})
+
+// 2. 刷新列表
+refresh()`
+
+  if (!confirm('確定要刪除此使用者嗎？')) return
+  addLog('DELETE', `/users/${id}`, '處理中...')
+  try {
+    await user.deleteUser(id)
+    addLog('DELETE', `/users/${id}`, '200 成功')
+    refresh()
+  } catch (e) {
+    addLog('DELETE', `/users/${id}`, '錯誤')
+  }
+}
+
+// ----------------------------------------------------------------
+// Scenario 2: Dashboard (Parallel Requests)
+// ----------------------------------------------------------------
+const dashStats = ref<any>(null)
+const dashLoading = ref(false)
+
+const loadDashboard = async () => {
+  dashLoading.value = true
+  addLog('GET', '/api/stats (平行請求 x3)', '處理中...')
+
+  activeCode.value = `// 平行請求 (Parallel Requests)
+// 使用 Promise.all 同時發出多個請求，提升效能
+const [sales, users, visits] = await Promise.all([
+  api.get('/stats?type=sales'),
+  api.get('/stats?type=users'),
+  api.get('/stats?type=visits')
+])`
+
+  try {
+    // 模擬三個平行請求
+    const results = await Promise.all([
+      $fetch('/api/stats?type=sales'),
+      $fetch('/api/stats?type=users'),
+      $fetch('/api/stats?type=visits')
+    ])
+    dashStats.value = results.map((r: any) => r.data)
+    addLog('GET', '/api/stats', '200 成功 (x3)')
+  } catch (e) {
+    addLog('GET', '/api/stats', '錯誤')
+  } finally {
+    dashLoading.value = false
+  }
+}
+
+// ----------------------------------------------------------------
+// Scenario 3: Error Handling
+// ----------------------------------------------------------------
+const errorLoading = ref(false)
+
+const triggerError = async (code: number) => {
+  errorLoading.value = true
+  addLog('GET', `/api/error?code=${code}`, '處理中...')
+
+  activeCode.value = `// 錯誤處理 (Error Handling)
+// 系統會自動攔截 4xx/5xx錯誤，並顯示 Snackbar
+// 除非您設定 autoError: false
+try {
+  await api.get('/error', { params: { code: ${code} } })
+} catch (err) {
+  // 您可以在這裡進行額外的錯誤處理
+  console.error(err)
+}`
+
+  try {
+    await useApi('/error', { params: { code } })
+    addLog('GET', `/api/error?code=${code}`, '200 成功') // Should not happen
+  } catch (e: any) {
+    addLog('GET', `/api/error?code=${code}`, `${code} 錯誤`)
+  } finally {
+    errorLoading.value = false
+  }
+}
+
+// ----------------------------------------------------------------
+// Tabs Logic
+// ----------------------------------------------------------------
+const currentTab = ref('crud')
+const tabs = [
+  { id: 'crud', label: 'CRUD 列表' },
+  { id: 'dashboard', label: 'Dashboard (平行請求)' },
+  { id: 'error', label: '錯誤測試' }
+]
+
+watch(currentTab, (val) => {
+  if (val === 'crud') {
+    activeCode.value = `// 切換至 CRUD 範例
+// 這裡展示標準的 List, Pagination, Search 操作`
+  } else if (val === 'dashboard') {
+    activeCode.value = `// 切換至 Dashboard 範例
+// 點擊「載入數據」測試 Promise.all 平行請求`
+  } else {
+    activeCode.value = `// 切換至 錯誤測試
+// 點擊不同按鈕測試 API 錯誤攔截機制`
+  }
 })
 
 definePageMeta({
-  title: 'API Demo',
+  title: 'API 展示',
   icon: 'mdi-api',
   layout: 'portal'
 })
@@ -33,267 +207,763 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="API 管理 (API Management)"
-    description="整合 Repository 模式的 API 管理系統，提供統一的介面與型別安全。核心特色：Repository 模式、自動化請求、型別安全、輔助函式。"
+    title="API 管理系統"
+    description="整合 Nuxt useFetch 與 Repository Pattern，提供企業級的 API 統一管理方案。"
   >
-    <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
-      <ShowcaseCard
-        title="核心功能"
-        description="Repository 模式與 API 管理"
-        full-width
-      >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
-          >
-            <strong>可用方法：</strong>
-          </p>
-          <ShowcaseCodeBlock
-            code="const { user, auth, dashboard } = useRepository()
-
-// 1. 基本 API 呼叫
-const { data } = await user.getProfile()
-
-// 2. 帶參數與響應式更新
-const page = ref(1)
-const { data: users, pending } = await user.getUsers({ 
-  page, // 自動監聽 page 變化重新請求
-  limit: 10 
-})
-
-// 3. 錯誤處理
-if (error.value) {
-  console.error(error.value.message)
-}"
-            label="useRepository() 功能總覽"
-          />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>Repository 模式:</strong>
-              集中管理 API 接口，提升代碼可維護性與重用性
-            </li>
-            <li>
-              <strong>自動化狀態:</strong>
-              自動處理 Pending、Error、Data 狀態 (基於 useFetch)
-            </li>
-            <li>
-              <strong>型別安全:</strong>
-              完整的 TypeScript 支援，確保 API 參數與回傳型別正確
-            </li>
-            <li>
-              <strong>輔助工具:</strong>
-              提供 waitForData, waitForAll 等工具簡化 SSR 資料等待
-            </li>
-          </ul>
-        </div>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <!-- API 參考 -->
-    <ShowcaseSection
-      title="API 參考"
-      icon="📝"
-    >
+    <!-- 0. 前置準備 -->
+    <ShowcaseSection title="0. 前置準備">
       <div class="component-grid">
         <ShowcaseCard
-          title="1. useRepository"
-          description="API 模組存取入口"
+          title="核心依賴"
+          description="useApi 依賴以下系統模組以提供完整體驗"
         >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>useRepository()</strong>
-              <br />
-              回傳包含所有 API 模組 (user, auth, etc.) 的物件。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { user } = useRepository()
-await user.login(credentials)"
-              label="使用範例"
-            />
-          </template>
+          <ul class="benefit-list">
+            <li>
+              <strong>useLoading:</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                整合全域 Loading (計數器模式)，自動控制讀取條顯示
+              </span>
+            </li>
+            <li>
+              <strong>useNotify:</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                整合 Snackbar，處理 autoSuccess/autoError
+              </span>
+            </li>
+            <li>
+              <strong>Nuxt Server Routes:</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                開發環境使用 server/api 作為 Mock Data
+              </span>
+            </li>
+          </ul>
         </ShowcaseCard>
 
         <ShowcaseCard
-          title="2. Helper Methods"
-          description="非同步資料輔助函式"
+          title="環境變數"
+          description="請於 nuxt.config.ts 設定 runtimeConfig"
         >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>waitForData(pendingRef)</strong>
-              <br />
-              等待單一 API 請求完成。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>waitForAll([pendingRefs])</strong>
-              <br />
-              等待多個 API 請求同時完成。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>fetchData(url, options)</strong>
-              <br />
-              直接發起一次性 API 請求。
-            </p>
-          </div>
-          <template #footer>
+          <div class="h-full">
             <ShowcaseCodeBlock
-              code="const { pending } = api.call()
-await waitForData(pending)"
-              label="使用範例"
+              code="export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      api: {
+        baseUrl: process.env.VITE_API_BASE_URL,
+        timeout: 30000,
+        retry: 0,
+        globalLoading: true
+      }
+    }
+  }
+})"
+              label="nuxt.config.ts"
+              language="typescript"
+              :lines="false"
+              class="h-full"
             />
-          </template>
+          </div>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
 
-    <!-- 互動測試 -->
-    <ShowcaseSection
-      title="互動測試 (Demo)"
-      icon="🎮"
-    >
+    <!-- 1. 回傳值詳解 -->
+    <ShowcaseSection title="1. 回傳值詳解">
+      <ShowcaseCard
+        title="與 Nuxt useFetch 完全一致"
+        description="useApi 保留了所有 useFetch 的回傳屬性，並針對 data 做了自動拆包處理。"
+        full-width
+      >
+        <div
+          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
+        >
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-950 border-b border-slate-800">
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">屬性</th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">型別</th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">data</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">T | null</td>
+                <td class="py-3 px-4 text-slate-300">
+                  API 回傳資料。已自動拆除
+                  <code>ApiResponse</code>
+                  外殼，直接回傳 Generic T。
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">pending</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">boolean</td>
+                <td class="py-3 px-4 text-slate-300">請求是否正在進行中 (True/False)。</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">error</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">Error | null</td>
+                <td class="py-3 px-4 text-slate-300">
+                  請求失敗時的錯誤物件，包含 statusCode 與 message。
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">refresh</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">function</td>
+                <td class="py-3 px-4 text-slate-300">重新發送請求的函式 (常用於列表刷新)。</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">status</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">string</td>
+                <td class="py-3 px-4 text-slate-300">
+                  目前的狀態字串：'idle' | 'pending' | 'success' | 'error'。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="const { 
+  data,     // T | null
+  pending,  // boolean
+  error,    // Error | null
+  refresh,  // () => Promise<void>
+  status    // 'idle' | 'pending' | ...
+} = await user.getUsers()"
+            label="解構賦值範例"
+          />
+        </template>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 2. 請求參數詳解 -->
+    <ShowcaseSection title="2. 請求參數詳解">
+      <ShowcaseCard
+        title="擴充參數"
+        description="除原本 useFetch 的參數外，額外支援的企業級設定。"
+      >
+        <div
+          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
+        >
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-950 border-b border-slate-800">
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">
+                  參數名
+                </th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">
+                  預設值
+                </th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">globalLoading</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">true</td>
+                <td class="py-3 px-4 text-slate-300">
+                  是否觸發全域 Loading 狀態 (設為 false 可個別關閉)
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">autoError</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">true</td>
+                <td class="py-3 px-4 text-slate-300">是否自動顯示錯誤 Snackbar (4xx/5xx)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">autoSuccess</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">false</td>
+                <td class="py-3 px-4 text-slate-300">成功後自動顯示提示 (傳入字串即為訊息內容)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">loadingRef</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
+                <td class="py-3 px-4 text-slate-300">
+                  綁定按鈕的
+                  <code>Ref&lt;boolean&gt;</code>
+                  ，自動切換 Loading
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
+
+      <ShowcaseCard
+        title="標準參數"
+        description="繼承自 Nuxt useFetch 的常用標準參數。"
+      >
+        <div
+          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
+        >
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-950 border-b border-slate-800">
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">
+                  參數名
+                </th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">
+                  預設值
+                </th>
+                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">method</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">GET</td>
+                <td class="py-3 px-4 text-slate-300">請求方法 (GET, POST, PUT, DELETE...)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">body</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
+                <td class="py-3 px-4 text-slate-300">Request Body Payload (通常用於 POST/PUT)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">params</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
+                <td class="py-3 px-4 text-slate-300">
+                  URL Query Parameters 物件 (如
+                  <code>{ q: 'search' }</code>
+                  )
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">watch</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">false</td>
+                <td class="py-3 px-4 text-slate-300">監聽指定 Ref 變更並自動重新發送請求</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">transform</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
+                <td class="py-3 px-4 text-slate-300">資料轉換函式 (Data Transformation)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-mono text-sky-400">pick</td>
+                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
+                <td class="py-3 px-4 text-slate-300">只選取部分欄位 (降低 Payload 大小)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <template #footer>
+          <ShowcaseCodeBlock
+            code="// 綜合範例：靜默請求 (Background Sync)
+useApi('/users/sync', {
+  method: 'POST',
+  body: { timestamp: 12345 },
+  // Custom: 關閉全域 Loading
+  globalLoading: false,
+  // Custom: 關閉錯誤提示
+  autoError: false
+})"
+            label="靜默請求範例"
+          />
+        </template>
+      </ShowcaseCard>
+
+      <ShowcaseCard
+        title="資料轉換範例"
+        description="進階：使用 transform 轉換資料結構，或用 pick 減少資料量。"
+        full-width
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ShowcaseCodeBlock
+            code="// 1. 欄位篩選 (Pick)
+// 只取 id 與 name，減少前端記憶體與傳輸量
+const { data } = useApi('/users/list', {
+  pick: ['id', 'name']
+})"
+            label="範例 1：欄位篩選"
+            language="typescript"
+          />
+
+          <ShowcaseCodeBlock
+            code="// 2. 資料轉換 (Transform)
+// 將後端陣列轉換為前端好用的 Map 或格式
+const { data } = useApi('/config/map', {
+  transform: (data) => {
+    // 這裡的 data 已經是自動拆包後的結果
+    return data.map(item => ({
+       value: item.id,
+       label: item.title.toUpperCase()
+    }))
+  }
+})"
+            label="範例 2：資料轉換"
+            language="typescript"
+          />
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 3. 核心工具 -->
+    <ShowcaseSection title="3. 核心工具">
       <div class="component-grid">
         <ShowcaseCard
-          title="User Management"
-          description="分頁與搜尋展示"
-          full-width
+          title="為什麼使用 useClient?"
+          description="useClient 是 Repository 模式的核心，用於鎖定 API 路徑前綴並提供更簡潔的 CRUD 方法。"
+        >
+          <ul class="benefit-list">
+            <li>
+              <strong>自動前綴：</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                宣告一次
+                <code>useClient('/users')</code>
+                ，後續呼叫自動帶入
+                <code>/users</code>
+              </span>
+            </li>
+            <li>
+              <strong>簡化方法：</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                直接提供
+                <code>.get()</code>
+                ,
+                <code>.post()</code>
+                等方法，不必再寫
+                <code>{ method: 'POST' }</code>
+              </span>
+            </li>
+            <li>
+              <strong>類型安全：</strong>
+              <span class="text-slate-400 text-xs block mt-1">
+                完整支援 TypeScript Generic，定義回傳型別更直覺
+              </span>
+            </li>
+          </ul>
+        </ShowcaseCard>
+
+        <ShowcaseCard
+          title="代碼比較"
+          description="使用 useClient 前後的差異比較"
+        >
+          <div class="flex flex-col gap-4">
+            <div>
+              <div class="text-xs font-bold text-rose-400 mb-1">原始寫法</div>
+              <ShowcaseCodeBlock
+                code="const { data } = useApi('/users/create', {
+  method: 'POST', 
+  body: payload 
+})"
+                label="標準 useApi"
+                language="typescript"
+                :lines="false"
+              />
+            </div>
+            <div>
+              <div class="text-xs font-bold text-emerald-400 mb-1">useClient 寫法</div>
+              <ShowcaseCodeBlock
+                code="// 1. 建立 Client
+const api = useClient('/users')
+
+// 2. 簡潔呼叫
+const { data } = api.post('/create', payload)"
+                label="使用 useClient"
+                language="typescript"
+                :lines="false"
+              />
+            </div>
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 4. 定義位置與原則 (Structure) -->
+    <ShowcaseSection title="4. 定義位置與原則">
+      <div class="component-grid">
+        <!-- Architecture Card -->
+        <ShowcaseCard
+          title="架構設計"
+          description="Repository 模式的職責邊界"
         >
           <div class="demo-area">
-            <div class="flex flex-col gap-6">
+            <h4 class="text-sm font-bold text-slate-200 mb-2">Repository 層</h4>
+            <ul class="responsibility-list">
+              <li>定義後端 API 介面與回傳型別</li>
+              <li>封裝 HTTP 方法與路徑細節</li>
+              <li>提供 Component 乾淨的呼叫介面</li>
+            </ul>
+
+            <div class="principles-list">
+              <span class="principles-title">
+                <span class="text-amber-400">✦</span>
+                開發原則：
+              </span>
+              <ul>
+                <li>
+                  <span class="icon">✦</span>
+                  <span>集中管理：Component 禁止出現 API URL</span>
+                </li>
+                <li>
+                  <span class="icon">✦</span>
+                  <span>單一職責：Component 只負責呼叫與接收</span>
+                </li>
+                <li>
+                  <span class="icon">✦</span>
+                  <span>模組化：使用 useClient 鎖定前綴</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- Implementation Card -->
+        <ShowcaseCard
+          title="實作範例"
+          description="repositories/modules/user.ts"
+        >
+          <div class="demo-area h-full">
+            <ShowcaseCodeBlock
+              code="import { useClient } from '#imports'
+
+// 1. 定義 Client (鎖定 /users 前綴)
+const api = useClient('/users')
+
+export const repository = {
+  // 2. 定義方法 (只專注於業務邏輯)
+  getUsers(params) {
+    return api.get('/list', { params })
+  },
+  
+  updateUser(id, data) {
+    // 3. 封裝細節 (Method, URL)
+    return api.put(`/${id}`, data)
+  }
+}"
+              label="repositories/modules/user.ts"
+              :lines="false"
+              class="h-full"
+            />
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 5. 實戰演練 -->
+    <ShowcaseSection
+      title="5. 實戰演練"
+      icon="🎮"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Interactive Scenario -->
+        <div class="lg:col-span-2">
+          <ShowcaseCard
+            title="情境模擬"
+            description="請選擇下方頁籤切換不同的 API 測試情境。"
+            full-width
+          >
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-6 border-b border-slate-700/50 pb-4">
+              <button
+                v-for="tab in tabs"
+                :key="tab.id"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                :class="
+                  currentTab === tab.id
+                    ? 'bg-sky-500/20 text-sky-400 ring-1 ring-sky-500/50 shadow-sm shadow-sky-500/10'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                "
+                @click="currentTab = tab.id"
+              >
+                {{ tab.label }}
+              </button>
+            </div>
+
+            <!-- TAB 1: CRUD -->
+            <div
+              v-if="currentTab === 'crud'"
+              class="flex flex-col gap-6"
+            >
               <!-- Controls -->
-              <div class="flex flex-wrap gap-4 items-end justify-between">
-                <div class="flex flex-col gap-2 flex-grow max-w-sm">
-                  <label class="text-xs text-slate-400 uppercase tracking-wide">Search</label>
+              <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="w-full max-w-xs relative bg-slate-900 rounded-lg">
                   <input
                     v-model="search"
-                    placeholder="Search users..."
-                    class="glass-input w-full"
+                    type="text"
+                    placeholder="搜尋使用者..."
+                    class="w-full bg-transparent border border-slate-700 rounded-lg py-2 pl-4 pr-4 text-sm text-slate-300 focus:outline-none focus:border-sky-500 transition-colors"
                   />
                 </div>
 
                 <div class="flex items-center gap-2">
                   <button
                     :disabled="page <= 1"
-                    class="glass-btn px-4 py-2"
+                    class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-400 text-xs hover:bg-slate-700 disabled:opacity-50 transition-colors"
                     @click="page--"
                   >
-                    Prev
+                    上一頁
                   </button>
-                  <span class="text-slate-200 font-mono px-2">Page {{ page }}</span>
+                  <div
+                    class="px-3 py-1.5 bg-slate-900 rounded-lg border border-slate-700 text-slate-300 text-xs font-mono"
+                  >
+                    頁次 {{ page }}
+                  </div>
                   <button
-                    class="glass-btn px-4 py-2"
+                    class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-400 text-xs hover:bg-slate-700 transition-colors"
                     @click="page++"
                   >
-                    Next
+                    下一頁
                   </button>
                 </div>
               </div>
 
-              <!-- Loading State -->
+              <!-- Table -->
               <div
-                v-if="pending"
-                class="flex justify-center items-center p-12 bg-slate-900/30 rounded-lg border border-slate-700/30 text-sky-400 gap-3"
+                class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 relative min-h-[290px]"
               >
-                <span class="animate-spin text-xl">⏳</span>
-                Loading...
-              </div>
+                <div
+                  v-if="pending"
+                  class="absolute inset-0 bg-slate-900/80 z-10 flex items-center justify-center backdrop-blur-sm"
+                >
+                  <div class="flex items-center gap-3 text-sky-400">
+                    <span class="text-sm font-medium">載入中...</span>
+                  </div>
+                </div>
+                <div
+                  v-else-if="error"
+                  class="p-8 text-center text-rose-400"
+                >
+                  <p class="text-sm">資料載入失敗：{{ error.message }}</p>
+                </div>
 
-              <!-- Error State -->
-              <div
-                v-else-if="error"
-                class="flex justify-center items-center p-12 bg-red-900/10 rounded-lg border border-red-500/30 text-red-400 gap-3"
-              >
-                ❌ Error: {{ error.message }}
-              </div>
-
-              <!-- Data Table -->
-              <div
-                v-else
-                class="border border-slate-700/30 rounded-lg overflow-hidden"
-              >
-                <table class="w-full border-collapse">
+                <table
+                  v-else
+                  class="w-full text-left text-sm border-collapse"
+                >
                   <thead>
-                    <tr>
-                      <th
-                        class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                      >
+                    <tr class="bg-slate-950 border-b border-slate-800">
+                      <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-16">
                         ID
                       </th>
-                      <th
-                        class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                      >
-                        Name
+                      <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">
+                        使用者
                       </th>
+                      <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">角色</th>
                       <th
-                        class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
+                        class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase text-right"
                       >
-                        Email
-                      </th>
-                      <th
-                        class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                      >
-                        Role
+                        操作
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="divide-y divide-slate-800">
                     <tr
                       v-for="item in (data as any)?.items"
                       :key="item.id"
-                      class="hover:bg-slate-700/10 transition-colors"
+                      class="group hover:bg-slate-800/50 transition-colors"
                     >
-                      <td class="p-3 border-b border-slate-700/10 text-slate-200">{{ item.id }}</td>
-                      <td class="p-3 border-b border-slate-700/10 text-slate-200">
-                        {{ item.name }}
+                      <td class="py-3 px-4 font-mono text-sky-500">#{{ item.id }}</td>
+                      <td class="py-3 px-4">
+                        <div>
+                          <div class="text-slate-200 font-medium">{{ item.name }}</div>
+                          <div class="text-xs text-slate-500 font-mono">{{ item.email }}</div>
+                        </div>
                       </td>
-                      <td class="p-3 border-b border-slate-700/10 text-slate-400">
-                        {{ item.email }}
-                      </td>
-                      <td class="p-3 border-b border-slate-700/10">
+                      <td class="py-3 px-4">
                         <span
-                          class="px-3 py-1 rounded-full text-xs font-semibold"
-                          :class="{
-                            'bg-blue-900/30 text-blue-300 border border-blue-500/30':
-                              item.role === 'Admin',
-                            'bg-green-900/30 text-green-300 border border-green-500/30':
-                              item.role === 'Editor',
-                            'bg-slate-700/30 text-slate-300 border border-slate-500/30':
-                              item.role === 'Viewer'
-                          }"
+                          class="px-2 py-0.5 rounded text-xs border bg-slate-800 border-slate-700 text-slate-300"
                         >
                           {{ item.role }}
                         </span>
                       </td>
+                      <td class="py-3 px-4 text-right">
+                        <div class="flex justify-end gap-2">
+                          <button
+                            class="text-xs font-medium text-sky-400 hover:text-white hover:bg-sky-500/20 px-2 py-1 rounded transition-colors"
+                            @click="handleEdit(item)"
+                          >
+                            編輯
+                          </button>
+                          <button
+                            class="text-xs font-medium text-rose-400 hover:text-white hover:bg-rose-500/20 px-2 py-1 rounded transition-colors"
+                            @click="handleDelete(item.id)"
+                          >
+                            刪除
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
-                <div
-                  class="p-4 bg-slate-800/40 text-right text-sm text-slate-400 border-t border-slate-700/30"
+              </div>
+            </div>
+
+            <!-- TAB 2: Dashboard -->
+            <div
+              v-else-if="currentTab === 'dashboard'"
+              class="flex flex-col gap-6"
+            >
+              <div
+                class="p-4 bg-slate-900 rounded-lg border border-slate-800 relative min-h-[200px] flex flex-col justify-center items-center"
+              >
+                <button
+                  class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg flex items-center gap-2 mb-6 shadow-lg shadow-sky-900/50 transition-all"
+                  :disabled="dashLoading"
+                  @click="loadDashboard"
                 >
-                  Total:
-                  <span class="text-slate-200 font-semibold">{{ (data as any)?.total }}</span>
-                  users
+                  <span>{{ dashLoading ? '載入中...' : '重新載入數據' }}</span>
+                </button>
+
+                <div
+                  v-if="dashLoading"
+                  class="text-sky-400 text-sm animate-pulse"
+                >
+                  正在平行請求 3 個 API...
+                </div>
+
+                <div
+                  v-else-if="dashStats"
+                  class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4"
+                >
+                  <div
+                    v-for="(val, idx) in dashStats"
+                    :key="idx"
+                    class="p-4 bg-slate-950 rounded border border-slate-800 text-center"
+                  >
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mb-1">
+                      指標 {{ idx + 1 }}
+                    </div>
+                    <div class="text-2xl font-mono text-emerald-400">
+                      {{ val.sales || val.visits || val.activeUsers }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  v-else
+                  class="text-slate-500 text-sm"
+                >
+                  點擊按鈕測試 Promise.all
                 </div>
               </div>
             </div>
-          </div>
-        </ShowcaseCard>
+
+            <!-- TAB 3: Error Handling -->
+            <div
+              v-else-if="currentTab === 'error'"
+              class="flex flex-col gap-6"
+            >
+              <div
+                class="p-6 bg-slate-900 rounded-lg border border-slate-800 min-h-[200px] flex flex-col items-center justify-center gap-6"
+              >
+                <div class="text-center">
+                  <h3 class="text-slate-200 font-medium mb-2">錯誤攔截測試</h3>
+                  <p class="text-slate-400 text-sm max-w-md">
+                    點擊下方按鈕觸發不同的 HTTP 錯誤。系統會自動攔截並顯示 Snackbar 錯誤提示。
+                  </p>
+                </div>
+
+                <div class="flex flex-wrap gap-3 justify-center">
+                  <button
+                    class="px-4 py-2 rounded border border-amber-500/50 text-amber-500 hover:bg-amber-500/10 transition-colors"
+                    @click="triggerError(400)"
+                  >
+                    400 Bad Request
+                  </button>
+                  <button
+                    class="px-4 py-2 rounded border border-rose-500/50 text-rose-500 hover:bg-rose-500/10 transition-colors"
+                    @click="triggerError(401)"
+                  >
+                    401 Unauthorized
+                  </button>
+                  <button
+                    class="px-4 py-2 rounded border border-slate-500/50 text-slate-400 hover:bg-slate-500/10 transition-colors"
+                    @click="triggerError(404)"
+                  >
+                    404 Not Found
+                  </button>
+                  <button
+                    class="px-4 py-2 rounded border border-rose-600/50 text-rose-600 hover:bg-rose-600/10 transition-colors"
+                    @click="triggerError(500)"
+                  >
+                    500 Server Error
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <template #footer>
+              <ShowcaseCodeBlock
+                :code="activeCode"
+                label="對應程式碼"
+                language="typescript"
+              />
+            </template>
+          </ShowcaseCard>
+        </div>
+
+        <!-- Right Column: Inspector -->
+        <div class="flex flex-col gap-6">
+          <!-- 1. Activity Log -->
+          <ShowcaseCard
+            title="請求監控"
+            description="顯示左側操作實際發出的 API 請求 (GET/POST)，證明資料真的有同步。"
+          >
+            <div
+              class="bg-slate-950 rounded-lg border border-slate-800 p-0 overflow-hidden h-48 flex flex-col"
+            >
+              <div
+                class="bg-slate-900 border-b border-slate-800 px-3 py-2 text-xs font-bold text-slate-400 flex justify-between"
+              >
+                <span>控制台</span>
+                <span
+                  class="text-slate-600 cursor-pointer hover:text-slate-300"
+                  @click="apiLogs = []"
+                >
+                  清除
+                </span>
+              </div>
+              <div class="overflow-y-auto p-3 flex-1 font-mono text-xs space-y-2">
+                <div
+                  v-if="apiLogs.length === 0"
+                  class="text-slate-500 text-center mt-10 text-sm"
+                >
+                  <p>尚無請求紀錄</p>
+                  <p class="text-xs mt-1">請操作左側列表以觸發 API</p>
+                </div>
+                <div
+                  v-for="(log, i) in apiLogs"
+                  :key="i"
+                  class="flex items-start gap-2 animate-pulse-once"
+                >
+                  <span class="text-slate-500 shrink-0">[{{ log.time }}]</span>
+                  <span
+                    :class="getMethodColor(log.method)"
+                    class="font-bold shrink-0 w-12"
+                  >
+                    {{ log.method }}
+                  </span>
+                  <div class="flex-1 break-all">
+                    <span class="text-slate-300">{{ log.path }}</span>
+                    <span class="ml-2 text-slate-500">{{ log.status }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ShowcaseCard>
+
+          <!-- 2. Code Preview -->
+          <ShowcaseCard
+            title="實作對照"
+            description="即時顯示「剛才的操作」是對應到哪一段 Repository 程式碼。"
+          >
+            <div class="h-full">
+              <ShowcaseCodeBlock
+                :code="activeCode"
+                label="操作邏輯實作"
+                :lines="false"
+                class="h-full"
+              />
+            </div>
+          </ShowcaseCard>
+        </div>
       </div>
     </ShowcaseSection>
   </ShowcasePage>
 </template>
 
 <style scoped>
-/* Benefit List */
 .benefit-list {
   padding-left: 0;
   list-style: none;
@@ -316,79 +986,94 @@ await waitForData(pending)"
   overflow: hidden;
 }
 
-.benefit-list li::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .benefit-list li:hover {
   border-color: rgba(56, 189, 248, 0.3);
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
-}
-
-.benefit-list li:hover::before {
-  opacity: 1;
 }
 
 .benefit-list li strong {
   color: #38bdf8;
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1.05em;
+  display: inline-block;
+  margin-right: 0.5rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
 }
 
-/* Method Description */
 .method-desc {
   color: #cbd5e1;
   font-size: 0.95rem;
   line-height: 1.7;
+  margin: 0 0 1rem 0;
+}
+
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Responsibility List (From ShowcaseArchitecture) */
+.responsibility-list {
+  margin: 0 0 1.5rem 0;
+  padding-left: 1.25rem;
+  color: #cad5e1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.responsibility-list li {
+  margin-bottom: 0.25rem;
+  list-style-type: disc;
+}
+
+/* Principles List (From ShowcaseArchitecture) */
+.principles-list {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.principles-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #fbbf24; /* Amber-400 */
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.principles-list ul {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #f1f5f9;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  outline: none;
-  font-size: 0.95rem;
-  transition: all 0.2s;
-}
-
-.glass-input:focus {
-  border-color: #38bdf8;
-  background: rgba(15, 23, 42, 0.8);
-}
-
-.glass-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
+.principles-list li {
+  font-size: 0.85rem;
   color: #94a3b8;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
+  padding-left: 0;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.glass-btn:hover:not(:disabled) {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: #38bdf8;
-  color: #38bdf8;
+.principles-list .icon {
+  color: #fbbf24; /* Amber-400 */
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
-.glass-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+@keyframes pulse-once {
+  0% {
+    opacity: 0.5;
+    background: rgba(56, 189, 248, 0.1);
+  }
+  100% {
+    opacity: 1;
+    background: transparent;
+  }
+}
+.animate-pulse-once {
+  animation: pulse-once 0.5s ease-out;
 }
 </style>

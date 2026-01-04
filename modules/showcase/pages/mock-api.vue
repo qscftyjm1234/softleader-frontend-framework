@@ -5,14 +5,14 @@ import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-// Upload
-const uploadFile = ref<File | null>(null)
-const uploadLoading = ref(false)
-const uploadResult = ref<any>(null)
-
-// Export
-const exportFormat = ref('csv')
-const exportLoading = ref(false)
+// CRUD Simulation
+const crudLoading = ref(false)
+const newUser = ref('')
+const userList = ref([
+  { id: 101, name: 'Alice Johnson' },
+  { id: 102, name: 'Bob Smith' },
+  { id: 103, name: 'Charlie Brown' }
+])
 
 // Report
 const reportType = ref('monthly')
@@ -24,7 +24,7 @@ const apiLogs = ref<any[]>([])
 
 const addLog = (method: string, url: string, status: string, data?: any) => {
   apiLogs.value.unshift({
-    time: new Date().toLocaleTimeString(),
+    time: new Date().toLocaleTimeString('zh-TW'),
     method,
     url,
     status,
@@ -32,57 +32,53 @@ const addLog = (method: string, url: string, status: string, data?: any) => {
   })
 }
 
-// Upload Handler
-const handleUpload = async () => {
-  if (!uploadFile.value) {
-    alert('請選擇檔案')
-    return
-  }
+// CRUD Handlers
+const handleAddUser = async () => {
+  if (!newUser.value) return
+  crudLoading.value = true
+  addLog('POST', '/api/users', '處理中...')
 
-  uploadLoading.value = true
-  uploadResult.value = null
+  // Simulate API Delay
+  await new Promise((resolve) => setTimeout(resolve, 600))
 
-  try {
-    const formData = new FormData()
-    formData.append('file', uploadFile.value)
+  const id = Math.floor(Math.random() * 1000) + 200
+  userList.value.push({ id, name: newUser.value })
+  addLog('POST', '/api/users', '201 Created')
 
-    const response = await $fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-
-    uploadResult.value = response
-    addLog('POST', '/api/upload', 'Success', response)
-  } catch (error: any) {
-    addLog('POST', '/api/upload', 'Error', error.message)
-  } finally {
-    uploadLoading.value = false
-  }
+  newUser.value = ''
+  crudLoading.value = false
 }
 
-// Export Handler
-const handleExport = async () => {
-  exportLoading.value = true
+const handleDeleteUser = async (id: number) => {
+  if (!confirm('確認刪除此使用者?')) return
+  addLog('DELETE', `/api/users/${id}`, '處理中...')
 
-  try {
-    const response = await $fetch(`/api/files/export?format=${exportFormat.value}`, {
-      method: 'GET'
-    })
+  // Simulate API Delay
+  await new Promise((resolve) => setTimeout(resolve, 400))
 
-    // Create Download
-    const blob = new Blob([response as string], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `export.${exportFormat.value}`
-    a.click()
-    URL.revokeObjectURL(url)
+  userList.value = userList.value.filter((u) => u.id !== id)
+  addLog('DELETE', `/api/users/${id}`, '200 OK')
+}
 
-    addLog('GET', `/api/files/export?format=${exportFormat.value}`, 'Success')
-  } catch (error: any) {
-    addLog('GET', `/api/files/export`, 'Error', error.message)
-  } finally {
-    exportLoading.value = false
+// Status Simulator
+const simulateStatus = async (status: number) => {
+  const isError = status >= 400
+  addLog('GET', `/api/test/${status}`, '處理中...')
+
+  if (isError) {
+    let msg = 'Unknown Error'
+    if (status === 400) msg = 'Bad Request - 參數錯誤'
+    if (status === 401) msg = 'Unauthorized - 請重新登入'
+    if (status === 403) msg = 'Forbidden - 權限不足'
+    if (status === 404) msg = 'Not Found - 找不到資源'
+    if (status === 500) msg = 'Internal Server Error - 伺服器錯誤'
+
+    addLog('GET', `/api/test/${status}`, `${status} Error - ${msg}`)
+    // In real app: useErrorHandler().showError({ ... })
+  } else {
+    setTimeout(() => {
+      addLog('GET', `/api/test/${status}`, '200 OK')
+    }, 500)
   }
 }
 
@@ -92,7 +88,7 @@ const handleGenerateReport = async () => {
   reportResult.value = null
 
   try {
-    const response = await $fetch('/api/reports/generate', {
+    const { data: response, error } = await useApi('/api/reports/generate', {
       method: 'POST',
       body: {
         type: reportType.value,
@@ -101,10 +97,12 @@ const handleGenerateReport = async () => {
       }
     })
 
-    reportResult.value = response
-    addLog('POST', '/api/reports/generate', 'Success', response)
+    if (error.value) throw error.value
+
+    reportResult.value = response.value
+    addLog('POST', '/api/reports/generate', '成功', response.value)
   } catch (error: any) {
-    addLog('POST', '/api/reports/generate', 'Error', error.message)
+    addLog('POST', '/api/reports/generate', '錯誤', error.message)
   } finally {
     reportLoading.value = false
   }
@@ -123,171 +121,346 @@ definePageMeta({
 
 <template>
   <ShowcasePage
-    title="Mock API 管理系統"
-    description="展示專案中可用的 Mock API 端點，包含檔案上傳、資料匯出與報表生成功能。"
+    title="Mock API 模擬系統"
+    description="在前端直接模擬 API 回應，不需等待後端開發，實現獨立開發與測試。"
   >
-    <!-- Available APIs -->
-    <ShowcaseSection
-      title="Available APIs (可用端點)"
-      icon="📋"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="File Upload"
-          description="/api/upload"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
-            >
-              POST
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/upload</span>
-          </div>
-          <p class="text-sm text-slate-400">單檔案上傳測試端點</p>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="Multiple Upload"
-          description="/api/upload/multiple"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
-            >
-              POST
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/upload/multiple</span>
-          </div>
-          <p class="text-sm text-slate-400">多檔案批次上傳端點</p>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="File Export"
-          description="/api/files/export"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-blue-900/40 text-blue-400 border border-blue-800"
-            >
-              GET
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/files/export</span>
-          </div>
-          <p class="text-sm text-slate-400">支援 CSV/JSON/XLSX 格式匯出</p>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="Report Export"
-          description="/api/reports/export"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
-            >
-              POST
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/reports/export</span>
-          </div>
-          <p class="text-sm text-slate-400">PDF 報表匯出功能</p>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="Generate Report"
-          description="/api/reports/generate"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-green-900/40 text-green-400 border border-green-800"
-            >
-              POST
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/reports/generate</span>
-          </div>
-          <p class="text-sm text-slate-400">動態報表資料生成</p>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="File Download"
-          description="/api/file"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span
-              class="px-2 py-1 rounded text-xs font-bold bg-blue-900/40 text-blue-400 border border-blue-800"
-            >
-              GET
-            </span>
-            <span class="text-sm font-mono text-slate-300">/api/file</span>
-          </div>
-          <p class="text-sm text-slate-400">通用檔案下載服務</p>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- Interactive Tests -->
-    <ShowcaseSection
-      title="互動測試"
-      icon="🎮"
-    >
-      <div class="component-grid">
-        <!-- Upload Test -->
-        <ShowcaseCard
-          title="檔案上傳測試"
-          description="測試檔案上傳 API"
-        >
-          <div class="flex flex-col gap-4">
-            <input
-              type="file"
-              class="glass-input"
-              @change="(e: any) => (uploadFile = e.target.files[0])"
-            />
-            <button
-              class="glass-btn primary w-full"
-              :disabled="uploadLoading || !uploadFile"
-              @click="handleUpload"
-            >
-              {{ uploadLoading ? '上傳中...' : '上傳檔案' }}
-            </button>
-            <div v-if="uploadResult">
-              <ShowcaseCodeBlock
-                :code="JSON.stringify(uploadResult, null, 2)"
-                language="json"
-                label="Result"
-              />
+    <!-- 1. Intro -->
+    <ShowcaseSection title="系統特色">
+      <div class="grid grid-cols-3 gap-6">
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-server-off text-4xl text-pink-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-2">純前端運作</h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                不依賴任何後端伺服器，直接在瀏覽器攔截請求，確保開發環境穩定且獨立。
+              </p>
             </div>
           </div>
         </ShowcaseCard>
 
-        <!-- Export Test -->
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-cog text-4xl text-cyan-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-2">設定簡單</h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                透過設定檔統一管理路由，無需編寫複雜的攔截邏輯，快速建立模擬 API。
+              </p>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-flash text-4xl text-amber-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-2">擬真模擬</h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                支援模擬網路延遲與錯誤狀態，讓開發者能測試 Loading 與 Error Handling 介面。
+              </p>
+            </div>
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <ShowcaseSection
+      title="核心檔案說明"
+      icon="📂"
+    >
+      <div class="grid grid-cols-3 gap-6">
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-file-document-edit text-4xl text-sky-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-1">設定檔 (Config)</h3>
+              <div class="flex items-center gap-2 mb-3">
+                <span
+                  class="text-[10px] font-bold tracking-wider text-slate-500 uppercase border border-slate-700 px-1.5 py-0.5 rounded"
+                >
+                  PATH
+                </span>
+                <code class="text-xs font-mono text-sky-400">mock/routes.ts</code>
+              </div>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                所有模擬 API 的路由規則都定義於此。若要新增一個 API，請直接在此檔案中加入設定。
+              </p>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-code-braces text-4xl text-purple-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-1">型別定義 (Types)</h3>
+              <div class="flex items-center gap-2 mb-3">
+                <span
+                  class="text-[10px] font-bold tracking-wider text-slate-500 uppercase border border-slate-700 px-1.5 py-0.5 rounded"
+                >
+                  PATH
+                </span>
+                <code class="text-xs font-mono text-purple-400">mock/types/*</code>
+              </div>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                在此定義 API 回傳資料的 TypeScript 型別，確保模擬資料符合介面規範。
+              </p>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <ShowcaseCard no-padding>
+          <div class="flex items-start gap-4 p-6 h-full">
+            <i class="mdi mdi-engine text-4xl text-slate-400 shrink-0 mt-1"></i>
+            <div>
+              <h3 class="text-lg font-bold text-slate-200 mb-1">核心邏輯 (Core)</h3>
+              <div class="flex items-center gap-2 mb-3">
+                <span
+                  class="text-[10px] font-bold tracking-wider text-slate-500 uppercase border border-slate-700 px-1.5 py-0.5 rounded"
+                >
+                  PATH
+                </span>
+                <code class="text-xs font-mono text-slate-400">mock/core.ts</code>
+              </div>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                系統攔截器核心，負責比對路由、解析參數並回傳模擬資料 (通常無需修改)。
+              </p>
+            </div>
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 3. How to Use -->
+    <ShowcaseSection
+      title="如何新增模擬 API"
+      icon="🚀"
+    >
+      <ShowcaseCard
+        title="快速上手三步驟"
+        description="依序執行以下步驟即可建立新的 Mock API"
+        full-width
+      >
+        <div class="grid grid-cols-1 gap-8">
+          <!-- Step 1 -->
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold"
+              >
+                1
+              </div>
+              <h3 class="text-lg font-bold text-slate-200">開啟設定檔</h3>
+            </div>
+            <p class="text-sm text-slate-400 ml-11 mb-2">
+              前往
+              <code>mock/routes.ts</code>
+              檔案。
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold"
+              >
+                2
+              </div>
+              <h3 class="text-lg font-bold text-slate-200">加入路由設定</h3>
+            </div>
+            <div class="ml-11">
+              <ShowcaseCodeBlock
+                code="{
+  url: '/api/example',         // API 路徑
+  method: 'GET',               // HTTP 方法
+  response: {                  // 回傳資料
+    data: {
+      message: '這是一筆模擬資料',
+      items: [1, 2, 3]
+    }
+  }
+},"
+                language="typescript"
+                label="mock/routes.ts"
+              />
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold"
+              >
+                3
+              </div>
+              <h3 class="text-lg font-bold text-slate-200">在頁面呼叫</h3>
+            </div>
+            <p class="text-sm text-slate-400 ml-11 mb-2">
+              直接使用
+              <code>useApi</code>
+              發送請求，系統即會自動攔截並回傳上述定義的資料：
+            </p>
+            <div class="ml-11">
+              <ShowcaseCodeBlock
+                code="const { data } = await useApi('/api/example')"
+                language="typescript"
+                label="Vue Component"
+              />
+            </div>
+          </div>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 4. Interactive Demos -->
+    <ShowcaseSection
+      title="功能展示範例"
+      icon="🎮"
+    >
+      <div class="component-grid">
+        <!-- User Management CRUD -->
         <ShowcaseCard
-          title="檔案匯出測試"
-          description="測試不同格式匯出"
+          title="CRUD 資料操作模擬"
+          description="模擬完整的 User Management 流程 (GET, POST, PUT, DELETE)"
+          class="md:col-span-2"
         >
           <div class="flex flex-col gap-4">
-            <select
-              v-model="exportFormat"
-              class="glass-input"
-            >
-              <option value="csv">CSV</option>
-              <option value="json">JSON</option>
-              <option value="xlsx">XLSX</option>
-            </select>
-            <button
-              class="glass-btn primary w-full"
-              :disabled="exportLoading"
-              @click="handleExport"
-            >
-              {{ exportLoading ? '匯出中...' : '匯出檔案' }}
-            </button>
+            <!-- Controls -->
+            <div class="flex gap-3">
+              <input
+                v-model="newUser"
+                type="text"
+                placeholder="輸入使用者名稱..."
+                class="glass-input flex-1"
+                @keyup.enter="handleAddUser"
+              />
+              <button
+                class="glass-btn primary whitespace-nowrap"
+                :disabled="crudLoading || !newUser"
+                @click="handleAddUser"
+              >
+                <i class="mdi mdi-plus"></i>
+                新增
+              </button>
+            </div>
+
+            <!-- Simple Table -->
+            <div class="bg-slate-900/30 rounded-lg border border-slate-700/30 overflow-hidden">
+              <table class="simple-table">
+                <thead>
+                  <tr>
+                    <th width="80">ID</th>
+                    <th>Name</th>
+                    <th width="100">Status</th>
+                    <th
+                      width="80"
+                      class="text-right"
+                    >
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="user in userList"
+                    :key="user.id"
+                  >
+                    <td class="font-mono text-slate-500">#{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>
+                      <span class="status-pill">Active</span>
+                    </td>
+                    <td class="text-right">
+                      <button
+                        class="delete-btn"
+                        @click="handleDeleteUser(user.id)"
+                      >
+                        <i class="mdi mdi-delete"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr v-if="userList.length === 0">
+                    <td
+                      colspan="4"
+                      class="text-center py-6 text-slate-500"
+                    >
+                      暫無資料
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-xs text-slate-500 font-mono mt-1">
+              // 模擬 API 呼叫： await useApi('/users', ...)
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- Status Code Simulator -->
+        <ShowcaseCard
+          title="HTTP 狀態碼模擬"
+          description="測試系統對於不同錯誤代碼的全域處理反應"
+        >
+          <div class="flex flex-col gap-4">
+            <div class="text-xs text-slate-400">點擊下方按鈕以觸發對應的 Mock Response。</div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                class="glass-btn success"
+                @click="simulateStatus(200)"
+              >
+                200 OK
+              </button>
+              <button
+                class="glass-btn warning"
+                @click="simulateStatus(400)"
+              >
+                400 Bad
+              </button>
+              <button
+                class="glass-btn warning"
+                @click="simulateStatus(401)"
+              >
+                401 Auth
+              </button>
+              <button
+                class="glass-btn warning"
+                @click="simulateStatus(403)"
+              >
+                403 Forbidden
+              </button>
+              <button
+                class="glass-btn warning"
+                @click="simulateStatus(404)"
+              >
+                404 Not Found
+              </button>
+              <button
+                class="glass-btn danger"
+                @click="simulateStatus(500)"
+              >
+                500 Error
+              </button>
+            </div>
           </div>
         </ShowcaseCard>
 
         <!-- Report Test -->
         <ShowcaseCard
-          title="報表生成測試"
-          description="測試報表資料生成"
+          title="動態報表模擬"
+          description="POST /api/reports/generate"
         >
           <div class="flex flex-col gap-4">
+            <div
+              class="p-3 bg-slate-800/50 rounded border border-slate-700 text-xs text-slate-400 mb-2"
+            >
+              此範例模擬接收參數並動態回傳資料。系統依據選擇的區間
+              (日/週/月)，回傳對應的模擬報表數據。
+            </div>
             <select
               v-model="reportType"
               class="glass-input"
@@ -301,13 +474,13 @@ definePageMeta({
               :disabled="reportLoading"
               @click="handleGenerateReport"
             >
-              {{ reportLoading ? '生成中...' : '生成報表' }}
+              {{ reportLoading ? '模擬運算中...' : '產生報表' }}
             </button>
             <div v-if="reportResult">
               <ShowcaseCodeBlock
                 :code="JSON.stringify(reportResult, null, 2)"
                 language="json"
-                label="Result"
+                label="回傳結果"
               />
             </div>
           </div>
@@ -317,14 +490,14 @@ definePageMeta({
 
     <!-- API Logs -->
     <ShowcaseSection
-      title="API Logs (呼叫記錄)"
+      title="即時請求紀錄"
       icon="📝"
     >
       <div class="bg-slate-900/50 rounded-lg border border-slate-700/50 overflow-hidden">
         <div
           class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/50"
         >
-          <span class="text-sm font-semibold text-slate-300">Request History</span>
+          <span class="text-sm font-semibold text-slate-300">請求歷史</span>
           <button
             class="glass-btn text-xs py-1 px-3"
             @click="clearLogs"
@@ -360,7 +533,7 @@ definePageMeta({
               <span class="font-mono text-slate-300 break-all">{{ log.url }}</span>
               <span
                 class="ml-auto font-bold"
-                :class="log.status === 'Success' ? 'text-green-400' : 'text-red-400'"
+                :class="log.status === '成功' ? 'text-green-400' : 'text-red-400'"
               >
                 {{ log.status }}
               </span>
@@ -375,52 +548,6 @@ definePageMeta({
             </div>
           </div>
         </div>
-      </div>
-    </ShowcaseSection>
-
-    <!-- Code Examples -->
-    <ShowcaseSection
-      title="Code Examples (程式範例)"
-      icon="💻"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="File Upload Usage"
-          description="上傳檔案程式碼範例"
-          full-width
-        >
-          <ShowcaseCodeBlock
-            code="const formData = new FormData()
-formData.append('file', file)
-
-const response = await $fetch('/api/upload', {
-  method: 'POST',
-  body: formData
-})"
-            label="TypeScript"
-          />
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="File Export Usage"
-          description="匯出檔案程式碼範例"
-          full-width
-        >
-          <ShowcaseCodeBlock
-            code="const response = await $fetch('/api/files/export?format=csv', {
-  method: 'GET'
-})
-
-// Build download link
-const blob = new Blob([response], { type: 'text/csv' })
-const url = URL.createObjectURL(blob)
-const a = document.createElement('a')
-a.href = url
-a.download = 'export.csv'
-a.click()"
-            label="TypeScript"
-          />
-        </ShowcaseCard>
       </div>
     </ShowcaseSection>
   </ShowcasePage>

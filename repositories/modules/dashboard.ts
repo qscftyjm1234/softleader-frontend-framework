@@ -1,5 +1,5 @@
 import { useClient } from '~/composables/useApi'
-import type { DashboardStatsResponse, DashboardActivitiesResponse } from '~/mock/schemas/dashboard'
+import type { DashboardStatsResponse, DashboardActivitiesResponse } from '~/mock/types/dashboard'
 
 // 輔助型別
 type MaybeRef<T> = T | Ref<T>

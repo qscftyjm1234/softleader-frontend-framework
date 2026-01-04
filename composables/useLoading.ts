@@ -43,6 +43,7 @@ export const useLoading = () => {
     isLoading,
     start,
     finish,
-    reset
+    reset,
+    count: computed(() => requestCount.value)
   }
 }

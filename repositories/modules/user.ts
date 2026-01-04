@@ -54,6 +54,23 @@ export default {
   },
 
   /**
+   * [範例] 更新使用者
+   * @param id
+   * @param userData
+   */
+  updateUser(id: number, userData: any) {
+    return api.put(`/${id}`, userData)
+  },
+
+  /**
+   * [範例] 刪除使用者
+   * @param id
+   */
+  deleteUser(id: number) {
+    return api.delete(`/${id}`)
+  },
+
+  /**
    * [範例] 取得大量資料 (延遲載入)
    */
   getHeavyData() {

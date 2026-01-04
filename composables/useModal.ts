@@ -18,6 +18,15 @@ export interface ModalConfig {
   closeOnMask?: boolean
   /** 自訂 CSS 類別 */
   customClass?: string
+  /**
+   * 自訂元件 (用於 Slot 插入)
+   * 可傳入 Vue Component Object
+   */
+  component?: any
+  /**
+   * 傳給自訂元件的 Props
+   */
+  componentProps?: Record<string, any>
 }
 
 export interface ModalInstance {
@@ -58,7 +67,8 @@ export interface UseModalReturn {
  */
 export function useModal(): UseModalReturn {
   // 彈窗列表
-  const modals = ref<ModalInstance[]>([])
+  // 彈窗列表 - 使用 useState 確保全域狀態同步
+  const modals = useState<ModalInstance[]>('modal-state', () => [])
 
   // 是否有彈窗開啟
   const hasModal = computed(() => modals.value.length > 0)

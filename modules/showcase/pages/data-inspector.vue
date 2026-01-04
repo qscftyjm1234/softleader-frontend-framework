@@ -204,13 +204,8 @@ definePageMeta({
       </ShowcaseCard>
     </ShowcaseSection>
 
-    <!-- 即時檢測 -->
-    <ShowcaseSection
-      title="即時檢測儀表板 (Live Dashboard)"
-      icon="🔍"
-    >
-      <!-- 1. Environment -->
-      <div class="section-divider">環境與系統資訊 (Environment)</div>
+    <!-- 1. 環境與系統資訊 -->
+    <ShowcaseSection title="環境與系統資訊 (Environment)">
       <div class="component-grid">
         <ShowcaseCard
           title="裝置資訊 (Device)"
@@ -252,9 +247,10 @@ definePageMeta({
           </div>
         </ShowcaseCard>
       </div>
+    </ShowcaseSection>
 
-      <!-- 2. Global State -->
-      <div class="section-divider mt-8">全域狀態管理 (Pinia)</div>
+    <!-- 2. 全域狀態管理 (Pinia) -->
+    <ShowcaseSection title="全域狀態管理 (Pinia)">
       <IStack
         direction="column"
         gap="1"
@@ -271,9 +267,10 @@ definePageMeta({
           label="功能開關 ($state)"
         />
       </IStack>
+    </ShowcaseSection>
 
-      <!-- 3. Mock Data -->
-      <div class="section-divider mt-8">模組資料結構 (Mock Data)</div>
+    <!-- 3. 模組資料結構 (Mock Data) -->
+    <ShowcaseSection title="模組資料結構 (Mock Data)">
       <IStack
         direction="column"
         gap="1"
@@ -478,17 +475,6 @@ definePageMeta({
   background: rgba(56, 189, 248, 0.1);
   border-color: #38bdf8;
   color: #38bdf8;
-}
-
-.section-divider {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-  padding-left: 0.5rem;
-  border-left: 3px solid #38bdf8;
 }
 
 .state-container {
