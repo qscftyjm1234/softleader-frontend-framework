@@ -23,8 +23,6 @@ export interface UseNetworkReturn {
  * @returns 網路狀態資訊
  */
 export function useNetwork(): UseNetworkReturn {
-  const logger = useLogger('Network')
-
   // 基本線上/離線狀態
   const isOnline = ref(true)
 
@@ -46,13 +44,6 @@ export function useNetwork(): UseNetworkReturn {
       downlink.value = connection.downlink
       rtt.value = connection.rtt
       saveData.value = connection.saveData || false
-
-      logger.debug('Network info updated', {
-        effectiveType: effectiveType.value,
-        downlink: downlink.value,
-        rtt: rtt.value,
-        saveData: saveData.value
-      })
     }
   }
 
@@ -61,7 +52,6 @@ export function useNetwork(): UseNetworkReturn {
    */
   const handleOnline = (): void => {
     isOnline.value = true
-    logger.info('Network online')
     updateNetworkInfo()
   }
 
@@ -70,7 +60,6 @@ export function useNetwork(): UseNetworkReturn {
    */
   const handleOffline = (): void => {
     isOnline.value = false
-    logger.warn('Network offline')
   }
 
   // 初始化
@@ -89,11 +78,6 @@ export function useNetwork(): UseNetworkReturn {
     if (connection) {
       connection.addEventListener('change', updateNetworkInfo)
     }
-
-    logger.info('Network monitoring started', {
-      isOnline: isOnline.value,
-      effectiveType: effectiveType.value
-    })
   })
 
   // 清理
@@ -106,8 +90,6 @@ export function useNetwork(): UseNetworkReturn {
     if (connection) {
       connection.removeEventListener('change', updateNetworkInfo)
     }
-
-    logger.info('Network monitoring stopped')
   })
 
   return {

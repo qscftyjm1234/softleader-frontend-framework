@@ -36,8 +36,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
     events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll']
   } = options
 
-  const logger = useLogger('Idle')
-
   const isIdle = ref(false)
   const lastActive = ref(new Date())
   const idleTime = ref(0)
@@ -64,10 +62,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
     // 設定新的計時器
     idleTimer = setTimeout(() => {
       isIdle.value = true
-      logger.info('User is now idle', {
-        lastActive: lastActive.value,
-        idleTime: timeout
-      })
     }, timeout)
   }
 
@@ -95,7 +89,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
       clearInterval(updateTimer)
       updateTimer = null
     }
-    logger.info('Idle detection paused')
   }
 
   /**
@@ -105,7 +98,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
     isPaused.value = false
     reset()
     startUpdateTimer()
-    logger.info('Idle detection resumed')
   }
 
   /**
@@ -125,11 +117,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
     // 初始化計時器
     reset()
     startUpdateTimer()
-
-    logger.info('Idle detection started', {
-      timeout,
-      events
-    })
   })
 
   // 清理
@@ -146,8 +133,6 @@ export function useIdle(options: UseIdleOptions = {}): UseIdleReturn {
     if (updateTimer) {
       clearInterval(updateTimer)
     }
-
-    logger.info('Idle detection stopped')
   })
 
   return {

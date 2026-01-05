@@ -52,8 +52,6 @@ const errors = ref<ErrorRecord[]>([])
  * @returns 錯誤處理方法和狀態
  */
 export function useErrorHandler(): UseErrorHandlerReturn {
-  const logger = useLogger('ErrorHandler')
-
   /**
    * 生成唯一 ID
    * @returns 唯一 ID
@@ -107,8 +105,8 @@ export function useErrorHandler(): UseErrorHandlerReturn {
       errors.value.shift()
     }
 
-    // 記錄到 logger
-    logger.error(error.message, {
+    // 記錄到 console
+    console.error(error.message, {
       type: record.type,
       context,
       stack: error.stack
@@ -149,24 +147,24 @@ export function useErrorHandler(): UseErrorHandlerReturn {
     // 根據狀態碼做不同處理
     switch (status) {
       case 401:
-        logger.warn('401 Unauthorized - 請重新登入')
+        console.warn('401 Unauthorized - 請重新登入')
         // TODO: 執行登出邏輯或導向登入頁
         break
 
       case 403:
-        logger.warn('403 Forbidden - 權限不足')
+        console.warn('403 Forbidden - 權限不足')
         break
 
       case 404:
-        logger.warn('404 Not Found - 找不到資源')
+        console.warn('404 Not Found - 找不到資源')
         break
 
       case 500:
-        logger.error('500 Internal Server Error - 伺服器出錯')
+        console.error('500 Internal Server Error - 伺服器出錯')
         break
 
       default:
-        logger.error(`${status} - 未知錯誤`, response?.statusText)
+        console.error(`${status} - 未知錯誤`, response?.statusText)
     }
   }
 
@@ -192,23 +190,23 @@ export function useErrorHandler(): UseErrorHandlerReturn {
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        logger.debug(`Retry attempt ${attempt + 1}/${maxRetries + 1}`)
+        console.debug(`Retry attempt ${attempt + 1}/${maxRetries + 1}`)
         return await fn()
       } catch (error) {
         lastError = error as Error
-        logger.warn(`Attempt ${attempt + 1} failed`, { error: lastError.message })
+        console.warn(`Attempt ${attempt + 1} failed`, { error: lastError.message })
 
         // 如果還有重試次數，等待後重試
         if (attempt < maxRetries) {
           const waitTime = delay * Math.pow(backoff, attempt)
-          logger.debug(`Waiting ${waitTime}ms before retry`)
+          console.debug(`Waiting ${waitTime}ms before retry`)
           await new Promise((resolve) => setTimeout(resolve, waitTime))
         }
       }
     }
 
     // 所有重試都失敗
-    logger.error('All retry attempts failed', { error: lastError })
+    console.error('All retry attempts failed', { error: lastError })
     throw lastError
   }
 
@@ -216,8 +214,7 @@ export function useErrorHandler(): UseErrorHandlerReturn {
    * 清除錯誤
    */
   const clearErrors = (): void => {
-    errors.value = []
-    logger.info('Errors cleared')
+    console.info('Errors cleared')
   }
 
   return {

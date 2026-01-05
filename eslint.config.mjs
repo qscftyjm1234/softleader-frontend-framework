@@ -29,7 +29,9 @@ export default [
         parser: tsParser, // <script> 區塊用 TypeScript 解析
         extraFileExtensions: ['.vue'], // 支援 .vue 檔案
         ecmaVersion: 'latest', // 使用最新 JS 語法
-        sourceType: 'module' // 使用 ES 模組
+        sourceType: 'module', // 使用 ES 模組
+        projectService: true, // 啟用 TypeScript 專案服務 (Type-Aware Linting)
+        tsconfigRootDir: import.meta.dirname // 設定根目錄
       }
     },
 
@@ -131,7 +133,30 @@ export default [
       'jsdoc/require-param-description': 'warn', // @param 要有說明（警告）
       'jsdoc/require-returns': 'warn', // 要寫 @returns（警告）
       'jsdoc/require-returns-description': 'warn', // @returns 要有說明（警告）
-      'jsdoc/check-tag-names': ['warn', { definedTags: ['history', 'historyId', '功能', '用法'] }] // 檢查標籤名稱（警告），允許自訂標籤
+      'jsdoc/check-tag-names': ['warn', { definedTags: ['history', 'historyId', '功能', '用法'] }], // 檢查標籤名稱（警告），允許自訂標籤
+
+      // TypeScript 命名規則
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          // 1. 布林值變數：必須以 is, should, has, can, did, will 開頭
+          selector: 'variable',
+          types: ['boolean'],
+          format: ['PascalCase'],
+          prefix: ['is', 'should', 'has', 'can', 'did', 'will']
+        },
+        {
+          // 2. 一般變數與函式：小駝峰
+          selector: ['variable', 'function'],
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase'], // 允許 PascalCase 是為了支援 Vue Component 引入
+          leadingUnderscore: 'allow'
+        },
+        {
+          // 3. 類別、介面、型別別名、列舉：大駝峰
+          selector: ['class', 'interface', 'typeAlias', 'enum'],
+          format: ['PascalCase']
+        }
+      ]
     }
   },
 
