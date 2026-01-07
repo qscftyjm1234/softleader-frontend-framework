@@ -28,7 +28,7 @@ defineProps<Props>()
 
 <style scoped>
 .showcase-section-wrapper {
-  margin-bottom: 4rem;
+  margin-bottom: 5rem;
   position: relative;
 }
 

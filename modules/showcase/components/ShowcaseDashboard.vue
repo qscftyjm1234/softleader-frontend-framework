@@ -183,6 +183,13 @@ const guidesList = [
     icon: 'mdi-book-open-page-variant',
     to: '/showcase/development',
     color: '#607D8B'
+  },
+  {
+    title: '開發規矩',
+    desc: '命名規則、程式碼風格與最佳實踐',
+    icon: 'mdi-ruler-square',
+    to: '/showcase/rules',
+    color: '#FF6F00'
   }
 ]
 </script>

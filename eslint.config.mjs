@@ -67,6 +67,23 @@ export default [
         }
       ],
 
+      // Vue 最佳實踐與整潔度
+      'vue/component-name-in-template-casing': ['error', 'PascalCase'], // 模板中元件名強制大駝峰 (UserCard)
+      'vue/no-useless-v-bind': 'error', // 禁止無用的 v-bind
+      'vue/prefer-true-attribute-shorthand': 'error', // 只有 boolean true 時省略值 <comp is-active>
+      'vue/attributes-order': ['error', { alphabetical: false }], // 強制屬性順序 (Definition -> Conditionals -> Events -> Content)
+      'vue/order-in-components': 'error', // 強制 Options API 排序 (Props -> Data -> Computeds -> Methods)
+
+      // JS/TS 最佳實踐
+      eqeqeq: ['error', 'smart'], // 強制使用 ===
+      'no-var': 'error', // 禁止使用 var
+      'prefer-const': 'error', // 優先使用 const
+      curly: ['error', 'all'], // 強制所有控制語句使用大括號
+      'arrow-body-style': ['error', 'as-needed'], // 箭頭函式能省略大括號就省略
+      'prefer-template': 'error', // 優先使用樣板字面值 (`ab${c}`)
+      'object-shorthand': 'error', // 強制物件屬性簡寫
+      'no-lonely-if': 'error', // 禁止 else { if }，應使用 else if
+
       // 強制屬性換行：2 個以上屬性必須換行
       // singleline: 1 表示單行模式最多 1 個屬性（超過就必須換行）
       // multiline: 1 表示多行模式每行最多 1 個屬性
@@ -146,13 +163,59 @@ export default [
           prefix: ['is', 'should', 'has', 'can', 'did', 'will']
         },
         {
-          // 2. 一般變數與函式：小駝峰
-          selector: ['variable', 'function'],
-          format: ['camelCase', 'UPPER_CASE', 'PascalCase'], // 允許 PascalCase 是為了支援 Vue Component 引入
+          // 2. 一般變數：小駝峰
+          selector: 'variable',
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
           leadingUnderscore: 'allow'
         },
         {
-          // 3. 類別、介面、型別別名、列舉：大駝峰
+          // 3. 函式：必須以動詞開頭
+          selector: 'function',
+          format: ['camelCase', 'PascalCase'],
+          prefix: [
+            // 單一動作
+            'get',
+            'set',
+            'fetch',
+            'handle',
+            'click',
+            'submit',
+            'validate',
+            'create',
+            'update',
+            'delete',
+            'toggle',
+            'show',
+            'hide',
+            'open',
+            'close',
+            'add',
+            'remove',
+            'clear',
+            'reset',
+            // 流程性
+            'initialize',
+            'init',
+            'process',
+            'execute',
+            'perform',
+            'complete',
+            'setup',
+            'run',
+            // 判斷 (回傳 boolean)
+            'is',
+            'has',
+            'should',
+            'can',
+            'will',
+            'check',
+            'verify',
+            // 事件
+            'on'
+          ]
+        },
+        {
+          // 4. 類別、介面、型別別名、列舉：大駝峰
           selector: ['class', 'interface', 'typeAlias', 'enum'],
           format: ['PascalCase']
         }

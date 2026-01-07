@@ -10,6 +10,16 @@ definePageMeta({
   icon: 'mdi-book-open-page-variant',
   layout: 'portal'
 })
+
+const router = useRouter()
+
+const navigateToShowcase = () => {
+  router.push('/showcase')
+}
+
+const navigateToRules = () => {
+  router.push('/showcase/rules')
+}
 </script>
 
 <template>
@@ -18,160 +28,463 @@ definePageMeta({
     description="這裡記錄了專案的架構、規矩、用了哪些工具，以及如何把專案跑起來。"
     class="fade-in-up"
   >
-    <!-- 1. System Architecture -->
+    <!-- Quick Navigation -->
+    <div class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div
+        class="nav-card group"
+        @click="navigateToShowcase"
+      >
+        <div class="nav-card-glow nav-card-glow-blue" />
+        <div class="nav-card-content">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="nav-icon nav-icon-blue">
+                <v-icon
+                  color="blue-400"
+                  size="28"
+                >
+                  mdi-view-grid-outline
+                </v-icon>
+              </div>
+              <div>
+                <div class="nav-title text-blue-400">瀏覽所有範例頁面</div>
+                <div class="nav-desc">查看 26 個功能展示頁面</div>
+              </div>
+            </div>
+            <v-icon
+              color="blue-400"
+              class="nav-arrow"
+            >
+              mdi-arrow-right
+            </v-icon>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="nav-card group"
+        @click="navigateToRules"
+      >
+        <div class="nav-card-glow nav-card-glow-orange" />
+        <div class="nav-card-content">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="nav-icon nav-icon-orange">
+                <v-icon
+                  color="orange-400"
+                  size="28"
+                >
+                  mdi-ruler-square
+                </v-icon>
+              </div>
+              <div>
+                <div class="nav-title text-orange-400">查看開發規矩</div>
+                <div class="nav-desc">完整的開發規範與最佳實踐</div>
+              </div>
+            </div>
+            <v-icon
+              color="orange-400"
+              class="nav-arrow"
+            >
+              mdi-arrow-right
+            </v-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Environment Requirements -->
     <ShowcaseSection
-      title="系統架構 (Architecture)"
-      icon="mdi-sitemap"
+      title="環境需求"
+      icon="mdi-cog-outline"
       class="stagger-1"
     >
-      <ShowcaseArchitecture />
-
-      <div class="mt-6">
-        <ShowcaseCard
-          title="為什麼要分層？"
-          description="各司其職，讓程式碼更好維護"
-          full-width
-        >
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-            <div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-              <strong class="text-orange-400 block mb-2">UI Interface (純皮)</strong>
-              <div class="text-slate-400">
-                只管「長相」，不管功能。
-                <br />
-                像是單純的積木，任何人都能拿去用。
+      <!-- Runtime Environment -->
+      <ShowcaseCard
+        title="執行環境 (Runtime)"
+        description="專案運行所需的基礎環境"
+        full-width
+      >
+        <div class="runtime-grid">
+          <!-- Node.js -->
+          <div class="runtime-card runtime-card-node">
+            <div class="runtime-header">
+              <div class="runtime-icon">
+                <v-icon
+                  color="emerald-400"
+                  size="32"
+                >
+                  mdi-nodejs
+                </v-icon>
               </div>
+              <div class="runtime-info">
+                <div class="runtime-name">Node.js</div>
+                <div class="runtime-desc">JavaScript 執行環境</div>
+              </div>
+              <div class="runtime-version">v18.x / v20.x</div>
             </div>
-            <div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-              <strong class="text-blue-400 block mb-2">UI Business (有腦)</strong>
-              <div class="text-slate-400">
-                負責「功能」與「資料」。
-                <br />
-                這層會呼叫 API、處理驗證邏輯。
-              </div>
-            </div>
-            <div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-              <strong class="text-emerald-400 block mb-2">Pages (組裝)</strong>
-              <div class="text-slate-400">
-                負責「排版」。
-                <br />
-                把上面兩種元件組裝起來，變成使用者看到的頁面。
-              </div>
+            <div class="runtime-check">
+              <div class="runtime-check-label">檢查版本</div>
+              <ShowcaseCodeBlock
+                code="node --version"
+                language="bash"
+              />
             </div>
           </div>
-        </ShowcaseCard>
-      </div>
+
+          <!-- npm / pnpm -->
+          <div class="runtime-card runtime-card-npm">
+            <div class="runtime-header">
+              <div class="runtime-icon">
+                <v-icon
+                  color="emerald-400"
+                  size="32"
+                >
+                  mdi-package-variant
+                </v-icon>
+              </div>
+              <div class="runtime-info">
+                <div class="runtime-name">npm / pnpm</div>
+                <div class="runtime-desc">套件管理工具</div>
+              </div>
+              <div class="runtime-version">v9.x+ / v8.x+</div>
+            </div>
+            <div class="runtime-check">
+              <div class="runtime-check-label">檢查版本</div>
+              <ShowcaseCodeBlock
+                code="npm --version"
+                language="bash"
+              />
+            </div>
+          </div>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
-    <!-- 2. Tech Stack -->
+    <!-- 2. System Dependencies -->
     <ShowcaseSection
-      title="我們用了什麼 (Tech Stack)"
-      icon="mdi-layers-triple"
+      title="系統套件"
+      icon="mdi-package-variant-closed"
       class="stagger-2"
     >
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <ShowcaseCard title="地基 (Core)">
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-nuxt"
-                color="green"
-              />
-              Nuxt 3
+      <!-- Framework & UI -->
+      <div class="package-category">
+        <div class="category-header">
+          <div class="category-icon category-icon-emerald">
+            <v-icon
+              size="20"
+              color="emerald-400"
+            >
+              mdi-vuejs
+            </v-icon>
+          </div>
+          <h3 class="category-title">核心與介面 (Framework & UI)</h3>
+        </div>
+        <div class="packages-grid">
+          <!-- Nuxt -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">nuxt</div>
+              <div class="package-version">^3.14.0</div>
             </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-vuejs"
-                color="green"
+            <div class="package-desc">專案核心框架 (SSR, Route)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install nuxt@3.14.0"
+                language="bash"
               />
-              Vue 3.4+
-            </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-language-typescript"
-                color="blue"
-              />
-              TypeScript
             </div>
           </div>
-        </ShowcaseCard>
 
-        <ShowcaseCard title="資料與邏輯">
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-fruit-pineapple"
-                color="yellow"
-              />
-              Pinia (狀態)
+          <!-- Vuetify -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">vuetify</div>
+              <div class="package-version">^3.9.3</div>
             </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-api"
-                color="orange"
+            <div class="package-desc">UI 元件庫 (Button, Input...)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install vuetify@3.9.3"
+                language="bash"
               />
-              Ofetch (API)
-            </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-link-variant"
-                color="cyan"
-              />
-              VueUse (工具)
             </div>
           </div>
-        </ShowcaseCard>
 
-        <ShowcaseCard title="樣式與圖標">
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-tailwind"
-                color="cyan"
-              />
-              Tailwind CSS
+          <!-- MDI Font -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">@mdi/font</div>
+              <div class="package-version">^7.4.47</div>
             </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-sass"
-                color="pink"
+            <div class="package-desc">Material Design 圖示集</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install @mdi/font@7.4.47"
+                language="bash"
               />
-              SCSS / Sass
-            </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-material-design"
-                color="blue"
-              />
-              MDI Icons
             </div>
           </div>
-        </ShowcaseCard>
+        </div>
+      </div>
 
-        <ShowcaseCard title="小幫手">
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-eslint"
-                color="purple"
-              />
-              ESLint (檢查)
+      <!-- Logic & State -->
+      <div class="package-category">
+        <div class="category-header">
+          <div class="category-icon category-icon-blue">
+            <v-icon
+              size="20"
+              color="blue-400"
+            >
+              mdi-state-machine
+            </v-icon>
+          </div>
+          <h3 class="category-title">邏輯與狀態 (Logic & State)</h3>
+        </div>
+        <div class="packages-grid">
+          <!-- Pinia -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">@pinia/nuxt</div>
+              <div class="package-version">^0.11.2</div>
             </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-format-align-left"
-                color="orange"
+            <div class="package-desc">全域狀態管理 (Store)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install @pinia/nuxt@0.11.2"
+                language="bash"
               />
-              Prettier (排版)
-            </div>
-            <div class="flex items-center gap-2 text-slate-300">
-              <v-icon
-                icon="mdi-git"
-                color="red"
-              />
-              Husky (Git)
             </div>
           </div>
-        </ShowcaseCard>
+
+          <!-- VueUse -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">@vueuse/nuxt</div>
+              <div class="package-version">^13.6.0</div>
+            </div>
+            <div class="package-desc">Vue 實用工具庫 (Hooks)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install @vueuse/nuxt@13.6.0"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- i18n -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">@nuxtjs/i18n</div>
+              <div class="package-version">^10.0.3</div>
+            </div>
+            <div class="package-desc">多國語系支援</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install @nuxtjs/i18n@10.0.3"
+                language="bash"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Utilities -->
+      <div class="package-category">
+        <div class="category-header">
+          <div class="category-icon category-icon-orange">
+            <v-icon
+              size="20"
+              color="orange-400"
+            >
+              mdi-toolbox-outline
+            </v-icon>
+          </div>
+          <h3 class="category-title">工具函式 (Utilities)</h3>
+        </div>
+        <div class="packages-grid">
+          <!-- DayJS -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">dayjs</div>
+              <div class="package-version">^1.11.13</div>
+            </div>
+            <div class="package-desc">輕量級日期格式化工具</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install dayjs@1.11.13"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Lodash CloneDeep -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">lodash.clonedeep</div>
+              <div class="package-version">^4.5.0</div>
+            </div>
+            <div class="package-desc">深層複製 (Deep Clone) 工具</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install lodash.clonedeep@4.5.0"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Nuxt Device -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">@nuxtjs/device</div>
+              <div class="package-version">^3.2.4</div>
+            </div>
+            <div class="package-desc">裝置偵測 (手機/電腦)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install @nuxtjs/device@3.2.4"
+                language="bash"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Quality -->
+      <div class="package-category">
+        <div class="category-header">
+          <div class="category-icon category-icon-purple">
+            <v-icon
+              size="20"
+              color="purple-400"
+            >
+              mdi-shield-check
+            </v-icon>
+          </div>
+          <h3 class="category-title">品質確保 (Code Quality)</h3>
+        </div>
+        <div class="packages-grid">
+          <!-- TypeScript -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">typescript</div>
+              <div class="package-version">^5.9.3</div>
+            </div>
+            <div class="package-desc">強型別語言支援</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D typescript@5.9.3"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- ESLint -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">eslint</div>
+              <div class="package-version">^9.39.2</div>
+            </div>
+            <div class="package-desc">程式碼檢查與規範</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D eslint@9.39.2"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Prettier -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">prettier</div>
+              <div class="package-version">^3.6.2</div>
+            </div>
+            <div class="package-desc">程式碼自動排版工具</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D prettier@3.6.2"
+                language="bash"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Git Workflow -->
+      <div class="package-category">
+        <div class="category-header">
+          <div class="category-icon category-icon-red">
+            <v-icon
+              size="20"
+              color="red-400"
+            >
+              mdi-git
+            </v-icon>
+          </div>
+          <h3 class="category-title">Git 工作流 (Workflow)</h3>
+        </div>
+        <div class="packages-grid">
+          <!-- Husky -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">husky</div>
+              <div class="package-version">^9.1.7</div>
+            </div>
+            <div class="package-desc">Git Hooks (Commit 前檢查)</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D husky@9.1.7"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Commitizen -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">commitizen</div>
+              <div class="package-version">^4.3.1</div>
+            </div>
+            <div class="package-desc">協助撰寫標準 Commit 訊息</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D commitizen@4.3.1"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Lint Staged -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">lint-staged</div>
+              <div class="package-version">^16.2.7</div>
+            </div>
+            <div class="package-desc">只對暫存區檔案執行檢查</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D lint-staged@16.2.7"
+                language="bash"
+              />
+            </div>
+          </div>
+
+          <!-- Standard Version -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">standard-version</div>
+              <div class="package-version">^9.5.0</div>
+            </div>
+            <div class="package-desc">自動產生版號與 Changelog</div>
+            <div class="package-install">
+              <ShowcaseCodeBlock
+                code="npm install -D standard-version@9.5.0"
+                language="bash"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </ShowcaseSection>
 
@@ -229,9 +542,9 @@ definePageMeta({
         >
           <div class="space-y-4">
             <div>
-              <div class="text-sm font-bold text-slate-200 mb-1">打包 (上線用)</div>
+              <div class="text-sm font-bold text-slate-200 mb-1">產生靜態檔案 (上線用)</div>
               <ShowcaseCodeBlock
-                code="npm run build"
+                code="npm run generate"
                 language="bash"
               />
             </div>
@@ -247,226 +560,6 @@ definePageMeta({
               <ShowcaseCodeBlock
                 code="npx nuxi typecheck"
                 language="bash"
-              />
-            </div>
-          </div>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- 4. Development Rules -->
-    <ShowcaseSection
-      title="開發規矩 (Rules)"
-      icon="mdi-ruler-square"
-      class="stagger-4"
-    >
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ShowcaseCard
-          title="命名怎麼寫？"
-          description="請跟著這樣寫，不然 ESLint 會報錯喔。"
-        >
-          <div class="naming-rules">
-            <!-- Rule 1 -->
-            <div class="rule-item">
-              <div class="rule-meta">
-                <span class="rule-type">Boolean</span>
-                <span class="rule-desc">如果是 Yes/No</span>
-              </div>
-              <div class="rule-content">
-                <div class="rule-syntax">
-                  <span class="keyword">is</span>
-                  <span class="divider">/</span>
-                  <span class="keyword">should</span>
-                  <span class="divider">/</span>
-                  <span class="keyword">has</span>
-                </div>
-                <div class="rule-examples">
-                  <span class="good">isValid</span>
-                  <span class="good">hasPermission</span>
-                  <span class="bad">valid</span>
-                  <span class="bad">permission</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Rule 2 -->
-            <div class="rule-item">
-              <div class="rule-meta">
-                <span class="rule-type">Class / Interface</span>
-                <span class="rule-desc">類別與介面</span>
-              </div>
-              <div class="rule-content">
-                <div class="rule-syntax">
-                  <span class="keyword">PascalCase</span>
-                  <p class="text-xs text-slate-400 mt-1 font-sans font-normal">(大寫開頭)</p>
-                </div>
-                <div class="rule-examples">
-                  <span class="good">UserInterface</span>
-                  <span class="bad">userInterface</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="檔案放哪裡？"
-          description="每個資料夾都有它的用途，別放錯囉。"
-        >
-          <ul class="dir-list">
-            <li>
-              <div class="dir-name">
-                <v-icon
-                  icon="mdi-folder"
-                  color="blue"
-                  size="small"
-                />
-                <span>composables/</span>
-              </div>
-              <div class="dir-desc">共用的邏輯 (Hooks)</div>
-            </li>
-            <li>
-              <div class="dir-name">
-                <v-icon
-                  icon="mdi-folder"
-                  color="purple"
-                  size="small"
-                />
-                <span>stores/</span>
-              </div>
-              <div class="dir-desc">大家的資料狀態 (Pinia)</div>
-            </li>
-            <li>
-              <div class="dir-name">
-                <v-icon
-                  icon="mdi-folder-open"
-                  color="orange"
-                  size="small"
-                />
-                <span>modules/</span>
-              </div>
-              <div class="dir-desc">依功能分類的模組</div>
-              <ul class="sub-list">
-                <li><span>showcase/ (範例)</span></li>
-                <li><span>auth/ (登入相關)</span></li>
-              </ul>
-            </li>
-            <li>
-              <div class="dir-name">
-                <v-icon
-                  icon="mdi-folder-table"
-                  color="green"
-                  size="small"
-                />
-                <span>components/</span>
-              </div>
-              <div class="dir-desc">UI 元件</div>
-              <ul class="sub-list">
-                <li><span>uiInterface/ (純外觀)</span></li>
-                <li><span>uiBusiness/ (含邏輯)</span></li>
-              </ul>
-            </li>
-          </ul>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- 5. Quality Control -->
-    <ShowcaseSection
-      title="品質守門員 (QA)"
-      icon="mdi-shield-check"
-      class="stagger-5"
-    >
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- ESLint -->
-        <ShowcaseCard
-          title="幫你抓錯 (ESLint)"
-          description="存檔時會自動修正格式，也會提醒你寫錯的地方。"
-        >
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="p-3 bg-slate-800/50 rounded border border-slate-700">
-              <strong class="text-emerald-400 block mb-1">Vue 最佳實踐</strong>
-              <div class="text-xs text-slate-400">用官方推薦的寫法</div>
-            </div>
-            <div class="p-3 bg-slate-800/50 rounded border border-slate-700">
-              <strong class="text-blue-400 block mb-1">TypeScript 檢查</strong>
-              <div class="text-xs text-slate-400">避免型別錯誤</div>
-            </div>
-            <div class="p-3 bg-slate-800/50 rounded border border-slate-700">
-              <strong class="text-pink-400 block mb-1">Prettier 排版</strong>
-              <div class="text-xs text-slate-400">幫你把程式碼排整齊</div>
-            </div>
-            <div class="p-3 bg-slate-800/50 rounded border border-slate-700">
-              <strong class="text-amber-400 block mb-1">JSDoc 註解</strong>
-              <div class="text-xs text-slate-400">重要的地方要寫說明</div>
-            </div>
-          </div>
-        </ShowcaseCard>
-
-        <!-- Git Hooks -->
-        <ShowcaseCard
-          title="上傳前檢查 (Git Hooks)"
-          description="Commit 的時候會自動檢查，有錯就不能上傳。"
-        >
-          <div class="flow-container">
-            <div class="flow-step">
-              <div class="step-num">01</div>
-              <div class="step-info">
-                <div class="step-title">Commit</div>
-              </div>
-            </div>
-            <div class="flow-connector"></div>
-            <div class="flow-step">
-              <div class="step-num">02</div>
-              <div class="step-info">
-                <div class="step-title">攔截</div>
-              </div>
-            </div>
-            <div class="flow-connector"></div>
-            <div class="flow-step">
-              <div class="step-num">03</div>
-              <div class="step-info">
-                <div class="step-title">檢查</div>
-              </div>
-            </div>
-            <div class="flow-connector"></div>
-            <div class="flow-step success">
-              <div class="step-num">OK</div>
-              <div class="step-info">
-                <div class="step-title">過關</div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="mt-4 text-xs text-slate-400 p-3 bg-slate-800/50 rounded border border-slate-700"
-          >
-            只會檢查
-            <strong>這次修改的檔案</strong>
-            ，速度很快，不用擔心。
-          </div>
-        </ShowcaseCard>
-      </div>
-
-      <div class="mt-6">
-        <ShowcaseCard
-          title="緊急略過檢查 (盡量少用)"
-          icon="mdi-alert"
-          class="border-amber-500/20 bg-amber-500/5"
-        >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <div class="text-sm font-bold text-amber-300 mb-2">Commit 時跳過</div>
-              <ShowcaseCodeBlock
-                code="git commit -n -m '急件處理'"
-                language="bash"
-              />
-            </div>
-            <div>
-              <div class="text-sm font-bold text-amber-300 mb-2">某一行跳過</div>
-              <ShowcaseCodeBlock
-                code="// eslint-disable-next-line
-console.log('debug')"
-                language="javascript"
               />
             </div>
           </div>
@@ -627,6 +720,355 @@ console.log('debug')"
 
 .step-content {
   flex: 1;
+}
+
+/* Navigation Cards */
+.nav-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.nav-card:hover {
+  transform: translateY(-4px);
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px -4px rgba(0, 0, 0, 0.4);
+}
+
+.nav-card-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  border-radius: 1.25rem;
+}
+
+.nav-card:hover .nav-card-glow {
+  opacity: 1;
+}
+
+.nav-card-glow-blue {
+  background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%);
+}
+
+.nav-card-glow-orange {
+  background: radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.15), transparent 70%);
+}
+
+.nav-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.nav-icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.nav-card:hover .nav-icon-blue {
+  background: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.nav-icon-orange {
+  background: rgba(251, 146, 60, 0.15);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.nav-card:hover .nav-icon-orange {
+  background: rgba(251, 146, 60, 0.25);
+  box-shadow: 0 0 20px rgba(251, 146, 60, 0.3);
+}
+
+.nav-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.nav-desc {
+  font-size: 0.9375rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.nav-arrow {
+  transition: transform 0.3s;
+}
+
+.nav-card:hover .nav-arrow {
+  transform: translateX(6px);
+}
+
+/* Runtime Environment Cards */
+.runtime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.runtime-card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: 1rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.runtime-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.5), rgba(52, 211, 153, 0.5));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.runtime-card:hover {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.runtime-card:hover::before {
+  opacity: 1;
+}
+
+.runtime-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.runtime-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 0.875rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.runtime-card:hover .runtime-icon {
+  background: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.runtime-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.runtime-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 0.25rem;
+}
+
+.runtime-desc {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.runtime-version {
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.runtime-check {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.runtime-check-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Package Categories */
+.package-category {
+  margin-bottom: 3rem;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.category-icon-emerald {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.category-icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.category-icon-orange {
+  background: rgba(251, 146, 60, 0.15);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.category-icon-purple {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.category-icon-red {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.category-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Packages Grid */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.package-card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 0.875rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.package-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.5));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.package-card:hover {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.package-card:hover::before {
+  opacity: 1;
+}
+
+.package-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.package-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', monospace;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.package-version {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.package-desc {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  min-height: 2.625rem;
+}
+
+.package-install {
+  margin-top: auto;
 }
 
 /* Directory List */
