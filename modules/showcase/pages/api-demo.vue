@@ -274,48 +274,72 @@ definePageMeta({
         description="useApi 保留了所有 useFetch 的回傳屬性，並針對 data 做了自動拆包處理。"
         full-width
       >
-        <div
-          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
-        >
-          <table class="w-full text-left text-sm border-collapse">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
             <thead>
-              <tr class="bg-slate-950 border-b border-slate-800">
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">屬性</th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">型別</th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  屬性 (Property)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">data</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">T | null</td>
-                <td class="py-3 px-4 text-slate-300">
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  data
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">T | null</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
                   API 回傳資料。已自動拆除
-                  <code>ApiResponse</code>
+                  <code class="text-sky-300">ApiResponse</code>
                   外殼，直接回傳 Generic T。
                 </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">pending</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4 text-slate-300">請求是否正在進行中 (True/False)。</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  pending
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Boolean</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  請求是否正在進行中 (True/False)。
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">error</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">Error | null</td>
-                <td class="py-3 px-4 text-slate-300">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  error
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Error | null</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
                   請求失敗時的錯誤物件，包含 statusCode 與 message。
                 </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">refresh</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">function</td>
-                <td class="py-3 px-4 text-slate-300">重新發送請求的函式 (常用於列表刷新)。</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  refresh()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  重新發送請求的函式 (常用於列表刷新)。
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">status</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">string</td>
-                <td class="py-3 px-4 text-slate-300">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  status
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
                   目前的狀態字串：'idle' | 'pending' | 'success' | 'error'。
                 </td>
               </tr>
@@ -343,45 +367,63 @@ definePageMeta({
         title="擴充參數"
         description="除原本 useFetch 的參數外，額外支援的企業級設定。"
       >
-        <div
-          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
-        >
-          <table class="w-full text-left text-sm border-collapse">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
             <thead>
-              <tr class="bg-slate-950 border-b border-slate-800">
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">
-                  參數名
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  參數名 (Parameter)
                 </th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">
-                  預設值
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  預設值 (Default)
                 </th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">globalLoading</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">true</td>
-                <td class="py-3 px-4 text-slate-300">
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  globalLoading
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">true</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
                   是否觸發全域 Loading 狀態 (設為 false 可個別關閉)
                 </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">autoError</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">true</td>
-                <td class="py-3 px-4 text-slate-300">是否自動顯示錯誤 Snackbar (4xx/5xx)</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  autoError
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">true</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  是否自動顯示錯誤 Snackbar (4xx/5xx)
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">autoSuccess</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">false</td>
-                <td class="py-3 px-4 text-slate-300">成功後自動顯示提示 (傳入字串即為訊息內容)</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  autoSuccess
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">false</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  成功後自動顯示提示 (傳入字串即為訊息內容)
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">loadingRef</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
-                <td class="py-3 px-4 text-slate-300">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  loadingRef
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">-</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
                   綁定按鈕的
-                  <code>Ref&lt;boolean&gt;</code>
+                  <code class="text-sky-300">Ref&lt;boolean&gt;</code>
                   ，自動切換 Loading
                 </td>
               </tr>
@@ -394,55 +436,74 @@ definePageMeta({
         title="標準參數"
         description="繼承自 Nuxt useFetch 的常用標準參數。"
       >
-        <div
-          class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
-        >
-          <table class="w-full text-left text-sm border-collapse">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
             <thead>
-              <tr class="bg-slate-950 border-b border-slate-800">
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-32">
-                  參數名
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  屬性 (Property)
                 </th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase w-24">
-                  預設值
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
                 </th>
-                <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">說明</th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">method</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">GET</td>
-                <td class="py-3 px-4 text-slate-300">請求方法 (GET, POST, PUT, DELETE...)</td>
-              </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">body</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
-                <td class="py-3 px-4 text-slate-300">Request Body Payload (通常用於 POST/PUT)</td>
-              </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">params</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
-                <td class="py-3 px-4 text-slate-300">
-                  URL Query Parameters 物件 (如
-                  <code>{ q: 'search' }</code>
-                  )
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  data
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">T | null</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  API 回傳資料。已自動拆除
+                  <code class="text-sky-300">ApiResponse</code>
+                  外殼，直接回傳 Generic T。
                 </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">watch</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">false</td>
-                <td class="py-3 px-4 text-slate-300">監聽指定 Ref 變更並自動重新發送請求</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  pending
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Boolean</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  請求是否正在進行中 (True/False)。
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">transform</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
-                <td class="py-3 px-4 text-slate-300">資料轉換函式 (Data Transformation)</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  error
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Error | null</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  請求失敗時的錯誤物件，包含 statusCode 與 message。
+                </td>
               </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-sky-400">pick</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">-</td>
-                <td class="py-3 px-4 text-slate-300">只選取部分欄位 (降低 Payload 大小)</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  refresh()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  重新發送請求的函式 (常用於列表刷新)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  status
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前的狀態字串：'idle' | 'pending' | 'success' | 'error'。
+                </td>
               </tr>
             </tbody>
           </table>

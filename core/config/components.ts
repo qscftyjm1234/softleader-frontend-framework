@@ -22,7 +22,7 @@ export const componentsConfig: NuxtConfig['components'] = [
    * 優點：名稱簡短
    * 缺點：需注意不同資料夾下的同名檔案衝突
    */
-  { path: '~/components', pathPrefix: false },
+  { path: '~/components', pathPrefix: false }
 
   /**
    * 表單元件：強制加上 Form 前綴
@@ -31,5 +31,5 @@ export const componentsConfig: NuxtConfig['components'] = [
    *
    * 優點：避免與 HTML 原生標籤衝突，且語意明確
    */
-  { path: '~/components/form/', prefix: 'Form' }
+  // { path: '~/components/form/', prefix: 'Form' }
 ]

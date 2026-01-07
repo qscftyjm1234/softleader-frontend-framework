@@ -268,6 +268,20 @@ const user = getItem('user')"
               </div>
             </div>
           </div>
+          <template #footer>
+            <ShowcaseCodeBlock
+              code="const { keys } = useStorage('local')
+
+// 取得目前所有 Keys
+const allKeys = keys()
+
+// 重新整理列表
+const refresh = () => {
+  allKeys.value = keys()
+}"
+              label="實作範例"
+            />
+          </template>
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
@@ -277,121 +291,98 @@ const user = getItem('user')"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. setItem()"
-          description="儲存資料"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              儲存資料至 Storage，支援過期時間。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { setItem } = useStorage('local')
-
-// 基本使用
-setItem('user', { name: 'John', age: 30 })
-
-// 設定過期時間（1 小時）
-setItem('token', 'abc123', { expires: 3600000 })"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="2. getItem()"
-          description="取得資料"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              從 Storage 取得資料，自動檢查過期。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { getItem } = useStorage('local')
-
-const user = getItem('user')
-console.log(user)  // { name: 'John', age: 30 }
-
-// 如果已過期或不存在，回傳 null
-const token = getItem('expired_token')  // null"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="3. removeItem()"
-          description="移除資料"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              移除指定的 key。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { removeItem } = useStorage('local')
-
-removeItem('user')
-removeItem('token')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="4. clear()"
-          description="清空所有"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              清空 Storage 中的所有資料。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { clear } = useStorage('local')
-
-clear()  // 清空所有 localStorage"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="5. useStorageRef()"
-          description="響應式儲存"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              建立響應式的 Storage 綁定，自動同步。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { useStorageRef } = useStorage('local')
-
-// 建立響應式綁定
-const user = useStorageRef('user', { name: '', age: 0 })
-
-// 修改會自動同步至 localStorage
-user.value.name = 'Jane'
-user.value.age = 25"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useStorage() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供統一的 Storage 操作介面，自動處理資料序列化與過期時間。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  setItem(key, val, opts)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  儲存資料。支援
+                  <code class="text-sky-300">expires</code>
+                  (毫秒) 設定。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  getItem(key)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得資料。若過期或不存在則回傳
+                  <code class="text-sky-300">null</code>
+                  。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  removeItem(key)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  移除指定 key 的資料。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  clear()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  清空目前 Storage (Local or Session) 的所有資料。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  keys()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得目前 Storage 中的所有 key 陣列。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  useStorageRef(key, init)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  建立與 Storage 同步的響應式 ref。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

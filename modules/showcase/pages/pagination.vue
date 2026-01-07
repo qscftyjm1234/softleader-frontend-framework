@@ -114,7 +114,7 @@ definePageMeta({
         </div>
         <template #footer>
           <ShowcaseCodeBlock
-            code="const { currentPage, total, goToPage } = usePagination({
+            code="const { currentPage, total, goToPage, nextPage } = usePagination({
   currentPage: 1,
   pageSize: 20,
   total: 100
@@ -126,6 +126,63 @@ nextPage()"
           />
         </template>
       </ShowcaseCard>
+    </ShowcaseSection>
+
+    <ShowcaseSection title="整合模式 (Integration Patterns)">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left: Backend Mode -->
+        <div class="space-y-4">
+          <div class="border-l-4 border-sky-500 pl-4">
+            <h3 class="text-xl font-bold text-sky-400">模式 A：後端分頁</h3>
+            <p class="text-slate-200 mt-1 font-medium">API 負責切割資料，前端只管頁碼。</p>
+            <p class="text-xs text-sky-300/70 mt-1 uppercase tracking-wider font-bold">
+              適用：1000+ 筆海量資料
+            </p>
+          </div>
+
+          <ShowcaseCodeBlock
+            code="// 1. 初始化
+const { currentPage, pageSize, setTotal } = usePagination()
+
+// 2. 監聽並請求 API
+watch([currentPage, pageSize], async () => {
+  const res = await api.getUsers({
+    page: currentPage.value,
+    size: pageSize.value
+  })
+  
+  users.value = res.data
+  setTotal(res.total) // 更新總數
+}, { immediate: true })"
+            label="Backend Integration Code"
+          />
+        </div>
+
+        <!-- Right: Frontend Mode -->
+        <div class="space-y-4">
+          <div class="border-l-4 border-pink-500 pl-4">
+            <h3 class="text-xl font-bold text-pink-400">模式 B：前端分頁</h3>
+            <p class="text-slate-200 mt-1 font-medium">一次撈回全部，前端負責 Array Slice。</p>
+            <p class="text-xs text-pink-300/70 mt-1 uppercase tracking-wider font-bold">
+              適用：選單、設定檔等小型列表
+            </p>
+          </div>
+
+          <ShowcaseCodeBlock
+            code="// 1. 初始化 (傳入總數)
+const allData = ref([...])
+const { paginateArray } = usePagination({ 
+  total: allData.value.length 
+})
+
+// 2. 切割資料
+const currentItems = computed(() => {
+  return paginateArray(allData.value)
+})"
+            label="Frontend Slice Code"
+          />
+        </div>
+      </div>
     </ShowcaseSection>
 
     <ShowcaseSection
@@ -142,7 +199,9 @@ nextPage()"
           <div class="flex flex-col gap-6">
             <div class="flex gap-4 flex-wrap">
               <div class="flex flex-col gap-2 min-w-[200px]">
-                <label class="text-slate-400 text-xs uppercase tracking-wide">Total Items</label>
+                <label class="text-slate-400 text-xs uppercase tracking-wide">
+                  總筆數 (Total Items)
+                </label>
                 <input
                   v-model.number="total"
                   type="number"
@@ -151,52 +210,54 @@ nextPage()"
                 />
               </div>
               <div class="flex flex-col gap-2 min-w-[200px]">
-                <label class="text-slate-400 text-xs uppercase tracking-wide">Page Size</label>
+                <label class="text-slate-400 text-xs uppercase tracking-wide">
+                  每頁筆數 (Page Size)
+                </label>
                 <select
                   v-model.number="pageSize"
                   class="glass-input"
                   @change="setPageSize(pageSize)"
                 >
-                  <option :value="5">5 items / page</option>
-                  <option :value="10">10 items / page</option>
-                  <option :value="20">20 items / page</option>
-                  <option :value="50">50 items / page</option>
+                  <option :value="5">5 筆 / 頁</option>
+                  <option :value="10">10 筆 / 頁</option>
+                  <option :value="20">20 筆 / 頁</option>
+                  <option :value="50">50 筆 / 頁</option>
                 </select>
               </div>
             </div>
 
             <!-- Data Table -->
-            <div class="border border-slate-700/30 rounded-lg overflow-hidden">
-              <table class="w-full border-collapse">
+            <div
+              class="overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/20 backdrop-blur-sm"
+            >
+              <table class="w-full text-left text-sm">
                 <thead>
-                  <tr>
-                    <th
-                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                    >
-                      ID
-                    </th>
-                    <th
-                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                    >
-                      Name
-                    </th>
-                    <th
-                      class="bg-slate-800/60 p-3 text-left text-slate-400 font-semibold text-sm border-b border-slate-700/30"
-                    >
-                      Value
-                    </th>
+                  <tr class="border-b border-slate-700/50 bg-slate-800/50">
+                    <th class="py-3 px-4 font-semibold text-slate-300 w-20">編號</th>
+                    <th class="py-3 px-4 font-semibold text-slate-300">名稱</th>
+                    <th class="py-3 px-4 font-semibold text-slate-300 text-right">數值</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-700/30">
                   <tr
                     v-for="item in currentItems"
                     :key="item.id"
-                    class="hover:bg-slate-700/10 transition-colors"
+                    class="group hover:bg-sky-500/5 transition-colors"
                   >
-                    <td class="p-3 border-b border-slate-700/10 text-slate-200">#{{ item.id }}</td>
-                    <td class="p-3 border-b border-slate-700/10 text-slate-200">{{ item.name }}</td>
-                    <td class="p-3 border-b border-slate-700/10 font-mono text-sky-400">
-                      {{ item.value }}
+                    <td
+                      class="py-3 px-4 font-mono text-slate-500 group-hover:text-sky-400 transition-colors"
+                    >
+                      #{{ item.id }}
+                    </td>
+                    <td class="py-3 px-4 text-slate-200 group-hover:text-white transition-colors">
+                      {{ item.name }}
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                      <span
+                        class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20 group-hover:bg-sky-500/20 transition-colors"
+                      >
+                        {{ item.value }}
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -210,14 +271,14 @@ nextPage()"
                 class="glass-btn"
                 @click="firstPage"
               >
-                First
+                首頁
               </button>
               <button
                 :disabled="!info.hasPrev"
                 class="glass-btn"
                 @click="prevPage"
               >
-                Prev
+                上一頁
               </button>
 
               <div class="flex gap-1">
@@ -237,33 +298,33 @@ nextPage()"
                 class="glass-btn"
                 @click="nextPage"
               >
-                Next
+                下一頁
               </button>
               <button
                 :disabled="!info.hasNext"
                 class="glass-btn"
                 @click="lastPage"
               >
-                Last
+                末頁
               </button>
             </div>
 
             <div class="text-center mt-4 text-slate-400 text-sm">
-              Showing
+              顯示第
               <span class="text-slate-100">{{ info.startItem }}</span>
-              to
+              到
               <span class="text-slate-100">{{ info.endItem }}</span>
-              of
+              筆，共
               <span class="text-slate-100">{{ info.total }}</span>
-              items
+              筆資料
             </div>
           </div>
         </ShowcaseCard>
 
         <!-- Debug Info -->
         <ShowcaseCard
-          title="Pagination Info"
-          description="內部狀態檢視"
+          title="內部狀態 (Debug State)"
+          description="Hook 自動計算的唯讀屬性"
           full-width
         >
           <div class="demo-area">
@@ -282,102 +343,164 @@ nextPage()"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. 狀態與資訊"
-          description="分頁核心資料"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>屬性：</strong>
-              currentPage, pageSize, total, info
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// info 物件內容
-{
-  totalPages: 10,
-  hasPrev: false,
-  hasNext: true,
-  startItem: 1,
-  endItem: 10
-}"
-              label="info 結構"
-            />
-          </template>
-        </ShowcaseCard>
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="usePagination() 回傳欄位與方法"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供分頁狀態管理、頁碼計算與陣列分頁 helper。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <!-- State -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  currentPage
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Number&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前頁碼 (唯讀，請用
+                  <code class="text-sky-300">goToPage</code>
+                  修改)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  pageSize
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Number&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  每頁顯示筆數。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  total
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Number&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  資料總筆數。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  info
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Computed</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  分頁資訊 (
+                  <code class="text-amber-300">totalPages</code>
+                  ,
+                  <code class="text-amber-300">hasNext</code>
+                  ,
+                  <code class="text-amber-300">hasPrev</code>
+                  ,
+                  <code class="text-amber-300">startItem</code>
+                  ,
+                  <code class="text-amber-300">endItem</code>
+                  )。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="2. 頁面操作"
-          description="導航控制"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              goToPage, prevPage, nextPage, firstPage, lastPage
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 跳轉到第 5 頁
-goToPage(5)
+              <!-- Actions -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  goToPage(page)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  跳轉至指定頁碼 (會自動檢查邊界)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  prevPage / nextPage
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  前往 上一頁 / 下一頁。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  firstPage / lastPage
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  前往 第一頁 / 最後一頁。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  setPageSize(size)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  設定每頁筆數 (會自動維持在合理的頁碼)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  setTotal(count)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  設定總筆數 (通常在 API 回傳時同步呼叫)。
+                </td>
+              </tr>
 
-// 上一頁 (會自動檢查邊界)
-prevPage()
-
-// 最後一頁
-lastPage()"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="3. 參數設定"
-          description="動態調整設定"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              setPageSize, setTotal
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 改變每頁顯示 50 筆
-setPageSize(50)
-
-// 更新總筆數 (如 API 回傳後)
-setTotal(apiResponse.total)"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="4. 輔助功能"
-          description="UI 生成與資料處理"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              getPageRange, paginateArray
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 產生頁碼按鈕 (最多顯示 7 個)
-// [1, 2, 3, 4, 5, '...', 10]
-const buttons = getPageRange(7)
-
-// 前端陣列分頁
-const pageItems = paginateArray(allData)"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+              <!-- Helpers -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  getPageRange(n)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  產生頁碼按鈕陣列。例如：
+                  <code class="text-emerald-300">[3, 4, 5, 6, 7]</code>
+                  。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  paginateArray(arr)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  純前端陣列分頁 helper，回傳切割後的陣列。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

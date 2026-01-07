@@ -16,8 +16,9 @@ const api = useClient('/users')
 export default {
   /**
    * 取得使用者列表
-   * @param params
-   * @param options
+   * @param params - 查詢參數 (如分頁、搜尋關鍵字)
+   * @param options - 其他 Fetch 選項
+   * @returns List of users
    */
   getUsers(params: UserQueryParams = {}, options: UseFetchOptions<UserListResponse> = {}) {
     return api.get<UserListResponse>('/', {
@@ -28,7 +29,8 @@ export default {
 
   /**
    * 根據 ID 取得單一使用者
-   * @param id
+   * @param id - 使用者 ID
+   * @returns User detail
    */
   getUserById(id: MaybeRef<number>) {
     return api.get<any>(`/${unref(id)}`)
@@ -36,7 +38,8 @@ export default {
 
   /**
    * [範例] 建立使用者
-   * @param userData
+   * @param userData - 使用者資料物件
+   * @returns Created user data
    */
   createUser(userData: any) {
     return api.post('/', userData)
@@ -44,7 +47,8 @@ export default {
 
   /**
    * [範例] 搜尋使用者
-   * @param keyword
+   * @param keyword - 搜尋關鍵字
+   * @returns Search results
    */
   searchUsers(keyword: Ref<string>) {
     return api.get('/search', {
@@ -55,8 +59,9 @@ export default {
 
   /**
    * [範例] 更新使用者
-   * @param id
-   * @param userData
+   * @param id - 使用者 ID
+   * @param userData - 更新的使用者資料
+   * @returns Updated user data
    */
   updateUser(id: number, userData: any) {
     return api.put(`/${id}`, userData)
@@ -64,7 +69,8 @@ export default {
 
   /**
    * [範例] 刪除使用者
-   * @param id
+   * @param id - 使用者 ID
+   * @returns Deletion result
    */
   deleteUser(id: number) {
     return api.delete(`/${id}`)
@@ -72,6 +78,7 @@ export default {
 
   /**
    * [範例] 取得大量資料 (延遲載入)
+   * @returns Heavy data report
    */
   getHeavyData() {
     // 注意：這裡是 /heavy-report，因為 api base 是 /users

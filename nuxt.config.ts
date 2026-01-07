@@ -67,7 +67,7 @@ export default defineNuxtConfig({
 
   /**
    * @功能 /components 資料夾，將裡面的 .vue 元件自動註冊為全域元件
-   **/
+   * */
   components: componentsConfig,
 
   /**

@@ -47,177 +47,232 @@ definePageMeta({
     description="完整的閒置偵測模組，提供使用者活動監控和自動登出機制。核心特色：活動偵測、可設定時間、暫停/恢復、閒置警告。"
   >
     <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
+    <!-- Core Concepts -->
+    <ShowcaseSection title="核心概念">
       <ShowcaseCard
-        title="核心功能"
-        description="閒置偵測與自動管理"
+        title="閒置狀態說明"
         full-width
       >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
-          >
-            <strong>可用方法：</strong>
-          </p>
+        <ul class="benefit-list mb-6">
+          <li>
+            <strong>1. 掛機偵測 (isIdle)</strong>
+            <div class="mt-2 text-lg font-bold text-sky-400">布林值 (Boolean)</div>
+            <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+              即時偵測使用者活動狀態。當超過設定的時間未進行操作 (滑鼠、鍵盤等)
+              時，自動標記為閒置狀態。
+            </div>
+          </li>
+          <li>
+            <strong>2. 最後動靜 (lastActive)</strong>
+            <div class="mt-2 text-lg font-bold text-sky-400">時間戳記 (Timestamp)</div>
+            <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+              記錄使用者最後一次進行任何互動操作的精確時間點，用以計算閒置區間。
+            </div>
+          </li>
+          <li>
+            <strong>3. 發呆計時 (idleTime)</strong>
+            <div class="mt-2 text-lg font-bold text-sky-400">數值 (Number)</div>
+            <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+              計算自最後一次操作後，目前已累積的閒置時間 (毫秒)，可配合用來顯示倒數警告。
+            </div>
+          </li>
+          <li>
+            <strong>4. 耐心極限 (timeout)</strong>
+            <div class="mt-2 text-lg font-bold text-sky-400">數值 (Number)</div>
+            <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+              設定判定為閒置狀態的時間門檻 (毫秒)。超過此時間未操作，系統將觸發閒置事件。
+            </div>
+          </li>
+        </ul>
+
+        <template #footer>
           <ShowcaseCodeBlock
-            code="const { isIdle, lastActive, reset } = useIdle({ timeout: 5 * 60 * 1000 })
+            code="const { isIdle, lastActive, reset } = useIdle({
+  timeout: 5 * 60 * 1000 // 5 分鐘耐心極限
+})
 
 // 監聽閒置狀態
 watch(isIdle, (idle) => {
   if (idle) {
-    showWarningModal() // 顯示警告
+    showWarningModal() // 顯示「你還在嗎？」
   }
-})
-
-// 重置計時器 (例如：收到 WebSocket 訊息時)
-onWebSocketMessage(() => {
-  reset()
 })"
-            label="useIdle() 功能總覽"
+            label="初始化設定"
           />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>活動感知:</strong>
-              自動偵測滑鼠移動、點擊、鍵盤輸入等使用者行為
-            </li>
-            <li>
-              <strong>狀態管理:</strong>
-              提供 Reactive 的閒置狀態與最後活動時間
-            </li>
-            <li>
-              <strong>靈活控制:</strong>
-              支援暫停、恢復與手動重置偵測計時
-            </li>
-            <li>
-              <strong>自動登出:</strong>
-              可輕鬆實作閒置過久自動登出或鎖定螢幕功能
-            </li>
-          </ul>
-        </div>
+        </template>
       </ShowcaseCard>
     </ShowcaseSection>
 
     <!-- API 參考 -->
-    <ShowcaseSection
-      title="API 參考"
-      icon="📝"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. State Properties"
-          description="狀態屬性"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>isIdle</strong>
-              (Boolean)
-              <br />
-              當前是否處於閒置狀態。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>lastActive</strong>
-              (Date)
-              <br />
-              最後一次偵測到使用者活動的時間。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>idleTime</strong>
-              (Number)
-              <br />
-              目前累積的閒置時間 (毫秒)。
-            </p>
-          </div>
-        </ShowcaseCard>
+    <ShowcaseSection title="API 參考">
+      <ShowcaseCard
+        title="詳細屬性與方法"
+        description="useIdle() 回傳物件說明"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          以下列表詳細列出 useIdle hook 所提供的所有響應式狀態與操作方法，方便開發者快速查閱。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  屬性名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <!-- State -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  isIdle
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Boolean</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  當前是否處於閒置狀態 (True = 閒置中)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  lastActive
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Date</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  最後一次偵測到使用者活動的時間戳記。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  idleTime
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前累積的閒置時間 (毫秒)。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="2. Methods"
-          description="控制方法"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>reset()</strong>
-              <br />
-              重置閒置計時器，將 `isIdle` 設為 false。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>pause()</strong>
-              <br />
-              暫停閒置偵測。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>resume()</strong>
-              <br />
-              恢復閒置偵測。
-            </p>
-          </div>
-        </ShowcaseCard>
+              <!-- Methods -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  reset()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  重置計時器。將
+                  <code class="text-sky-300">isIdle</code>
+                  設為 false，並更新最後活動時間。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  pause()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  暫停偵測。暫停期間不會計算閒置時間。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  resume()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  恢復偵測。從暫停的時間點繼續運作。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="3. Configuration"
-          description="設定選項"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>timeout</strong>
-              (Number)
-              <br />
-              判定為閒置的逾時時間 (毫秒)。預設為 60000 (1分鐘)。
-            </p>
-            <p class="method-desc mt-2">
-              <strong>events</strong>
-              (Array&lt;String&gt;)
-              <br />
-              要監聽的 DOM 事件列表。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="useIdle({
-  timeout: 30000,
-  events: ['mousemove', 'keydown', 'scroll']
-})"
-              label="設定範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+              <!-- Config -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  timeout
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  <span class="text-amber-400 text-xs border border-amber-400/30 px-1 rounded mr-2">
+                    Config
+                  </span>
+                  判定閒置的門檻值 (毫秒)。預設為 60000 (1分鐘)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  events
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Array&lt;String&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  <span class="text-amber-400 text-xs border border-amber-400/30 px-1 rounded mr-2">
+                    Config
+                  </span>
+                  指定要監聽的 DOM 事件列表 (如 mousemove, keydown)。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="互動測試"
+      title="實戰演練"
       icon="🎮"
     >
       <div class="component-grid">
         <!-- 1. Status -->
         <ShowcaseCard
           title="1. 閒置狀態"
-          description="即時顯示由 useIdle 提供之狀態"
+          description="即時偵測使用者是否掛機"
         >
-          <div class="demo-area">
-            <div class="status-display">
-              <div
-                class="status-badge"
-                :class="isIdle ? 'status-idle' : 'status-active'"
+          <div
+            class="p-6 rounded-xl border flex items-center justify-between transition-all duration-300"
+            :class="
+              isIdle
+                ? 'bg-amber-500/10 border-amber-500/30'
+                : 'bg-emerald-500/10 border-emerald-500/30'
+            "
+          >
+            <div class="flex flex-col">
+              <span
+                class="text-xs uppercase tracking-wider font-bold mb-1"
+                :class="isIdle ? 'text-amber-400' : 'text-emerald-400'"
               >
-                <span class="status-dot"></span>
-                {{ isIdle ? '閒置中 (Idle)' : '活動中 (Active)' }}
-              </div>
+                目前狀態
+              </span>
+              <span class="text-2xl font-bold text-white">
+                {{ isIdle ? '閒置中 (IDLE)' : '活動中 (ACTIVE)' }}
+              </span>
             </div>
-            <div class="result-text mt-4">
-              <div class="flex justify-between">
-                <span class="text-gray-400">Idle Time:</span>
-                <span class="text-sky-300 font-mono">{{ (idleTime / 1000).toFixed(1) }}s</span>
-              </div>
+            <div
+              class="px-4 py-1 rounded text-sm font-medium"
+              :class="
+                isIdle ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
+              "
+            >
+              {{ isIdle ? '已暫離' : '使用中' }}
             </div>
+          </div>
+          <div class="mt-4 flex justify-between items-center px-2">
+            <span class="text-slate-400 text-sm">累積閒置時間</span>
+            <span class="text-2xl font-bold text-sky-400 font-mono">
+              {{ (idleTime / 1000).toFixed(1) }}
+              <span class="text-sm text-sky-400/70">秒</span>
+            </span>
           </div>
         </ShowcaseCard>
 
@@ -227,8 +282,9 @@ onWebSocketMessage(() => {
           description="記錄最後一次偵測到操作的時間"
         >
           <div class="demo-area">
-            <div class="result-text">
-              <div class="text-2xl text-center text-fuchsia-300 font-mono py-2">
+            <div class="text-center py-4">
+              <div class="text-sm text-slate-400 mb-1">Timestamp</div>
+              <div class="text-3xl font-bold text-fuchsia-300 font-mono tracking-wider">
                 {{ lastActive.toLocaleTimeString() }}
               </div>
             </div>
@@ -254,19 +310,19 @@ onWebSocketMessage(() => {
                 :disabled="isPaused"
                 @click="handlePause"
               >
-                暫停 (Pause)
+                {{ isPaused ? '已暫停' : '暫停偵測 (Pause)' }}
               </button>
               <button
                 class="glass-btn"
                 :disabled="!isPaused"
                 @click="handleResume"
               >
-                恢復 (Resume)
+                恢復偵測 (Resume)
               </button>
             </div>
             <div
               v-if="isPaused"
-              class="text-amber-400 text-sm text-center"
+              class="text-amber-400 text-sm text-center font-bold bg-amber-500/10 py-2 rounded border border-amber-500/30"
             >
               ⚠️ 偵測已暫停
             </div>
@@ -283,7 +339,7 @@ onWebSocketMessage(() => {
             <ShowcaseCodeBlock
               :code="JSON.stringify(idleStatus, null, 2)"
               language="json"
-              label="State Object"
+              label="狀態物件快照"
             />
           </div>
         </ShowcaseCard>
@@ -354,66 +410,6 @@ onWebSocketMessage(() => {
   font-size: 0.95rem;
   line-height: 1.7;
   margin: 0;
-}
-
-.warning-box {
-  background: rgba(234, 179, 8, 0.1);
-  border: 1px solid rgba(234, 179, 8, 0.3);
-  color: #fde047;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.status-display {
-  display: flex;
-  justify-content: center;
-  padding: 1rem 0;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 1rem;
-  border-radius: 99px;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.status-active {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
-}
-
-.status-idle {
-  background: rgba(234, 179, 8, 0.15);
-  color: #fde047;
-  border: 1px solid rgba(234, 179, 8, 0.3);
-  box-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
-}
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.85);
-  }
 }
 
 .glass-btn {

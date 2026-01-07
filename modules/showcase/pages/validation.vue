@@ -41,19 +41,53 @@ const phoneResult = computed(() => phone(formData.value.phone))
 const taiwanIdResult = computed(() => taiwanId(formData.value.taiwanId))
 const urlResult = computed(() => url(formData.value.website))
 
+// Validation Rules
+const rules = computed(() => ({
+  username: [required, minLength(3), maxLength(20)],
+  email: [required, email],
+  phone: [phone],
+  taiwanId: [taiwanId],
+  age: [number, range(18, 100)],
+  password: [required, minLength(6)],
+  confirmPassword: [required, sameAs(formData.value.password, '密碼不一致')],
+  website: [url]
+}))
+
 // Batch validation
 const handleValidateForm = () => {
-  const rules = {
-    username: [required, minLength(3), maxLength(20)],
-    email: [required, email],
-    phone: [phone],
-    age: [number, range(18, 100)],
-    password: [required, minLength(6)],
-    confirmPassword: [required, sameAs(formData.value.password, '密碼不一致')],
-    website: [url]
-  }
+  validationResults.value = validateFields(formData.value, rules.value)
+}
 
-  validationResults.value = validateFields(formData.value, rules)
+// List Validation (Per-Item)
+const listTags = ref(['Vue', 'Nuxt', ''])
+const listResults = ref<ValidationResult[]>([])
+
+const addTag = () => listTags.value.push('')
+
+const removeTag = (index: number) => {
+  listTags.value.splice(index, 1)
+  listResults.value.splice(index, 1)
+}
+
+const checkTag = (index: number) => {
+  const value = listTags.value[index]
+  // 单項獨立驗證
+  listResults.value[index] = validate(value, [required, minLength(2)])
+}
+
+// Blur validation
+const handleBlur = (field: string) => {
+  const fieldRules = rules.value[field as keyof typeof rules.value]
+  if (fieldRules) {
+    const value = formData.value[field as keyof typeof formData.value]
+    const result = validate(value, fieldRules)
+
+    // Update only the specific field result
+    validationResults.value = {
+      ...validationResults.value,
+      [field]: result
+    }
+  }
 }
 
 const isFormValid = computed(() => {
@@ -72,6 +106,80 @@ definePageMeta({
     title="表單驗證系統 (Validation System)"
     description="完整的表單驗證模組，提供常用驗證規則與自訂驗證功能。核心特色包含台灣本地化驗證、批次驗證、自訂規則。"
   >
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="基礎用法">
+      <ShowcaseCard
+        title="核心功能"
+        description="表單驗證系統的核心特色"
+        full-width
+      >
+        <div class="demo-area">
+          <p
+            class="method-desc"
+            style="margin-bottom: 1.5rem"
+          >
+            <strong>可用方法：</strong>
+          </p>
+          <ShowcaseCodeBlock
+            code="// 來源: composables/useValidation.ts (Nuxt 自動引入)
+const {
+  // 基本驗證
+  required,     // 必填
+  email,        // Email 格式
+  phone,        // 手機號碼 (台灣)
+  url,          // URL 格式
+  taiwanId,     // 身分證字號 (台灣)
+  number,       // 數字
+  integer,      // 整數
+  positive,     // 正數
+
+  // 長度與範圍
+  minLength,    // 最小長度
+  maxLength,    // 最大長度
+  range,        // 數值範圍
+
+  // 進階
+  pattern,      // 正則表達式
+  sameAs,       // 相同值 (確認密碼)
+
+  // 批次處理
+  validate,       // 單一值多規則驗證
+  validateFields, // 多欄位驗證
+  validateArray,  // 陣列驗證 (詳細)
+  validateList,   // 列表驗證 (簡易)
+  isAllValid      // 檢查結果
+} = useValidation()"
+            label="useValidation() 提供的方法"
+          />
+
+          <p
+            class="method-desc"
+            style="margin-top: 1.5rem; margin-bottom: 1rem"
+          >
+            <strong>核心特色：</strong>
+          </p>
+          <ul class="benefit-list">
+            <li>
+              <strong>台灣本地化:</strong>
+              內建台灣手機號碼與身分證字號驗證
+            </li>
+            <li>
+              <strong>高階函數:</strong>
+              長度與範圍驗證採用高階函數設計，使用更彈性
+            </li>
+            <li>
+              <strong>批次驗證:</strong>
+              輕鬆處理整份表單的驗證邏輯
+            </li>
+            <li>
+              <strong>TypeScript:</strong>
+              完整的型別定義，開發更有保障
+            </li>
+          </ul>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
     <!-- Interactive Form Demo -->
     <ShowcaseSection
       title="互動測試"
@@ -87,38 +195,58 @@ definePageMeta({
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <!-- Username -->
               <div class="flex flex-col gap-1">
-                <label class="block text-slate-300 mb-1 text-sm font-bold">使用者名稱 *</label>
+                <label class="block text-slate-300 mb-1 text-sm font-bold">
+                  使用者名稱
+                  <span class="text-red-400">*</span>
+                </label>
                 <input
                   v-model="formData.username"
                   type="text"
                   class="glass-input w-full"
+                  :class="{
+                    error: validationResults.username && !validationResults.username.valid
+                  }"
                   placeholder="3-20 個字元"
                 />
-                <span
+                <div
                   v-if="validationResults.username && !validationResults.username.valid"
-                  class="text-red-400 text-xs mt-1 block"
+                  class="mt-2"
                 >
-                  {{ validationResults.username.message }}
-                </span>
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.username, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
               </div>
 
               <!-- Email -->
               <div class="flex flex-col gap-1">
-                <label class="block text-slate-300 mb-1 text-sm font-bold">Email *</label>
+                <label class="block text-slate-300 mb-1 text-sm font-bold">
+                  Email
+                  <span class="text-red-400">*</span>
+                </label>
                 <input
                   v-model="formData.email"
                   type="email"
                   class="glass-input w-full"
+                  :class="{ error: validationResults.email && !validationResults.email.valid }"
                   placeholder="example@email.com"
+                  @blur="handleBlur('email')"
                 />
                 <div class="flex justify-between items-start mt-1">
-                  <span
+                  <div
                     v-if="validationResults.email && !validationResults.email.valid"
-                    class="text-red-400 text-xs block"
+                    class="w-full mr-2"
                   >
-                    {{ validationResults.email.message }}
-                  </span>
+                    <ShowcaseCodeBlock
+                      :code="JSON.stringify(validationResults.email, null, 2)"
+                      language="json"
+                      label="Validation Result"
+                    />
+                  </div>
                   <span
+                    v-else
                     class="text-xs ml-auto"
                     :class="emailResult.valid ? 'text-green-400' : 'text-slate-500'"
                   >
@@ -134,8 +262,20 @@ definePageMeta({
                   v-model="formData.phone"
                   type="tel"
                   class="glass-input w-full"
+                  :class="{ error: validationResults.phone && !validationResults.phone.valid }"
                   placeholder="0912-345678"
+                  @blur="handleBlur('phone')"
                 />
+                <div
+                  v-if="validationResults.phone && !validationResults.phone.valid"
+                  class="mt-2"
+                >
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.phone, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
                 <span
                   class="text-xs block mt-1 text-right"
                   :class="phoneResult.valid ? 'text-green-400' : 'text-slate-500'"
@@ -151,8 +291,22 @@ definePageMeta({
                   v-model="formData.taiwanId"
                   type="text"
                   class="glass-input w-full"
+                  :class="{
+                    error: validationResults.taiwanId && !validationResults.taiwanId.valid
+                  }"
                   placeholder="A123456789"
+                  @blur="handleBlur('taiwanId')"
                 />
+                <div
+                  v-if="validationResults.taiwanId && !validationResults.taiwanId.valid"
+                  class="mt-2"
+                >
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.taiwanId, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
                 <span
                   class="text-xs block mt-1 text-right"
                   :class="taiwanIdResult.valid ? 'text-green-400' : 'text-slate-500'"
@@ -169,14 +323,20 @@ definePageMeta({
                   v-model="formData.age"
                   type="number"
                   class="glass-input w-full"
+                  :class="{ error: validationResults.age && !validationResults.age.valid }"
                   placeholder="18-100"
+                  @blur="handleBlur('age')"
                 />
-                <span
+                <div
                   v-if="validationResults.age && !validationResults.age.valid"
-                  class="text-red-400 text-xs mt-1 block"
+                  class="mt-2"
                 >
-                  {{ validationResults.age.message }}
-                </span>
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.age, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
               </div>
 
               <!-- Website -->
@@ -186,8 +346,20 @@ definePageMeta({
                   v-model="formData.website"
                   type="url"
                   class="glass-input w-full"
+                  :class="{ error: validationResults.website && !validationResults.website.valid }"
                   placeholder="https://example.com"
+                  @blur="handleBlur('website')"
                 />
+                <div
+                  v-if="validationResults.website && !validationResults.website.valid"
+                  class="mt-2"
+                >
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.website, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
                 <span
                   class="text-xs block mt-1 text-right"
                   :class="urlResult.valid ? 'text-green-400' : 'text-slate-500'"
@@ -198,37 +370,60 @@ definePageMeta({
 
               <!-- Password -->
               <div class="flex flex-col gap-1">
-                <label class="block text-slate-300 mb-1 text-sm font-bold">密碼 *</label>
+                <label class="block text-slate-300 mb-1 text-sm font-bold">
+                  密碼
+                  <span class="text-red-400">*</span>
+                </label>
                 <input
                   v-model="formData.password"
                   type="password"
                   class="glass-input w-full"
+                  :class="{
+                    error: validationResults.password && !validationResults.password.valid
+                  }"
                   placeholder="至少 6 個字元"
+                  @blur="handleBlur('password')"
                 />
-                <span
+                <div
                   v-if="validationResults.password && !validationResults.password.valid"
-                  class="text-red-400 text-xs mt-1 block"
+                  class="mt-2"
                 >
-                  {{ validationResults.password.message }}
-                </span>
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.password, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
               </div>
 
               <!-- Confirm Password -->
               <div class="flex flex-col gap-1">
-                <label class="block text-slate-300 mb-1 text-sm font-bold">確認密碼 *</label>
+                <label class="block text-slate-300 mb-1 text-sm font-bold">
+                  確認密碼
+                  <span class="text-red-400">*</span>
+                </label>
                 <input
                   v-model="formData.confirmPassword"
                   type="password"
                   class="glass-input w-full"
+                  :class="{
+                    error:
+                      validationResults.confirmPassword && !validationResults.confirmPassword.valid
+                  }"
+                  @blur="handleBlur('confirmPassword')"
                 />
-                <span
+                <div
                   v-if="
                     validationResults.confirmPassword && !validationResults.confirmPassword.valid
                   "
-                  class="text-red-400 text-xs mt-1 block"
+                  class="mt-2"
                 >
-                  {{ validationResults.confirmPassword.message }}
-                </span>
+                  <ShowcaseCodeBlock
+                    :code="JSON.stringify(validationResults.confirmPassword, null, 2)"
+                    language="json"
+                    label="Validation Result"
+                  />
+                </div>
               </div>
             </div>
 
@@ -264,93 +459,189 @@ definePageMeta({
       </div>
     </ShowcaseSection>
 
-    <!-- API Methods -->
+    <!-- API Reference -->
     <ShowcaseSection
-      title="Validation Rules (驗證規則)"
-      icon="📋"
+      title="API 參考"
+      icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="Basic Validation"
-          description="基本驗證規則範例"
-        >
-          <ShowcaseCodeBlock
-            code="// 必填
-required(value, '此欄位為必填')
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useValidation() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供常用的表單驗證規則，支援單一欄位與批次驗證。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <!-- Basic Rules -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  required(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  必填欄位驗證 (不允許 null, undefined, 空字串)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  email(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  Email 格式驗證。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  url(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  URL 網址格式驗證。
+                </td>
+              </tr>
 
-// Email
-email(value, 'Email 格式不正確')
+              <!-- Number Rules -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  number(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  數字格式驗證 (允許整數與浮點數)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  integer(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  整數格式驗證。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  positive(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  正數驗證 (> 0)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  range(min, max)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  數值範圍驗證 [min, max]。
+                </td>
+              </tr>
 
-// 手機號碼（台灣）
-phone(value, '手機號碼格式不正確')
+              <!-- String Rules -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  minLength(len)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  最小長度驗證。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  maxLength(len)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  最大長度驗證。
+                </td>
+              </tr>
 
-// URL
-url(value, 'URL 格式不正確')
+              <!-- Localized Rules -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                  phone(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  台灣手機號碼格式驗證 (09開頭)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                  taiwanId(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  台灣身分證字號驗證 (檢查碼)。
+                </td>
+              </tr>
 
-// 身分證字號（台灣）
-taiwanId(value, '身分證字號格式不正確')
-
-// 數字
-number(value, '必須為數字')
-
-// 整數
-integer(value, '必須為整數')
-
-// 正數
-positive(value, '必須為正數')"
-            label="Example Code"
-          />
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="Length & Range"
-          description="長度與範圍驗證"
-        >
-          <ShowcaseCodeBlock
-            code="// 最小長度
-minLength(6)(value)  // 至少 6 個字元
-
-// 最大長度
-maxLength(20)(value)  // 最多 20 個字元
-
-// 數字範圍
-range(18, 100)(value)  // 18 到 100 之間"
-            label="Example Code"
-          />
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="Advanced"
-          description="進階驗證與批次處理"
-          full-width
-        >
-          <ShowcaseCodeBlock
-            code="// 正則表達式
-pattern(/^[A-Z0-9]+$/)(value)
-
-// 相同值驗證（確認密碼）
-sameAs(password)(confirmPassword)
-
-// 批次驗證
-const result = validate(value, [
-  required,
-  minLength(6),
-  maxLength(20)
-])
-
-// 驗證多個欄位
-const results = validateFields(formData, {
-  username: [required, minLength(3)],
-  email: [required, email],
-  age: [number, range(18, 100)]
-})
-
-// 檢查是否全部有效
-const allValid = isAllValid(results)"
-            label="Example Code"
-          />
-        </ShowcaseCard>
-      </div>
+              <!-- Advanced Rules -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  pattern(regex, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  自訂正則表達式驗證。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  sameAs(val, msg?)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  欄位值一致性驗證 (如：確認密碼)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  validate(val, rules)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  執行單一欄位的多重驗證規則，回傳驗證結果。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  validateFields(schema)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  批次驗證整個表單物件，回傳所有錯誤訊息。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>
@@ -371,6 +662,11 @@ const allValid = isAllValid(results)"
   border-color: #38bdf8;
   background: rgba(15, 23, 42, 0.8);
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.glass-input.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #ef4444;
 }
 
 .glass-btn {
@@ -399,5 +695,68 @@ const allValid = isAllValid(results)"
 .glass-btn.primary:hover {
   background: rgba(56, 189, 248, 0.3);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+/* Benefit List */
+.benefit-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.benefit-list li {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.benefit-list li:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.benefit-list li:hover::before {
+  opacity: 1;
+}
+
+.benefit-list li strong {
+  color: #38bdf8;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Method Description */
+.method-desc {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
 }
 </style>

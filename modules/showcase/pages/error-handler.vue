@@ -98,66 +98,74 @@ definePageMeta({
     description="完整的錯誤處理模組，提供錯誤捕捉、分類、記錄和重試機制。"
   >
     <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
+    <!-- 基礎用法 -->
+    <ShowcaseSection title="核心概念 (Core Concepts)">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <!-- Capture -->
+        <div class="space-y-2">
+          <div class="border-l-4 border-orange-500 pl-4">
+            <h3 class="text-xl font-bold text-orange-400">1. 隱形忍者 (自動捕捉)</h3>
+            <p class="text-xs text-orange-300/70 uppercase tracking-wider font-bold mb-2">
+              Auto Capture
+            </p>
+            <p class="text-slate-200 text-sm font-medium leading-relaxed">
+              像忍者一樣躲在暗處，只要程式一發生錯誤
+              (Crash)，馬上把它抓起來紀錄，不會讓讓使用者看到一堆亂碼。
+            </p>
+          </div>
+        </div>
+
+        <!-- Retry -->
+        <div class="space-y-2">
+          <div class="border-l-4 border-sky-500 pl-4">
+            <h3 class="text-xl font-bold text-sky-400">2. 不死鳥 (自動重試)</h3>
+            <p class="text-xs text-sky-300/70 uppercase tracking-wider font-bold mb-2">
+              Auto Retry
+            </p>
+            <p class="text-slate-200 text-sm font-medium leading-relaxed">
+              API 失敗了？沒關係！它會自動休息一下再試一次 (Exponential
+              Backoff)，直到成功為止，網路不穩也不怕。
+            </p>
+          </div>
+        </div>
+
+        <!-- Notify -->
+        <div class="space-y-2">
+          <div class="border-l-4 border-pink-500 pl-4">
+            <h3 class="text-xl font-bold text-pink-400">3. 廣播系統 (統一通知)</h3>
+            <p class="text-xs text-pink-300/70 uppercase tracking-wider font-bold mb-2">
+              Notification
+            </p>
+            <p class="text-slate-200 text-sm font-medium leading-relaxed">
+              錯誤發生時，與其讓介面壞掉，不如優雅地彈出一個「廣播」(Toast)，告訴使用者「出錯了，但別擔心」。
+            </p>
+          </div>
+        </div>
+
+        <!-- Log -->
+        <div class="space-y-2">
+          <div class="border-l-4 border-emerald-500 pl-4">
+            <h3 class="text-xl font-bold text-emerald-400">4. 黑盒子 (完整紀錄)</h3>
+            <p class="text-xs text-emerald-300/70 uppercase tracking-wider font-bold mb-2">
+              Error Log
+            </p>
+            <p class="text-slate-200 text-sm font-medium leading-relaxed">
+              就像飛機的黑盒子，詳細記錄錯誤發生的時間、地點、原因，讓開發者事後可以像偵探一樣還原現場。
+            </p>
+          </div>
+        </div>
+      </div>
+
       <ShowcaseCard
-        title="核心功能"
-        description="錯誤處理系統的核心特色"
+        title="Composable Usage"
         full-width
       >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
-          >
-            <strong>可用方法：</strong>
-          </p>
+        <template #footer>
           <ShowcaseCodeBlock
-            code="const { captureError, showError, retry, errors, clearErrors } = useErrorHandler()
-
-// 1. 捕捉錯誤
-try {
-  await apiCall()
-} catch (e) {
-  captureError(e, { source: 'UserAction' })
-}
-
-// 2. 顯示錯誤通知
-showError('發生未知錯誤', 'error')
-
-// 3. 自動重試
-await retry(() => api.fetchData(), { maxRetries: 3, delay: 1000 })
-
-// 4. 管理歷史
-const allErrors = errors.value
-clearErrors()"
-            label="useErrorHandler() 功能總覽"
+            code="const { captureError, showError, retry, errors, clearErrors } = useErrorHandler()"
+            label="Initialization"
           />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>自動捕捉:</strong>
-              整合 Vue 全局錯誤處理，自動捕捉未處理的例外
-            </li>
-            <li>
-              <strong>智能重試:</strong>
-              內建 Exponential Backoff 重試機制，提高 API 穩定性
-            </li>
-            <li>
-              <strong>統一通知:</strong>
-              整合 Notification 系統，提供一致的錯誤提示 UI
-            </li>
-            <li>
-              <strong>完整記錄:</strong>
-              詳細記錄錯誤堆疊、發生時間與來源，便於除錯
-            </li>
-          </ul>
-        </div>
+        </template>
       </ShowcaseCard>
     </ShowcaseSection>
 
@@ -166,102 +174,113 @@ clearErrors()"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. Error Capture"
-          description="錯誤捕捉方法"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>captureError(error, context)</strong>
-              <br />
-              手動捕捉錯誤並記錄。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="captureError(new Error('Validation Failed'), {
-  component: 'LoginForm',
-  timestamp: new Date()
-})"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="2. Retry Mechanism"
-          description="自動重試機制"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>retry(fn, options)</strong>
-              <br />
-              執行函式並在失敗時自動重試。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="await retry(
-  async () => await fetchUser(), 
-  { 
-    maxRetries: 3, 
-    delay: 500,
-    backoff: true 
-  }
-)"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="3. UI Feedback"
-          description="錯誤提示"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>showError(message, type)</strong>
-              <br />
-              顯示錯誤通知 Toast。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="showError('連線失敗，請稍後再試')
-// 或指定類型
-showError('警告：資料未儲存', 'warning')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useErrorHandler() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供錯誤捕捉、重試機制與統一通知介面。自動整合全域錯誤處理器 (Global Error Handler)。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  captureError(error, ctx)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  手動捕捉錯誤，並記錄到錯誤系統 (Log + Notify)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  retry(fn, options)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  執行自動重試 (Exponential Backoff)。options: { maxRetries, delay }。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  showError(msg, type)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  顯示錯誤通知 (Toast)。type: 'error' | 'warning'。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                  errors
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Array&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  所有已捕捉的錯誤列表 (Read-only)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                  clearErrors()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  清除所有錯誤紀錄。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="互動測試"
+      title="實戰演練 (Interactive Test)"
       icon="🎮"
     >
       <div class="component-grid">
         <!-- 1. Capture -->
         <ShowcaseCard
-          title="1. 錯誤捕捉"
-          description="模擬並記錄錯誤。"
+          title="1. 錯誤捕捉測試"
+          description="假裝程式壞掉，看系統怎麼抓它。"
         >
           <div class="demo-area">
             <IInput
               v-model="errorMessage"
-              label="錯誤訊息"
+              label="模擬錯誤訊息"
               class="mb-4"
             />
             <div class="flex gap-2">
-              <IButton @click="handleCaptureError">捕捉錯誤</IButton>
+              <IButton @click="handleCaptureError">手動觸發錯誤</IButton>
               <IButton
                 variant="secondary"
                 @click="handleShowError"
               >
-                顯示通知
+                僅顯示通知
               </IButton>
             </div>
           </div>
@@ -269,21 +288,21 @@ showError('警告：資料未儲存', 'warning')"
 
         <!-- 2. Retry -->
         <ShowcaseCard
-          title="2. 重試機制"
-          description="自動重試失敗的操作。"
+          title="2. 不死鳥測試 (Retry)"
+          description="模擬 API 失敗兩次後，第三次成功。"
         >
           <div class="demo-area">
             <div class="flex gap-4 mb-4">
               <IInput
                 v-model.number="retryCount"
                 type="number"
-                label="重試次數"
+                label="最多試幾次"
                 style="width: 100px"
               />
               <IInput
                 v-model.number="retryDelay"
                 type="number"
-                label="延遲 (ms)"
+                label="每次等多久 (ms)"
                 style="width: 120px"
               />
             </div>
@@ -293,14 +312,14 @@ showError('警告：資料未儲存', 'warning')"
                 :disabled="isRetrying"
                 @click="handleRetrySuccess"
               >
-                {{ isRetrying ? '重試中...' : '測試重試 (成功)' }}
+                {{ isRetrying ? '努力嘗試中...' : '測試自動重試 (會成功)' }}
               </IButton>
               <IButton
                 variant="danger"
                 :disabled="isRetrying"
                 @click="handleRetryFail"
               >
-                {{ isRetrying ? '重試中...' : '測試重試 (失敗)' }}
+                {{ isRetrying ? '努力嘗試中...' : '測試永遠失敗' }}
               </IButton>
             </div>
 
@@ -314,21 +333,21 @@ showError('警告：資料未儲存', 'warning')"
           <template #footer>
             <ShowcaseCodeBlock
               code="await retry(() => api.call(), { maxRetries: 3 })"
-              label="Retry Code"
+              label="Code"
             />
           </template>
         </ShowcaseCard>
 
         <!-- 3. History -->
         <ShowcaseCard
-          title="3. 錯誤歷史"
-          description="查看與管理最近的錯誤。"
+          title="3. 黑盒子紀錄"
+          description="所有抓到的錯誤都在這。"
           full-width
         >
           <div class="demo-area">
             <div class="flex justify-between items-center mb-4">
               <span class="text-slate-400 text-sm">
-                Total Errors:
+                目前紀錄筆數:
                 <strong class="text-sky-400">{{ errors.length }}</strong>
               </span>
               <IButton
@@ -336,14 +355,14 @@ showError('警告：資料未儲存', 'warning')"
                 size="small"
                 @click="clearErrors"
               >
-                清除歷史
+                銷毀紀錄
               </IButton>
             </div>
 
             <ShowcaseCodeBlock
               :code="formatData(recentErrors)"
               language="json"
-              label="最近 5 筆錯誤"
+              label="最近發生的 5 個錯誤"
             />
           </div>
         </ShowcaseCard>

@@ -20,27 +20,27 @@ const alertResult = ref('')
 // const showLocalModal = ref(false) // Removed
 
 const handleOpenBasic = async () => {
-  const result = await open({
+  const isResult = await open({
     title: '基本彈窗',
     content: '這是一個基本的彈窗範例'
   })
-  confirmResult.value = `使用者選擇: ${result ? '確認' : '取消'}`
+  confirmResult.value = `使用者選擇: ${isResult ? '確認' : '取消'}`
 }
 
 const handleOpenCustom = async () => {
-  const result = await open({
+  const isResult = await open({
     title: customTitle.value,
     content: customContent.value,
     confirmText: '好的',
     cancelText: '不要'
   })
-  confirmResult.value = `使用者選擇: ${result ? '確認' : '取消'}`
+  confirmResult.value = `使用者選擇: ${isResult ? '確認' : '取消'}`
 }
 
 const handleOpenComponent = async () => {
   console.log('Opening Component Modal')
   // 使用 markRaw 避免 Vue 將組件本身變為響應式 (效能優化)
-  const result = await open({
+  const isResult = await open({
     title: '元件插入測試',
     content: '下方是一個動態插入的 EmailInput 元件：',
     component: markRaw(EmailInput),
@@ -49,7 +49,7 @@ const handleOpenComponent = async () => {
       corporateOnly: true
     }
   })
-  confirmResult.value = `含元件的彈窗結果: ${result ? '確認' : '取消'}`
+  confirmResult.value = `含元件的彈窗結果: ${isResult ? '確認' : '取消'}`
 }
 
 // 局部彈窗狀態 (使用 Ref)
@@ -164,11 +164,11 @@ const handleEditPattern2 = async (item: any) => {
 }
 
 const handleConfirm = async () => {
-  const result = await confirm({
+  const isResult = await confirm({
     title: '確認操作',
     content: '您確定要執行此操作嗎？'
   })
-  confirmResult.value = `確認結果: ${result ? '已確認' : '已取消'}`
+  confirmResult.value = `確認結果: ${isResult ? '已確認' : '已取消'}`
 }
 
 const handleAlert = async () => {
@@ -1172,6 +1172,103 @@ console.log(modals.value)  // [{ id, config, isVisible }]"
           </template>
         </ShowcaseCard>
       </div>
+    </ShowcaseSection>
+    <ShowcaseSection
+      title="API 參考"
+      icon="📝"
+    >
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useModal() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供統一的彈窗管理介面，支援 Promise 回傳與多層堆疊。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  open(config)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  開啟彈窗 (回傳 Promise)。Config 包含 title, content, component 等。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  confirm(config)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  開啟確認對話框 (回傳 Promise&lt;boolean&gt;)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  alert(config)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  開啟警告對話框 (回傳 Promise&lt;void&gt;)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                  closeAll()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  強制關閉所有彈窗。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  modals
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Array&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前所有彈窗的狀態列表。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  hasModal
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Boolean&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  是否有任何彈窗開啟中。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

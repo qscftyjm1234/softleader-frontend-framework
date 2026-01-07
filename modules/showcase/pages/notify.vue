@@ -145,115 +145,84 @@ success('操作成功！')"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <!-- success() -->
-        <ShowcaseCard
-          title="1. success()"
-          description="成功通知"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              顯示綠色的成功通知訊息。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { success } = useNotify()
-
-success('資料儲存成功！')
-success('檔案上傳完成')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- error() -->
-        <ShowcaseCard
-          title="2. error()"
-          description="錯誤通知"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              顯示紅色的錯誤通知訊息。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { error } = useNotify()
-
-error('無法連線至伺服器')
-error('檔案格式不正確')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- warning() -->
-        <ShowcaseCard
-          title="3. warning()"
-          description="警告通知"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              顯示黃色的警告通知訊息。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { warning } = useNotify()
-
-warning('您的連線不穩定')
-warning('檔案大小超過建議值')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- info() -->
-        <ShowcaseCard
-          title="4. info()"
-          description="資訊通知"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              顯示藍色的資訊通知訊息。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { info } = useNotify()
-
-info('您有一則新訊息')
-info('系統將於 5 分鐘後維護')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- 相依模組 -->
-        <ShowcaseCard
-          title="相依模組"
-          description="通知系統的依賴關係"
-          full-width
-        >
-          <div class="demo-area">
-            <ul class="benefit-list">
-              <li>
-                <strong>GlobalSnackbar:</strong>
-                全域 Snackbar 元件負責顯示通知
-              </li>
-              <li>
-                <strong>Pinia Store:</strong>
-                使用 store 管理通知佇列
-              </li>
-            </ul>
-          </div>
-        </ShowcaseCard>
-      </div>
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useNotify() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供全域通知功能，支援四種狀態類型，呼叫後自動排入佇列顯示。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  success(msg)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  顯示
+                  <span class="text-emerald-400">綠色</span>
+                  的成功通知訊息 (3秒後自動消失)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  error(msg)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  顯示
+                  <span class="text-rose-400">紅色</span>
+                  的錯誤通知訊息。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  warning(msg)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  顯示
+                  <span class="text-amber-400">黃色</span>
+                  的警告通知訊息。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  info(msg)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  顯示
+                  <span class="text-sky-400">藍色</span>
+                  的資訊通知訊息。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

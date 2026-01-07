@@ -282,77 +282,80 @@ await useApi('/api/submit', {
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. start()"
-          description="開始 Loading"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              開始全域 Loading，計數器 +1。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const loading = useLoading()
-
-loading.start()
-// Loading 遮罩顯示"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="2. finish()"
-          description="結束 Loading"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              結束 Loading，計數器 -1。當計數器歸零時，遮罩消失。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const loading = useLoading()
-
-loading.start()
-// ... 執行操作
-loading.finish()
-// 計數器 -1"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="使用情境"
-          description="實際應用範例"
-          full-width
-        >
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const loading = useLoading()
-
-// 情境：同時發送 3 個 API 請求
-async function loadData() {
-  loading.start()  // 計數器: 1
-  loading.start()  // 計數器: 2
-  loading.start()  // 計數器: 3
-  
-  await Promise.all([
-    api1().then(() => loading.finish()),  // 計數器: 2
-    api2().then(() => loading.finish()),  // 計數器: 1
-    api3().then(() => loading.finish())   // 計數器: 0 → 遮罩消失
-  ])
-}"
-              label="多重請求範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useLoading() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供全域 Loading 控制，採用計數器機制 (Stack) 避免閃爍。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  start()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  開始 Loading，計數器 +1。全域遮罩顯示。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  finish()
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  結束 Loading，計數器 -1。當計數器歸零時，遮罩消失。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  isLoading
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Boolean&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前是否處於 Loading 狀態。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  count
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Ref&lt;Number&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  目前 Loading 堆疊數量 (Stack Size)。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
     <div class="monitor-widget">

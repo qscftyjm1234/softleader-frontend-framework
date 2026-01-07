@@ -30,10 +30,10 @@ export function useValidation() {
    * @returns 驗證結果
    */
   const required = (value: any, message: string = '此欄位為必填'): ValidationResult => {
-    const valid = value !== null && value !== undefined && value !== ''
+    const isValid = value !== null && value !== undefined && value !== ''
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -47,11 +47,11 @@ export function useValidation() {
     if (!value) return { valid: true }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const valid = emailRegex.test(value)
+    const isValid = emailRegex.test(value)
 
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -66,11 +66,11 @@ export function useValidation() {
 
     // 台灣手機號碼格式：09xx-xxxxxx 或 09xxxxxxxx
     const phoneRegex = /^09\d{2}-?\d{6}$/
-    const valid = phoneRegex.test(value.replace(/\s/g, ''))
+    const isValid = phoneRegex.test(value.replace(/\s/g, ''))
 
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -148,11 +148,11 @@ export function useValidation() {
     const digits = [d1, d2, ...value.slice(1).split('').map(Number)]
 
     const sum = digits.reduce((acc, digit, index) => acc + digit * weights[index], 0)
-    const valid = sum % 10 === 0
+    const isValid = sum % 10 === 0
 
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -166,10 +166,10 @@ export function useValidation() {
     return (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
-      const valid = value.length >= min
+      const isValid = value.length >= min
       return {
-        valid,
-        message: valid ? undefined : message || `長度不得少於 ${min} 個字元`
+        valid: isValid,
+        message: isValid ? undefined : message || `長度不得少於 ${min} 個字元`
       }
     }
   }
@@ -184,10 +184,10 @@ export function useValidation() {
     return (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
-      const valid = value.length <= max
+      const isValid = value.length <= max
       return {
-        valid,
-        message: valid ? undefined : message || `長度不得超過 ${max} 個字元`
+        valid: isValid,
+        message: isValid ? undefined : message || `長度不得超過 ${max} 個字元`
       }
     }
   }
@@ -203,10 +203,10 @@ export function useValidation() {
     return (value: number): ValidationResult => {
       if (value === null || value === undefined) return { valid: true }
 
-      const valid = value >= min && value <= max
+      const isValid = value >= min && value <= max
       return {
-        valid,
-        message: valid ? undefined : message || `數值必須介於 ${min} 到 ${max} 之間`
+        valid: isValid,
+        message: isValid ? undefined : message || `數值必須介於 ${min} 到 ${max} 之間`
       }
     }
   }
@@ -220,10 +220,10 @@ export function useValidation() {
   const number = (value: any, message: string = '必須為數字'): ValidationResult => {
     if (value === null || value === undefined || value === '') return { valid: true }
 
-    const valid = !isNaN(Number(value))
+    const isValid = !isNaN(Number(value))
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -236,10 +236,10 @@ export function useValidation() {
   const integer = (value: any, message: string = '必須為整數'): ValidationResult => {
     if (value === null || value === undefined || value === '') return { valid: true }
 
-    const valid = Number.isInteger(Number(value))
+    const isValid = Number.isInteger(Number(value))
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -252,10 +252,10 @@ export function useValidation() {
   const positive = (value: number, message: string = '必須為正數'): ValidationResult => {
     if (value === null || value === undefined) return { valid: true }
 
-    const valid = value > 0
+    const isValid = value > 0
     return {
-      valid,
-      message: valid ? undefined : message
+      valid: isValid,
+      message: isValid ? undefined : message
     }
   }
 
@@ -269,10 +269,10 @@ export function useValidation() {
     return (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
-      const valid = regex.test(value)
+      const isValid = regex.test(value)
       return {
-        valid,
-        message: valid ? undefined : message
+        valid: isValid,
+        message: isValid ? undefined : message
       }
     }
   }
@@ -285,10 +285,10 @@ export function useValidation() {
    */
   const sameAs = (targetValue: any, message: string = '兩次輸入不一致') => {
     return (value: any): ValidationResult => {
-      const valid = value === targetValue
+      const isValid = value === targetValue
       return {
-        valid,
-        message: valid ? undefined : message
+        valid: isValid,
+        message: isValid ? undefined : message
       }
     }
   }
@@ -352,6 +352,36 @@ export function useValidation() {
     return Object.values(results).every((result) => result.valid)
   }
 
+  /**
+   * 陣列驗證
+   * @param values - 要驗證的陣列
+   * @param rules - 驗證規則
+   * @returns 驗證結果陣列
+   */
+  const validateArray = (values: any[], rules: ValidationRule[]): ValidationResult[] => {
+    return values.map((value) => validate(value, rules))
+  }
+
+  /**
+   * 陣列驗證 (簡易版)
+   * 驗證陣列中的所有項目，回傳單一結果。只要有一個失敗即回傳失敗。
+   * @param values - 要驗證的陣列
+   * @param rules - 驗證規則
+   * @returns 單一驗證結果 (含錯誤索引資訊)
+   */
+  const validateList = (values: any[], rules: ValidationRule[]): ValidationResult => {
+    for (let i = 0; i < values.length; i++) {
+      const result = validate(values[i], rules)
+      if (!result.valid) {
+        return {
+          valid: false,
+          message: `第 ${i + 1} 項錯誤: ${result.message}`
+        }
+      }
+    }
+    return { valid: true }
+  }
+
   return {
     // 基本驗證
     required,
@@ -377,6 +407,8 @@ export function useValidation() {
     // 批次驗證
     validate,
     validateFields,
+    validateArray, // 詳細版 (回傳陣列)
+    validateList, // 簡易版 (回傳單一結果)
     isAllValid
   }
 }

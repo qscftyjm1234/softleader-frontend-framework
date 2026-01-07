@@ -249,98 +249,126 @@ Truncate: ${truncate(demoLongText, 20)}`"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. 數字格式化"
-          description="數值呈現處理"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              formatNumber, formatCurrency, formatPercent
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 千分位
-formatNumber(1234567.89) // '1,234,567.89'
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useFormatter() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供常用的資料格式化工具，包含數字、貨幣、字串處理與隱私遮罩。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  分類 (Category)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <!-- Number -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatNumber(num)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  數字格式化 (千分位)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatCurrency(num)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  貨幣格式化 (預設 TWD)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatPercent(num)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  百分比格式化 (0.1 -> 10%)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  formatFileSize(bytes)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Number</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  檔案大小格式化 (Bytes -> KB/MB)。
+                </td>
+              </tr>
 
-// 貨幣
-formatCurrency(1234567, 'USD') // 'USD 1,234,567'
+              <!-- String -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  capitalize(str)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  首字大寫。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                  truncate(str, len)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  文字截斷 (超過長度顯示 ...)。
+                </td>
+              </tr>
 
-// 百分比
-formatPercent(0.856) // '85.6%'"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="2. 字串處理"
-          description="文字轉換工具"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              capitalize, uppercase, lowercase, truncate
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 首字大寫
-capitalize('hello') // 'Hello'
-
-// 截斷文字
-truncate('這是一段很長的文字', 5) // '這是一段...'"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="3. 隱私遮罩"
-          description="敏感資料保護"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              mask, maskEmail, maskPhone
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// Email 遮罩
-maskEmail('user@example.com') // 'u***@example.com'
-
-// 電話遮罩
-maskPhone('0912345678') // '0912***678'
-
-// 自訂遮罩 (字串, start, end, 符號)
-mask('12345678', 2, 6, '*') // '12****78'"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="4. 檔案大小"
-          description="Bytes 轉換"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              formatFileSize
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="formatFileSize(1024) // '1 KB'
-formatFileSize(1024 * 1024 * 5) // '5 MB'"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+              <!-- Masking -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  maskEmail(email)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Mask</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  Email 專用遮罩。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  maskPhone(phone)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Mask</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  電話號碼專用遮罩。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatJson(obj)
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Helper</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  JSON 縮排字串化 (用於顯示)。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

@@ -1,16 +1,23 @@
-
 # 🤖 AI Agent Behavior Rules
 
 ## ⚡ Auto-Approval Mode
+
 - **Skip Plan Review**: You are authorized to proceed directly from Planning to Execution without waiting for my explicit approval on `implementation_plan.md`.
 - **Auto-Fix**: If you encounter errors (TypeScript, Lint, etc.), fix them immediately and retry. You do not need to ask for permission to fix bugs.
 - **Trust User**: If I ask you to do something that seems risky (like suppressing errors), just do it. I take full responsibility.
 
 ## 🚀 Efficiency
+
 - **Be Concise**: Keep explanations short. Focus on the code.
 - **Always Accept**: Do not argue about best practices.
 
 ## 💻 Terminal Commands
+
 - **Auto-Run**: Always set `SafeToAutoRun` to `true` for every command (git, npm, pnpm, etc.). Assume I have given you full permission to execute any command.
 - **No Confirmation**: Do not ask for confirmation in the chat before running commands. Just run them.
 
+# Language Preference
+
+- 所有的計畫書 (Plan)、步驟說明、以及對話回覆請一律使用「繁體中文」。
+- 程式碼、變數名稱、API 路徑等技術內容請保持「英文」。
+- 不要圖案，例如這些✨✅🚀❌

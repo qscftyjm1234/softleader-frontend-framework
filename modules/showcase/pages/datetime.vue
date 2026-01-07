@@ -4,10 +4,10 @@ import { ref, computed } from 'vue'
 import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
+import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 import IStack from '@/components/uiInterface/IStack.vue'
 import IInput from '@/components/uiInterface/IInput.vue'
 import ISelect from '@/components/uiInterface/ISelect.vue'
-import ICard from '@/components/uiInterface/ICard.vue'
 
 const {
   formatDate,
@@ -108,81 +108,57 @@ definePageMeta({
     title="日期時間系統"
     description="完整的多語系日期時間處理模組，提供格式化、解析、計算與驗證功能。"
   >
-    <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
+    <!-- Core Concepts -->
+    <ShowcaseSection title="核心概念 (Core Concepts)">
+      <ul class="benefit-list">
+        <li>
+          <strong>1. 格式化 (Format)</strong>
+          <div class="mt-2 text-lg font-bold text-sky-400">Style & Display</div>
+          <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+            統一全站日期格式與顯示標準。
+          </div>
+        </li>
+        <li>
+          <strong>2. 計算 (Calculation)</strong>
+          <div class="mt-2 text-lg font-bold text-pink-400">Add & Subtract</div>
+          <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+            直覺的 API，輕鬆計算日期加減。
+          </div>
+        </li>
+        <li>
+          <strong>3. 相對時間 (Relative Time)</strong>
+          <div class="mt-2 text-lg font-bold text-emerald-400">Human Friendly</div>
+          <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+            將時間轉換為「剛剛」或「N 分鐘前」。
+          </div>
+        </li>
+        <li>
+          <strong>4. 邊界 (Boundary)</strong>
+          <div class="mt-2 text-lg font-bold text-amber-400">Start & End</div>
+          <div class="text-slate-400 text-sm mt-1 leading-relaxed">
+            快速取得日/週/月之起始與結束時間。
+          </div>
+        </li>
+      </ul>
+
       <ShowcaseCard
-        title="核心功能"
-        description="日期時間系統的核心特色"
+        title="Composable Setup"
         full-width
       >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
-          >
-            <strong>可用方法：</strong>
-          </p>
-          <ShowcaseCodeBlock
-            code="const {
-  // 格式化
-  formatDate,      // 日期格式化
-  formatTime,      // 時間格式化
-  formatDateTime,  // 日期時間格式化
-  formatRelative,  // 相對時間
-  
-  // 計算
-  add,             // 增加時間
-  subtract,        // 減少時間
-  diff,            // 計算差異
-  
-  // 比較
-  isBefore,        // 檢查是否在之前
-  isAfter,         // 檢查是否在之後
-  isSameDay,       // 檢查是否同日
-  
-  // 輔助
-  isValid,          // 驗證有效性
-  startOfDay,       // 當天開始時間
-  endOfDay          // 當天結束時間
-} = useDateTime()"
-            label="useDateTime() 提供的方法"
-          />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>多語系支援:</strong>
-              自動整合 i18n，支援多國語言格式
-            </li>
-            <li>
-              <strong>強大計算:</strong>
-              輕鬆處理日期的加減與比較
-            </li>
-            <li>
-              <strong>相對時間:</strong>
-              支援「幾分鐘前」、「幾天後」等相對描述
-            </li>
-            <li>
-              <strong>邊界處理:</strong>
-              快速取得日/週/月的開始與結束時間
-            </li>
-          </ul>
-        </div>
         <template #footer>
           <ShowcaseCodeBlock
-            code="const { formatDate, add } = useDateTime()
+            code="// 來源: composables/useDateTime.ts (Nuxt 自動引入)
+const { formatDate, add } = useDateTime()
 
-// 格式化當前日期
-formatDate(new Date()) // '2024-01-01'
+const now = new Date()
 
-// 計算 7 天後
-add(new Date(), 7, 'day') // Date Object"
-            label="快速開始"
+// 1. 格式化
+formatDate(now) // '2024-01-01'
+
+// 2. 計算 (下週)
+const nextWeek = add(now, 7, 'day')
+formatDate(nextWeek) // '2024-01-08'"
+            label="Initialization"
           />
         </template>
       </ShowcaseCard>
@@ -195,19 +171,32 @@ add(new Date(), 7, 'day') // Date Object"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="常用格式"
-          description="最常見的日期時間格式化。"
+          title="常用格式 (DEFAULT_FORMATS)"
+          description="專案統一的日期格式配置，確保全站顯示風格一致。"
         >
           <div class="demo-area">
-            <div class="result-text">
-              <span class="label">預設格式:</span>
-              <span class="value">{{ DEFAULT_FORMATS }}</span>
-            </div>
+            <ShowcaseCodeBlock
+              label="預設格式設定 (唯讀)"
+              :code="formatJSON(DEFAULT_FORMATS)"
+              language="json"
+            />
           </div>
           <template #footer>
             <ShowcaseCodeBlock
-              code="formatDate(new Date(), 'YYYY-MM-DD')"
-              label="使用範例"
+              code="const { DEFAULT_FORMATS, formatDate } = useDateTime()
+
+// DEFAULT_FORMATS 是定義好的常數，包含專案中統一使用的格式
+// 例如：所有日期都應該顯示為 YYYY-MM-DD
+
+// 1. 取得預設格式設定
+console.log(DEFAULT_FORMATS.date) // 'YYYY-MM-DD'
+
+// 2. 使用預設格式 (預設即為 DEFAULT_FORMATS.date)
+formatDate(new Date()) 
+
+// 3. 自定義但保持一致性 (使用定義好的格式)
+formatDate(new Date(), DEFAULT_FORMATS.dateLong) // '2024年01月01日'"
+              label="使用方式"
             />
           </template>
         </ShowcaseCard>
@@ -409,34 +398,39 @@ add(new Date(), 7, 'day') // Date Object"
       title="格式符號"
       icon="📋"
     >
-      <IStack
-        wrap="wrap"
-        gap="1"
-      >
-        <ICard
-          v-for="tokenGroup in [
-            { title: '年份', items: ['YYYY (2024)', 'YY (24)'] },
-            { title: '月份', items: ['MM (01-12)', 'M (1-12)'] },
-            { title: '日期', items: ['DD (01-31)', 'D (1-31)'] },
-            { title: '小時', items: ['HH (00-23)', 'hh (01-12)'] },
-            { title: '分鐘', items: ['mm (00-59)', 'm (0-59)'] },
-            { title: '秒數', items: ['ss (00-59)', 's (0-59)'] },
-            { title: '上下午', items: ['A (AM/PM)', 'a (am/pm)'] }
-          ]"
-          :key="tokenGroup.title"
-          :title="tokenGroup.title"
-          style="flex: 1; min-width: 150px"
-        >
-          <ul style="padding-left: 1.2rem; margin: 0">
-            <li
-              v-for="item in tokenGroup.items"
-              :key="item"
-            >
-              {{ item }}
-            </li>
-          </ul>
-        </ICard>
-      </IStack>
+      <ShowcaseCodeBlock
+        label="格式化符號對照表 & 引入來源"
+        code="const { formatDate } = useDateTime() // 方法引入來源
+
+// 這些符號可用於自定義日期格式 (format string)
+const formatTokens = {
+  // 年份
+  YYYY: '2024',      // 完整年份
+  YY:   '24',        // 末兩位年份
+
+  // 月份
+  MM:   '01-12',     // 補零月份
+  M:    '1-12',      // 不補零月份
+
+  // 日期
+  DD:   '01-31',     // 補零日期
+  D:    '1-31',      // 不補零日期
+
+  // 時間
+  HH:   '00-23',     // 24小時制
+  hh:   '01-12',     // 12小時制
+  mm:   '00-59',     // 分鐘
+  ss:   '00-59',     // 秒數
+
+  // 其他
+  A:    'AM/PM',     // 上下午 (大寫)
+  a:    'am/pm',     // 上下午 (小寫)
+  SSS:  '000-999'    // 毫秒
+}
+
+// 使用範例：自定義格式
+formatDate(new Date(), 'YYYY年MM月DD日 HH:mm A')"
+      />
     </ShowcaseSection>
 
     <!-- API 參考 -->
@@ -444,99 +438,322 @@ add(new Date(), 7, 'day') // Date Object"
       title="API 參考"
       icon="📝"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="1. 格式化方法"
-          description="日期與時間顯示"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              formatDate, formatTime, formatDateTime, formatRelative
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 日期
-formatDate(date) // '2024-01-01'
+      <ShowcaseCard
+        title="API 詳細說明"
+        description="useDateTime() 回傳方法列表"
+        full-width
+      >
+        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+          提供完整的日期操作工具，包含格式化、計算、比較與邊界值查詢等功能。
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
+            <thead>
+              <tr>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  方法名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  型別 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <!-- Formatting -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatDate
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  格式化日期。預設格式為
+                  <code class="text-sky-300">YYYY-MM-DD</code>
+                  。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatTime
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  格式化時間。預設格式為
+                  <code class="text-sky-300">HH:mm:ss</code>
+                  。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatDateTime
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  格式化日期時間。預設格式為
+                  <code class="text-sky-300">YYYY-MM-DD HH:mm:ss</code>
+                  。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  formatRelative
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得相對時間描述 (如：3 分鐘前、剛剛)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  toISO
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  轉換為 ISO 8601 字串。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  toTimestamp
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  轉換為時間戳 (毫秒)。
+                </td>
+              </tr>
 
-// 時間
-formatTime(date) // '12:00:00'
+              <!-- Parsing -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  parseISO
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  解析 ISO 字串為 Date 物件。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  parseTimestamp
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  解析時間戳為 Date 物件。
+                </td>
+              </tr>
 
-// 相對時間
-formatRelative(date) // '2 小時前'"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
+              <!-- Calculation -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  add
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  增加指定時間 (年/月/日/時/分/秒)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  subtract
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  減少指定時間。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  diff
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  計算兩個時間的差異量。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="2. 計算方法"
-          description="日期運算"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              add, subtract, diff
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 增加 7 天
-add(date, 7, 'day')
+              <!-- Comparison -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isBefore
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  判斷是否在指定日期之前。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isAfter
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  判斷是否在指定日期之後。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isSameDay
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  判斷是否為同一天 (忽略時間)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isToday
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  判斷是否為今天。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isWeekend
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  判斷是否為週末 (週六/週日)。
+                </td>
+              </tr>
 
-// 減少 1 個月
-subtract(date, 1, 'month')
+              <!-- Utility -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  isValid
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  檢查日期物件是否有效。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  getDateRange
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得兩日期之間的所有日期陣列。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  getTimezone
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得使用者當前時區。
+                </td>
+              </tr>
 
-// 計算差異 (天數)
-diff(date1, date2, 'day') // 5"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
+              <!-- Boundary -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  startOfDay
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得當天的開始時間 (00:00:00)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  endOfDay
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得當天的結束時間 (23:59:59)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  startOfWeek
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得本週第一天 (週一)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  endOfWeek
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得本週最後一天 (週日)。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  startOfMonth
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得本月第一天。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  endOfMonth
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得本月最後一天。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="3. 比較與驗證"
-          description="邏輯判斷"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              isBefore, isAfter, isSameDay, isValid
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="isBefore(date1, date2) // true
-isSameDay(date1, date2) // false
-isValid('invalid-date') // false"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
+              <!-- Shortcuts -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  today
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得今天的 Date 物件。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  yesterday
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得昨天的 Date 物件。
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                  tomorrow
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  取得明天的 Date 物件。
+                </td>
+              </tr>
 
-        <ShowcaseCard
-          title="4. 邊界與快捷"
-          description="快速取得特定時間"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>方法：</strong>
-              startOfDay, endOfMonth, today, yesterday
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="// 今天的開始時間
-startOfDay(today())
-
-// 本月最後一刻
-endOfMonth(today())"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
+              <!-- Config -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-amber-300 font-medium">
+                  DEFAULT_FORMATS
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Object</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  預設格式設定物件 (唯讀)。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
   </ShowcasePage>
 </template>

@@ -14,8 +14,8 @@ export interface UseNetworkReturn {
   downlink: Ref<number | undefined>
   /** 往返時間（ms） */
   rtt: Ref<number | undefined>
-  /** 省流量模式 */
-  saveData: Ref<boolean>
+  /** 最後斷線時間 */
+  offlineAt: Ref<Date | undefined>
 }
 
 /**
@@ -25,12 +25,12 @@ export interface UseNetworkReturn {
 export function useNetwork(): UseNetworkReturn {
   // 基本線上/離線狀態
   const isOnline = ref(true)
+  const offlineAt = ref<Date | undefined>(undefined)
 
   // Network Information API 資訊
   const effectiveType = ref<NetworkType>(undefined)
   const downlink = ref<number | undefined>(undefined)
   const rtt = ref<number | undefined>(undefined)
-  const saveData = ref(false)
 
   /**
    * 更新網路資訊
@@ -43,7 +43,6 @@ export function useNetwork(): UseNetworkReturn {
       effectiveType.value = connection.effectiveType
       downlink.value = connection.downlink
       rtt.value = connection.rtt
-      saveData.value = connection.saveData || false
     }
   }
 
@@ -60,6 +59,7 @@ export function useNetwork(): UseNetworkReturn {
    */
   const handleOffline = (): void => {
     isOnline.value = false
+    offlineAt.value = new Date()
   }
 
   // 初始化
@@ -97,6 +97,6 @@ export function useNetwork(): UseNetworkReturn {
     effectiveType,
     downlink,
     rtt,
-    saveData
+    offlineAt
   }
 }

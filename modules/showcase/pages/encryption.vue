@@ -72,42 +72,49 @@ definePageMeta({
   >
     <!-- General Usage -->
     <ShowcaseSection
-      title="General Usage"
+      title="核心概念 (Core Concepts)"
       icon="📝"
     >
       <div class="component-grid">
         <ShowcaseCard
-          title="加密核心概覽"
-          description="常用加密情境展示"
+          title="加密機制比較"
+          description="三種常見技術的差異與用途"
           full-width
         >
           <div class="demo-area">
             <ul class="benefit-list">
               <li>
-                <strong>Base64:</strong>
-                資料傳輸編碼
+                <strong>Base64 (透明夾鏈袋)</strong>
+                這不是加密！只是把資料裝進袋子方便攜帶。
+                <strong>外面的人看得一清二楚</strong>
+                ，完全沒防護力。
               </li>
               <li>
-                <strong>SHA256:</strong>
-                密碼雜湊儲存
+                <strong>AES (上鎖保險箱)</strong>
+                這才是真的加密。必須有
+                <strong>鑰匙 (Key)</strong>
+                才能鎖上，也只有同一把鑰匙才打得開。
               </li>
               <li>
-                <strong>AES:</strong>
-                對稱式敏感資料加密
+                <strong>SHA-256 (碎紙機)</strong>
+                資料進去就碎了，
+                <strong>拼不回來</strong>
+                。只能用來比對「這堆碎紙」是不是來自原本的文件 (驗證密碼)。
               </li>
             </ul>
             <ShowcaseAlert
               type="warning"
-              title="重要提示"
+              title="Implementation Note"
               class="mt-4"
             >
-              本模組的 AES 加密使用 XOR 運算模擬，僅供示範使用。實際專案請使用 crypto-js。
+              本演示模組使用 XOR 模擬 AES 運算邏輯，僅供教學用途。生產環境請務必採用 Web Crypto API
+              標準實作。
             </ShowcaseAlert>
           </div>
           <template #footer>
             <ShowcaseCodeBlock
               code="const { base64Encode, sha256Hash, aesEncrypt } = useEncryption()"
-              label="Composable Usage"
+              label="Initialization"
             />
           </template>
         </ShowcaseCard>
@@ -116,14 +123,14 @@ definePageMeta({
 
     <!-- Interactive Playground -->
     <ShowcaseSection
-      title="互動測試"
+      title="互動測試實作"
       icon="🎮"
     >
       <div class="component-grid">
         <!-- 1. Base64 -->
         <ShowcaseCard
-          title="1. Base64 編碼/解碼"
-          description="支援 UTF-8 字元轉換。"
+          title="1. Base64 編碼 (Encoding)"
+          description="【用途】傳輸圖片/檔案。【特性】公開透明，隨時可還原。"
         >
           <div class="demo-area">
             <IInput
@@ -134,12 +141,12 @@ definePageMeta({
             />
 
             <div style="display: flex; gap: 8px; margin-bottom: 16px">
-              <IButton @click="handleBase64Encode">編碼</IButton>
+              <IButton @click="handleBase64Encode">編碼 (Encode)</IButton>
               <IButton
                 variant="secondary"
                 @click="handleBase64Decode"
               >
-                解碼
+                解碼 (Decode)
               </IButton>
             </div>
 
@@ -168,8 +175,8 @@ definePageMeta({
 
         <!-- 2. AES -->
         <ShowcaseCard
-          title="2. AES 加密/解密"
-          description="對稱式加密演示。"
+          title="2. AES 加密 (Encryption)"
+          description="【用途】機密資料保護。【特性】需保管好金鑰 (Key)。"
         >
           <div class="demo-area">
             <IStack
@@ -179,8 +186,12 @@ definePageMeta({
             >
               <IInput
                 v-model="aesKey"
-                label="加密金鑰"
+                label="加密金鑰 (Secret Key)"
               />
+              <div class="text-xs text-red-400 font-bold mt-1 mb-2 flex items-center">
+                <i class="mdi mdi-alert-circle mr-1"></i>
+                警告：金鑰一旦遺失，資料將永遠無法救回！
+              </div>
               <IInput
                 v-model="plainText"
                 label="原始文字"
@@ -188,12 +199,12 @@ definePageMeta({
             </IStack>
 
             <div style="display: flex; gap: 8px; margin-bottom: 16px">
-              <IButton @click="handleAesEncrypt">加密</IButton>
+              <IButton @click="handleAesEncrypt">加密 (Lock)</IButton>
               <IButton
                 variant="secondary"
                 @click="handleAesDecrypt"
               >
-                解密
+                解密 (Unlock)
               </IButton>
             </div>
 
@@ -221,8 +232,8 @@ definePageMeta({
 
         <!-- 3. Hashing -->
         <ShowcaseCard
-          title="3. 雜湊運算 (Hash)"
-          description="不可逆的雜湊生成。"
+          title="3. 雜湊 (Hashing)"
+          description="【用途】密碼儲存、檔案驗證。【特性】單向不可逆。"
           full-width
         >
           <div class="demo-area">
@@ -265,262 +276,44 @@ definePageMeta({
 </template>
 
 <style scoped>
-.inspector-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.header-main {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.back-link {
-  text-decoration: none;
-  color: #666;
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
+/* Clean, Functional Overrides */
+:deep(.glass-input) {
+  background: rgba(15, 23, 42, 0.3) !important;
+  border: 1px solid rgba(148, 163, 184, 0.1) !important;
   border-radius: 4px;
-  transition: all 0.2s;
+  color: #e2e8f0;
+  transition: border-color 0.2s;
 }
 
-.back-link:hover {
-  background: #e0e0e0;
+:deep(.glass-input:focus) {
+  border-color: #38bdf8 !important;
+  background: rgba(15, 23, 42, 0.5) !important;
 }
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.page-desc {
-  color: #666;
-  margin-left: 0.5rem;
-  line-height: 1.5;
-}
-
-.module-section {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  padding: 1rem 1.5rem;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  margin-right: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.demo-desc {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0 0 1rem 0;
-}
-
-.warning-box {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  border-radius: 6px;
+/* Minimal Result Block */
+.result-text {
+  margin-top: 1rem;
   padding: 1rem;
-  margin-top: 1.5rem;
+  background: #0f172a;
+  border-left: 2px solid #334155;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
+  color: #94a3b8;
 }
 
-.warning-box strong {
+.result-text .label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #856404;
-}
-
-.warning-box ul {
-  margin: 0;
-  padding-left: 1.5rem;
-  color: #856404;
-}
-
-.warning-box code {
-  background: #fff;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-size: 0.85rem;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.control-row label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-}
-
-.input-field {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  flex: 1;
-}
-
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.demo-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.demo-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.15rem 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.demo-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 1.1em;
-  background: #3498db;
-  margin-right: 0.5rem;
-  border-radius: 2px;
-}
-
-.demo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.usage-block,
-.output-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.block-header {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  margin-bottom: 0.15rem;
-  font-weight: 600;
-}
-
-.code-content {
-  background: #282c34;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  overflow-x: auto;
-  font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  color: #e06c75;
-  line-height: 1.25;
-  max-height: 360px;
-}
-
-.code-content pre {
-  margin: 0;
-}
-
-.code-content code {
-  color: #abb2bf;
-}
-
-.action-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-}
-
-.action-btn:hover {
-  opacity: 0.9;
-}
-
-.action-btn.secondary {
-  background: #6c757d;
-}
-
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.result-box {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-.result-box strong {
-  display: block;
+  letter-spacing: 0.1em;
+  color: #64748b;
   margin-bottom: 0.5rem;
 }
 
-.result-box pre {
-  margin: 0;
-  white-space: pre-wrap;
+.result-text .value {
+  display: block;
+  color: #e2e8f0;
   word-break: break-all;
-  font-size: 0.85rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
 }
 </style>
+```

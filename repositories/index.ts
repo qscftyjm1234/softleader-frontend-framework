@@ -1,7 +1,5 @@
 import user from './modules/user'
-import order from './modules/order'
 import auth from './modules/auth'
-import dashboard from './modules/dashboard'
 
 /**
  * Repository Index (資料層)
@@ -14,9 +12,7 @@ import dashboard from './modules/dashboard'
 
 const repositories = {
   user,
-  order,
-  auth,
-  dashboard
+  auth
 }
 
 export default repositories

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import IStack from '@/components/uiInterface/IStack.vue'
-import ICard from '@/components/uiInterface/ICard.vue'
-
 const componentsList = [
   {
     title: '元件架構',
@@ -140,13 +137,7 @@ const functionsList = [
     to: '/showcase/encryption',
     color: '#42A5F5'
   },
-  {
-    title: '日誌系統',
-    desc: '分級日誌與除錯追蹤',
-    icon: 'mdi-console',
-    to: '/showcase/logger',
-    color: '#546E7A'
-  },
+
   {
     title: '錯誤處理',
     desc: '全域錯誤捕捉與回報',
@@ -172,8 +163,26 @@ const functionsList = [
     title: '資安防護',
     desc: 'XSS、Headers 與安全機制',
     icon: 'mdi-security',
+
     to: '/showcase/security',
     color: '#D32F2F'
+  },
+  {
+    title: '多語系',
+    desc: '系統語系管理與切換',
+    icon: 'mdi-translate',
+    to: '/showcase/language',
+    color: '#AB47BC'
+  }
+]
+
+const guidesList = [
+  {
+    title: '開發指南',
+    desc: 'ESLint、Git Hooks 與系統設定說明',
+    icon: 'mdi-book-open-page-variant',
+    to: '/showcase/development',
+    color: '#607D8B'
   }
 ]
 </script>
@@ -182,20 +191,62 @@ const functionsList = [
   <div class="dashboard-container">
     <div class="bg-decoration"></div>
 
-    <IStack
-      direction="column"
-      gap="3"
-      class="content-wrapper"
-    >
+    <div class="content-wrapper">
       <!-- Header -->
       <div class="header-section">
-        <h1 class="page-title">元件模組</h1>
+        <div class="hero-badge">前端開發套件</div>
+        <h1 class="page-title">
+          元件模組
+          <span class="subtitle">Showcase</span>
+        </h1>
         <p class="page-desc">
           前端開發套件的功能演練與操作手冊，分為「介面元件」與「核心功能」兩大類別。
         </p>
       </div>
 
-      <!-- Section 1: Components -->
+      <!-- Section 1: Documentation (Moved to Top) -->
+      <section class="group-section">
+        <div class="section-header">
+          <div class="header-icon doc-icon">
+            <v-icon icon="mdi-book-open-variant" />
+          </div>
+          <h2 class="section-title">專案文件 (Documentation)</h2>
+        </div>
+
+        <div class="grid-layout">
+          <NuxtLink
+            v-for="item in guidesList"
+            :key="item.to"
+            :to="item.to"
+            class="card-link"
+          >
+            <div class="feature-card">
+              <div class="card-header">
+                <div
+                  class="icon-box"
+                  :style="{ background: `${item.color}20`, color: item.color }"
+                >
+                  <v-icon
+                    :icon="item.icon"
+                    size="24"
+                  />
+                </div>
+                <h3 class="card-title">{{ item.title }}</h3>
+              </div>
+              <p class="card-desc">{{ item.desc }}</p>
+              <div class="card-action">
+                <span>前往</span>
+                <v-icon
+                  icon="mdi-arrow-right"
+                  size="14"
+                />
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </section>
+
+      <!-- Section 2: Components -->
       <section class="group-section">
         <div class="section-header">
           <div class="header-icon comp-icon">
@@ -211,25 +262,28 @@ const functionsList = [
             :to="item.to"
             class="card-link"
           >
-            <ICard class="feature-card">
-              <template #header>
-                <div class="card-header">
-                  <div
-                    class="icon-box"
-                    :style="{ background: `${item.color}20`, color: item.color }"
-                  >
-                    <v-icon
-                      :icon="item.icon"
-                      size="20"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="card-title">{{ item.title }}</h3>
-                  </div>
+            <div class="feature-card">
+              <div class="card-header">
+                <div
+                  class="icon-box"
+                  :style="{ background: `${item.color}20`, color: item.color }"
+                >
+                  <v-icon
+                    :icon="item.icon"
+                    size="24"
+                  />
                 </div>
-              </template>
+                <h3 class="card-title">{{ item.title }}</h3>
+              </div>
               <p class="card-desc">{{ item.desc }}</p>
-            </ICard>
+              <div class="card-action">
+                <span>前往</span>
+                <v-icon
+                  icon="mdi-arrow-right"
+                  size="14"
+                />
+              </div>
+            </div>
           </NuxtLink>
         </div>
       </section>
@@ -250,38 +304,41 @@ const functionsList = [
             :to="item.to"
             class="card-link"
           >
-            <ICard class="feature-card">
-              <template #header>
-                <div class="card-header">
-                  <div
-                    class="icon-box"
-                    :style="{ background: `${item.color}20`, color: item.color }"
-                  >
-                    <v-icon
-                      :icon="item.icon"
-                      size="20"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="card-title">{{ item.title }}</h3>
-                  </div>
+            <div class="feature-card">
+              <div class="card-header">
+                <div
+                  class="icon-box"
+                  :style="{ background: `${item.color}20`, color: item.color }"
+                >
+                  <v-icon
+                    :icon="item.icon"
+                    size="24"
+                  />
                 </div>
-              </template>
+                <h3 class="card-title">{{ item.title }}</h3>
+              </div>
               <p class="card-desc">{{ item.desc }}</p>
-            </ICard>
+              <div class="card-action">
+                <span>前往</span>
+                <v-icon
+                  icon="mdi-arrow-right"
+                  size="14"
+                />
+              </div>
+            </div>
           </NuxtLink>
         </div>
       </section>
-    </IStack>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .dashboard-container {
   min-height: 100vh;
-  background: #0f172a;
+  background: #0f172a; /* Deep Slate */
   color: white;
-  padding: 2rem;
+  padding: 4rem 2rem;
   position: relative;
   overflow: hidden;
   font-family: 'Inter', system-ui, sans-serif;
@@ -294,90 +351,156 @@ const functionsList = [
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.08), transparent 30%),
-    radial-gradient(circle at 20% 90%, rgba(139, 92, 246, 0.08), transparent 30%);
+    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 60%, rgba(139, 92, 246, 0.08), transparent 40%);
   pointer-events: none;
   z-index: 1;
 }
 
-.content-wrapper {
+.dashboard-container > * {
   position: relative;
   z-index: 2;
+}
+
+.content-wrapper {
   max-width: 1400px;
   margin: 0 auto;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Header */
 .header-section {
+  text-align: center;
+  margin-bottom: 5rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.header-section::after {
+  content: '';
+  position: absolute;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  padding: 0.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #e2e8f0;
   margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
 }
 
 .page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
   display: flex;
-  align-items: baseline;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .page-title .subtitle {
-  font-size: 1.25rem;
-  color: #64748b;
+  font-size: 1.5rem;
+  color: #94a3b8;
   font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  background: linear-gradient(to right, #94a3b8, #cbd5e1);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .page-desc {
-  color: #94a3b8;
-  font-size: 1.1rem;
-  max-width: 800px;
+  color: #e2e8f0;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
 }
 
 /* Sections */
 .group-section {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 
 .section-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .comp-icon {
-  background: rgba(41, 121, 255, 0.15);
+  background: rgba(41, 121, 255, 0.2);
   color: #2979ff;
+  box-shadow: 0 0 20px rgba(41, 121, 255, 0.2);
 }
 
 .func-icon {
-  background: rgba(255, 167, 38, 0.15);
+  background: rgba(255, 167, 38, 0.2);
   color: #ffa726;
+  box-shadow: 0 0 20px rgba(255, 167, 38, 0.2);
+}
+
+.doc-icon {
+  background: rgba(96, 125, 139, 0.2);
+  color: #607d8b;
+  box-shadow: 0 0 20px rgba(96, 125, 139, 0.2);
 }
 
 .section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #e2e8f0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f1f5f9;
 }
 
 /* Grid Layout */
 .grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
 }
 
 .card-link {
@@ -387,53 +510,70 @@ const functionsList = [
 
 .feature-card {
   height: 100%;
-  background: rgba(30, 41, 59, 0.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
-  border-radius: 16px;
-  padding: 1.25rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 1.75rem;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .card-link:hover .feature-card {
-  transform: translateY(-4px);
-  background: rgba(30, 41, 59, 0.7) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px);
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 40px -4px rgba(0, 0, 0, 0.4);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #f1f5f9;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
   margin: 0;
-}
-
-.card-subtitle {
-  font-size: 0.85rem;
-  color: #64748b;
+  line-height: 1.3;
 }
 
 .card-desc {
-  color: #94a3b8;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-top: 0.5rem;
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  min-height: 3.2em; /* Ensure consistent height */
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #38bdf8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.card-link:hover .card-action {
+  opacity: 1;
+  transform: translateX(4px);
+  color: #7dd3fc;
 }
 </style>

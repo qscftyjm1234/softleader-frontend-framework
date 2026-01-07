@@ -327,118 +327,121 @@ definePageMeta({
     </ShowcaseSection>
 
     <!-- API 參考 -->
-    <ShowcaseSection title="API 方法">
+    <ShowcaseSection
+      title="API 參考"
+      icon="📝"
+    >
       <div class="component-grid">
-        <!-- uploadFile -->
         <ShowcaseCard
-          title="1. uploadFile"
-          description="上傳單一檔案（一次傳一個）"
+          title="API 詳細說明"
+          description="useFileUpload() 回傳方法列表"
+          full-width
         >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              上傳單一檔案，支援進度追蹤、自動驗證與錯誤處理。
-            </p>
-            <div class="param-list">
-              <div class="param-item">
-                <code>endpoint</code>
-                <span>API 路徑（預設 '/api/upload'）</span>
-              </div>
-              <div class="param-item">
-                <code>method</code>
-                <span>HTTP 方法（預設 'POST'，可選 'PUT', 'PATCH'）</span>
-              </div>
-              <div class="param-item">
-                <code>fieldName</code>
-                <span>檔案欄位名稱（預設 'file'）</span>
-              </div>
-              <div class="param-item">
-                <code>data</code>
-                <span>額外資料（會一起送給後端）</span>
-              </div>
-              <div class="param-item">
-                <code>globalLoading</code>
-                <span>是否顯示全域 Loading（預設 false）</span>
-              </div>
-              <div class="param-item">
-                <code>loadingRef</code>
-                <span>自訂 Loading 狀態的 Ref</span>
-              </div>
-
-              <div class="param-item">
-                <code>onSuccess</code>
-                <span>成功後的回呼函式</span>
-              </div>
-              <div class="param-item">
-                <code>onError</code>
-                <span>失敗後的回呼函式</span>
-              </div>
-              <div class="param-item">
-                <code>autoSuccess</code>
-                <span>成功時自動顯示通知（預設 true）</span>
-              </div>
-              <div class="param-item">
-                <code>autoError</code>
-                <span>失敗時自動顯示通知（預設 true）</span>
-              </div>
-              <div class="param-item">
-                <code>maxSize</code>
-                <span>檔案大小限制（單位：bytes）</span>
-              </div>
-              <div class="param-item">
-                <code>accept</code>
-                <span>允許的檔案類型（如 ['image/*', '.pdf']）</span>
-              </div>
-            </div>
+          <div class="mb-4 text-slate-400 text-sm leading-relaxed">
+            提供檔案上傳、驗證與 Utils 功能。所有上傳方法皆支援進度追蹤與自動通知。
           </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFile } = useFileUpload()
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-700">
+              <thead>
+                <tr>
+                  <th
+                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                  >
+                    方法名稱 (Name)
+                  </th>
+                  <th
+                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                  >
+                    型別 (Type)
+                  </th>
+                  <th
+                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                  >
+                    說明 (Description)
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/50">
+                <!-- Upload -->
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                    uploadFile(file, opts)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    上傳單一檔案。回傳 Promise。
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                    uploadFiles(files, opts)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    批次上傳多個檔案 (封裝至同一個 request 或序列上傳，視實作而定)。
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
+                    uploadFromInput(e, opts)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    監聽 Input Change 事件，自動提取檔案並上傳。
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
+                    uploadFromBase64(str)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    上傳 Base64 字串 (自動轉換為 File 上傳)。
+                  </td>
+                </tr>
 
-// 最簡單用法（使用預設值）
-await uploadFile(file)
+                <!-- Validation -->
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                    validate(file, opts)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    驗證單一檔案 (大小/類型檢查)，不執行上傳。
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
+                    validateMultiple(files)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    驗證檔案陣列 (數量/大小/類型檢查)。
+                  </td>
+                </tr>
 
-// 自訂 API 路徑
-await uploadFile(file, {
-  endpoint: '/api/my-upload'
-})
-
-// 完整選項
-await uploadFile(file, {
-  endpoint: '/api/upload',
-  data: { userId: 123 },
-  maxSize: 5 * 1024 * 1024,  // 5MB
-  accept: ['image/*'],
-  onSuccess: (res) => console.log(res)
-})"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- uploadFiles -->
-        <ShowcaseCard
-          title="2. uploadFiles"
-          description="批次上傳多個檔案（一次傳多個）"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              一次上傳多個檔案，自動處理 FormData 封裝。
-            </p>
+                <!-- Utils -->
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                    getSelectedFiles(e)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    從 Input Change 或 Drop Event 提取 File[]。
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                  <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
+                    formatFileSize(bytes)
+                  </td>
+                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
+                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                    檔案大小格式化 (Bytes -> KB/MB)。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFiles } = useFileUpload()
-
-await uploadFiles(fileArray, {
-  endpoint: '/api/upload/multiple',
-  maxSize: 10 * 1024 * 1024,
-  accept: ['image/*', '.pdf']
-})"
-              label="使用範例"
-            />
-          </template>
         </ShowcaseCard>
 
         <!-- uploadFromInput -->
@@ -466,169 +469,6 @@ await uploadFiles(fileArray, {
     autoSuccess: true 
   })' 
 />"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- validate -->
-        <ShowcaseCard
-          title="4. validate"
-          description="驗證單一檔案"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              檢查檔案大小、類型是否符合規則，不執行上傳。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { validate } = useFileUpload()
-
-const result = validate(file, {
-  maxSize: 5 * 1024 * 1024,  // 5MB
-  accept: ['image/*', '.pdf']
-})
-
-if (!result.valid) {
-  console.error(result.error)
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- validateMultiple -->
-        <ShowcaseCard
-          title="5. validateMultiple"
-          description="驗證多個檔案"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              批次驗證檔案陣列，檢查數量、大小、類型。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { validateMultiple } = useFileUpload()
-
-const result = validateMultiple(files, {
-  maxFiles: 5,
-  maxSize: 10 * 1024 * 1024,
-  accept: ['image/*']
-})
-
-if (result.valid) {
-  // 全部通過驗證
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- formatFileSize -->
-        <ShowcaseCard
-          title="6. formatFileSize"
-          description="格式化檔案大小"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              將位元組數轉換為人類可讀的格式（KB、MB、GB）。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { formatFileSize } = useFileUpload()
-
-formatFileSize(1024)        // '1 KB'
-formatFileSize(1048576)     // '1 MB'
-formatFileSize(5242880)     // '5 MB')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- getSelectedFiles -->
-        <ShowcaseCard
-          title="7. getSelectedFiles"
-          description="從事件提取檔案"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              自動判斷 Input 或 Drag 事件，提取檔案陣列。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { getSelectedFiles } = useFileUpload()
-
-// Input change 事件
-const handleChange = (e) => {
-  const files = getSelectedFiles(e)
-  console.log(files)  // File[]
-}
-
-// Drag drop 事件
-const handleDrop = (e) => {
-  const files = getSelectedFiles(e)
-  selectedFiles.value = files
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- uploadFromBase64 -->
-        <ShowcaseCard
-          title="8. uploadFromBase64"
-          description="從 Base64 字串上傳"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              將 Base64 編碼的資料轉換為檔案並上傳（常用於圖片編輯、Canvas 匯出）。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFromBase64 } = useFileUpload()
-
-// 從 Canvas 或圖片編輯器取得 Base64
-const base64Data = canvas.toDataURL('image/png')
-
-await uploadFromBase64(base64Data, 'screenshot.png', {
-  endpoint: '/api/upload'
-})"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- uploadFromBlob -->
-        <ShowcaseCard
-          title="9. uploadFromBlob"
-          description="從 Blob 物件上傳"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              將 Blob 物件轉換為檔案並上傳（常用於錄音、錄影、API 回傳的二進位資料）。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFromBlob } = useFileUpload()
-
-// 從 MediaRecorder 或其他來源取得 Blob
-const blob = new Blob([audioData], { type: 'audio/wav' })
-
-await uploadFromBlob(blob, 'recording.wav', {
-  endpoint: '/api/upload'
-})"
               label="使用範例"
             />
           </template>

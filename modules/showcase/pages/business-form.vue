@@ -135,50 +135,94 @@ definePageMeta({
         full-width
         class="mt-6"
       >
-        <div class="api-table-container">
-          <table class="api-table">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-700">
             <thead>
               <tr>
-                <th>屬性名稱 (Name)</th>
-                <th>類型 (Type)</th>
-                <th>預設值 (Default)</th>
-                <th>說明 (Description)</th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  屬性名稱 (Name)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  類型 (Type)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
+                >
+                  預設值 (Default)
+                </th>
+                <th
+                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
+                >
+                  說明 (Description)
+                </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td><code>modelValue</code></td>
-                <td>String</td>
-                <td>-</td>
-                <td>綁定值 (v-model)</td>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  modelValue
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">-</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  綁定值 (v-model)
+                </td>
               </tr>
-              <tr>
-                <td><code>placeholder</code></td>
-                <td>String</td>
-                <td>'請輸入 Email'</td>
-                <td>輸入框提示文字</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  placeholder
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">String</td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  '請輸入 Email'
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  輸入框提示文字
+                </td>
               </tr>
-              <tr>
-                <td><code>required</code></td>
-                <td>Boolean</td>
-                <td>false</td>
-                <td>是否為必填欄位 (空值時顯示錯誤)</td>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  required
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Boolean</td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">false</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  是否為必填欄位 (空值時顯示錯誤)
+                </td>
               </tr>
-              <tr>
-                <td><code>corporateOnly</code></td>
-                <td>Boolean</td>
-                <td>false</td>
-                <td>
-                  <span class="tag business">業務邏輯</span>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  corporateOnly
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Boolean</td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">false</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  <span
+                    class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold mr-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  >
+                    業務邏輯
+                  </span>
                   僅允許公司信箱 (@mycompany.com)
                 </td>
               </tr>
-              <tr>
-                <td><code>allowedDomains</code></td>
-                <td>Array&lt;String&gt;</td>
-                <td>[]</td>
-                <td>
-                  <span class="tag business">業務邏輯</span>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
+                  allowedDomains
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
+                  Array&lt;String&gt;
+                </td>
+                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">[]</td>
+                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
+                  <span
+                    class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold mr-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  >
+                    業務邏輯
+                  </span>
                   僅允許特定網域清單 (如 ['gmail.com'])
                 </td>
               </tr>
