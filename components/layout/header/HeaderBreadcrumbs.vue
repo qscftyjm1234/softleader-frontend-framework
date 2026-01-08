@@ -15,7 +15,7 @@ const breadcrumbs = computed(() => {
   return parts.map((part, index) => ({
     title: part.charAt(0).toUpperCase() + part.slice(1),
     disabled: index === parts.length - 1,
-    href: '/' + parts.slice(0, index + 1).join('/')
+    href: `/${parts.slice(0, index + 1).join('/')}`
   }))
 })
 </script>

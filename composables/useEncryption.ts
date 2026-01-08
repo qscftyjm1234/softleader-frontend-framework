@@ -33,9 +33,9 @@ export function useEncryption(): UseEncryptionReturn {
       // 使用 btoa 進行 Base64 編碼
       // 先將 UTF-8 字串轉換為 URI 編碼，再進行 Base64 編碼
       return btoa(
-        encodeURIComponent(text).replace(/%([0-9A-F]{2})/g, (_, p1) => {
-          return String.fromCharCode(Number.parseInt(p1, 16))
-        })
+        encodeURIComponent(text).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+          String.fromCharCode(Number.parseInt(p1, 16))
+        )
       )
     } catch (error) {
       console.error('Base64 編碼失敗:', error)

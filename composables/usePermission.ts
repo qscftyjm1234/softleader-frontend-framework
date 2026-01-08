@@ -84,36 +84,32 @@ export function usePermission(initialConfig?: Partial<PermissionConfig>): UsePer
    * @param roleList - 角色列表
    * @returns 是否擁有所有角色
    */
-  const hasAllRoles = (roleList: string[]): boolean => {
-    return roleList.every((role) => roles.value.includes(role))
-  }
+  const hasAllRoles = (roleList: string[]): boolean =>
+    roleList.every((role) => roles.value.includes(role))
 
   /**
    * 檢查是否擁有任一指定角色
    * @param roleList - 角色列表
    * @returns 是否擁有任一角色
    */
-  const hasAnyRole = (roleList: string[]): boolean => {
-    return roleList.some((role) => roles.value.includes(role))
-  }
+  const hasAnyRole = (roleList: string[]): boolean =>
+    roleList.some((role) => roles.value.includes(role))
 
   /**
    * 檢查是否擁有所有指定權限
    * @param permissionList - 權限列表
    * @returns 是否擁有所有權限
    */
-  const hasAllPermissions = (permissionList: string[]): boolean => {
-    return permissionList.every((permission) => permissions.value[permission] === true)
-  }
+  const hasAllPermissions = (permissionList: string[]): boolean =>
+    permissionList.every((permission) => permissions.value[permission] === true)
 
   /**
    * 檢查是否擁有任一指定權限
    * @param permissionList - 權限列表
    * @returns 是否擁有任一權限
    */
-  const hasAnyPermission = (permissionList: string[]): boolean => {
-    return permissionList.some((permission) => permissions.value[permission] === true)
-  }
+  const hasAnyPermission = (permissionList: string[]): boolean =>
+    permissionList.some((permission) => permissions.value[permission] === true)
 
   /**
    * 設定使用者角色

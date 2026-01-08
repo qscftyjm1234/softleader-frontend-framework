@@ -155,26 +155,24 @@ const open = (config?: Partial<Props>) => {
  * 確認對話框 (Script 調用模式 Helpers)
  * @param config
  */
-const confirm = (config?: Partial<Props>) => {
-  return open({
+const confirm = (config?: Partial<Props>) =>
+  open({
     showCancel: true,
     confirmText: '確認',
     cancelText: '取消',
     ...config
   })
-}
 
 /**
  * 警告對話框 (Script 調用模式 Helpers)
  * @param config
  */
-const alert = (config?: Partial<Props>) => {
-  return open({
+const alert = (config?: Partial<Props>) =>
+  open({
     showCancel: false,
     confirmText: '確認',
     ...config
   }).then(() => {}) // alert 不回傳 boolean
-}
 
 defineExpose({
   open,

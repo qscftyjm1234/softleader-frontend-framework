@@ -34,7 +34,7 @@ export function scanModulePages(pages: NuxtPage[], enabledModules: string[], roo
               // 1. 把 Windows 的反斜線 \ 換成 /
               // 2. 去掉 .vue 副檔名
               // 結果: /user/list
-              let routePath = '/' + relativePath.replace(/\\/g, '/').replace(/\.vue$/, '')
+              let routePath = `/${relativePath.replace(/\\/g, '/').replace(/\.vue$/, '')}`
 
               // 如果是 index 結尾，移除 /index (這是 Nuxt 的慣例，index 代表根路徑)
               if (routePath.endsWith('/index')) {

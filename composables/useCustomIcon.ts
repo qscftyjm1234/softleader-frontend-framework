@@ -10,8 +10,9 @@ import type { Ref } from 'vue'
 const iconCache: Record<string, string> = {}
 
 /**
- *
- * @param iconName
+ * 使用自訂圖示
+ * @param iconName - 圖示名稱 Ref
+ * @returns 圖示相關狀態與內容
  */
 export function useCustomIcon(iconName: Ref<string | undefined>) {
   const svgContent = ref<string>('')
@@ -37,7 +38,7 @@ export function useCustomIcon(iconName: Ref<string | undefined>) {
       const icon =
         customIcons[name] ||
         customIcons[`${name}Icon`] ||
-        customIcons[name.charAt(0).toUpperCase() + name.slice(1) + 'Icon']
+        customIcons[`${name.charAt(0).toUpperCase() + name.slice(1)}Icon`]
 
       if (icon) {
         iconCache[name] = icon

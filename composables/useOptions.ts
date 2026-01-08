@@ -75,27 +75,21 @@ const ExtensionHandlers: Record<string, (ctx: ExtensionContext) => any> = {
    * @param ctx - 擴充上下文
    * @returns 查找函數
    */
-  findByValue: (ctx) => (value: unknown) => {
-    return ctx.data.find((o) => o.value === value)
-  },
+  findByValue: (ctx) => (value: unknown) => ctx.data.find((o) => o.value === value),
 
   /**
    * 排除特定選項
    * @param ctx - 擴充上下文
    * @returns 過濾函數 (排除)
    */
-  exclude: (ctx) => (values: unknown[]) => {
-    return ctx.data.filter((o) => !values.includes(o.value))
-  },
+  exclude: (ctx) => (values: unknown[]) => ctx.data.filter((o) => !values.includes(o.value)),
 
   /**
    * 只保留特定選項
    * @param ctx - 擴充上下文
    * @returns 過濾函數 (保留)
    */
-  only: (ctx) => (values: unknown[]) => {
-    return ctx.data.filter((o) => values.includes(o.value))
-  },
+  only: (ctx) => (values: unknown[]) => ctx.data.filter((o) => values.includes(o.value)),
 
   /**
    * 取得原始資料（用於 debug）
@@ -116,9 +110,7 @@ const ExtensionHandlers: Record<string, (ctx: ExtensionContext) => any> = {
    * @param ctx - 擴充上下文
    * @returns 重新載入函數
    */
-  reload: (ctx) => async () => {
-    return await ctx.refresh()
-  }
+  reload: (ctx) => async () => await ctx.refresh()
 }
 // =============================================================================
 // #endregion
@@ -168,7 +160,7 @@ function useOptionDataLoader(registryKey: string, definition: OptionDefinition) 
     }
 
     // C. 根據定義類型載入
-    resolveDefinition(definition, args, state, registryKey)
+    parseDefinition(definition, args, state, registryKey)
 
     return state.data
   }
@@ -197,7 +189,7 @@ function useOptionDataLoader(registryKey: string, definition: OptionDefinition) 
       }
 
       // Sync function handling within refresh
-      resolveDefinition(definition, args, state, registryKey)
+      parseDefinition(definition, args, state, registryKey)
     }
     return state.data
   }
@@ -217,7 +209,7 @@ function useOptionDataLoader(registryKey: string, definition: OptionDefinition) 
  * @param key - 鍵值
  * @returns void
  */
-function resolveDefinition(
+function parseDefinition(
   def: OptionDefinition,
   args: unknown[],
   state: { data: OptionItem[]; isLoading: boolean; isLoaded: boolean },
@@ -259,12 +251,13 @@ function resolveDefinition(
           .catch((err) => console.error(`[Options] Load error (${key}):`, err))
           .finally(() => (state.isLoading = false))
       }
-    } else {
+    } else if (!state.isLoaded) {
       // Sync function
-      if (!state.isLoaded) {
-        state.data.push(...(result as OptionItem[]))
-        state.isLoaded = true
-      }
+      state.data.push(...(result as OptionItem[]))
+      state.isLoaded = true
+    } else if (Array.isArray(result)) {
+      // 如果結果是陣列 (legacy support or other case)
+      // 保留此分支以防萬一，但目前邏輯似乎不需要
     }
   }
 }
@@ -292,7 +285,7 @@ function createOptionProxy(registryKey: string, definition: OptionDefinition): O
     // 2. 建立 Proxy 攔截屬性讀取
     // 2. 建立 Proxy 攔截屬性讀取
     const proxyHandler: ProxyHandler<object> = {
-      get(target, prop, receiver) {
+      get(target, prop) {
         // 0. 支援 Iterator (讓 v-for 可用)
         if (prop === Symbol.iterator) {
           return data[Symbol.iterator].bind(data)

@@ -5,20 +5,20 @@ import IButton from '@/components/uiInterface/IButton.vue'
 
 const modules = [
   {
+    title: '開發指南',
+    description: '專案開發指南，包含環境建置、程式碼規範 (ESLint)、Git 流程與架構設計說明。',
+    icon: 'mdi-book-open-page-variant',
+    to: '/showcase/development',
+    color: '#FFB74D',
+    gradient: 'linear-gradient(135deg, #FFB74D 0%, #FF6D00 100%)'
+  },
+  {
     title: '元件模組',
     description: '一覽所有元件、功能模組與範例程式碼，包含 UI 元件與業務邏輯展示。',
     icon: 'mdi-view-dashboard',
     to: '/showcase',
     color: '#00E5FF',
     gradient: 'linear-gradient(135deg, #00E5FF 0%, #2979FF 100%)'
-  },
-  {
-    title: 'API 整合範例',
-    description: '示範標準 API 請求模式、錯誤處理攔截器與 Mock API 模擬資料流。',
-    icon: 'mdi-api',
-    to: '/showcase/api-demo',
-    color: '#FFB74D',
-    gradient: 'linear-gradient(135deg, #FFB74D 0%, #FF6D00 100%)'
   }
 ]
 
@@ -301,6 +301,7 @@ const features = [
 
 .gradient-text {
   background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% auto;

@@ -122,9 +122,8 @@ export function useFeatureFlag() {
    * @param featurePath - 功能路徑
    * @returns 功能設定物件
    */
-  const getFeatureConfig = (featurePath: FeaturePath): FeatureConfig | null => {
-    return getConfigByPath(featurePath, featureStore.config)
-  }
+  const getFeatureConfig = (featurePath: FeaturePath): FeatureConfig | null =>
+    getConfigByPath(featurePath, featureStore.config)
 
   /**
    * 獲取所有功能清單及其狀態

@@ -142,24 +142,21 @@ const styles = computed(() => {
 })
 
 // 計算 Class
-const classes = computed(() => {
-  return [
-    'ui-icon',
-    props.variant ? `ui-icon--${props.variant}` : '',
-    // 如果是 MDI，自動補上 mdi 與 mdi-xxx
-    isMdi.value ? `mdi ${props.icon}` : '',
-    // 如果有指定顏色，加上強制變色 class (針對 Raw SVG)
-    props.color ? '--forced-color' : ''
-  ]
-})
+const classes = computed(() => [
+  'ui-icon',
+  props.variant ? `ui-icon--${props.variant}` : '',
+  // 如果是 MDI，自動補上 mdi 與 mdi-xxx
+  isMdi.value ? `mdi ${props.icon}` : '',
+  // 如果有指定顏色，加上強制變色 class (針對 Raw SVG)
+  props.color ? '--forced-color' : ''
+])
 
 // 為了避開 vue/no-v-html 規則，使用 Render Function 渲染 Raw SVG
-const RawIcon = (props: { svg: string }) => {
-  return h('span', {
+const RawIcon = (props: { svg: string }) =>
+  h('span', {
     class: 'ui-icon__raw',
     innerHTML: props.svg
   })
-}
 </script>
 
 <template>

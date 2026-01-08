@@ -213,18 +213,14 @@ export function useDateTime() {
    * @param isoString - ISO 格式字串
    * @returns Date 物件
    */
-  const parseISO = (isoString: string): Date => {
-    return new Date(isoString)
-  }
+  const parseISO = (isoString: string): Date => new Date(isoString)
 
   /**
    * 解析時間戳
    * @param timestamp - 時間戳（毫秒）
    * @returns Date 物件
    */
-  const parseTimestamp = (timestamp: number): Date => {
-    return new Date(timestamp)
-  }
+  const parseTimestamp = (timestamp: number): Date => new Date(timestamp)
 
   /**
    * 新增時間
@@ -273,9 +269,8 @@ export function useDateTime() {
    * @param unit - 單位
    * @returns 新的 Date 物件
    */
-  const subtract = (date: Date | string | number, amount: number, unit: DateUnit): Date => {
-    return add(date, -amount, unit)
-  }
+  const subtract = (date: Date | string | number, amount: number, unit: DateUnit): Date =>
+    add(date, -amount, unit)
 
   /**
    * 計算時間差
@@ -319,9 +314,8 @@ export function useDateTime() {
    * @param date2 - 日期 2
    * @returns 是否在之前
    */
-  const isBefore = (date1: Date | string | number, date2: Date | string | number): boolean => {
-    return parseDate(date1).getTime() < parseDate(date2).getTime()
-  }
+  const isBefore = (date1: Date | string | number, date2: Date | string | number): boolean =>
+    parseDate(date1).getTime() < parseDate(date2).getTime()
 
   /**
    * 判斷日期是否在另一個日期之後
@@ -329,9 +323,8 @@ export function useDateTime() {
    * @param date2 - 日期 2
    * @returns 是否在之後
    */
-  const isAfter = (date1: Date | string | number, date2: Date | string | number): boolean => {
-    return parseDate(date1).getTime() > parseDate(date2).getTime()
-  }
+  const isAfter = (date1: Date | string | number, date2: Date | string | number): boolean =>
+    parseDate(date1).getTime() > parseDate(date2).getTime()
 
   /**
    * 判斷兩個日期是否相同（精確到天）
@@ -351,7 +344,7 @@ export function useDateTime() {
 
   /**
    * 取得今天的開始時間（00:00:00）
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const startOfDay = (date?: Date | string | number): Date => {
@@ -362,7 +355,7 @@ export function useDateTime() {
 
   /**
    * 取得今天的結束時間（23:59:59）
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const endOfDay = (date?: Date | string | number): Date => {
@@ -373,7 +366,7 @@ export function useDateTime() {
 
   /**
    * 取得本週的開始時間（週一 00:00:00）
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const startOfWeek = (date?: Date | string | number): Date => {
@@ -387,7 +380,7 @@ export function useDateTime() {
 
   /**
    * 取得本週的結束時間（週日 23:59:59）
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const endOfWeek = (date?: Date | string | number): Date => {
@@ -399,7 +392,7 @@ export function useDateTime() {
 
   /**
    * 取得本月的開始時間
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const startOfMonth = (date?: Date | string | number): Date => {
@@ -411,7 +404,7 @@ export function useDateTime() {
 
   /**
    * 取得本月的結束時間
-   * @param date
+   * @param date - 日期物件或字串
    * @returns Date 物件
    */
   const endOfMonth = (date?: Date | string | number): Date => {
@@ -425,25 +418,19 @@ export function useDateTime() {
    * 取得今天
    * @returns Date 物件
    */
-  const today = (): Date => {
-    return startOfDay(new Date())
-  }
+  const today = (): Date => startOfDay(new Date())
 
   /**
    * 取得昨天
    * @returns Date 物件
    */
-  const yesterday = (): Date => {
-    return subtract(today(), 1, 'day')
-  }
+  const yesterday = (): Date => subtract(today(), 1, 'day')
 
   /**
    * 取得明天
    * @returns Date 物件
    */
-  const tomorrow = (): Date => {
-    return add(today(), 1, 'day')
-  }
+  const tomorrow = (): Date => add(today(), 1, 'day')
 
   /**
    * 驗證日期字串
@@ -471,9 +458,7 @@ export function useDateTime() {
    * @param date - 日期
    * @returns 是否為今天
    */
-  const isToday = (date: Date | string | number): boolean => {
-    return isSameDay(date, new Date())
-  }
+  const isToday = (date: Date | string | number): boolean => isSameDay(date, new Date())
 
   /**
    * 取得兩個日期之間的所有日期
@@ -498,27 +483,21 @@ export function useDateTime() {
    * 取得當前時區
    * @returns 時區字串
    */
-  const getTimezone = (): string => {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone
-  }
+  const getTimezone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone
 
   /**
    * 轉換為 ISO 字串
    * @param date - 日期
    * @returns ISO 字串
    */
-  const toISO = (date?: Date | string | number): string => {
-    return parseDate(date).toISOString()
-  }
+  const toISO = (date?: Date | string | number): string => parseDate(date).toISOString()
 
   /**
    * 轉換為時間戳
    * @param date - 日期
    * @returns 時間戳（毫秒）
    */
-  const toTimestamp = (date?: Date | string | number): number => {
-    return parseDate(date).getTime()
-  }
+  const toTimestamp = (date?: Date | string | number): number => parseDate(date).getTime()
 
   return {
     // 格式化

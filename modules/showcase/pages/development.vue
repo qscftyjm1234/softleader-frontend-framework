@@ -121,7 +121,7 @@ const navigateToRules = () => {
                 <div class="runtime-name">Node.js</div>
                 <div class="runtime-desc">JavaScript 執行環境</div>
               </div>
-              <div class="runtime-version">v18.x / v20.x</div>
+              <div class="runtime-version">v18.18.0+</div>
             </div>
             <div class="runtime-check">
               <div class="runtime-check-label">檢查版本</div>
@@ -129,6 +129,19 @@ const navigateToRules = () => {
                 code="node --version"
                 language="bash"
               />
+              <a
+                href="https://nodejs.org/"
+                target="_blank"
+                class="download-link"
+              >
+                <v-icon
+                  size="14"
+                  class="mr-1"
+                >
+                  mdi-download
+                </v-icon>
+                下載 Node.js
+              </a>
             </div>
           </div>
 
@@ -144,10 +157,10 @@ const navigateToRules = () => {
                 </v-icon>
               </div>
               <div class="runtime-info">
-                <div class="runtime-name">npm / pnpm</div>
+                <div class="runtime-name">NPM</div>
                 <div class="runtime-desc">套件管理工具</div>
               </div>
-              <div class="runtime-version">v9.x+ / v8.x+</div>
+              <div class="runtime-version">v9.0.0+</div>
             </div>
             <div class="runtime-check">
               <div class="runtime-check-label">檢查版本</div>
@@ -727,6 +740,7 @@ const navigateToRules = () => {
   position: relative;
   padding: 2rem;
   border-radius: 1.25rem;
+  margin-bottom: 1rem;
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
@@ -801,7 +815,7 @@ const navigateToRules = () => {
 .nav-title {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   letter-spacing: -0.01em;
 }
 
@@ -1194,5 +1208,20 @@ const navigateToRules = () => {
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
+}
+
+.download-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #38bdf8;
+  margin-top: 0.5rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.download-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
 }
 </style>

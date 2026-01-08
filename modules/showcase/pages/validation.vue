@@ -90,9 +90,9 @@ const handleBlur = (field: string) => {
   }
 }
 
-const isFormValid = computed(() => {
-  return Object.keys(validationResults.value).length > 0 && isAllValid(validationResults.value)
-})
+const isFormValid = computed(
+  () => Object.keys(validationResults.value).length > 0 && isAllValid(validationResults.value)
+)
 
 definePageMeta({
   title: '資料驗證 (Validation)',

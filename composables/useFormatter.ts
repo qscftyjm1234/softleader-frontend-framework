@@ -135,18 +135,14 @@ export function useFormatter() {
    * @param value - 字串
    * @returns 格式化後的字串
    */
-  const uppercase = (value: string): string => {
-    return value ? value.toUpperCase() : ''
-  }
+  const uppercase = (value: string): string => (value ? value.toUpperCase() : '')
 
   /**
    * 字串轉小寫
    * @param value - 字串
    * @returns 格式化後的字串
    */
-  const lowercase = (value: string): string => {
-    return value ? value.toLowerCase() : ''
-  }
+  const lowercase = (value: string): string => (value ? value.toLowerCase() : '')
 
   /**
    * 字串截斷
@@ -166,18 +162,14 @@ export function useFormatter() {
    * @param value - 字串
    * @returns 格式化後的字串
    */
-  const trim = (value: string): string => {
-    return value ? value.trim() : ''
-  }
+  const trim = (value: string): string => (value ? value.trim() : '')
 
   /**
    * 移除字串所有空白
    * @param value - 字串
    * @returns 格式化後的字串
    */
-  const removeSpaces = (value: string): string => {
-    return value ? value.replace(/\s/g, '') : ''
-  }
+  const removeSpaces = (value: string): string => (value ? value.replace(/\s/g, '') : '')
 
   /**
    * JSON 格式化（美化）
@@ -216,9 +208,8 @@ export function useFormatter() {
    * @param length - 總長度
    * @returns 格式化後的字串
    */
-  const padZero = (value: number | string, length: number = 2): string => {
-    return String(value).padStart(length, '0')
-  }
+  const padZero = (value: number | string, length: number = 2): string =>
+    String(value).padStart(length, '0')
 
   /**
    * 隱藏部分字串（遮罩）
@@ -249,7 +240,7 @@ export function useFormatter() {
 
     const [username, domain] = email.split('@')
     const visibleChars = Math.min(3, Math.floor(username.length / 2))
-    const maskedUsername = username.slice(0, visibleChars) + '***'
+    const maskedUsername = `${username.slice(0, visibleChars)}***`
 
     return `${maskedUsername}@${domain}`
   }
@@ -285,9 +276,7 @@ export function useFormatter() {
    * @param value - 字串
    * @returns 編碼後的字串
    */
-  const encodeUrl = (value: string): string => {
-    return value ? encodeURIComponent(value) : ''
-  }
+  const encodeUrl = (value: string): string => (value ? encodeURIComponent(value) : '')
 
   /**
    * URL 解碼

@@ -8,12 +8,7 @@ import {
   setRequestIdHeader,
   setCsrfHeader
 } from '~/utils/api/interceptors/request'
-import {
-  checkPerformance,
-  checkAuth,
-  checkApiError,
-  checkRefreshToken
-} from '~/utils/api/interceptors/response'
+import { checkPerformance, checkAuth, checkApiError } from '~/utils/api/interceptors/response'
 import { checkMockData } from '~/mock/core'
 // import { useLoadingStore } from '~/stores/loading' // Removed
 
@@ -24,6 +19,7 @@ type UseApiOptions<T> = UseFetchOptions<T> & {
   autoSuccess?: boolean | string
   loadingRef?: Ref<boolean>
   auth?: boolean
+  /** 動態路徑前綴 */
   prefix?: string // [NEW] 支援動態路徑前綴
 }
 
@@ -113,9 +109,6 @@ export function useApi<T>(
 
       // 3. 錯誤處理
       checkApiError(response)
-
-      // 4. Token 更新 (預留)
-      // checkRefreshToken(response, config)
     },
 
     // 錯誤攔截器：當請求失敗時執行
@@ -278,14 +271,13 @@ export function useApi<T>(
  */
 export const useClient = (prefix: string) => {
   // 核心 helper：統一處理 method 與 prefix 注入
-  const call = <T>(method: string, url: string, body?: any, options: UseApiOptions<T> = {}) => {
-    return useApi<T>(url, {
+  const call = <T>(method: string, url: string, body?: any, options: UseApiOptions<T> = {}) =>
+    useApi<T>(url, {
       ...options,
       method: method as any,
       prefix,
       body
     })
-  }
 
   return {
     get: <T>(url: string, options: UseApiOptions<T> = {}) =>

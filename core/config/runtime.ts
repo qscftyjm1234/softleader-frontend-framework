@@ -33,7 +33,7 @@ export const runtimeConfig = {
        * 這樣前端頁面也能知道目前啟用哪些模組，或讀取產品特定的 UI 設定。
        * 注意：這是 Build Time 決定的，Runtime 無法動態改變 YAML 內容。
        */
-      productConfig: productConfig
+      productConfig
     },
 
     // 資安模式開關（預設關閉）

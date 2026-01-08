@@ -9,8 +9,8 @@ const appName = config.public.app.productConfig?.meta?.title || 'Frontend Kit'
 // 簡單導航
 const navItems = [
   { label: '首頁', to: '/' },
-  { label: '模組', to: '/showcase' },
-  { label: 'API 說明', to: '/showcase/api-demo' }
+  { label: '開發指南', to: '/showcase/development' },
+  { label: '模組', to: '/showcase' }
 ]
 </script>
 

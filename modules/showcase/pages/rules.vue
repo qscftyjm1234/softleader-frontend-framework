@@ -177,6 +177,102 @@ definePageMeta({
             </div>
           </div>
         </div>
+
+        <!-- Function Naming Cheat Sheet -->
+        <div class="naming-cheatsheet mt-8">
+          <div class="cheatsheet-title">
+            <v-icon
+              color="amber-400"
+              size="20"
+              class="mr-2"
+            >
+              mdi-lightbulb-on
+            </v-icon>
+            函式命名動詞速查表 (Cheat Sheet)
+          </div>
+          <div class="cheatsheet-grid">
+            <!-- Actions -->
+            <div class="verb-category action-category">
+              <div class="verb-header">
+                <span class="verb-type">單一動作 (Actions)</span>
+                <span class="verb-desc">單純的 CRUD 或狀態改變</span>
+              </div>
+              <div class="verb-list">
+                <span class="verb-badge">get</span>
+                <span class="verb-badge">set</span>
+                <span class="verb-badge">fetch</span>
+                <span class="verb-badge">create</span>
+                <span class="verb-badge">update</span>
+                <span class="verb-badge">delete</span>
+                <span class="verb-badge">add</span>
+                <span class="verb-badge">remove</span>
+                <span class="verb-badge">show</span>
+                <span class="verb-badge">hide</span>
+                <span class="verb-badge">open</span>
+                <span class="verb-badge">close</span>
+                <span class="verb-badge">toggle</span>
+                <span class="verb-badge">clear</span>
+                <span class="verb-badge">reset</span>
+              </div>
+            </div>
+
+            <!-- Handlers -->
+            <div class="verb-category handler-category">
+              <div class="verb-header">
+                <span class="verb-type">流程與事件 (Process)</span>
+                <span class="verb-desc">多步驟處理或事件監聽</span>
+              </div>
+              <div class="verb-list">
+                <span class="verb-badge">handle</span>
+                <span class="verb-badge">on</span>
+                <span class="verb-badge">init</span>
+                <span class="verb-badge">initialize</span>
+                <span class="verb-badge">process</span>
+                <span class="verb-badge">execute</span>
+                <span class="verb-badge">perform</span>
+                <span class="verb-badge">compute</span>
+                <span class="verb-badge">setup</span>
+                <span class="verb-badge">run</span>
+              </div>
+            </div>
+
+            <!-- Checks -->
+            <div class="verb-category check-category">
+              <div class="verb-header">
+                <span class="verb-type">狀態判斷 (Checks)</span>
+                <span class="verb-desc">回傳 Boolean 值</span>
+              </div>
+              <div class="verb-list">
+                <span class="verb-badge">is</span>
+                <span class="verb-badge">has</span>
+                <span class="verb-badge">should</span>
+                <span class="verb-badge">can</span>
+                <span class="verb-badge">did</span>
+                <span class="verb-badge">will</span>
+                <span class="verb-badge">check</span>
+                <span class="verb-badge">verify</span>
+                <span class="verb-badge">validate</span>
+              </div>
+            </div>
+
+            <!-- System / Data -->
+            <div class="verb-category system-category">
+              <div class="verb-header">
+                <span class="verb-type">System & Data</span>
+                <span class="verb-desc">composables, format, build...</span>
+              </div>
+              <div class="verb-list">
+                <span class="verb-badge">use</span>
+                <span class="verb-badge">format</span>
+                <span class="verb-badge">mask</span>
+                <span class="verb-badge">parse</span>
+                <span class="verb-badge">build</span>
+                <span class="verb-badge">register</span>
+                <span class="verb-badge">scan</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </ShowcaseCard>
     </ShowcaseSection>
 
@@ -578,11 +674,128 @@ definePageMeta({
       </div>
     </ShowcaseSection>
 
+    <!-- 2.5 Architecture Standards -->
+    <ShowcaseSection
+      title="架構規範 (Architecture)"
+      icon="mdi-domain"
+      class="stagger-3"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- API Layer -->
+        <ShowcaseCard
+          title="API 資料層 (Repository Pattern)"
+          description="資料請求必須封裝，禁止 Component 直接呼叫。"
+          full-width
+        >
+          <div class="arch-card-content">
+            <div class="arch-do-dont">
+              <div class="arch-block valid">
+                <div class="arch-badge">
+                  <v-icon
+                    size="14"
+                    class="mr-1"
+                  >
+                    mdi-check
+                  </v-icon>
+                  Do (Repository)
+                </div>
+                <ShowcaseCodeBlock
+                  code="// services/userRepo.ts
+export const userRepo = {
+  getProfile() {
+    return client.get('/me')
+  }
+}
+
+// In Component
+const { data } = await userRepo.getProfile()"
+                  language="typescript"
+                  class="mt-2"
+                />
+              </div>
+              <div class="arch-block invalid">
+                <div class="arch-badge">
+                  <v-icon
+                    size="14"
+                    class="mr-1"
+                  >
+                    mdi-close
+                  </v-icon>
+                  Don't (Direct Call)
+                </div>
+                <ShowcaseCodeBlock
+                  code="// ❌ 禁止在 Component 寫 URL
+const { data } = await useFetch('/api/me')
+
+// ❌ 禁止直接用 axios
+axios.get('https://api.com/me')"
+                  language="typescript"
+                  class="mt-2"
+                />
+              </div>
+            </div>
+          </div>
+        </ShowcaseCard>
+
+        <!-- Composables -->
+        <ShowcaseCard
+          title="Composables 設計規範"
+          description="邏輯複用 (Hooks) 的標準寫法。"
+          full-width
+        >
+          <div class="arch-card-content">
+            <ul class="arch-rules-list">
+              <li>
+                <span class="rule-key">命名慣例</span>
+                <span class="rule-val">
+                  必須以
+                  <code>use</code>
+                  開頭 (camelCase)
+                </span>
+              </li>
+              <li>
+                <span class="rule-key">回傳格式</span>
+                <span class="rule-val">
+                  必須回傳
+                  <code>Object</code>
+                  以利解構
+                </span>
+              </li>
+              <li>
+                <span class="rule-key">狀態管理</span>
+                <span class="rule-val">區分 Pinia (Global) 與 Ref (Local)</span>
+              </li>
+            </ul>
+            <ShowcaseCodeBlock
+              code="// composables/useCounter.ts
+export function useCounter() {
+  const count = ref(0)
+  const double = computed(() => count.value * 2)
+  
+  function increment() {
+    count.value++
+  }
+
+  // ✅ Return Object
+  return {
+    count,
+    double,
+    increment
+  }
+}"
+              language="typescript"
+              class="mt-4"
+            />
+          </div>
+        </ShowcaseCard>
+      </div>
+    </ShowcaseSection>
+
     <!-- 3. TypeScript Rules -->
     <ShowcaseSection
       title="TypeScript 使用規則"
       icon="mdi-language-typescript"
-      class="stagger-3"
+      class="stagger-4"
     >
       <ShowcaseCard
         title="型別標註規範"
@@ -921,6 +1134,90 @@ type ApiResponse<T> = {
           </ShowcaseCard>
         </div>
       </div>
+
+      <!-- Git Flow Diagram -->
+      <ShowcaseCard
+        title="標準開發流程 (Git Flow)"
+        description="從更新代碼到提交推送的完整步驟。"
+        full-width
+        class="mt-6"
+      >
+        <div class="git-flow">
+          <!-- Step 1 -->
+          <div class="flow-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <span class="step-label">Update</span>
+              <code class="step-cmd">git pull</code>
+            </div>
+          </div>
+
+          <div class="flow-arrow">
+            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flow-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <span class="step-label">Branch</span>
+              <code class="step-cmd">git checkout -b...</code>
+            </div>
+          </div>
+
+          <div class="flow-arrow">
+            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flow-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <span class="step-label">Develop</span>
+              <div class="step-desc">Coding...</div>
+            </div>
+          </div>
+
+          <div class="flow-arrow">
+            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flow-step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <span class="step-label">Stage</span>
+              <code class="step-cmd">git add .</code>
+            </div>
+          </div>
+
+          <div class="flow-arrow">
+            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="flow-step interact">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <span class="step-label">Commit</span>
+              <code class="step-cmd highlight">npm run commit</code>
+            </div>
+          </div>
+
+          <div class="flow-arrow">
+            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="flow-step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <span class="step-label">Push</span>
+              <code class="step-cmd">git push</code>
+            </div>
+          </div>
+        </div>
+      </ShowcaseCard>
     </ShowcaseSection>
 
     <!-- 5. Quality Assurance -->
@@ -1012,37 +1309,6 @@ type ApiResponse<T> = {
           <h3 class="category-title">自動檢查工具 (ESLint)</h3>
         </div>
         <div class="packages-grid">
-          <!-- Vue Best Practices -->
-          <div class="package-card">
-            <div class="package-header">
-              <div class="package-name">Vue 最佳實踐</div>
-              <v-icon
-                size="20"
-                color="emerald-400"
-              >
-                mdi-vuejs
-              </v-icon>
-            </div>
-            <div class="config-badge flex-col items-start gap-1">
-              <span>vue/max-attributes-per-line</span>
-              <span>vue/max-len</span>
-              <span>vue/no-v-html</span>
-            </div>
-            <div class="package-desc">強制屬性換行與長度限制</div>
-            <div class="package-install">
-              <ShowcaseCodeBlock
-                code="<!-- 屬性超過 1 個必須換行 -->
-<MyComponent
-  first-prop='value'
-  second-prop='value'
-/>
-
-<!-- 最多 120 字元 -->"
-                language="html"
-              />
-            </div>
-          </div>
-
           <!-- TypeScript Check -->
           <div class="package-card">
             <div class="package-header">
@@ -1552,18 +1818,6 @@ const get = () => { return 'value' }"
             />
           </div>
 
-          <!-- order-in-components -->
-          <div class="config-rule-item">
-            <div class="rule-info">
-              <span class="rule-name">order-in-components</span>
-              <span class="rule-desc">Options API 順序</span>
-              <span class="rule-badge error">Error</span>
-            </div>
-            <div class="text-xs text-slate-400 mt-2 px-3 mb-2">
-              Props → Data → Computed → Methods
-            </div>
-          </div>
-
           <!-- block-lang -->
           <div class="config-rule-item">
             <div class="rule-info">
@@ -1575,6 +1829,171 @@ const get = () => { return 'value' }"
               code="<script lang='ts'>"
               language="html"
             />
+          </div>
+
+          <!-- max-attributes-per-line -->
+          <div class="config-rule-item">
+            <div class="rule-info">
+              <span class="rule-name">max-attributes-per-line</span>
+              <span class="rule-desc">多屬性換行</span>
+              <div class="config-source">
+                <span>單行: 1 / 多行: 1</span>
+              </div>
+              <span class="rule-badge error">Error</span>
+            </div>
+            <ShowcaseCodeBlock
+              code="<!-- ✅ Correct -->
+<MyComponent
+  prop-a='1'
+  prop-b='2'
+/>
+
+<!-- ❌ Wrong -->
+<MyComponent prop-a='1' prop-b='2' />"
+              language="html"
+            />
+          </div>
+
+          <!-- max-len -->
+          <div class="config-rule-item">
+            <div class="rule-info">
+              <span class="rule-name">max-len</span>
+              <span class="rule-desc">單行長度限制</span>
+              <div class="config-source">
+                <span>120 字元</span>
+              </div>
+              <span class="rule-badge error">Error</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-2 px-3 mb-2">
+              包含 HTML Template 與 Script 代碼，超過 120 字元必須換行。
+            </div>
+          </div>
+        </div>
+      </ShowcaseCard>
+
+      <!-- Allowed Patterns (Rules set to 'off') -->
+      <ShowcaseCard
+        title="允許的開發模式 (Allowed Patterns)"
+        description="列出專案中已關閉的 ESLint 規則與其例外原因。"
+        full-width
+        class="mt-6"
+      >
+        <div class="allowed-grid-pro">
+          <!-- multi-word-component-names -->
+          <div class="allowed-card">
+            <div class="allowed-icon-wrapper">
+              <v-icon
+                size="24"
+                color="emerald-400"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </div>
+            <div class="allowed-content">
+              <div class="allowed-head">
+                <span class="allowed-title">multi-word-component-names</span>
+                <span class="allowed-tag">Permitted</span>
+              </div>
+              <p class="allowed-text">
+                允許單字元件名稱 (如
+                <code>Login.vue</code>
+                )，無需強制使用複合字 (如
+                <code>LoginPage.vue</code>
+                )。
+              </p>
+            </div>
+          </div>
+
+          <!-- no-multiple-template-root -->
+          <div class="allowed-card">
+            <div class="allowed-icon-wrapper">
+              <v-icon
+                size="24"
+                color="emerald-400"
+              >
+                mdi-layers-triple-outline
+              </v-icon>
+            </div>
+            <div class="allowed-content">
+              <div class="allowed-head">
+                <span class="allowed-title">no-multiple-template-root</span>
+                <span class="allowed-tag">Permitted</span>
+              </div>
+              <p class="allowed-text">
+                Vue 3 原生支援 Fragment，Template 中可擁有多個根節點，無需外層包裹
+                <code>div</code>
+                。
+              </p>
+            </div>
+          </div>
+
+          <!-- html-self-closing -->
+          <div class="allowed-card">
+            <div class="allowed-icon-wrapper">
+              <v-icon
+                size="24"
+                color="emerald-400"
+              >
+                mdi-code-tags
+              </v-icon>
+            </div>
+            <div class="allowed-content">
+              <div class="allowed-head">
+                <span class="allowed-title">html-self-closing</span>
+                <span class="allowed-tag">Permitted</span>
+              </div>
+              <p class="allowed-text">
+                HTML 標籤不強制自閉合，保持 HTML 原生寫法彈性 (如
+                <code>&lt;div&gt;&lt;/div&gt;</code>
+                )。
+              </p>
+            </div>
+          </div>
+
+          <!-- no-empty-alt -->
+          <div class="allowed-card">
+            <div class="allowed-icon-wrapper">
+              <v-icon
+                size="24"
+                color="emerald-400"
+              >
+                mdi-image-off-outline
+              </v-icon>
+            </div>
+            <div class="allowed-content">
+              <div class="allowed-head">
+                <span class="allowed-title">no-empty-alt</span>
+                <span class="allowed-tag">Permitted</span>
+              </div>
+              <p class="allowed-text">
+                允許裝飾性圖片使用空
+                <code>alt=""</code>
+                屬性，避免螢幕閱讀器讀取多餘資訊。
+              </p>
+            </div>
+          </div>
+
+          <!-- valid-v-slot -->
+          <div class="allowed-card">
+            <div class="allowed-icon-wrapper">
+              <v-icon
+                size="24"
+                color="emerald-400"
+              >
+                mdi-contain
+              </v-icon>
+            </div>
+            <div class="allowed-content">
+              <div class="allowed-head">
+                <span class="allowed-title">valid-v-slot</span>
+                <span class="allowed-tag">Permitted</span>
+              </div>
+              <p class="allowed-text">
+                關閉
+                <code>v-slot</code>
+                語法強制檢查，允許使用動態插槽名稱與更靈活的 Slot 寫法。
+              </p>
+            </div>
           </div>
         </div>
       </ShowcaseCard>
@@ -2585,5 +3004,419 @@ const get = () => { return 'value' }"
 .config-rule-item.allowed:hover {
   background: rgba(16, 185, 129, 0.1);
   border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Allowed Patterns Pro Grid */
+.allowed-grid-pro {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .allowed-grid-pro {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.allowed-card {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.allowed-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(52, 211, 153, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.allowed-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #34d399;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.allowed-card:hover::before {
+  opacity: 1;
+}
+
+.allowed-icon-wrapper {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
+
+.allowed-content {
+  flex: 1;
+}
+
+.allowed-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.allowed-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  word-break: break-all;
+}
+
+.allowed-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.6rem;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.allowed-text {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.allowed-text code {
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+}
+
+/* Git Flow Visual */
+.git-flow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 1rem 0.5rem;
+}
+
+.flow-step {
+  position: relative;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.3s;
+}
+
+.flow-step:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(96, 165, 250, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.step-num {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 24px;
+  height: 24px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.step-cmd {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.step-desc {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+.flow-step.interact {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.flow-step.interact .step-num {
+  background: #10b981;
+}
+
+.flow-step.interact .step-cmd.highlight {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.flow-arrow {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .git-flow {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+    margin: 0.5rem 0;
+    display: none; /* Hide arrows on wrap to simplify */
+  }
+}
+
+/* Function Naming Cheat Sheet */
+.naming-cheatsheet {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.cheatsheet-title {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.cheatsheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.verb-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.verb-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.verb-type {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.verb-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.verb-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.verb-badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  cursor: default;
+  transition: all 0.2s;
+}
+
+/* Action Verbs */
+.action-category .verb-type {
+  color: #60a5fa;
+}
+.action-category .verb-badge {
+  background: rgba(96, 165, 250, 0.1);
+  color: #93c5fd;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
+.action-category .verb-badge:hover {
+  background: rgba(96, 165, 250, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Handler Verbs */
+.handler-category .verb-type {
+  color: #34d399;
+}
+.handler-category .verb-badge {
+  background: rgba(52, 211, 153, 0.1);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+.handler-category .verb-badge:hover {
+  background: rgba(52, 211, 153, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Check Verbs */
+.check-category .verb-type {
+  color: #f472b6;
+}
+.check-category .verb-badge {
+  background: rgba(244, 114, 182, 0.1);
+  color: #f9a8d4;
+  border: 1px solid rgba(244, 114, 182, 0.2);
+}
+.check-category .verb-badge:hover {
+  background: rgba(244, 114, 182, 0.2);
+  transform: translateY(-1px);
+}
+
+/* System Verbs */
+.system-category .verb-type {
+  color: #a78bfa;
+}
+.system-category .verb-badge {
+  background: rgba(167, 139, 250, 0.1);
+  color: #c4b5fd;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+.system-category .verb-badge:hover {
+  background: rgba(167, 139, 250, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Architecture Standards */
+.arch-card-content {
+  margin-top: 1rem;
+}
+
+.arch-do-dont {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.arch-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.arch-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.arch-block.valid .arch-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.arch-block.invalid .arch-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.arch-rules-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(30, 41, 59, 0.4);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.arch-rules-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.75rem;
+}
+
+.arch-rules-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rule-key {
+  color: #94a3b8;
+}
+
+.rule-val {
+  color: #cbd5e1;
+  font-weight: 500;
+  text-align: right;
+}
+
+.rule-val code {
+  color: #f472b6;
+  background: rgba(244, 114, 182, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85em;
 }
 </style>

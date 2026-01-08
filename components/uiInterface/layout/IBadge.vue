@@ -29,9 +29,9 @@ const displayContent = computed(() => {
 })
 
 // 是否顯示徽章
-const shouldShow = computed(() => {
-  return props.dot || (props.content !== undefined && props.content !== '' && props.content !== 0)
-})
+const shouldShow = computed(
+  () => props.dot || (props.content !== undefined && props.content !== '' && props.content !== 0)
+)
 </script>
 
 <template>

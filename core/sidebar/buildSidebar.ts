@@ -59,52 +59,45 @@ export function buildSidebar({
   customFilter
 }: BuildSidebarOptions) {
   // 遞迴處理函式
-  const processItems = (items: SidebarItem[], moduleName: string): SidebarItem[] => {
-    return (
-      items
-        .map((item) => ({ ...item, module: moduleName })) // 注入模組名稱
-        .filter((item) => {
-          // 1. 權限過濾
-          // 1. 權限過濾 (支援 '*' 為超級管理員權限)
-          if (
-            item.permission &&
-            !permissions.includes('*') &&
-            !permissions.includes(item.permission)
-          )
-            return false
-          // 2. 自定義過濾
-          if (customFilter && !customFilter(item)) return false
-          return true
-        })
-        .map((item) => {
-          const newItem: SidebarItem = {
-            label: item.label,
-            icon: item.icon,
-            permission: item.permission, // 保留 permission 供除錯或後續使用
-            to: item.to ?? item.path ?? '',
-            disabled: item.disabled ?? false,
-            module: item.module
-          }
+  const processItems = (items: SidebarItem[], moduleName: string): SidebarItem[] =>
+    items
+      .map((item) => ({ ...item, module: moduleName })) // 注入模組名稱
+      .filter((item) => {
+        // 1. 權限過濾
+        // 1. 權限過濾 (支援 '*' 為超級管理員權限)
+        if (item.permission && !permissions.includes('*') && !permissions.includes(item.permission))
+          return false
+        // 2. 自定義過濾
+        if (customFilter && !customFilter(item)) return false
+        return true
+      })
+      .map((item) => {
+        const newItem: SidebarItem = {
+          label: item.label,
+          icon: item.icon,
+          permission: item.permission, // 保留 permission 供除錯或後續使用
+          to: item.to ?? item.path ?? '',
+          disabled: item.disabled ?? false,
+          module: item.module
+        }
 
-          // 遞迴處理子選單
-          if (item.children && item.children.length > 0) {
-            const processedChildren = processItems(item.children, moduleName)
-            if (processedChildren.length > 0) {
-              newItem.children = processedChildren
-            }
+        // 遞迴處理子選單
+        if (item.children && item.children.length > 0) {
+          const processedChildren = processItems(item.children, moduleName)
+          if (processedChildren.length > 0) {
+            newItem.children = processedChildren
           }
+        }
 
-          return newItem
-        })
-        // 過濾掉沒有子項目且沒有連結的父層 (視需求而定，這裡假設如果父層沒連結且子層都被過濾光了，父層也該隱藏)
-        // 但如果父層本身有連結，則保留
-        .filter((item) => {
-          const hasChildren = item.children && item.children.length > 0
-          const hasLink = !!item.to
-          return hasChildren || hasLink
-        })
-    )
-  }
+        return newItem
+      })
+      // 過濾掉沒有子項目且沒有連結的父層 (視需求而定，這裡假設如果父層沒連結且子層都被過濾光了，父層也該隱藏)
+      // 但如果父層本身有連結，則保留
+      .filter((item) => {
+        const hasChildren = item.children && item.children.length > 0
+        const hasLink = !!item.to
+        return hasChildren || hasLink
+      })
 
   return sidebarRegistry
     .filter((m) => enabledModules.includes(m.module))

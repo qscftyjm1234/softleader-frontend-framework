@@ -54,51 +54,37 @@ export function usePagination(options: PaginationOptions = {}) {
   /**
    * 計算總頁數
    */
-  const totalPages = computed(() => {
-    return Math.ceil(total.value / pageSize.value)
-  })
+  const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
   /**
    * 是否有上一頁
    */
-  const hasPrev = computed(() => {
-    return currentPage.value > 1
-  })
+  const hasPrev = computed(() => currentPage.value > 1)
 
   /**
    * 是否有下一頁
    */
-  const hasNext = computed(() => {
-    return currentPage.value < totalPages.value
-  })
+  const hasNext = computed(() => currentPage.value < totalPages.value)
 
   /**
    * 當前頁的起始索引（從 0 開始）
    */
-  const startIndex = computed(() => {
-    return (currentPage.value - 1) * pageSize.value
-  })
+  const startIndex = computed(() => (currentPage.value - 1) * pageSize.value)
 
   /**
    * 當前頁的結束索引（從 0 開始）
    */
-  const endIndex = computed(() => {
-    return Math.min(startIndex.value + pageSize.value - 1, total.value - 1)
-  })
+  const endIndex = computed(() => Math.min(startIndex.value + pageSize.value - 1, total.value - 1))
 
   /**
    * 當前頁的起始筆數（從 1 開始）
    */
-  const startItem = computed(() => {
-    return total.value === 0 ? 0 : startIndex.value + 1
-  })
+  const startItem = computed(() => (total.value === 0 ? 0 : startIndex.value + 1))
 
   /**
    * 當前頁的結束筆數（從 1 開始）
    */
-  const endItem = computed(() => {
-    return Math.min(startIndex.value + pageSize.value, total.value)
-  })
+  const endItem = computed(() => Math.min(startIndex.value + pageSize.value, total.value))
 
   /**
    * 分頁資訊
@@ -199,7 +185,7 @@ export function usePagination(options: PaginationOptions = {}) {
     const half = Math.floor(maxButtons / 2)
 
     let start = Math.max(1, currentPage.value - half)
-    let end = Math.min(totalPages.value, start + maxButtons - 1)
+    const end = Math.min(totalPages.value, start + maxButtons - 1)
 
     // 調整起始位置
     if (end - start + 1 < maxButtons) {
@@ -216,25 +202,19 @@ export function usePagination(options: PaginationOptions = {}) {
   /**
    * 計算 offset（用於 API 請求）
    */
-  const offset = computed(() => {
-    return startIndex.value
-  })
+  const offset = computed(() => startIndex.value)
 
   /**
    * 計算 limit（用於 API 請求）
    */
-  const limit = computed(() => {
-    return pageSize.value
-  })
+  const limit = computed(() => pageSize.value)
 
   /**
    * 對陣列進行分頁
    * @param array - 原始陣列
    * @returns 當前頁的資料
    */
-  const paginateArray = <T>(array: T[]): T[] => {
-    return array.slice(startIndex.value, endIndex.value + 1)
-  }
+  const paginateArray = <T>(array: T[]): T[] => array.slice(startIndex.value, endIndex.value + 1)
 
   return {
     // 狀態

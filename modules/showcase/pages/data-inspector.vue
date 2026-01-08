@@ -30,7 +30,7 @@ const deviceInfo = computed(() => ({
 const { locale, locales, strategy } = useI18n()
 const i18nInfo = computed(() => ({
   currentLocale: locale.value,
-  strategy: strategy,
+  strategy,
   availableLocales: locales.value
 }))
 

@@ -80,17 +80,16 @@ export function useModal(): UseModalReturn {
    * 生成唯一 ID
    * @returns 唯一 ID
    */
-  const generateId = (): string => {
-    return `modal-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-  }
+  const generateId = (): string =>
+    `modal-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 
   /**
    * 開啟彈窗
    * @param config - 彈窗設定
    * @returns Promise，解析為使用者是否確認
    */
-  const open = (config: ModalConfig): Promise<boolean> => {
-    return new Promise((resolve) => {
+  const open = (config: ModalConfig): Promise<boolean> =>
+    new Promise((resolve) => {
       const id = generateId()
 
       const modal: ModalInstance = {
@@ -115,7 +114,6 @@ export function useModal(): UseModalReturn {
 
       modals.value.push(modal)
     })
-  }
 
   /**
    * 關閉彈窗
@@ -145,20 +143,19 @@ export function useModal(): UseModalReturn {
    * @param config - 彈窗設定
    * @returns Promise，解析為使用者是否確認
    */
-  const confirm = (config: ModalConfig): Promise<boolean> => {
-    return open({
+  const confirm = (config: ModalConfig): Promise<boolean> =>
+    open({
       showCancel: true,
       ...config
     })
-  }
 
   /**
    * 警告對話框
    * @param config - 彈窗設定
    * @returns Promise，在使用者確認後解析
    */
-  const alert = (config: ModalConfig): Promise<void> => {
-    return new Promise((resolve) => {
+  const alert = (config: ModalConfig): Promise<void> =>
+    new Promise((resolve) => {
       const id = generateId()
 
       const modal: ModalInstance = {
@@ -178,7 +175,6 @@ export function useModal(): UseModalReturn {
 
       modals.value.push(modal)
     })
-  }
 
   return {
     open,

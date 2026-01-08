@@ -60,10 +60,10 @@ export const interest: OptionItem[] = [
 ]
 
 /** 假資料:響應式選項 (Computed 範例) */
-export const vocabularies = computed(() => {
+export const vocabularies = computed(() =>
   // 模擬： userId 透過 store異動等等
-  return [
+  [
     { label: '蘋果', value: 'apple' },
     { label: '香蕉', value: 'banana' }
   ]
-})
+)

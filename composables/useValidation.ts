@@ -162,8 +162,9 @@ export function useValidation() {
    * @param message - 自訂錯誤訊息
    * @returns 驗證函數
    */
-  const minLength = (min: number, message?: string) => {
-    return (value: string): ValidationResult => {
+  const minLength =
+    (min: number, message?: string) =>
+    (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
       const isValid = value.length >= min
@@ -172,7 +173,6 @@ export function useValidation() {
         message: isValid ? undefined : message || `長度不得少於 ${min} 個字元`
       }
     }
-  }
 
   /**
    * 最大長度驗證
@@ -180,8 +180,9 @@ export function useValidation() {
    * @param message - 自訂錯誤訊息
    * @returns 驗證函數
    */
-  const maxLength = (max: number, message?: string) => {
-    return (value: string): ValidationResult => {
+  const maxLength =
+    (max: number, message?: string) =>
+    (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
       const isValid = value.length <= max
@@ -190,7 +191,6 @@ export function useValidation() {
         message: isValid ? undefined : message || `長度不得超過 ${max} 個字元`
       }
     }
-  }
 
   /**
    * 數字範圍驗證
@@ -199,8 +199,9 @@ export function useValidation() {
    * @param message - 自訂錯誤訊息
    * @returns 驗證函數
    */
-  const range = (min: number, max: number, message?: string) => {
-    return (value: number): ValidationResult => {
+  const range =
+    (min: number, max: number, message?: string) =>
+    (value: number): ValidationResult => {
       if (value === null || value === undefined) return { valid: true }
 
       const isValid = value >= min && value <= max
@@ -209,7 +210,6 @@ export function useValidation() {
         message: isValid ? undefined : message || `數值必須介於 ${min} 到 ${max} 之間`
       }
     }
-  }
 
   /**
    * 數字驗證
@@ -265,8 +265,9 @@ export function useValidation() {
    * @param message - 自訂錯誤訊息
    * @returns 驗證函數
    */
-  const pattern = (regex: RegExp, message: string = '格式不正確') => {
-    return (value: string): ValidationResult => {
+  const pattern =
+    (regex: RegExp, message: string = '格式不正確') =>
+    (value: string): ValidationResult => {
       if (!value) return { valid: true }
 
       const isValid = regex.test(value)
@@ -275,7 +276,6 @@ export function useValidation() {
         message: isValid ? undefined : message
       }
     }
-  }
 
   /**
    * 相同值驗證（確認密碼）
@@ -283,15 +283,15 @@ export function useValidation() {
    * @param message - 自訂錯誤訊息
    * @returns 驗證函數
    */
-  const sameAs = (targetValue: any, message: string = '兩次輸入不一致') => {
-    return (value: any): ValidationResult => {
+  const sameAs =
+    (targetValue: any, message: string = '兩次輸入不一致') =>
+    (value: any): ValidationResult => {
       const isValid = value === targetValue
       return {
         valid: isValid,
         message: isValid ? undefined : message
       }
     }
-  }
 
   /**
    * 批次驗證
@@ -311,11 +311,9 @@ export function useValidation() {
             message: '驗證失敗'
           }
         }
-      } else {
+      } else if (!result.valid) {
         // 處理 ValidationResult 回傳
-        if (!result.valid) {
-          return result
-        }
+        return result
       }
     }
 
@@ -348,9 +346,8 @@ export function useValidation() {
    * @param results - 驗證結果物件
    * @returns 是否全部有效
    */
-  const isAllValid = (results: Record<string, ValidationResult>): boolean => {
-    return Object.values(results).every((result) => result.valid)
-  }
+  const isAllValid = (results: Record<string, ValidationResult>): boolean =>
+    Object.values(results).every((result) => result.valid)
 
   /**
    * 陣列驗證
@@ -358,9 +355,8 @@ export function useValidation() {
    * @param rules - 驗證規則
    * @returns 驗證結果陣列
    */
-  const validateArray = (values: any[], rules: ValidationRule[]): ValidationResult[] => {
-    return values.map((value) => validate(value, rules))
-  }
+  const validateArray = (values: any[], rules: ValidationRule[]): ValidationResult[] =>
+    values.map((value) => validate(value, rules))
 
   /**
    * 陣列驗證 (簡易版)

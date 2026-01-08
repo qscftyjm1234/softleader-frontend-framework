@@ -30,9 +30,9 @@ const tabOptions = [
 
 // MDI 速查表與搜尋
 const searchQuery = ref('')
-const totalIcons = computed(() => {
-  return Object.values(iconCategories).reduce((acc, curr) => acc + curr.length, 0)
-})
+const totalIcons = computed(() =>
+  Object.values(iconCategories).reduce((acc, curr) => acc + curr.length, 0)
+)
 
 const filteredCategories = computed(() => {
   if (!searchQuery.value) return iconCategories

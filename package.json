@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "lint": "eslint . --fix",
+    "lint": "cross-env NODE_OPTIONS=--max-old-space-size=4096 eslint . --fix",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",

@@ -105,9 +105,7 @@ export function useStorage(type: 'local' | 'session' = 'local') {
    * @param key - 鍵
    * @returns 是否存在
    */
-  const hasItem = (key: string): boolean => {
-    return storage.getItem(key) !== null
-  }
+  const hasItem = (key: string): boolean => storage.getItem(key) !== null
 
   /**
    * 取得所有鍵
@@ -126,9 +124,7 @@ export function useStorage(type: 'local' | 'session' = 'local') {
    * 取得儲存項目數量
    * @returns 數量
    */
-  const length = (): number => {
-    return storage.length
-  }
+  const length = (): number => storage.length
 
   /**
    * 建立響應式儲存
@@ -203,10 +199,12 @@ export function useStorage(type: 'local' | 'session' = 'local') {
 
 /**
  * LocalStorage 快捷方法
+ * @returns LocalStorage 操作介面
  */
 export const useLocalStorage = () => useStorage('local')
 
 /**
  * SessionStorage 快捷方法
+ * @returns SessionStorage 操作介面
  */
 export const useSessionStorage = () => useStorage('session')

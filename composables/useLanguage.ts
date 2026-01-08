@@ -31,17 +31,17 @@ export const useLanguage = () => {
   /**
    * 目前的語系設定物件
    */
-  const currentLocale = computed(() => {
-    return (locales.value as any[]).find((l) => l.code === locale.value)
-  })
+  const currentLocale = computed(() =>
+    (locales.value as any[]).find((l) => l.code === locale.value)
+  )
 
   /**
    * 其他可用的語系清單 (排除目前語系)
    * 用於語言切換選單
    */
-  const availableLocales = computed(() => {
-    return (locales.value as any[]).filter((l) => l.code !== locale.value)
-  })
+  const availableLocales = computed(() =>
+    (locales.value as any[]).filter((l) => l.code !== locale.value)
+  )
 
   return {
     locale,

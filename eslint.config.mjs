@@ -211,7 +211,17 @@ export default [
             'check',
             'verify',
             // 事件
-            'on'
+            'on',
+            // Composables
+            'use',
+            // 資料處理
+            'format',
+            'mask',
+            'parse',
+            // 系統建置/註冊
+            'build',
+            'register',
+            'scan'
           ]
         },
         {

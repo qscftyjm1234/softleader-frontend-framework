@@ -56,9 +56,8 @@ export function useErrorHandler(): UseErrorHandlerReturn {
    * 生成唯一 ID
    * @returns 唯一 ID
    */
-  const generateId = (): string => {
-    return `error-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-  }
+  const generateId = (): string =>
+    `error-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 
   /**
    * 判斷錯誤類型

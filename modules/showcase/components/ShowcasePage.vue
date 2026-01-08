@@ -29,7 +29,7 @@ const breadcrumbs = computed(() => {
 
   const items = parts.map((part, index) => {
     const isLast = index === parts.length - 1
-    const path = '/' + parts.slice(0, index + 1).join('/')
+    const path = `/${parts.slice(0, index + 1).join('/')}`
 
     // 簡單的標題映射 (可擴充)
     let title = part.charAt(0).toUpperCase() + part.slice(1)

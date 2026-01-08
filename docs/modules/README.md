@@ -11,6 +11,7 @@
 ## 模組結構 (Module Structure)
 
 每個模組通常包含以下結構：
+
 - `pages/`: Vue 頁面檔案。
 - `components/`: 該模組專屬的元件。
 - `config.ts` / `sidebar.ts`: 模組設定與選單定義。

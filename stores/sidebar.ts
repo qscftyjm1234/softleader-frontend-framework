@@ -38,7 +38,7 @@ export const useSidebarStore = defineStore('sidebar', {
 
       this.items = buildSidebar({
         sidebarRegistry: registry,
-        enabledModules: enabledModules,
+        enabledModules,
         permissions: userPermissions,
         company: companyModules
       })

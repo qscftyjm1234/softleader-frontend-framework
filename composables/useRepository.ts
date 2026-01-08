@@ -5,6 +5,4 @@ import repositories from '~/repositories'
  * 在元件中使用: const { user } = useRepository()
  * @returns 所有 API Repository
  */
-export const useRepository = () => {
-  return repositories
-}
+export const useRepository = () => repositories

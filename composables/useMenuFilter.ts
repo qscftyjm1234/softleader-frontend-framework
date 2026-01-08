@@ -26,17 +26,17 @@ export function useMenuFilter() {
    * @param items 選單列表
    * @returns 過濾後的選單列表
    */
-  const filterMenu = (items: MenuItem[]): MenuItem[] => {
-    return items.reduce((filtered: MenuItem[], item) => {
+  const filterMenu = (items: MenuItem[]): MenuItem[] =>
+    items.reduce((filtered: MenuItem[], item) => {
       // 1. 檢查自身權限
       // 如果有設定 permission，必須通過 hasPermission 檢查
-      const permissionPass = item.permission ? hasPermission(item.permission) : true
+      const isPermissionPass = item.permission ? hasPermission(item.permission) : true
 
       // 如果有設定 roles，必須通過 hasRole 檢查 (任一角色符合即可)
-      const rolePass =
+      const isRolePass =
         item.roles && item.roles.length > 0 ? item.roles.some((r) => hasRole(r)) : true
 
-      if (!permissionPass || !rolePass) {
+      if (!isPermissionPass || !isRolePass) {
         return filtered // 權限或角色不符，直接跳過
       }
 
@@ -62,7 +62,6 @@ export function useMenuFilter() {
 
       return filtered
     }, [])
-  }
 
   return {
     filterMenu

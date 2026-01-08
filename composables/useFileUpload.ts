@@ -16,7 +16,7 @@ export interface FileUploadOptions {
   /** 額外的表單資料 */
   data?: Record<string, any>
   /** 是否顯示全域 Loading */
-  globalLoading?: boolean
+  isGlobalLoading?: boolean
   /** 自訂 Loading Ref */
   loadingRef?: Ref<boolean>
   /** 上傳進度回呼 */
@@ -26,9 +26,9 @@ export interface FileUploadOptions {
   /** 上傳失敗後的回呼 */
   onError?: (error: Error) => void
   /** 是否自動顯示成功訊息 */
-  autoSuccess?: boolean
+  shouldAutoSuccess?: boolean
   /** 是否自動顯示錯誤訊息 */
-  autoError?: boolean
+  shouldAutoError?: boolean
   /** 檔案大小限制（bytes） */
   maxSize?: number
   /** 允許的檔案類型（MIME types 或副檔名） */
@@ -93,7 +93,7 @@ function formatFileSize(bytes: number): string {
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+  return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`
 }
 
 /**
@@ -120,7 +120,7 @@ function validateFile(
   if (accept && accept.length > 0) {
     const fileType = file.type
     const fileName = file.name
-    const fileExt = '.' + fileName.split('.').pop()?.toLowerCase()
+    const fileExt = `.${fileName.split('.').pop()?.toLowerCase()}`
 
     const isAccepted = accept.some((acceptType) => {
       // 檢查 MIME type
@@ -128,7 +128,7 @@ function validateFile(
         // 支援萬用字元，例如 image/*
         if (acceptType.endsWith('/*')) {
           const category = acceptType.split('/')[0]
-          return fileType.startsWith(category + '/')
+          return fileType.startsWith(`${category}/`)
         }
         return fileType === acceptType
       }
@@ -206,20 +206,20 @@ export function useFileUpload() {
       method = 'POST',
       fieldName = 'file',
       data = {},
-      globalLoading = false,
+      isGlobalLoading = false,
       loadingRef,
-      onProgress,
+      // onProgress,
       onSuccess,
       onError,
-      autoSuccess = true,
-      autoError = true,
+      shouldAutoSuccess = true,
+      shouldAutoError = true,
       maxSize,
       accept
     } = options
 
     try {
       // 開始 Loading
-      if (globalLoading) loading.start()
+      if (isGlobalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 驗證檔案
@@ -241,18 +241,11 @@ export function useFileUpload() {
       const response = await $fetch(endpoint, {
         baseURL: config.public.api.baseUrl as string,
         method,
-        body: formData,
-        onRequest({ options: reqOptions }) {
-          // 可以在這裡設定進度追蹤
-          if (onProgress) {
-            // Note: $fetch 不直接支援進度事件，需要使用 XMLHttpRequest 或 fetch with ReadableStream
-            // 這裡僅作為介面預留
-          }
-        }
+        body: formData
       })
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`檔案 ${file.name} 上傳成功`)
       }
       onSuccess?.(response)
@@ -264,7 +257,7 @@ export function useFileUpload() {
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案上傳失敗: ${err.message}`)
       }
       onError?.(err)
@@ -275,7 +268,7 @@ export function useFileUpload() {
       }
     } finally {
       // 結束 Loading
-      if (globalLoading) loading.finish()
+      if (isGlobalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
@@ -295,20 +288,20 @@ export function useFileUpload() {
       method = 'POST',
       fieldName = 'files',
       data = {},
-      globalLoading = false,
+      isGlobalLoading = false,
       loadingRef,
       onSuccess,
       onError,
-      autoSuccess = true,
-      autoError = true,
+      shouldAutoSuccess = true,
+      shouldAutoError = true,
       maxSize,
       accept,
-      multiple = true
+      allowMultiple = true
     } = options
 
     try {
       // 開始 Loading
-      if (globalLoading) loading.start()
+      if (isGlobalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 驗證檔案
@@ -340,7 +333,7 @@ export function useFileUpload() {
       })
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`成功上傳 ${files.length} 個檔案`)
       }
       onSuccess?.(response)
@@ -354,7 +347,7 @@ export function useFileUpload() {
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案上傳失敗: ${err.message}`)
       }
       onError?.(err)
@@ -367,7 +360,7 @@ export function useFileUpload() {
       ]
     } finally {
       // 結束 Loading
-      if (globalLoading) loading.finish()
+      if (isGlobalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
@@ -451,21 +444,18 @@ export function useFileUpload() {
 
   /**
    * 驗證檔案（公開方法）
-   * @param file
-   * @param options
-   */
-  const validate = (file: File, options: FileValidationOptions = {}) => {
-    return validateFile(file, options)
-  }
+   * @param file - 檔案
+   * @param options - 選項
+   * @returns 驗證結果
+  const validate = (file: File, options: FileValidationOptions = {}) => validateFile(file, options)
 
   /**
    * 驗證多個檔案（公開方法）
-   * @param files
-   * @param options
-   */
-  const validateMultiple = (files: File[], options: FileValidationOptions = {}) => {
-    return validateFiles(files, options)
-  }
+   * @param files - 檔案列表
+   * @param options - 選項
+   * @returns 驗證結果
+  const validateMultiple = (files: File[], options: FileValidationOptions = {}) =>
+    validateFiles(files, options)
 
   /**
    * 從事件中提取檔案（支援 Input change 與 Drag drop）
