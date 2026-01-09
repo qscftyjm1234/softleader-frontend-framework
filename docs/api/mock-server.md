@@ -33,12 +33,12 @@ npm run dev
 
 ```
 mock/
-├── schemas/          # Zod Schema 定義
-│   ├── user.ts      # User 相關 Schema
-│   └── order.ts     # Order 相關 Schema
+├── types/            # TypeScript Interfaces
+│   ├── user.ts      # User 相關型別
+│   └── order.ts     # Order 相關型別
 └── factories/        # Mock 資料工廠
     ├── user.factory.ts
-    └── order.factory.ts
+    ├── order.factory.ts
 
 utils/api/interceptors/
 └── mock.ts           # Mock 資料攔截器
@@ -53,16 +53,15 @@ composables/
 
 ```typescript
 // repositories/modules/user.ts
-import { UserListResponseSchema } from '~/mock/schemas/user'
+// repositories/modules/user.ts
+import type { UserListResponse } from '~/mock/types/user'
 
 export async function getUsers(params: any) {
   // 如果 Mock 啟用，會自動回傳假資料
   // 如果 Mock 關閉，會發送真實請求
-  const response = await useApi('/api/users', { params })
+  const response = await useApi<UserListResponse>('/api/users', { params })
 
-  // Zod 驗證回應資料
-  const validated = UserListResponseSchema.parse(response)
-  return validated
+  return response
 }
 ```
 
@@ -81,21 +80,18 @@ const { data, pending } = await useFetch('/api/users', {
 
 ## 新增新的 Mock API
 
-### 1. 定義 Schema
+### 1. 定義 Interface
 
-在 `mock/schemas/` 建立新的 Schema 檔案:
+在 `mock/types/` 建立新的型別檔案:
 
 ```typescript
-// mock/schemas/product.ts
-import { z } from 'zod'
+// mock/types/product.ts
 
-export const ProductSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  price: z.number().min(0)
-})
-
-export type Product = z.infer<typeof ProductSchema>
+export interface Product {
+  id: number
+  name: string
+  price: number
+}
 ```
 
 ### 2. 創建 Factory
@@ -104,7 +100,7 @@ export type Product = z.infer<typeof ProductSchema>
 
 ```typescript
 // mock/factories/product.factory.ts
-import type { Product } from '../schemas/product'
+import type { Product } from '../types/product'
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -243,15 +239,14 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false
 
 ## 最佳實踐
 
-1. **保持 Schema 同步**: Mock 的 Schema 應與真實 API 一致
-2. **使用 Zod 驗證**: 在 Repository 層使用 Zod 驗證響應
+1. **保持 Interface 同步**: Mock 的 Interface 應與真實 API 一致
+2. **使用 TypeScript**: 在 Repository 層使用 TypeScript 確保型別安全
 3. **真實的假資料**: 使用簡單的隨機函數生成合理的假資料
 4. **模擬真實場景**: 包含延遲、錯誤、分頁等
 5. **環境隔離**: 開發用 Mock,測試/正式用真實 API
 
 ## 相關資源
 
-- [Zod 官方文檔](https://zod.dev/)
 - [Repository 層 Mock 詳細指南](./REPOSITORY_MOCK.md)
 
 ## 優勢

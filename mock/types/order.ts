@@ -1,66 +1,51 @@
 /**
  * Order Schema 定義
  *
- * 使用 Zod 定義 Order 相關的 API Schema
+ * 定義 Order 相關的 API Interface
  */
-
-import { z } from 'zod'
 
 /**
  * 訂單狀態
  */
-export const OrderStatusSchema = z.enum([
-  'pending',
-  'processing',
-  'shipped',
-  'delivered',
-  'cancelled'
-])
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
 
 /**
- * 訂單項目 Schema
+ * 訂單項目 Interface
  */
-export const OrderItemSchema = z.object({
-  id: z.number(),
-  productId: z.number(),
-  productName: z.string(),
-  quantity: z.number().min(1),
-  price: z.number().min(0),
-  subtotal: z.number().min(0)
-})
+export interface OrderItem {
+  id: number
+  productId: number
+  productName: string
+  quantity: number
+  price: number
+  subtotal: number
+}
 
 /**
- * 訂單 Schema
+ * 訂單 Interface
  */
-export const OrderSchema = z.object({
-  id: z.number(),
-  orderNumber: z.string(),
-  userId: z.number(),
-  status: OrderStatusSchema,
-  items: z.array(OrderItemSchema),
-  total: z.number().min(0),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
-})
+export interface Order {
+  id: number
+  orderNumber: string
+  userId: number
+  status: OrderStatus
+  items: OrderItem[]
+  total: number
+  createdAt: string
+  updatedAt: string
+}
 
 /**
- * 訂單列表響應 Schema
+ * 訂單列表響應 Interface
  */
-export const OrderListResponseSchema = z.object({
-  data: z.array(OrderSchema),
-  total: z.number(),
-  page: z.number(),
-  limit: z.number()
-})
+export interface OrderListResponse {
+  data: Order[]
+  total: number
+  page: number
+  limit: number
+}
 
 /**
- * 訂單詳情響應 Schema
+ * 訂單詳情響應 Interface
  */
-export const OrderDetailResponseSchema = OrderSchema
-
-// 匯出型別
-export type OrderStatus = z.infer<typeof OrderStatusSchema>
-export type OrderItem = z.infer<typeof OrderItemSchema>
-export type Order = z.infer<typeof OrderSchema>
-export type OrderListResponse = z.infer<typeof OrderListResponseSchema>
-export type OrderDetailResponse = z.infer<typeof OrderDetailResponseSchema>
+export type OrderDetailResponse = Order

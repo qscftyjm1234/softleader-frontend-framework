@@ -1,46 +1,37 @@
 /**
  * Dashboard Schema 定義
  *
- * 使用 Zod 定義 Dashboard 相關的 API Schema
- * 確保 Mock 資料與真實 API 型別一致
+ * 定義 Dashboard 相關的 API Interface
  */
-
-import { z } from 'zod'
 
 /**
- * 統計卡片 Schema
+ * 統計卡片 Interface
  */
-export const DashboardStatSchema = z.object({
-  title: z.string(),
-  value: z.string(),
-  icon: z.string(),
-  color: z.string(),
-  trend: z.string()
-})
+export interface DashboardStat {
+  title: string
+  value: string
+  icon: string
+  color: string
+  trend: string
+}
 
 /**
- * 近期活動 Schema
+ * 近期活動 Interface
  */
-export const DashboardActivitySchema = z.object({
-  user: z.string(),
-  action: z.string(),
-  time: z.string(),
-  icon: z.string(),
-  color: z.string()
-})
+export interface DashboardActivity {
+  user: string
+  action: string
+  time: string
+  icon: string
+  color: string
+}
 
 /**
- * 統計資料響應 Schema - 直接返回陣列
+ * 統計資料響應 Interface - 直接返回陣列
  */
-export const DashboardStatsResponseSchema = z.array(DashboardStatSchema)
+export type DashboardStatsResponse = DashboardStat[]
 
 /**
- * 近期活動響應 Schema - 直接返回陣列
+ * 近期活動響應 Interface - 直接返回陣列
  */
-export const DashboardActivitiesResponseSchema = z.array(DashboardActivitySchema)
-
-// 匯出型別
-export type DashboardStat = z.infer<typeof DashboardStatSchema>
-export type DashboardActivity = z.infer<typeof DashboardActivitySchema>
-export type DashboardStatsResponse = z.infer<typeof DashboardStatsResponseSchema>
-export type DashboardActivitiesResponse = z.infer<typeof DashboardActivitiesResponseSchema>
+export type DashboardActivitiesResponse = DashboardActivity[]

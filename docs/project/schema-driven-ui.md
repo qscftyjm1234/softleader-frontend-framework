@@ -2,7 +2,7 @@
 
 ## 1. Vision
 
-To enable rapid productization and high maintainability, we will implement a **Schema-Driven UI (SDUI)** system. This allows pages to be defined via configuration (YAML/JSON) rather than hardcoded Vue templates.
+To enable rapid productization and high maintainability, we will implement a **Schema-Driven UI (SDUI)** system. This allows pages to be defined via configuration (JSON/JSON) rather than hardcoded Vue templates.
 
 ## 2. Core Concepts
 
@@ -10,9 +10,9 @@ To enable rapid productization and high maintainability, we will implement a **S
 
 The schema describes _what_ to render, not _how_. It is platform-agnostic logic that the frontend interprets.
 
-**Example Schema (YAML):**
+**Example Schema (JSON):**
 
-```yaml
+```json
 type: 'Page'
 layout: 'StandardLayout'
 meta:

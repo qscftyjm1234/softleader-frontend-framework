@@ -8,12 +8,11 @@
 
 所有 Git 相關配置檔案位於 [`configs/git/`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git) 目錄:
 
-| 檔案                                                                                                          | 用途                       | 相依套件           |
-| :------------------------------------------------------------------------------------------------------------ | :------------------------- | :----------------- |
-| [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                  |
-| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli`  |
-| [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`       |
-| [`versionrc.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/versionrc.json)               | 版本發布與 Changelog 配置  | `standard-version` |
+| 檔案                                                                                                          | 用途                       | 相依套件          |
+| :------------------------------------------------------------------------------------------------------------ | :------------------------- | :---------------- |
+| [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                 |
+| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli` |
+| [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`      |
 
 ### 配置檔案架構說明
 
@@ -185,59 +184,6 @@ npm run commit
 - 配置檔: [`configs/git/cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)
 - 類型定義: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
 - Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `commitizen`, `cz-customizable`)
-
----
-
-## 4. versionrc.json - 版本發布配置
-
-**檔案路徑**: [`configs/git/versionrc.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/versionrc.json)
-
-### 用途
-
-配置 `standard-version` 的版本發布行為,定義 Changelog 的分類與顯示方式。
-
-### 使用方式
-
-```bash
-npm run release
-```
-
-### Changelog 分類
-
-根據 Commit 類型自動分類到不同章節:
-
-| Commit 類型 | Changelog 章節         |
-| :---------- | :--------------------- |
-| `feat`      | ✨ 新功能              |
-| `fix`       | 🐛 錯誤修復            |
-| `chore`     | 🔧 雜項 (不影響程式碼) |
-| `docs`      | 📝 文件                |
-| `style`     | 💄 程式碼風格          |
-| `refactor`  | ♻️ 重構                |
-| `perf`      | ⚡️ 效能優化           |
-| `test`      | ✅ 測試                |
-| `build`     | 📦 建置系統            |
-| `ci`        | 👷 CI/CD               |
-| `revert`    | ⏪️ 回退               |
-
-### 自動化流程
-
-執行 `npm run release` 時會自動:
-
-1. **分析 Commit** - 讀取自上次版本以來的所有 Commit
-2. **升級版本號** - 根據 Commit 類型決定版本號
-   - `feat` → Minor 版本 (1.0.0 → 1.1.0)
-   - `fix` → Patch 版本 (1.0.0 → 1.0.1)
-   - `BREAKING CHANGE` → Major 版本 (1.0.0 → 2.0.0)
-3. **產生 Changelog** - 根據 `versionrc.json` 的分類產生 `CHANGELOG.md`
-4. **建立 Git Tag** - 例如 `v1.1.0`
-5. **Commit 變更** - 自動 commit `package.json` 和 `CHANGELOG.md`
-
-### 相關檔案
-
-- 配置檔: [`configs/git/versionrc.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/versionrc.json)
-- Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `standard-version`)
-- 輸出檔: `CHANGELOG.md` (自動產生)
 
 ---
 

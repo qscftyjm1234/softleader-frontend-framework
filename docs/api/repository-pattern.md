@@ -87,7 +87,7 @@ mock/
   ├── factories/           # 假資料生成器（保留）
   │   ├── user.factory.ts
   │   └── order.factory.ts
-  └── schemas/             # Zod Schema（保留）
+  └── types/               # TypeScript Interfaces
       ├── user.ts
       └── order.ts
 

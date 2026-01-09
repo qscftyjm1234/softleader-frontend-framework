@@ -1,58 +1,48 @@
 /**
  * User Schema 定義
  *
- * 使用 Zod 定義 User 相關的 API Schema
- * 確保 Mock 資料與真實 API 型別一致
+ * 定義 User 相關的 API Interface
  */
-
-import { z } from 'zod'
 
 /**
- * 使用者 Schema
+ * 使用者 Interface
  */
-export const UserSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  email: z.string().email(),
-  role: z.enum(['admin', 'user', 'guest']),
-  avatar: z.string().url().optional(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
-})
+export interface User {
+  id: number
+  name: string
+  email: string
+  role: 'admin' | 'user' | 'guest'
+  avatar?: string
+  createdAt: string
+  updatedAt: string
+}
 
 /**
- * 使用者列表響應 Schema
+ * 使用者列表響應 Interface
  */
-export const UserListResponseSchema = z.object({
-  data: z.array(UserSchema),
-  total: z.number(),
-  page: z.number(),
-  limit: z.number()
-})
+export interface UserListResponse {
+  data: User[]
+  total: number
+  page: number
+  limit: number
+}
 
 /**
- * 使用者詳情響應 Schema
+ * 使用者詳情響應 Interface
  */
-export const UserDetailResponseSchema = UserSchema
+export type UserDetailResponse = User
 
 /**
- * 建立使用者請求 Schema
+ * 建立使用者請求 Interface
  */
-export const CreateUserRequestSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(8),
-  role: z.enum(['admin', 'user', 'guest']).optional()
-})
+export interface CreateUserRequest {
+  name: string
+  email: string
+  password: string
+  role?: 'admin' | 'user' | 'guest'
+}
 
 /**
- * 更新使用者請求 Schema
+ * 更新使用者請求 Interface
  */
-export const UpdateUserRequestSchema = CreateUserRequestSchema.partial()
-
-// 匯出型別
-export type User = z.infer<typeof UserSchema>
-export type UserListResponse = z.infer<typeof UserListResponseSchema>
-export type UserDetailResponse = z.infer<typeof UserDetailResponseSchema>
-export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>
-export type UpdateUserRequest = z.infer<typeof UpdateUserRequestSchema>
+export interface UpdateUserRequest extends Partial<CreateUserRequest> {}

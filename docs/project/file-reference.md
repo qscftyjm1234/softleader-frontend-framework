@@ -47,13 +47,13 @@
 | [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 | 定義所有允許的 Commit 類型 (feat, fix, docs...) |
 | [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commitlint 規則 | Commit 訊息檢查規則 (實際配置)                  |
 | [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 配置 | `npm run commit` 互動式介面配置                 |
-| [`versionrc.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/versionrc.json)               | 版本發布配置    | `standard-version` 的 Changelog 分類設定        |
 
 ### configs/ - 產品配置
 
-| 檔案                                                                                    | 用途         | 說明                              |
-| :-------------------------------------------------------------------------------------- | :----------- | :-------------------------------- |
-| [`default.yaml`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/default.yaml) | 預設產品配置 | 定義啟用的模組、主題色、Meta 資訊 |
+| 檔案                                                                                    | 用途              | 說明                              |
+| :-------------------------------------------------------------------------------------- | :---------------- | :-------------------------------- |
+| `configs/`                                                                              | 專案設定檔 (JSON) | 存放產品設定,如 `default.json`    |
+| [`default.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/default.json) | 預設產品配置      | 定義啟用的模組、主題色、Meta 資訊 |
 
 ---
 
