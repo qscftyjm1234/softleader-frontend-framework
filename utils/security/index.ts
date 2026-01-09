@@ -4,3 +4,4 @@
  */
 
 export * from './mask'
+export * from './blur'

@@ -12,11 +12,13 @@ interface Props {
   code: string
   language?: string
   label?: string
+  filename?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   language: 'html',
-  label: ''
+  label: '',
+  filename: ''
 })
 
 const copied = ref(false)
@@ -38,12 +40,23 @@ const copyCode = async () => {
   <div class="showcase-code-block">
     <!-- Window Header -->
     <div class="code-header">
-      <div class="window-controls">
-        <span class="control red"></span>
-        <span class="control yellow"></span>
-        <span class="control green"></span>
+      <div class="flex items-center gap-4">
+        <div class="window-controls">
+          <span class="control red"></span>
+          <span class="control yellow"></span>
+          <span class="control green"></span>
+        </div>
+        <div class="code-label font-mono text-xs tracking-wide">
+          <span
+            v-if="filename"
+            class="text-slate-200"
+          >
+            {{ filename }}
+          </span>
+          <span v-else>{{ label || language }}</span>
+        </div>
       </div>
-      <div class="code-label">{{ label || language }}</div>
+
       <div class="header-actions">
         <button
           class="copy-btn"

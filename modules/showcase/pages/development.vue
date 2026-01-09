@@ -3,7 +3,6 @@ import ShowcasePage from '../components/ShowcasePage.vue'
 import ShowcaseSection from '../components/ShowcaseSection.vue'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
-import ShowcaseArchitecture from '../components/ShowcaseArchitecture.vue'
 
 definePageMeta({
   title: '開發指南',
@@ -28,66 +27,64 @@ const navigateToRules = () => {
     description="這裡記錄了專案的架構、規矩、用了哪些工具，以及如何把專案跑起來。"
     class="fade-in-up"
   >
-    <!-- Quick Navigation -->
+    <!-- Quick Navigation (Bento Style) -->
     <div class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div
-        class="nav-card group"
+        class="bento-card bento-card-blue group"
         @click="navigateToShowcase"
       >
-        <div class="nav-card-glow nav-card-glow-blue" />
-        <div class="nav-card-content">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="nav-icon nav-icon-blue">
-                <v-icon
-                  color="blue-400"
-                  size="28"
-                >
-                  mdi-view-grid-outline
-                </v-icon>
-              </div>
-              <div>
-                <div class="nav-title text-blue-400">瀏覽所有範例頁面</div>
-                <div class="nav-desc">查看 26 個功能展示頁面</div>
-              </div>
-            </div>
+        <div class="bento-bg-icon">
+          <v-icon
+            size="120"
+            color="white"
+          >
+            mdi-view-grid-outline
+          </v-icon>
+        </div>
+        <div class="bento-content text-left">
+          <div class="bento-icon">
             <v-icon
               color="blue-400"
-              class="nav-arrow"
+              size="28"
             >
-              mdi-arrow-right
+              mdi-view-grid-outline
             </v-icon>
+          </div>
+          <div class="bento-title text-blue-100">瀏覽所有範例頁面</div>
+          <div class="bento-desc">查看 26 個功能展示頁面，包含各類元件與應用場景。</div>
+          <div class="bento-action text-blue-300 mt-auto pt-4">
+            Explore Showcase
+            <v-icon size="14">mdi-arrow-right</v-icon>
           </div>
         </div>
       </div>
 
       <div
-        class="nav-card group"
+        class="bento-card bento-card-orange group"
         @click="navigateToRules"
       >
-        <div class="nav-card-glow nav-card-glow-orange" />
-        <div class="nav-card-content">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="nav-icon nav-icon-orange">
-                <v-icon
-                  color="orange-400"
-                  size="28"
-                >
-                  mdi-ruler-square
-                </v-icon>
-              </div>
-              <div>
-                <div class="nav-title text-orange-400">查看開發規矩</div>
-                <div class="nav-desc">完整的開發規範與最佳實踐</div>
-              </div>
-            </div>
+        <div class="bento-bg-icon">
+          <v-icon
+            size="120"
+            color="white"
+          >
+            mdi-ruler-square
+          </v-icon>
+        </div>
+        <div class="bento-content text-left">
+          <div class="bento-icon">
             <v-icon
               color="orange-400"
-              class="nav-arrow"
+              size="28"
             >
-              mdi-arrow-right
+              mdi-ruler-square
             </v-icon>
+          </div>
+          <div class="bento-title text-orange-100">查看開發規矩</div>
+          <div class="bento-desc">完整的開發規範、命名約定與團隊最佳實踐指南。</div>
+          <div class="bento-action text-orange-300 mt-auto pt-4">
+            View Rules
+            <v-icon size="14">mdi-arrow-right</v-icon>
           </div>
         </div>
       </div>
@@ -97,34 +94,23 @@ const navigateToRules = () => {
     <ShowcaseSection
       title="環境需求"
       icon="mdi-cog-outline"
-      class="stagger-1"
+      class="stagger-2"
     >
       <!-- Runtime Environment -->
       <ShowcaseCard
-        title="執行環境 (Runtime)"
-        description="專案運行所需的基礎環境"
+        title="基礎環境 (Runtime)"
+        description="專案運行所需的 Node.js 與 NPM 版本要求"
         full-width
       >
-        <div class="runtime-grid">
+        <div class="packages-grid">
           <!-- Node.js -->
-          <div class="runtime-card runtime-card-node">
-            <div class="runtime-header">
-              <div class="runtime-icon">
-                <v-icon
-                  color="emerald-400"
-                  size="32"
-                >
-                  mdi-nodejs
-                </v-icon>
-              </div>
-              <div class="runtime-info">
-                <div class="runtime-name">Node.js</div>
-                <div class="runtime-desc">JavaScript 執行環境</div>
-              </div>
-              <div class="runtime-version">v18.18.0+</div>
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">Node.js</div>
+              <div class="package-version">v18.18.0+</div>
             </div>
-            <div class="runtime-check">
-              <div class="runtime-check-label">檢查版本</div>
+            <div class="package-desc">JavaScript 執行環境 (Runtime)</div>
+            <div class="package-install">
               <ShowcaseCodeBlock
                 code="node --version"
                 language="bash"
@@ -140,30 +126,19 @@ const navigateToRules = () => {
                 >
                   mdi-download
                 </v-icon>
-                下載 Node.js
+                Download Node.js
               </a>
             </div>
           </div>
 
-          <!-- npm / pnpm -->
-          <div class="runtime-card runtime-card-npm">
-            <div class="runtime-header">
-              <div class="runtime-icon">
-                <v-icon
-                  color="emerald-400"
-                  size="32"
-                >
-                  mdi-package-variant
-                </v-icon>
-              </div>
-              <div class="runtime-info">
-                <div class="runtime-name">NPM</div>
-                <div class="runtime-desc">套件管理工具</div>
-              </div>
-              <div class="runtime-version">v9.0.0+</div>
+          <!-- NPM -->
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-name">NPM</div>
+              <div class="package-version">v9.0.0+</div>
             </div>
-            <div class="runtime-check">
-              <div class="runtime-check-label">檢查版本</div>
+            <div class="package-desc">Node Package Manager</div>
+            <div class="package-install">
               <ShowcaseCodeBlock
                 code="npm --version"
                 language="bash"
@@ -178,7 +153,7 @@ const navigateToRules = () => {
     <ShowcaseSection
       title="系統套件"
       icon="mdi-package-variant-closed"
-      class="stagger-2"
+      class="stagger-3"
     >
       <!-- Framework & UI -->
       <div class="package-category">
@@ -505,7 +480,7 @@ const navigateToRules = () => {
     <ShowcaseSection
       title="把專案跑起來 (Init)"
       icon="mdi-rocket-launch"
-      class="stagger-3"
+      class="stagger-4"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ShowcaseCard
@@ -579,6 +554,541 @@ const navigateToRules = () => {
         </ShowcaseCard>
       </div>
     </ShowcaseSection>
+
+    <!-- 4. Naming Rules -->
+    <ShowcaseSection
+      title="命名規範"
+      icon="mdi-format-letter-case"
+      class="stagger-5"
+    >
+      <ShowcaseCard
+        title="命名慣例 (Naming Convention)"
+        description="為了確保程式碼的可讀性與一致性，我們將命名規則嚴格區分為元件、函式與常數三大類。明確的命名慣例就像是程式碼的「語法高亮」，能幫助團隊成員在閱讀時瞬間理解變數的用途與生命週期。"
+        full-width
+      >
+        <div class="grid grid-cols-3 gap-4 w-full">
+          <!-- Component -->
+          <div class="rule-card rule-card-emerald min-w-0">
+            <div class="rule-card-header">
+              <span class="rule-badge">COMPONENT</span>
+              <v-icon
+                color="emerald-400"
+                size="20"
+              >
+                mdi-cube-outline
+              </v-icon>
+            </div>
+            <div class="rule-card-body">
+              <div class="rule-title">PascalCase</div>
+              <div class="rule-desc">建立 Vue 元件時使用</div>
+              <ShowcaseCodeBlock
+                code="UserCard.vue
+NavBar.vue"
+                filename="Example"
+                class="mt-auto"
+              >
+                <div class="leading-relaxed">
+                  <span class="text-emerald-300">UserCard</span>
+                  .vue
+                  <br />
+                  <span class="text-emerald-300">NavBar</span>
+                  .vue
+                </div>
+              </ShowcaseCodeBlock>
+            </div>
+          </div>
+
+          <!-- Function -->
+          <div class="rule-card rule-card-sky">
+            <div class="rule-card-header">
+              <span class="rule-badge">FUNCTION</span>
+              <v-icon
+                color="sky-400"
+                size="20"
+              >
+                mdi-function
+              </v-icon>
+            </div>
+            <div class="rule-card-body">
+              <div class="rule-title">camelCase</div>
+              <div class="rule-desc">一般函式與變數命名</div>
+              <ShowcaseCodeBlock
+                code="const getUser = () => {}
+let isLoading = true"
+                filename="Example"
+                class="mt-auto"
+              >
+                <div class="leading-relaxed">
+                  const
+                  <span class="text-sky-300">getUser</span>
+                  = () => {}
+                  <br />
+                  let
+                  <span class="text-sky-300">isLoading</span>
+                  = true
+                </div>
+              </ShowcaseCodeBlock>
+            </div>
+          </div>
+
+          <!-- Constant -->
+          <div class="rule-card rule-card-purple">
+            <div class="rule-card-header">
+              <span class="rule-badge">CONSTANT</span>
+              <v-icon
+                color="purple-400"
+                size="20"
+              >
+                mdi-lock-outline
+              </v-icon>
+            </div>
+            <div class="rule-card-body">
+              <div class="rule-title">UPPER_CASE</div>
+              <div class="rule-desc">固定不變的常數值</div>
+              <ShowcaseCodeBlock
+                code="const MAX_COUNT = 10
+const API_URL = '...'"
+                filename="Example"
+                class="mt-auto"
+              >
+                <div class="leading-relaxed">
+                  const
+                  <span class="text-purple-300">MAX_COUNT</span>
+                  = 10
+                  <br />
+                  const
+                  <span class="text-purple-300">API_URL</span>
+                  = '...'
+                </div>
+              </ShowcaseCodeBlock>
+            </div>
+          </div>
+        </div>
+      </ShowcaseCard>
+    </ShowcaseSection>
+
+    <!-- 5. Project Structure -->
+    <ShowcaseSection
+      title="專案結構"
+      icon="mdi-folder-tree"
+      class="stagger-6"
+    >
+      <div class="structure-grid">
+        <!-- Backend Layer -->
+        <div class="structure-group">
+          <div class="structure-label">Logic Layer</div>
+          <div class="structure-item">
+            <v-icon
+              color="indigo-400"
+              size="20"
+            >
+              mdi-api
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">api/</div>
+              <div class="structure-desc">API Repository 服務層</div>
+            </div>
+          </div>
+          <div class="structure-item">
+            <v-icon
+              color="indigo-400"
+              size="20"
+            >
+              mdi-bottle-tonic-plus
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">composables/</div>
+              <div class="structure-desc">商業邏輯封裝 (Hooks)</div>
+            </div>
+          </div>
+          <div class="structure-item">
+            <v-icon
+              color="indigo-400"
+              size="20"
+            >
+              mdi-database
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">stores/</div>
+              <div class="structure-desc">Pinia 全域狀態管理</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frontend Layer -->
+        <div class="structure-group">
+          <div class="structure-label">View Layer</div>
+          <div class="structure-item">
+            <v-icon
+              color="pink-400"
+              size="20"
+            >
+              mdi-view-dashboard-outline
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">pages/</div>
+              <div class="structure-desc">頁面路由 (File-based Routing)</div>
+            </div>
+          </div>
+          <div class="structure-item">
+            <v-icon
+              color="pink-400"
+              size="20"
+            >
+              mdi-view-module
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">components/</div>
+              <div class="structure-desc">Vue 共用與業務元件</div>
+            </div>
+          </div>
+          <div class="structure-item">
+            <v-icon
+              color="pink-400"
+              size="20"
+            >
+              mdi-page-layout-header
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">layouts/</div>
+              <div class="structure-desc">頁面佈局模板</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Config Layer -->
+        <div class="structure-group">
+          <div class="structure-label">Config Layer</div>
+          <div class="structure-item">
+            <v-icon
+              color="amber-400"
+              size="20"
+            >
+              mdi-file-cog
+            </v-icon>
+            <div class="structure-info">
+              <div class="structure-name">nuxt.config.ts</div>
+              <div class="structure-desc">Nuxt 核心設定檔</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 6. Core Tools Index -->
+    <ShowcaseSection
+      title="核心工具索引"
+      title-badge="PORTAL"
+      icon="mdi-tools"
+      class="stagger-7"
+    >
+      <div class="tool-bento-grid">
+        <!-- API -->
+        <div
+          class="bento-card bento-card-sky"
+          @click="router.push('/showcase/api-demo')"
+        >
+          <div class="bento-bg-icon">
+            <v-icon>mdi-api</v-icon>
+          </div>
+          <div class="bento-content">
+            <div class="bento-icon">
+              <v-icon
+                color="sky-400"
+                size="24"
+              >
+                mdi-api
+              </v-icon>
+            </div>
+            <div class="bento-title text-sky-400">API Request</div>
+            <div class="bento-desc">標準化 API 請求層，整合 Repository 模式與攔截器。</div>
+            <div class="bento-action text-sky-400">
+              Explore API Values
+              <v-icon size="14">mdi-arrow-right</v-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation -->
+        <div
+          class="bento-card bento-card-rose"
+          @click="router.push('/showcase/validation')"
+        >
+          <div class="bento-bg-icon">
+            <v-icon>mdi-check-all</v-icon>
+          </div>
+          <div class="bento-content">
+            <div class="bento-icon">
+              <v-icon
+                color="rose-400"
+                size="24"
+              >
+                mdi-check-all
+              </v-icon>
+            </div>
+            <div class="bento-title text-rose-400">Form Validation</div>
+            <div class="bento-desc">Schema-based 驗證系統，支援 TW 身分證與手機號碼。</div>
+            <div class="bento-action text-rose-400">
+              View Patterns
+              <v-icon size="14">mdi-arrow-right</v-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formatting -->
+        <div
+          class="bento-card bento-card-amber"
+          @click="router.push('/showcase/formatter')"
+        >
+          <div class="bento-bg-icon">
+            <v-icon>mdi-format-text</v-icon>
+          </div>
+          <div class="bento-content">
+            <div class="bento-icon">
+              <v-icon
+                color="amber-400"
+                size="24"
+              >
+                mdi-format-text
+              </v-icon>
+            </div>
+            <div class="bento-title text-amber-400">Data Formatting</div>
+            <div class="bento-desc">金額、日期、隱碼處理，統一全站顯示邏輯。</div>
+            <div class="bento-action text-amber-400">
+              See Examples
+              <v-icon size="14">mdi-arrow-right</v-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Icons -->
+        <div
+          class="bento-card bento-card-purple"
+          @click="router.push('/showcase/icon')"
+        >
+          <div class="bento-bg-icon">
+            <v-icon>mdi-vector-square</v-icon>
+          </div>
+          <div class="bento-content">
+            <div class="bento-icon">
+              <v-icon
+                color="purple-400"
+                size="24"
+              >
+                mdi-vector-square
+              </v-icon>
+            </div>
+            <div class="bento-title text-purple-400">Icon System</div>
+            <div class="bento-desc">使用 IIcon 統一管理 SVG 與 MDI Icons，支援自動對齊。</div>
+            <div class="bento-action text-purple-400">
+              Browse Icons
+              <v-icon size="14">mdi-arrow-right</v-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ShowcaseSection>
+
+    <!-- 0. Quick Start -->
+    <ShowcaseSection title="如何用此開發包開始實作?">
+      <div class="packages-grid">
+        <!-- 1. Replace Homepage -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">1. 替換首頁</div>
+            <div class="package-version">Step 01</div>
+          </div>
+          <div class="package-desc">
+            修改專案入口 (pages/index.vue) 與全站佈局 (layouts/portal.vue)
+          </div>
+          <div class="package-install">
+            <ShowcaseCodeBlock
+              code='<template>
+  <div class="home">
+    <MyHero />
+    <MyFeatures />
+  </div>
+</template>'
+              language="html"
+            />
+          </div>
+        </div>
+
+        <!-- 2. Clean Up -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">2. 移除範例</div>
+            <div class="package-version">Step 02</div>
+          </div>
+          <div class="package-desc">從設定檔中移除 showcase 模組以隱藏此開發指南</div>
+          <div class="package-install">
+            <ShowcaseCodeBlock
+              code="# configs/default.yaml
+modules: [] # <--- 移除 showcase"
+              language="yaml"
+            />
+          </div>
+        </div>
+
+        <!-- 3. Create Pages -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">3. 建立功能</div>
+            <div class="package-version">Step 03</div>
+          </div>
+          <div class="package-desc">建議的 Nuxt 3 專案目錄結構</div>
+          <div class="package-install">
+            <div
+              class="bg-slate-950 rounded border border-slate-800 p-3 font-mono text-xs leading-loose text-slate-400"
+            >
+              <div class="text-slate-600">pages/</div>
+              <div class="pl-4">
+                ├── index.vue
+                <br />
+                ├──
+                <span class="text-blue-400 font-bold">orders.vue</span>
+                <br />
+                └──
+                <span class="text-blue-400 font-bold">users/</span>
+                <br />
+                <span class="pl-4">└── index.vue</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ShowcaseSection>
+
+    <!-- UI Architecture Section -->
+    <ShowcaseSection
+      title="UI 框架更改"
+      sub-title="CHANGE FRAMEWORK"
+      class="stagger-2"
+    >
+      <div class="packages-grid">
+        <!-- 1. Uninstall -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">1. 移除舊框架</div>
+            <div class="package-version">Step 01</div>
+          </div>
+          <div class="package-desc">完全移除 Vuetify 與相關全域設定</div>
+          <div class="package-install">
+            <!-- Enterprise Checklist v3 (Vercel Style Diff) -->
+            <div class="flex flex-col gap-8 mt-6">
+              <ShowcaseCodeBlock
+                code="rm plugins/vuetify.ts"
+                language="bash"
+                filename="Terminal"
+              />
+
+              <ShowcaseCodeBlock
+                code="// core/config/build.ts
+export default defineNuxtConfig({
+   build: {
+-    transpile: ['vuetify']
+   }
+ })"
+                language="diff"
+              />
+
+              <ShowcaseCodeBlock
+                code="// core/config/css.ts
+export const cssConfig = [
+-  'vuetify/styles'
+ ]"
+                language="diff"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Install New -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">2. 下載與全域設定</div>
+            <div class="package-version">Step 02</div>
+          </div>
+          <div class="package-desc">安裝套件並註冊至 Core Config</div>
+          <!-- Vercel Style Diff -->
+          <div class="flex flex-col gap-8 mt-6">
+            <ShowcaseCodeBlock
+              code="npx nuxi@latest module add tailwindcss"
+              language="bash"
+              filename="Terminal"
+            />
+
+            <ShowcaseCodeBlock
+              code="// core/config/modules.ts
+export const modulesConfig = [
++  '@nuxtjs/tailwindcss'
+ ]"
+              language="diff"
+            />
+
+            <ShowcaseCodeBlock
+              code="// core/config/css.ts
+export const cssConfig = [
++  '~/assets/css/main.css'
+ ]"
+              language="diff"
+            />
+          </div>
+        </div>
+
+        <!-- 3. Update Interface -->
+        <div class="package-card">
+          <div class="package-header">
+            <div class="package-name">3. 更新介面層</div>
+            <div class="package-version">Step 03</div>
+          </div>
+          <div class="package-desc">關鍵步驟：重構 UI Interface</div>
+          <div class="package-install">
+            <div
+              class="bg-slate-950 rounded-lg border border-slate-800 p-4 font-mono text-xs leading-loose text-slate-400 shadow-inner"
+            >
+              <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
+                <div class="text-emerald-400 font-bold">components/uiInterface/</div>
+              </div>
+
+              <div class="pl-2 border-l-2 border-slate-800 space-y-2">
+                <div class="flex items-center gap-2 group cursor-default">
+                  <span class="text-slate-600 group-hover:text-emerald-500 transition-colors">
+                    ├──
+                  </span>
+                  <span class="text-slate-300 group-hover:text-white transition-colors">
+                    ICard.vue
+                  </span>
+                  <span class="text-[10px] text-slate-600 ml-auto">Card Component</span>
+                </div>
+                <div class="flex items-center gap-2 group cursor-default">
+                  <span class="text-slate-600 group-hover:text-emerald-500 transition-colors">
+                    ├──
+                  </span>
+                  <span class="text-slate-300 group-hover:text-white transition-colors">
+                    IButton.vue
+                  </span>
+                  <span class="text-[10px] text-slate-600 ml-auto">Button Component</span>
+                </div>
+                <div class="flex items-center gap-2 group cursor-default">
+                  <span class="text-slate-600 group-hover:text-emerald-500 transition-colors">
+                    └──
+                  </span>
+                  <span class="text-slate-500">...</span>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-slate-800/50">
+                <div class="flex gap-2 text-[11px] text-slate-400 bg-slate-900/50 p-2 rounded">
+                  <span class="text-emerald-400">💡</span>
+                  <span>只需重寫此目錄下的元件，即可完成全站 UI 切換。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ShowcaseSection>
   </ShowcasePage>
 </template>
 
@@ -615,97 +1125,242 @@ const navigateToRules = () => {
   }
 }
 
-/* Naming Rules */
-.naming-rules {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.rule-item {
-  display: flex;
-  align-items: stretch;
+/* Rule Cards (Syntax Highlighting UI) */
+.rule-card {
   background: rgba(15, 23, 42, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-}
-
-.rule-meta {
-  width: 140px;
-  background: rgba(30, 41, 59, 0.6);
-  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.rule-type {
-  font-size: 0.7rem;
+.rule-card:hover {
+  background: rgba(30, 41, 59, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.4);
+}
+
+.rule-card-header {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.rule-badge {
+  font-size: 0.65rem;
   font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
   color: #94a3b8;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+}
+
+.rule-card-body {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rule-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
 }
 
 .rule-desc {
-  color: #e2e8f0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Structure Grid */
+.structure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.structure-group {
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.structure-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.structure-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.structure-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.structure-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.structure-name {
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
   font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.25rem;
 }
 
-.rule-content {
-  flex: 1;
-  padding: 1.5rem;
+.structure-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Tool Bento Grid */
+.tool-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.bento-card {
+  position: relative;
+  height: 240px;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0.75rem;
 }
 
-.rule-syntax {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: white;
+.bento-card:hover {
+  transform: translateY(-4px);
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px -4px rgba(0, 0, 0, 0.4);
 }
 
-.rule-syntax .keyword {
-  color: #38bdf8;
-}
-.rule-syntax .divider {
-  color: #475569;
-  margin: 0 0.5rem;
+.bento-bg-icon {
+  position: absolute;
+  right: -20px;
+  bottom: -40px;
+  opacity: 0.05;
+  transform: rotate(-15deg) scale(4);
+  pointer-events: none;
+  transition: transform 0.5s ease;
 }
 
-.rule-examples {
+.bento-card:hover .bento-bg-icon {
+  transform: rotate(0deg) scale(4.5);
+  opacity: 0.08;
+}
+
+.bento-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.rule-examples span {
+.bento-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.bento-card-sky .bento-icon {
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: rgba(56, 189, 248, 0.1);
+}
+.bento-card-rose .bento-icon {
+  border: 1px solid rgba(251, 113, 133, 0.2);
+  background: rgba(251, 113, 133, 0.1);
+}
+.bento-card-amber .bento-icon {
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  background: rgba(251, 191, 36, 0.1);
+}
+.bento-card-purple .bento-icon {
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  background: rgba(192, 132, 252, 0.1);
+}
+.bento-card-blue .bento-icon {
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+}
+.bento-card-orange .bento-icon {
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  background: rgba(249, 115, 22, 0.1);
+}
+
+.bento-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.bento-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: auto;
+}
+
+.bento-action {
   font-size: 0.85rem;
-  font-family: 'JetBrains Mono', monospace;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
 }
 
-.good {
-  background: rgba(34, 197, 94, 0.1);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.2);
-}
-.bad {
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  text-decoration: line-through;
-  opacity: 0.8;
+.bento-card:hover .bento-action {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-/* Initialization Steps */
+/* Initialization Steps (Restored) */
 .steps-list {
   display: flex;
   flex-direction: column;
@@ -735,213 +1390,63 @@ const navigateToRules = () => {
   flex: 1;
 }
 
-/* Navigation Cards */
-.nav-card {
-  position: relative;
-  padding: 2rem;
-  border-radius: 1.25rem;
-  margin-bottom: 1rem;
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.nav-card:hover {
-  transform: translateY(-4px);
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 40px -4px rgba(0, 0, 0, 0.4);
-}
-
-.nav-card-glow {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.4s;
-  pointer-events: none;
-  border-radius: 1.25rem;
-}
-
-.nav-card:hover .nav-card-glow {
-  opacity: 1;
-}
-
-.nav-card-glow-blue {
-  background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%);
-}
-
-.nav-card-glow-orange {
-  background: radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.15), transparent 70%);
-}
-
-.nav-card-content {
-  position: relative;
-  z-index: 1;
-}
-
-.nav-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-}
-
-.nav-icon-blue {
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.nav-card:hover .nav-icon-blue {
-  background: rgba(59, 130, 246, 0.25);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-.nav-icon-orange {
-  background: rgba(251, 146, 60, 0.15);
-  border: 1px solid rgba(251, 146, 60, 0.3);
-}
-
-.nav-card:hover .nav-icon-orange {
-  background: rgba(251, 146, 60, 0.25);
-  box-shadow: 0 0 20px rgba(251, 146, 60, 0.3);
-}
-
-.nav-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  letter-spacing: -0.01em;
-}
-
-.nav-desc {
-  font-size: 0.9375rem;
-  color: #94a3b8;
-  line-height: 1.5;
-}
-
-.nav-arrow {
-  transition: transform 0.3s;
-}
-
-.nav-card:hover .nav-arrow {
-  transform: translateX(6px);
-}
-
-/* Runtime Environment Cards */
-.runtime-grid {
+/* IDE Ecosystem */
+.ide-ecosystem {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.runtime-card {
-  position: relative;
-  padding: 1.75rem;
-  border-radius: 1rem;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s;
-  overflow: hidden;
-}
-
-.runtime-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.5), rgba(52, 211, 153, 0.5));
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.runtime-card:hover {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(16, 185, 129, 0.3);
-  transform: translateY(-2px);
-}
-
-.runtime-card:hover::before {
-  opacity: 1;
-}
-
-.runtime-header {
+.ide-card {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.runtime-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 0.875rem;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   transition: all 0.3s;
 }
 
-.runtime-card:hover .runtime-icon {
-  background: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+.ide-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(30, 41, 59, 0.8);
 }
 
-.runtime-info {
+.ide-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ide-info {
   flex: 1;
-  min-width: 0;
 }
 
-.runtime-name {
-  font-size: 1.125rem;
+.ide-name {
   font-weight: 700;
   color: #e2e8f0;
-  font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.1rem;
 }
 
-.runtime-desc {
-  font-size: 0.8125rem;
-  color: #94a3b8;
-  line-height: 1.4;
-}
-
-.runtime-version {
-  padding: 0.375rem 0.875rem;
-  border-radius: 9999px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  color: #6ee7b7;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  font-family: 'JetBrains Mono', monospace;
-  white-space: nowrap;
-}
-
-.runtime-check {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.runtime-check-label {
+.ide-meta {
   font-size: 0.75rem;
-  font-weight: 600;
   color: #64748b;
+}
+
+.ide-status {
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
 }
 
 /* Package Categories */
