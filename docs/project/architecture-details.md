@@ -25,19 +25,18 @@ root/
 │   └── e-commerce/           # 電商模組
 │
 ├── configs/                  # [組裝說明書] 定義產品/客戶
-│   ├── standard-plan.yaml    # 標準版 (Auth + CRM)
-│   ├── premium-plan.yaml     # 進階版 (Auth + CRM + E-commerce)
-│   └── client-a.yaml         # 客戶 A 專屬設定
+│   ├── default.yaml          # 預設配置
+│   └── custom.yaml           # 自訂配置範例
 │
 ├── nuxt.config.ts            # [組裝工廠] 讀取 Config -> 載入對應 Modules
-└── .env                      # 指定當前要建置哪個 Config (e.g., PRODUCT_CONFIG=client-a)
+└── .env                      # 指定當前要建置哪個 Config
 ```
 
 ### 3. 運作機制 (Mechanism)
 
 #### A. 建置階段 (Build Time) - 決定「包含什麼」
 
-在 `nuxt.config.ts` 中，系統會讀取指定的設定檔 (如 `client-a.yaml`)。
+在 `nuxt.config.ts` 中，系統會讀取指定的設定檔 (如 `default.yaml`)。
 
 - **模組載入**: 僅掃描並載入設定檔中啟用的模組 (Modules)。
 - **瘦身優化**: 未被啟用的模組程式碼不會被打包進最終產物，確保應用程式輕量化且安全。
@@ -54,7 +53,7 @@ root/
 當特定客戶需要客製化邏輯時，不應複製整個模組。
 
 - **策略模式 (Strategy Pattern)**: 在模組內預留 Hook 或 Slot。
-- **參數控制**: 在 `client-a.yaml` 中開啟特殊參數 (例如 `crm.customCalculation: true`) 來啟用特定邏輯。
+- **參數控制**: 在配置檔中開啟特殊參數 (例如 `crm.customCalculation: true`) 來啟用特定邏輯。
 
 ---
 

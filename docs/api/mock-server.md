@@ -1,12 +1,12 @@
-# Mock API 系統使用指南
+# Mock API 系統使用指南 (Mock API Guide)
 
-## 📋 概述
+## 概述
 
 本專案使用 **Repository 層 Mock** 實現 Mock API 系統，讓前端可以獨立開發，不依賴後端 API。
 
 > **注意**：本專案已移除 MSW (Mock Service Worker)，改用更輕量的 Repository 層 Mock 方式。
 
-## 🚀 快速開始
+## 快速開始
 
 ### 1. 啟用 Mock API
 
@@ -29,7 +29,7 @@ npm run dev
 
 所有發送到 `/api/*` 的請求都會被攔截並回傳 Mock 資料。
 
-## 📁 專案結構
+## 專案結構
 
 ```
 mock/
@@ -47,7 +47,7 @@ composables/
 └── useApi.ts         # 整合 Mock 攔截器
 ```
 
-## 🎯 使用範例
+## 使用範例
 
 ### 在 Repository 中使用
 
@@ -79,7 +79,7 @@ const { data, pending } = await useFetch('/api/users', {
 </script>
 ```
 
-## 🔧 新增新的 Mock API
+## 新增新的 Mock API
 
 ### 1. 定義 Schema
 
@@ -147,7 +147,7 @@ if (method === 'GET' && url.match(/\/api\/products\/\d+/)) {
 }
 ```
 
-## 🌍 環境切換
+## 環境切換
 
 ### 開發環境 (使用 Mock)
 
@@ -173,7 +173,7 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false
 NUXT_PUBLIC_API_BASE_URL=https://api.example.com
 ```
 
-## 🎨 進階功能
+## 進階功能
 
 ### 模擬錯誤
 
@@ -221,7 +221,7 @@ export async function checkMockData(url: string, options: any): Promise<any> {
 }
 ```
 
-## 🐛 除錯
+## 除錯
 
 ### 查看 Mock 攔截
 
@@ -241,7 +241,7 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false npm run dev
 NUXT_PUBLIC_FEATURE_API_MOCK=false
 ```
 
-## 📝 最佳實踐
+## 最佳實踐
 
 1. **保持 Schema 同步**: Mock 的 Schema 應與真實 API 一致
 2. **使用 Zod 驗證**: 在 Repository 層使用 Zod 驗證響應
@@ -249,12 +249,12 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false
 4. **模擬真實場景**: 包含延遲、錯誤、分頁等
 5. **環境隔離**: 開發用 Mock,測試/正式用真實 API
 
-## 🔗 相關資源
+## 相關資源
 
 - [Zod 官方文檔](https://zod.dev/)
 - [Repository 層 Mock 詳細指南](./REPOSITORY_MOCK.md)
 
-## ⚡ 優勢
+## 優勢
 
 相比 MSW (Mock Service Worker):
 

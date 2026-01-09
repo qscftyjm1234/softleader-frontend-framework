@@ -1,4 +1,4 @@
-# VSCode ESLint 設定說明
+# VS Code ESLint 設定說明 (VS Code ESLint Configuration)
 
 ## 問題排查
 

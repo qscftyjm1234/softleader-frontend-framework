@@ -1,9 +1,0 @@
-name: 'Client A'
-description: 'Configuration for Client A with limited modules'
-
-modules:
-  - auth
-  - product
-
-theme:
-  primary: '#FF5733'

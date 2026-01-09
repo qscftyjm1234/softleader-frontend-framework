@@ -1,232 +1,451 @@
-# 框架無關 Layout 系統使用指南
+# 佈局系統 (Layout System)
 
-## 概述
+本專案使用 Nuxt 3 的佈局系統,提供可重用的頁面框架,讓不同頁面共享相同的 UI 結構。
 
-本專案的 Layout 系統完全不依賴任何 UI 框架 (如 Vuetify, Element Plus 等),使用純 HTML + CSS 實現,可輕鬆整合到任何技術堆疊中。
+## 佈局架構
 
-## 核心特性
+```
+layouts/
+├── default.vue       # 預設佈局 (含 Header + Sidebar + Footer)
+├── portal.vue        # Portal 佈局 (含側邊欄)
+└── blank.vue         # 空白佈局 (無任何框架)
+```
 
-- ✅ **框架無關**: 不依賴任何 UI 框架
-- ✅ **完整功能**: Header, Sidebar, Footer, Breadcrumbs, Notifications 等
-- ✅ **響應式設計**: 支援手機、平板、桌面
-- ✅ **CSS Variables**: 完整的設計令牌系統,易於自訂
-- ✅ **輕量級**: 純 HTML + CSS,無額外依賴
+---
 
-## 快速開始
+## 1. default.vue - 預設佈局
 
-### 1. 使用 Layout
+### 用途
 
-在任何頁面中設定 `layout` 即可:
+適用於大部分頁面的標準佈局,包含完整的導航結構。
+
+### 結構組成
+
+- **AppHeader** - 頁首導航列
+- **AppSidebar** - 側邊選單
+- **Main Content** - 頁面主要內容區
+- **AppFooter** - 頁尾資訊
+- **GlobalSnackbar** - 全域通知
+
+### 使用範例
 
 ```vue
+<!-- pages/dashboard.vue -->
 <script setup lang="ts">
 definePageMeta({
-  layout: 'default'
+  layout: 'default' // 或不指定,預設就是 default
 })
 </script>
 
 <template>
   <div>
-    <h1>你的頁面內容</h1>
+    <h1>儀表板</h1>
+    <!-- 頁面內容 -->
   </div>
 </template>
 ```
 
-### 2. 自訂樣式
+### 特色功能
 
-所有樣式都使用 CSS Variables 定義在 `assets/css/layout.css` 中,可輕鬆覆寫:
+- **響應式側邊欄**: 桌面版固定,手機版可收合
+- **自動初始化**: 載入應用程式設定
+- **全域通知**: 整合 GlobalSnackbar
+- **手機版遮罩**: 側邊欄開啟時顯示遮罩
 
-```css
-:root {
-  --color-primary: #1976d2;
-  --color-success: #4caf50;
-  --header-height: 64px;
-  --sidebar-width: 280px;
-  /* ... 更多變數 */
-}
+---
+
+## 2. portal.vue - Portal 佈局
+
+### 用途
+
+適用於需要側邊欄導航的管理後台或 Portal 頁面。
+
+### 結構組成
+
+- **PortalHeader** - Portal 專用標題列
+- **AppSidebar** - 側邊選單
+- **Main Content** - 頁面主要內容區
+
+### 使用範例
+
+```vue
+<!-- pages/admin/users.vue -->
+<script setup lang="ts">
+definePageMeta({
+  layout: 'portal'
+})
+</script>
+
+<template>
+  <div>
+    <h1>使用者管理</h1>
+    <!-- 管理頁面內容 -->
+  </div>
+</template>
 ```
 
-### 3. 使用 Utility Classes
+---
 
-提供了常用的 utility classes:
+## 3. blank.vue - 空白佈局
 
-```html
-<!-- Container -->
-<div class="container">內容會自動置中,最大寬度 1280px</div>
-<div class="container-fluid">全寬容器</div>
+### 用途
 
-<!-- Flexbox -->
-<div class="flex items-center justify-between">
-  <div>左側</div>
-  <div>右側</div>
-</div>
+適用於不需要任何框架的頁面,如登入頁、錯誤頁、全螢幕頁面。
 
-<!-- Responsive -->
-<div class="hidden-mobile">桌面版顯示</div>
-<div class="hidden-desktop">手機版顯示</div>
+### 結構組成
 
-<!-- Buttons -->
-<button class="btn btn-primary">主要按鈕</button>
-<button class="btn-icon">圖標按鈕</button>
+僅包含 `<slot />`,沒有任何額外元件。
 
-<!-- Badges -->
-<span class="badge">3</span>
-<span class="badge badge-dot"></span>
+### 使用範例
+
+```vue
+<!-- pages/login.vue -->
+<script setup lang="ts">
+definePageMeta({
+  layout: 'blank'
+})
+</script>
+
+<template>
+  <div class="login-page">
+    <LoginForm />
+  </div>
+</template>
 ```
 
-## 展示頁面
+---
 
-訪問以下頁面查看完整範例:
+## 佈局元件
 
-- `/layout-demo` - 展示首頁
-- `/layout-demo/basic` - 基本頁面範例
-- `/layout-demo/form` - 表單頁面範例
-- `/layout-demo/components` - UI 元件範例
+### AppHeader.vue
 
-## 檔案結構
+頁首導航列,包含:
 
-```
-layouts/
-  └── default.vue              # 主要 Layout
-
-components/
-  ├── layout/
-  │   ├── AppHeader.vue        # 頁首
-  │   ├── AppSidebar.vue       # 側邊欄
-  │   ├── AppFooter.vue        # 頁尾
-  │   ├── AppSidebarItem.vue   # 側邊欄項目 (支援巢狀)
-  │   └── header/
-  │       ├── HeaderBreadcrumbs.vue    # 麵包屑
-  │       ├── HeaderSearch.vue         # 搜尋欄
-  │       ├── HeaderLanguage.vue       # 語言選擇器
-  │       ├── HeaderNotifications.vue  # 通知中心
-  │       ├── HeaderUserMenu.vue       # 使用者選單
-  │       └── HeaderActions.vue        # 動作按鈕
-  └── common/
-      └── GlobalSnackbar.vue   # 全域通知
-
-assets/
-  └── css/
-      ├── layout.css           # Layout 樣式系統
-      └── main.css             # 主要樣式檔案
-```
-
-## 自訂範例
-
-### 修改主題色
-
-```css
-/* 在你的 CSS 檔案中覆寫 */
-:root {
-  --color-primary: #ff5722;
-  --color-primary-dark: #e64a19;
-  --color-primary-light: #ff8a65;
-}
-```
-
-### 調整 Layout 尺寸
-
-```css
-:root {
-  --header-height: 72px;
-  --sidebar-width: 320px;
-  --footer-height: 80px;
-}
-```
-
-### 使用自訂字體
-
-```css
-body {
-  font-family:
-    'Your Custom Font',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
-}
-```
-
-## 整合其他 UI 框架
-
-由於本 Layout 系統完全框架無關,你可以輕鬆整合任何 UI 框架:
-
-### 整合 Vuetify
+- Logo
+- 主選單
+- 使用者選單
+- 通知圖示
 
 ```vue
 <template>
-  <div>
-    <!-- Layout 提供的結構 -->
-    <h1>頁面標題</h1>
-
-    <!-- 使用 Vuetify 元件 -->
-    <v-btn color="primary">Vuetify 按鈕</v-btn>
-
-    <!-- 使用原生 HTML + Layout CSS -->
-    <button class="btn btn-primary">原生按鈕</button>
-  </div>
+  <header class="app-header">
+    <div class="logo">My App</div>
+    <nav class="main-nav">
+      <!-- 導航連結 -->
+    </nav>
+    <HeaderUserMenu />
+  </header>
 </template>
 ```
 
-### 整合 Element Plus
+### AppSidebar.vue
+
+側邊選單,包含:
+
+- 選單項目列表
+- 展開/收合控制
+- 響應式設計
 
 ```vue
 <template>
-  <div>
-    <!-- 混合使用 -->
-    <el-button type="primary">Element Plus 按鈕</el-button>
-    <button class="btn btn-primary">原生按鈕</button>
+  <aside
+    class="app-sidebar"
+    :class="{ open: isOpen }"
+  >
+    <nav>
+      <NuxtLink to="/dashboard">儀表板</NuxtLink>
+      <NuxtLink to="/users">使用者</NuxtLink>
+      <!-- 更多選單項目 -->
+    </nav>
+  </aside>
+</template>
+```
+
+### PortalHeader.vue
+
+Portal 專用標題列,針對管理後台設計。
+
+---
+
+## 在頁面中使用佈局
+
+### 方法一: 使用 definePageMeta
+
+```vue
+<script setup lang="ts">
+definePageMeta({
+  layout: 'portal'
+})
+</script>
+```
+
+### 方法二: 使用 setPageLayout (動態切換)
+
+```vue
+<script setup lang="ts">
+const route = useRoute()
+
+// 根據路由動態切換佈局
+if (route.path.startsWith('/admin')) {
+  setPageLayout('portal')
+} else {
+  setPageLayout('default')
+}
+</script>
+```
+
+### 方法三: 使用 NuxtLayout 元件
+
+```vue
+<template>
+  <NuxtLayout name="blank">
+    <div>自訂內容</div>
+  </NuxtLayout>
+</template>
+```
+
+---
+
+## 佈局開發規範
+
+### 1. 保持佈局簡潔
+
+佈局應該只負責「框架」,不包含業務邏輯。
+
+✅ **正確**: 僅定義結構
+
+```vue
+<!-- layouts/default.vue -->
+<template>
+  <div class="app-layout">
+    <AppHeader />
+    <main>
+      <slot />
+    </main>
+    <AppFooter />
   </div>
 </template>
 ```
 
-## 常見問題
+❌ **錯誤**: 包含業務邏輯
 
-### Q: 如何隱藏 Sidebar?
-
-在 `appStore` 中設定:
-
-```typescript
-appStore.config.sidebar.visible = false
+```vue
+<!-- layouts/default.vue -->
+<template>
+  <div>
+    <AppHeader />
+    <main>
+      <!-- ❌ 不應該在佈局中寫業務邏輯 -->
+      <UserList v-if="isAdmin" />
+      <slot />
+    </main>
+  </div>
+</template>
 ```
 
-### Q: 如何自訂 Header 高度?
+### 2. 使用 Slot 傳遞內容
 
-修改 CSS Variable:
+```vue
+<!-- layouts/default.vue -->
+<template>
+  <div>
+    <header>
+      <!-- 具名 slot: 讓頁面自訂標題 -->
+      <slot name="header">
+        <h1>預設標題</h1>
+      </slot>
+    </header>
 
-```css
-:root {
-  --header-height: 80px;
+    <main>
+      <!-- 預設 slot: 頁面主要內容 -->
+      <slot />
+    </main>
+
+    <aside>
+      <!-- 具名 slot: 側邊欄內容 -->
+      <slot name="sidebar" />
+    </aside>
+  </div>
+</template>
+```
+
+使用方式:
+
+```vue
+<!-- pages/dashboard.vue -->
+<template>
+  <div>
+    <template #header>
+      <h1>儀表板</h1>
+    </template>
+
+    <div>主要內容</div>
+
+    <template #sidebar>
+      <div>側邊欄內容</div>
+    </template>
+  </div>
+</template>
+```
+
+### 3. 響應式設計
+
+```vue
+<template>
+  <div class="app-layout">
+    <!-- 桌面版: 固定側邊欄 -->
+    <AppSidebar class="desktop-sidebar" />
+
+    <!-- 手機版: 可收合側邊欄 -->
+    <AppSidebar
+      v-model="isMobileSidebarOpen"
+      class="mobile-sidebar"
+    />
+
+    <main>
+      <slot />
+    </main>
+  </div>
+</template>
+
+<style scoped>
+.desktop-sidebar {
+  display: none;
 }
+
+.mobile-sidebar {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .desktop-sidebar {
+    display: block;
+  }
+
+  .mobile-sidebar {
+    display: none;
+  }
+}
+</style>
 ```
 
-### Q: 如何新增自訂的 Header 按鈕?
+---
 
-在 `appStore.config.header.actions` 中新增:
+## 佈局狀態管理
+
+### 使用 Store 管理佈局狀態
 
 ```typescript
-appStore.config.header.actions.push({
-  icon: 'custom-icon',
-  title: '自訂按鈕',
-  action: 'customAction'
+// stores/app.ts
+export const useAppStore = defineStore('app', () => {
+  const drawer = ref(false)
+  const config = ref({
+    sidebar: {
+      visible: true,
+      pinned: false
+    }
+  })
+
+  const toggleDrawer = () => {
+    drawer.value = !drawer.value
+  }
+
+  return {
+    drawer,
+    config,
+    toggleDrawer
+  }
 })
 ```
 
-## 技術細節
+在佈局中使用:
 
-- **CSS Grid**: Layout 使用 CSS Grid 實現,確保靈活性
-- **CSS Variables**: 所有設計令牌都使用 CSS Variables,支援動態主題
-- **Semantic HTML**: 使用語義化 HTML 標籤 (`<header>`, `<nav>`, `<main>`, `<footer>`)
-- **Accessibility**: 包含適當的 ARIA 屬性和鍵盤導航支援
-- **Mobile First**: 響應式設計從手機版開始,逐步增強
+```vue
+<script setup lang="ts">
+import { useAppStore } from '~/stores/app'
 
-## 瀏覽器支援
+const appStore = useAppStore()
+</script>
 
-- Chrome / Edge (最新版)
-- Firefox (最新版)
-- Safari (最新版)
-- 支援所有現代瀏覽器 (支援 CSS Variables 和 Grid)
+<template>
+  <div>
+    <AppSidebar v-model="appStore.drawer" />
+    <main>
+      <slot />
+    </main>
+  </div>
+</template>
+```
 
-## 授權
+---
 
-MIT License
+## 最佳實踐
+
+### 1. 為不同場景選擇合適的佈局
+
+| 頁面類型 | 推薦佈局  | 原因         |
+| :------- | :-------- | :----------- |
+| 一般頁面 | `default` | 需要完整導航 |
+| 管理後台 | `portal`  | 需要側邊欄   |
+| 登入頁   | `blank`   | 不需要導航   |
+| 錯誤頁   | `blank`   | 簡潔呈現     |
+| 全螢幕頁 | `blank`   | 無框架干擾   |
+
+### 2. 避免過度嵌套
+
+❌ **不推薦**: 佈局中嵌套佈局
+
+```vue
+<!-- layouts/default.vue -->
+<template>
+  <NuxtLayout name="base">
+    <AppHeader />
+    <slot />
+  </NuxtLayout>
+</template>
+```
+
+✅ **推薦**: 使用元件組合
+
+```vue
+<!-- layouts/default.vue -->
+<template>
+  <div>
+    <AppHeader />
+    <slot />
+  </div>
+</template>
+```
+
+### 3. 使用 Transition 增加動畫
+
+```vue
+<template>
+  <div>
+    <AppHeader />
+    <Transition name="page">
+      <slot />
+    </Transition>
+  </div>
+</template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+</style>
+```
+
+---
+
+## 相關文件
+
+- [元件系統](./components.md)
+- [開發規範](../guides/development.md)
+- [Nuxt Layouts 官方文件](https://nuxt.com/docs/guide/directory-structure/layouts)

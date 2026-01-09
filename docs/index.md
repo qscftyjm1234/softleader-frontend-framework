@@ -4,17 +4,17 @@
 
 ## 📚 文件目錄
 
-### 1. [專案概覽 (Project)](./project/architecture.md)
+### 2. [專案概覽 (Project)](./project/architecture.md)
 
-專案的核心架構與規劃。
+專案架構與設計理念。
 
-- **[系統架構 (Architecture)](./project/architecture.md)**: 系統整體設計與分層。
-- **[架構詳解 (Details)](./project/architecture-details.md)**: 深入架構實作細節。
-- **[功能列表 (Features)](./project/features.md)**: 現有功能清單與狀態。
+- **[專案檔案說明 (File Reference)](./project/file-reference.md)**: **每個檔案的用途說明**。
+- **[系統架構 (Architecture)](./project/architecture.md)**: 框架無關設計。
+- **[架構細節 (Architecture Details)](./project/architecture-details.md)**: Config-Driven 架構。
+- **[功能開關 (Features)](./project/features.md)**: Feature Flags 系統。
 - **[模組列表 (Modules)](./project/modules.md)**: 系統模組說明。
-- **[目錄結構 (Folder Structure)](./project/folder-structure.md)**: 專案目錄規範。
+- **[資料夾結構 (Folder Structure)](./project/folder-structure.md)**: 目錄結構與命名規範。
 - **[開發路線圖 (Roadmap)](./project/roadmap.md)**: 未來開發計畫。
-- **[Schema Driven UI](./project/schema-driven-ui.md)**: SDUI 設計理念。
 
 ### 2. [核心功能 (Core)](./core/components.md)
 
@@ -41,8 +41,10 @@
 
 日常開發流程與規範。
 
+- **[開發手冊 (Development Manual)](./guides/development-manual.md)**: 完整開發指南 (環境、套件、命名規範)。
+- **[註解規範 (Comments)](./guides/comments.md)**: **JSDoc 完整規範** 與註解標準。
+- **[Git 工作流配置 (Git Workflow)](./guides/git-workflow.md)**: Git 配置檔案說明 (Commitlint, Commitizen, Standard-version)。
 - **[開發規範 (Development)](./guides/development.md)**: 程式碼風格與開發流程。
-- **[註解規範 (Comments)](./guides/comments.md)**: JSDoc 與註解標準。
 - **[除錯指南 (Troubleshooting)](./guides/troubleshooting.md)**: 常見問題排除。
 - **[DX 指南 (Developer Experience)](./guides/dx.md)**: 開發者體驗工具。
 

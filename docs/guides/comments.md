@@ -1,4 +1,4 @@
-# 程式碼註解規範
+# 程式碼註解規範 (Code Comments Guidelines)
 
 ## 目錄
 

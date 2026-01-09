@@ -1,6 +1,6 @@
-# 開發包架構說明
+# 系統架構說明 (System Architecture)
 
-## 核心理念:框架無關
+## 核心理念 - 框架無關 (Framework Agnostic)
 
 本開發包採用 **Headless Components** 設計模式,提供完整的業務邏輯,但不綁定任何 UI 框架。
 

@@ -1,4 +1,4 @@
-# 🚀 企業級前端開發套件規劃書 (Frontend Development Kit Plan)
+# 企業級前端開發套件規劃書 (Frontend Development Kit Plan)
 
 ## 1. 專案願景 (Vision)
 

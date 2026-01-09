@@ -1,4 +1,4 @@
-# 📘 開發與發布指引 (Development Guidelines)
+# 開發與發布指引 (Development Guidelines)
 
 本文件說明如何在本專案中保持「程式碼整潔」，同時維護完整的「修改歷史」與「自動化文件」。
 

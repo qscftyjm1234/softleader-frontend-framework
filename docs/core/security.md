@@ -1,4 +1,4 @@
-# 前端 Token 資安最佳實踐
+# 前端 Token 資安最佳實踐 (Frontend Token Security Best Practices)
 
 關於 Token (通常是 JWT) 的處理，前端工程師最常面臨的挑戰是：**「要存哪裡？」** 與 **「過期了怎麼辦？」**。
 
