@@ -1,3 +1,5 @@
+[← 返回文件導覽](../index.md)
+
 # 系統架構文件 (Architecture Documentation)
 
 本章節記錄了系統的高層次設計與架構決策。

@@ -1,3 +1,5 @@
+[← 返回文件導覽](../index.md)
+
 # 問題診斷與解決方案 (Troubleshooting)
 
 ## 問題分析

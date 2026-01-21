@@ -27,7 +27,7 @@ export const nitroConfig: NuxtConfig['nitro'] = {
         noEmit: false
       }
     }
-  }
+  },
 
   /**
    * 開發環境代理 (Development Proxy)
@@ -43,10 +43,10 @@ export const nitroConfig: NuxtConfig['nitro'] = {
    *   }
    * }
    */
-  // devProxy: {
-  //   '/api': {
-  //     target: 'http://localhost:8080',
-  //     changeOrigin: true
-  //   }
-  // }
+  devProxy: {
+    '/api': {
+      target: process.env.NUXT_PROXY_TARGET || 'http://localhost:8080',
+      changeOrigin: true
+    }
+  }
 }

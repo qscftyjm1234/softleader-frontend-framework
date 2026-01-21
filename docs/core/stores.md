@@ -1,3 +1,5 @@
+[← 返回文件導覽](../index.md)
+
 # 狀態管理系統 (Pinia Stores)
 
 本專案使用 Pinia 作為全域狀態管理工具,採用 Composition API 風格,提供型別安全的狀態管理。
