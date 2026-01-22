@@ -370,7 +370,7 @@ const { isEnabled, options } = useSecurity()
 
 ---
 
-## 📚 相關文件
+## 相關文件
 
 - [資安架構分析](./security_architecture_analysis.md)
 - [Token 安全管理](../../docs/TOKEN_SECURITY.md)

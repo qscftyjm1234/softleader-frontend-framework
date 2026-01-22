@@ -16,7 +16,8 @@
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "commit": "cz",
-    "clone": "clone-project.bat"
+    "clone": "clone-project.bat",
+    "open": "explorer ."
   },
   "config": {
     "commitizen": {

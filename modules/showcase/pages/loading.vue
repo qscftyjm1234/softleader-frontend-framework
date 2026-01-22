@@ -68,7 +68,7 @@ const handleSimulateStack = async () => {
     <!-- 基礎用法 -->
     <ShowcaseSection
       title="基礎用法"
-      icon="📚"
+      icon=""
     >
       <ShowcaseCard
         title="核心功能"

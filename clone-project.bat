@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 REM ========================================
 REM 專案複製工具 (排除 node_modules)
 REM ========================================
@@ -13,15 +14,20 @@ REM 取得當前專案路徑
 set "SOURCE_DIR=%~dp0"
 set "SOURCE_DIR=%SOURCE_DIR:~0,-1%"
 
-REM 詢問目標路徑
-set /p "DEST_DIR=請輸入目標路徑 (例如: C:\Projects\my-clone): "
+REM 計算預設專案名稱 (目前名稱 + "-clone")
+for %%i in ("%SOURCE_DIR%") do set "CURRENT_DIR_NAME=%%~nxi"
+for %%i in ("%SOURCE_DIR%") do set "PARENT_DIR=%%~dpi"
+set "DEFAULT_NAME=%CURRENT_DIR_NAME%-clone"
 
-REM 檢查目標路徑是否為空
-if "%DEST_DIR%"=="" (
-    echo [錯誤] 目標路徑不能為空!
-    pause
-    exit /b 1
-)
+REM 詢問專案名稱
+echo 預設專案名稱: %DEFAULT_NAME%
+set /p "NEW_PROJECT_NAME=請輸入新專案名稱 (直接按 Enter 使用預設): "
+
+REM 如果使用者沒輸入，則使用預設名稱
+if "%NEW_PROJECT_NAME%"=="" set "NEW_PROJECT_NAME=%DEFAULT_NAME%"
+
+REM 合成完整的目標路徑
+set "DEST_DIR=%PARENT_DIR%%NEW_PROJECT_NAME%"
 
 REM 檢查目標路徑是否已存在
 if exist "%DEST_DIR%" (
@@ -52,6 +58,8 @@ if %ERRORLEVEL% LEQ 7 (
     echo.
     echo 目標位置: %DEST_DIR%
     echo.
+    REM 自動開啟目標資料夾
+    explorer "%DEST_DIR%"
     echo 提醒: 請記得在新專案中執行以下指令:
     echo   1. npm install  或  pnpm install
     echo   2. 複製並設定 .env 檔案
