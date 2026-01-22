@@ -14,12 +14,12 @@ import { productConfig } from '../../scripts/product-loader'
 export const appConfig: NuxtConfig['app'] = {
   head: {
     /** 網頁標題 - 顯示在瀏覽器分頁上 */
-    title: productConfig.meta?.title || 'Demo App Framework',
+    title: productConfig.meta?.title || 'Nuxt 3 Development Kit',
 
     /** 標題模板 - 用於動態設定頁面標題，%s 會被替換成頁面標題
-     * @example 產品列表 - Demo App
+     * @example 產品列表 - Nuxt 3 Kit
      */
-    titleTemplate: '%s - Demo App',
+    titleTemplate: '%s - Nuxt 3 Kit',
 
     /** HTML 語言屬性 */
     htmlAttrs: {
@@ -34,7 +34,7 @@ export const appConfig: NuxtConfig['app'] = {
         name: 'description',
         content:
           productConfig.meta?.description ||
-          'Demo App Framework - Enterprise-grade Nuxt 3 Development Kit'
+          'Enterprise-grade Nuxt 3 Development Kit - Streamlining your frontend development'
       },
       { name: 'author', content: 'Demo App' },
       { name: 'robots', content: 'index, follow' }, // SEO：允許搜尋引擎索引

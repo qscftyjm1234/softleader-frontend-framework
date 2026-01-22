@@ -10,6 +10,7 @@
     "build:staging": "cross-env NODE_ENV=staging nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "generate:staging": "cross-env NODE_ENV=staging nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "prettier --check .",

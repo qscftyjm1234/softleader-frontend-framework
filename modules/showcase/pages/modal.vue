@@ -63,106 +63,6 @@ const handleLocalModalOpen = async () => {
   confirmResult.value = `局部彈窗選擇: ${result ? '確認' : '取消'}`
 }
 
-import PolicyForm from '~/components/uiBusiness/PolicyForm.vue'
-
-// 模擬現有保單列表 (用於 Demo Pattern 1 Table)
-// 模擬資料列表 1 (Pattern 1: 內聚模式 - 組件負責存檔)
-const policyList1 = ref([
-  {
-    id: 1,
-    policyNo: 'POL-888888',
-    applicant: '陳大文',
-    planType: 'life',
-    effectiveDate: '2024-01-01'
-  },
-  {
-    id: 2,
-    policyNo: 'POL-666666',
-    applicant: '林小英',
-    planType: 'medical',
-    effectiveDate: '2023-05-20'
-  }
-])
-
-// 模擬資料列表 2 (Pattern 2: 外據模式 - 父層負責存檔)
-const policyList2 = ref([
-  {
-    id: 3,
-    policyNo: 'POL-123456',
-    applicant: '張三豐',
-    planType: 'accident',
-    effectiveDate: '2023-11-15'
-  },
-  {
-    id: 4,
-    policyNo: 'POL-777777',
-    applicant: '李四',
-    planType: 'investment',
-    effectiveDate: '2024-02-01'
-  }
-])
-
-// Pattern 1 Handler: 內聚模式
-const handleEditPattern1 = async (item: any) => {
-  const initialData = { ...item }
-
-  const isConfirmed = await open({
-    title: `編輯保單 (內聚: ${item.applicant})`,
-    component: markRaw(PolicyForm),
-    componentProps: {
-      initialData, // 傳入初始值
-      // Pattern 1 關鍵：提供 onSaved 回呼
-      onSaved: (newData: any) => {
-        const index = policyList1.value.findIndex((p) => p.id === item.id)
-        if (index !== -1) {
-          policyList1.value[index] = { ...item, ...newData }
-          console.log('[Pattern 1] 列表已刷新:', newData)
-        }
-      }
-    },
-    confirmText: '儲存變更 (由組件處理)',
-    cancelText: '取消'
-  })
-
-  // 這裡不需要做存檔邏輯，只負責顯示結果
-  if (isConfirmed) {
-    confirmResult.value = `Pattern 1 編輯結束`
-  }
-}
-
-// Pattern 2 Handler: 外聚模式
-const handleEditPattern2 = async (item: any) => {
-  // 1. 準備 Reactive 物件 (作為與組件溝通的橋樑)
-  const formData = reactive({ ...item })
-
-  const isConfirmed = await open({
-    title: `編輯保單 (外據: ${item.applicant})`,
-    component: markRaw(PolicyForm),
-    componentProps: {
-      formData // Pattern 2 關鍵：傳入 Reactive 容器
-    },
-    confirmText: '確認修改 (由父層存檔)',
-    cancelText: '取消'
-  })
-
-  // 2. 父層負責處理結果與存檔
-  if (isConfirmed) {
-    console.log('[Pattern 2] 父層收到資料，開始存檔...', formData)
-
-    // 模擬 API 呼叫
-    confirmResult.value = 'Pattern 2: 父層存檔中...'
-    await new Promise((r) => setTimeout(r, 800))
-
-    // 更新列表
-    const index = policyList2.value.findIndex((p) => p.id === item.id)
-    if (index !== -1) {
-      policyList2.value[index] = { ...item, ...formData }
-    }
-
-    confirmResult.value = `Pattern 2: 存檔成功 (${formData.applicant})`
-  }
-}
-
 const handleConfirm = async () => {
   const isResult = await confirm({
     title: '確認操作',
@@ -590,280 +490,57 @@ const handleOpen = async () => {
       </div>
     </ShowcaseSection>
 
-    <!-- 實戰：新增保單 -->
-    <ShowcaseCard
-      title="6. 實戰：新增保單"
-      description="整合 ITextField, ISelect 等模組的複雜表單"
-      full-width
-    >
-      <div class="flex flex-col gap-4">
-        <!-- Pattern 1: 內聚模式列表 -->
-        <div class="mb-8">
-          <!-- Pattern 1: 內聚模式 (Internal Cohesion) -->
-          <div class="space-y-4">
-            <!-- Feature Block Header -->
-            <div
-              class="p-4 rounded-lg bg-emerald-950/30 border border-emerald-500/20 flex items-start gap-4"
-            >
-              <div class="shrink-0 p-2.5 rounded-lg bg-emerald-500/10 text-emerald-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h4 class="text-base font-bold text-emerald-400 mb-1">
-                  Pattern 1: 內聚模式 (Internal)
-                </h4>
-                <p class="text-sm text-slate-400">
-                  組件自己負責 API 與驗證。父層只負責傳入
-                  <code>initialData</code>
-                  並監聽
-                  <code>onSaved</code>
-                  來刷新列表。
-                </p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              <!-- Demo Column -->
-              <div class="space-y-2">
-                <div class="flex justify-between items-center px-1">
-                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                    範例展示
-                  </span>
-                </div>
-
-                <!-- Table -->
-                <div
-                  class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
-                >
-                  <table class="w-full text-left text-sm border-collapse">
-                    <thead>
-                      <tr class="bg-slate-950 border-b border-slate-800">
-                        <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">
-                          保單號碼
-                        </th>
-                        <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">
-                          狀態
-                        </th>
-                        <th
-                          class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase text-right"
-                        >
-                          操作
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800">
-                      <tr
-                        v-for="item in policyList1"
-                        :key="item.id"
-                        class="group hover:bg-slate-800/50"
-                      >
-                        <td class="py-3 px-4 font-mono text-emerald-400">
-                          {{ item.policyNo }}
-                        </td>
-                        <td class="py-3 px-4 text-slate-300">
-                          <span
-                            class="px-2 py-0.5 rounded text-xs border border-white/10 bg-white/5"
-                          >
-                            {{ item.applicant }}
-                          </span>
-                        </td>
-                        <td class="py-3 px-4 text-right">
-                          <button
-                            class="text-xs font-medium text-emerald-400 bg-emerald-400/10 hover:bg-emerald-500 hover:text-white px-3 py-1.5 rounded transition-all border border-emerald-400/20"
-                            @click="handleEditPattern1(item)"
-                          >
-                            內聚編輯
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="text-[10px] text-slate-500 px-1">
-                  * 點擊編輯按鈕，體驗組件內部的驗證邏輯
-                </div>
-              </div>
-
-              <!-- Code Column -->
-              <div class="space-y-2 h-full flex flex-col">
-                <div class="flex justify-end items-center px-1">
-                  <a
-                    href="#"
-                    class="flex items-center gap-1 text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors"
-                    title="Source Location"
-                  >
-                    <span>原始碼:</span>
-                    <code class="font-mono bg-emerald-400/10 px-1 rounded">PolicyForm.vue</code>
-                  </a>
-                </div>
-
-                <ShowcaseCodeBlock
-                  code="const handleEdit = async (item) => {
-  // 1. 父層只負責「開」
-  await open({
-    title: '編輯保單',
-    component: markRaw(PolicyForm),
-    componentProps: {
-      initialData: { ...item },
-      // 2. 監聽子組件存檔完成
-      onSaved: (newData) => {
-        refreshList(newData)
-      }
-    }
-  })
-}"
-                  language="typescript"
-                  :lines="false"
-                  class="flex-1"
-                />
-              </div>
-            </div>
+    <!-- 設計模式示意 -->
+    <ShowcaseSection title="元件互動模式 (Interaction Patterns)">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Pattern 1 說明 -->
+        <ShowcaseCard
+          title="Pattern 1: 內聚模式"
+          description="由元件內部處理 API 與驗證"
+        >
+          <div class="p-3 bg-emerald-950/30 border border-emerald-500/20 rounded-lg mb-4">
+            <p class="text-xs text-slate-400">
+              適合高度自治的組件。父層只負責傳入初始值，並監聽成功回呼。
+            </p>
           </div>
-
-          <!-- Pattern 2: 外據模式 (External Control) -->
-          <div class="space-y-4 mt-12">
-            <!-- Feature Block Header -->
-            <div
-              class="p-4 rounded-lg bg-sky-950/30 border border-sky-500/20 flex items-start gap-4"
-            >
-              <div class="shrink-0 p-2.5 rounded-lg bg-sky-500/10 text-sky-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h4 class="text-base font-bold text-sky-400 mb-1">
-                  Pattern 2: 外據模式 (External)
-                </h4>
-                <p class="text-sm text-slate-400">
-                  父層傳入 Reactive 物件綁定。所有邏輯（驗證、存檔）由父層全權控制。
-                </p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              <!-- Demo Column -->
-              <div class="space-y-2">
-                <div class="flex justify-between items-center px-1">
-                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                    範例展示
-                  </span>
-                </div>
-
-                <!-- Table -->
-                <div
-                  class="w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 shadow-sm"
-                >
-                  <table class="w-full text-left text-sm border-collapse">
-                    <thead>
-                      <tr class="bg-slate-950 border-b border-slate-800">
-                        <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">
-                          保單號碼
-                        </th>
-                        <th class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase">
-                          狀態
-                        </th>
-                        <th
-                          class="py-3 px-4 font-semibold text-slate-400 text-xs uppercase text-right"
-                        >
-                          操作
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800">
-                      <tr
-                        v-for="item in policyList2"
-                        :key="item.id"
-                        class="group hover:bg-slate-800/50"
-                      >
-                        <td class="py-3 px-4 font-mono text-sky-400">{{ item.policyNo }}</td>
-                        <td class="py-3 px-4 text-slate-300">
-                          <span
-                            class="px-2 py-0.5 rounded text-xs border border-white/10 bg-white/5"
-                          >
-                            {{ item.applicant }}
-                          </span>
-                        </td>
-                        <td class="py-3 px-4 text-right">
-                          <button
-                            class="text-xs font-medium text-sky-400 bg-sky-400/10 hover:bg-sky-500 hover:text-white px-3 py-1.5 rounded transition-all border border-sky-400/20"
-                            @click="handleEditPattern2(item)"
-                          >
-                            外據編輯
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="text-[10px] text-slate-500 px-1">
-                  * 點擊編輯按鈕，驗證與存檔都在父層觸發
-                </div>
-              </div>
-
-              <!-- Code Column -->
-              <div class="space-y-2 h-full flex flex-col">
-                <div class="flex justify-end items-center px-1">
-                  <a
-                    href="#"
-                    class="flex items-center gap-1 text-[10px] text-sky-400 hover:text-sky-300 transition-colors"
-                    title="Source Location"
-                  >
-                    <span>原始碼:</span>
-                    <code class="font-mono bg-sky-400/10 px-1 rounded">Page.vue</code>
-                  </a>
-                </div>
-
-                <ShowcaseCodeBlock
-                  code="const handleEdit = async (item) => {
-  // 1. 父層準備 Reactive 物件
-  const formData = reactive({ ...item })
-
-  // 2. 開啟彈窗 (傳入 formData 綁定)
-  const isConfirmed = await open({
-    component: markRaw(PolicyForm),
-    componentProps: { formData }
-  })
-
-  // 3. 父層檢查結果並存檔
-  if (isConfirmed) {
-    await api.save(formData)
+          <ShowcaseCodeBlock
+            code="<!-- 父層範例 -->
+await open({
+  component: markRaw(MyScopedForm),
+  componentProps: {
+    initialData: item,
+    onSuccess: refreshList
   }
-}"
-                  language="typescript"
-                  :lines="false"
-                  class="flex-1"
-                />
-              </div>
-            </div>
+})"
+            language="typescript"
+            :lines="false"
+          />
+        </ShowcaseCard>
+
+        <!-- Pattern 2 說明 -->
+        <ShowcaseCard
+          title="Pattern 2: 外據模式"
+          description="由父層控制組件資料與存檔行為"
+        >
+          <div class="p-3 bg-sky-950/30 border border-sky-500/20 rounded-lg mb-4">
+            <p class="text-xs text-slate-400">
+              適合輕量級表單。組件透過 props 綁定 Reactive 物件，由父層決定何時存檔。
+            </p>
           </div>
-        </div>
+          <ShowcaseCodeBlock
+            code="<!-- 父層範例 -->
+const formData = reactive({ ...item })
+const ok = await open({
+  component: markRaw(MySimpleForm),
+  componentProps: { formData }
+})
+if (ok) await saveApi(formData)"
+            language="typescript"
+            :lines="false"
+          />
+        </ShowcaseCard>
       </div>
-    </ShowcaseCard>
+    </ShowcaseSection>
 
     <!-- 局部彈窗實例 (直接掛在 template，使用 Ref 控制) -->
     <IModal
@@ -872,160 +549,6 @@ const handleOpen = async () => {
     >
       局部彈窗實例 (直接掛在 template，使用 Ref 控制) -
     </IModal>
-
-    <!-- 開發規範與設計模式 (Cheat Sheet) -->
-    <ShowcaseSection title="開發規範與設計模式">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Pattern 1: 內聚模式 (Internal Cohesion) -->
-        <ShowcaseCard
-          title="Pattern 1: 內聚模式 (Internal Cohesion)"
-          description="適用於：新增、編輯、複雜表單"
-          class="bg-slate-900/50"
-        >
-          <div class="flex flex-col gap-4">
-            <!-- 核心概念 -->
-            <div class="p-3 bg-emerald-950/30 border border-emerald-500/20 rounded-lg">
-              <div class="flex items-center gap-2 mb-2 text-emerald-400 font-bold">
-                <span>組件自治 (Component Autonomy)</span>
-              </div>
-              <p class="text-xs text-slate-400">
-                表單邏輯、驗證、API 呼叫全部封裝在組件內部。外部只負責「開啟」與「接收刷新訊號」。
-              </p>
-            </div>
-
-            <!-- Checklist -->
-            <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-              <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-                開發檢核點
-              </h4>
-              <ul class="benefit-list grid-cols-1 gap-2">
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>
-                      必備
-                      <code class="text-emerald-400">defineExpose({ onConfirm })</code>
-                    </span>
-                  </div>
-                </li>
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>
-                      驗證失敗
-                      <code class="text-emerald-400">return false</code>
-                      攔截
-                    </span>
-                  </div>
-                </li>
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>組件內部自行呼叫 API</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Code Template -->
-            <ShowcaseCodeBlock
-              code="<!-- PolicyForm.vue -->
-<script setup>
-const onConfirm = async () => {
-  // 1. 內部驗證
-  if (!valid) return false
-  
-  // 2. 內部存檔
-  await api.save(form)
-  
-  // 3. 通知外部刷新
-  emit('saved')
-  
-  return true // 允許關閉
-}
-
-// 必備：暴露給 Modal
-defineExpose({ onConfirm })
-</script>"
-              language="vue"
-              label="Component Template"
-              :lines="false"
-            />
-          </div>
-        </ShowcaseCard>
-
-        <!-- Pattern 2: 外據模式 (External Control) -->
-        <ShowcaseCard
-          title="Pattern 2: 外據模式 (External Control)"
-          description="適用於：簡單確認、選取器、跨組件操作"
-          class="bg-slate-900/50"
-        >
-          <div class="flex flex-col gap-4">
-            <!-- 核心概念 -->
-            <div class="p-3 bg-sky-950/30 border border-sky-500/20 rounded-lg">
-              <div class="flex items-center gap-2 mb-2 text-sky-400 font-bold">
-                <span>父層控制 (Parent Control)</span>
-              </div>
-              <p class="text-xs text-slate-400">
-                彈窗僅作為「UI 容器」或「純資料輸入」。驗證與 API 呼叫由開啟彈窗的父層處理。
-              </p>
-            </div>
-
-            <!-- Checklist -->
-            <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-              <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
-                開發檢核點
-              </h4>
-              <ul class="benefit-list grid-cols-1 gap-2">
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>
-                      傳入
-                      <code class="text-sky-400">reactive</code>
-                      物件綁定
-                    </span>
-                  </div>
-                </li>
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>
-                      父層
-                      <code class="text-sky-400">await open()</code>
-                      等結果
-                    </span>
-                  </div>
-                </li>
-                <li class="p-2 border-0 bg-transparent shadow-none hover:translate-y-0">
-                  <div class="flex items-center gap-2 text-sm text-slate-300">
-                    <span>父層負責 API 存檔</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Code Template -->
-            <ShowcaseCodeBlock
-              code="// Parent.vue
-const handleEdit = async () => {
-  // 1. 準備共用資料容器
-  const formData = reactive({...})
-
-  // 2. 開啟並傳入容器
-  const confirm = await open({
-    component: Form,
-    componentProps: { formData }
-  })
-  
-  // 3. 父層處理結果
-  if (confirm) {
-    await api.save(formData)
-  }
-}"
-              language="typescript"
-              label="父層控制"
-              :lines="false"
-            />
-          </div>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
 
     <ShowcaseSection title="API 參考">
       <div class="component-grid">

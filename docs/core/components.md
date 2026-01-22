@@ -129,7 +129,6 @@ const handleSubmit = () => {
 
 #### 業務元件
 
-- `PolicyForm.vue` - 保單表單
 - `SmartTable.vue` - 智慧表格 (含排序、篩選、分頁)
 - `SmartCard.vue` - 智慧卡片
 - `SmartComplexWidget.vue` - 複雜小工具
@@ -145,20 +144,19 @@ const handleSubmit = () => {
 
 ```vue
 <template>
-  <PolicyForm
-    v-model="policyData"
+  <SmartTable
+    :data="tableData"
     :loading="isLoading"
-    @submit="handleSubmit"
+    @row-click="handleRowClick"
   />
 </template>
 
 <script setup lang="ts">
-const policyData = ref({})
+const tableData = ref([])
 const isLoading = ref(false)
 
-const handleSubmit = async (data) => {
-  isLoading.value = true
-  // API 呼叫邏輯
+const handleRowClick = (item) => {
+  // 處理點擊邏輯
 }
 </script>
 ```

@@ -142,7 +142,7 @@ const buttonStyle = computed(() => {
     :target="target"
     @click="handleClick"
   >
-    <!-- 使用 slot 搭配 IIcon 以支援所有圖示類型 (包含 svg-softleader) -->
+    <!-- 使用 slot 搭配 IIcon 以支援所有圖示類型 (包含 svg- 格式) -->
     <template
       v-if="prependIcon"
       #prepend

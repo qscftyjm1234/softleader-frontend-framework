@@ -38,7 +38,7 @@ Object.entries(svgModules).forEach(([path, content]) => {
 })
 
 // 導出個別圖示（方便 tree-shaking）
-export const SoftLeaderIcon = customIcons.SoftLeaderIcon || customIcons.softleader
+// export const ExampleIcon = customIcons.ExampleIcon
 
 // 預設導出
 export default customIcons

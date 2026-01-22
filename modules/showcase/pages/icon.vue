@@ -222,60 +222,16 @@ definePageMeta({
           </template>
         </ShowcaseCard>
 
-        <!-- Custom Icon -->
+        <!-- Custom Icon (Placeholder) -->
         <ShowcaseCard
           title="自定義 SVG (Custom Icons)"
-          description="使用 assets/icons 中的 SVG 檔案，必須使用 `svg-` 前綴 (例如: svg-softleader)"
+          description="使用 assets/icons 中的 SVG 檔案，必須使用 `svg-` 前綴 (例如: svg-example)"
         >
-          <div class="demo-area d-flex align-center gap-4 flex-wrap">
-            <!-- 1. 原始 Logo (多色) -->
-            <div class="text-center">
-              <IIcon
-                size="64"
-                icon="svg-softleader"
-              />
-              <div class="text-caption mt-1">Original Channel</div>
+          <div class="demo-area">
+            <div class="text-slate-400">
+              目前無自定義圖示。請將 .svg 檔案放入 assets/icons/ 以自動載入。
             </div>
-
-            <!-- 2. 強制變色 (單色) -->
-            <div class="text-center">
-              <IIcon
-                size="64"
-                color="primary"
-                icon="svg-softleader"
-              />
-              <div class="text-caption mt-1">Force Color</div>
-            </div>
-
-            <!-- 3. 按鈕整合 -->
-            <IButton
-              prepend-icon="svg-softleader"
-              variant="outlined"
-            >
-              按鈕整合
-            </IButton>
           </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code='<script setup>
-// 不需要 import！
-</script>
-
-<template>
-  <!-- 使用 svg- 前綴引用 -->
-  <IIcon size="64" icon="svg-softleader" />
-
-  <!-- 也可以變色 -->
-  <IIcon size="64" color="primary" icon="svg-softleader" />
-  
-  <!-- 按鈕整合 -->
-  <IButton prepend-icon="svg-softleader">
-    Button
-  </IButton>
-</template>'
-              label="使用方式"
-            />
-          </template>
         </ShowcaseCard>
 
         <!-- Nesting / Integration -->

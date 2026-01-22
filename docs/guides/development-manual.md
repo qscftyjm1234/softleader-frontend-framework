@@ -17,8 +17,6 @@
 
 ---
 
-## 系統套件 (System Dependencies)
-
 ## 系統套件
 
 > **詳細套件清單與版本**：請參閱 **[套件清單](./package-guide.md)**

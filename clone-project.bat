@@ -41,7 +41,7 @@ echo 目標: %DEST_DIR%
 echo.
 
 REM 使用 robocopy 複製檔案,排除 node_modules 和其他不需要的資料夾
-robocopy "%SOURCE_DIR%" "%DEST_DIR%" /E /XD node_modules .nuxt .output .git dist build /XF *.log pnpm-lock.yaml package-lock.json yarn.lock tsconfig.tsbuildinfo /NFL /NDL /NJH /NJS /nc /ns /np
+robocopy "%SOURCE_DIR%" "%DEST_DIR%" /E /XD node_modules .nuxt .output .git .agent .gemini dist build /XF *.log pnpm-lock.yaml package-lock.json yarn.lock tsconfig.tsbuildinfo /NFL /NDL /NJH /NJS /nc /ns /np
 
 REM 檢查 robocopy 的結果
 if %ERRORLEVEL% LEQ 7 (
