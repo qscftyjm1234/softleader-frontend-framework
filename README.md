@@ -1,160 +1,145 @@
-# Nuxt Minimal Starter
+# Nuxt 3 企業級開發包
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+一個基於 Nuxt 3 的企業級前端開發框架，採用框架無關設計理念，提供完整的開發工具鏈與最佳實踐。
 
-## Setup
+## 特色
 
-Make sure to install dependencies:
+- **框架無關設計** - Interface Layer 讓您輕鬆切換 UI 框架
+- **Repository Pattern** - 統一的 API 管理與資料層封裝
+- **27 個 Composables** - 涵蓋常見開發需求的可重用邏輯
+- **完整 Mock 系統** - 前後端分離開發，無需等待後端
+- **嚴格程式碼規範** - ESLint + Prettier + Commitlint
+- **安全機制** - Token 管理、權限控制、資料加密
+- **多語系支援** - i18n 整合與動態語言切換
+
+## 快速開始
+
+### 安裝依賴
 
 ```bash
-# npm
-npm install
-
-# pnpm
+# 使用 pnpm (推薦)
 pnpm install
 
-# yarn
-yarn install
-
-# bun
-bun install
+# 或使用 npm
+npm install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+### 開發模式
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+開啟瀏覽器訪問 `http://localhost:3000`
 
-Build the application for production:
+### 建置正式版
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+## 文件導覽
 
-```bash
-# npm
-npm run preview
+完整文件請參考 [docs/index.md](./docs/index.md)
 
-# pnpm
-pnpm preview
+### 快速連結
 
-# yarn
-yarn preview
+- **[專案架構](./docs/project/architecture.md)** - 了解系統設計理念
+- **[開發手冊](./docs/guides/development-manual.md)** - 開發規範與流程
+- **[API 快速開始](./docs/api/quick-start.md)** - 串接後端 API
+- **[元件系統](./docs/core/components.md)** - UI 元件使用指南
+- **[Composables](./docs/core/composables.md)** - 可重用邏輯函式
 
-# bun
-bun run preview
-```
+## 開發規範
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Git 提交
 
-## Git Workflow (Commit 規範)
-
-本專案採用 **Conventional Commits** 規範，並設有 Husky 與 Commitlint 檢查。
-為了方便產生符合規範的 Commit Message，請使用以下指令：
+本專案使用 Conventional Commits 規範：
 
 ```bash
 pnpm commit
 ```
 
-執行後會出現互動式選單，請依序選擇或輸入：
+執行後會出現互動式選單，協助您產生符合規範的提交訊息。
 
-1.  **Select the type of change**: 選擇變更類型 (如 `feat` 新功能, `fix` 修補錯誤, `docs` 文件修改等)。
-2.  **What is the scope of this change**: 輸入影響範圍 (例如 `auth`, `components`, `readme`，可留空)。
-3.  **Write a short, imperative tense description**: 輸入簡短描述 (必填)。
-4.  **Provide a longer description**: 輸入詳細描述 (選填)。
-5.  **Are there any breaking changes?**: 是否有破壞性變更 (通常選 No)。
-6.  **Does this change affect any open issues?**: 是否關聯 Issue (通常選 No)。
+### 程式碼格式化
 
-完成後會自動產生 Commit 並執行檢查。
+```bash
+# 檢查格式
+pnpm format
 
-## 程式碼註解規範
-
-本專案採用嚴格的註解規範，確保程式碼可維護性與可讀性。
-
-### 必要規範
-
-1. **所有 exported 函式必須包含 JSDoc 註解**
-2. **使用標準標籤標記特殊註解**（TODO, FIXME, HACK, NOTE 等）
-3. **商業邏輯變更必須記錄版本與時間**
-
-### 標籤格式
-
-```javascript
-// TODO: [作者] 待辦事項說明 (YYYY-MM-DD)
-// FIXME: [作者] 需要修復的問題 (YYYY-MM-DD)
-// HACK: [作者] 臨時解決方案 (YYYY-MM-DD)
-// NOTE: [作者] 重要說明 (YYYY-MM-DD)
+# 自動修正
+pnpm format:write
 ```
 
-### JSDoc 範例
+### Lint 檢查
 
-```javascript
+```bash
+pnpm lint
+```
+
+## 註解規範
+
+所有 exported 函式必須包含 JSDoc 註解：
+
+```typescript
 /**
  * 函式功能說明
- *
  * @param {type} paramName - 參數說明
  * @returns {type} 回傳值說明
- * @author 作者名稱
- * @since YYYY-MM-DD
- * @version 版本號
  */
+export function myFunction(paramName: type): type {
+  // ...
+}
 ```
 
-### 詳細文件
+詳細規範請參考 [docs/guides/comments.md](./docs/guides/comments.md)
 
-完整的註解規範請參考：
+## 專案結構
 
-- [註解規範文件](./docs/comment-guidelines.md)
-- [註解範例](./docs/comment-examples.js)
+```
+├── components/          # Vue 元件
+│   ├── uiInterface/    # 介面層元件 (框架無關)
+│   ├── uiBusiness/     # 業務元件
+│   └── layout/         # 佈局元件
+├── composables/        # 可重用邏輯 (27 個)
+├── core/               # 核心設定
+├── docs/               # 完整文件
+├── repositories/       # API Repository
+├── utils/              # 工具函式
+└── types/              # TypeScript 型別定義
+```
 
-### VSCode 擴充套件
+## 環境變數
 
-建議安裝以下擴充套件以獲得更好的註解體驗：
-
-- **Better Comments** - 為不同標籤提供顏色標記
-- **TODO Highlight** - 高亮顯示 TODO/FIXME 等標籤
-
-## Tooling
-
-### Formatting
+複製 `.env.example` 為 `.env` 並設定：
 
 ```bash
-# Check format
-pnpm run format
+# API 基礎網址
+NUXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
 
-# Fix format
-pnpm run format:write
+# Mock 模式 (開發時可設為 true)
+NUXT_PUBLIC_FEATURE_API_MOCK=false
+
+# API 超時時間 (毫秒)
+NUXT_PUBLIC_API_TIMEOUT=30000
 ```
 
-### E2E Testing
+完整說明請參考 [docs/api/environment-setup.md](./docs/api/environment-setup.md)
 
-```bash
-npx playwright test --ui
-```
+## 核心技術
+
+- **Nuxt 3** - Vue 3 全端框架
+- **Vuetify 3** - Material Design 元件庫
+- **Pinia** - 狀態管理
+- **TypeScript** - 型別安全
+- **i18n** - 國際化
+- **ESLint + Prettier** - 程式碼品質
+
+## 授權
+
+本專案為內部開發包，請遵守公司相關規範。
+
+## 貢獻
+
+請參考 [開發手冊](./docs/guides/development-manual.md) 了解開發流程與規範。

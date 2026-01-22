@@ -75,48 +75,23 @@ npx nuxi typecheck
 
 ## 命名規範
 
-為了確保程式碼的可讀性與一致性,我們將命名規則嚴格區分為元件、函式與常數三大類。
+本專案採用嚴格的命名規範，由 ESLint 自動檢查。
 
-### 元件命名 - PascalCase
+> **完整命名規範請參考**: [ESLint 開發規範](./eslint-rules.md)
 
-建立 Vue 元件時使用 **PascalCase**:
+### 快速參考
 
-```
-UserCard.vue
-NavBar.vue
-ProductList.vue
-```
+| 類型             | 命名方式         | 範例                         |
+| :--------------- | :--------------- | :--------------------------- |
+| **Vue 元件**     | PascalCase       | `UserCard.vue`               |
+| **函式/變數**    | camelCase        | `getUserData()`              |
+| **布林值**       | camelCase + 前綴 | `isLoading`, `hasPermission` |
+| **常數**         | UPPER_CASE       | `MAX_COUNT`                  |
+| **檔案 (pages)** | kebab-case       | `user-profile.vue`           |
+| **Composables**  | use + camelCase  | `useAuth.ts`                 |
+| **Stores**       | camelCase        | `user.ts`                    |
 
-### 函式命名 - camelCase
-
-一般函式與變數命名使用 **camelCase**:
-
-```typescript
-const getUser = () => {}
-let isLoading = true
-function handleClick() {}
-```
-
-### 常數命名 - UPPER_CASE
-
-固定不變的常數值使用 **UPPER_CASE**:
-
-```typescript
-const MAX_COUNT = 10
-const API_URL = 'https://api.example.com'
-const DEFAULT_TIMEOUT = 5000
-```
-
-### 命名規範總結表
-
-| 類型             | 命名方式        | 範例               |
-| :--------------- | :-------------- | :----------------- |
-| **Vue 元件**     | PascalCase      | `UserCard.vue`     |
-| **函式/變數**    | camelCase       | `getUserData()`    |
-| **常數**         | UPPER_CASE      | `MAX_COUNT`        |
-| **檔案 (pages)** | kebab-case      | `user-profile.vue` |
-| **Composables**  | use + camelCase | `useAuth.ts`       |
-| **Stores**       | camelCase       | `user.ts`          |
+**重要**: 函式必須以動詞開頭 (get, set, handle, create 等)，布林值必須以 is/has/should 等開頭。詳見 [ESLint 規範文件](./eslint-rules.md)。
 
 ---
 

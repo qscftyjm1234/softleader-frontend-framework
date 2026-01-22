@@ -6,9 +6,9 @@
     "primary": "#1976D2"
   },
   "meta": {
-    "title": "SoftLeader",
-    "description": "SoftLeader",
-    "favicon": "/favicon.jpg",
+    "title": "Demo App",
+    "description": "Demo App",
+    "favicon": "/favicon.ico",
     "themeColor": "#ffffff"
   }
 }

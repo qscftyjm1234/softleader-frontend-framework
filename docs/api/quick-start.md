@@ -333,7 +333,7 @@ NUXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
 
 ### 混合模式 (部分 Mock,部分真實)
 
-如果你想要部分 API 用 Mock,部分用真實後端,可以參考 [Mock 切換機制](./mock-switching.md)。
+如果你想要了解更多 Mock 功能，可以參考 [Mock Server 使用說明](./mock-server.md)。
 
 ---
 

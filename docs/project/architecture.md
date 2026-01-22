@@ -44,6 +44,29 @@
 └─────────────────────────────────────────┘
 ```
 
+### 視覺化架構圖
+
+```mermaid
+graph TD
+    A[Pages/Components] --> B[uiBusiness Layer]
+    A --> C[uiInterface Layer]
+    B --> D[Composables]
+    C --> D
+    D --> E[Utils]
+    D --> F[Repositories]
+    F --> G[useApi/useClient]
+    G --> H[Backend API]
+
+    style A fill:#e1f5ff
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+    style D fill:#e8f5e9
+    style E fill:#fce4ec
+    style F fill:#fff9c4
+    style G fill:#e0f2f1
+    style H fill:#ffebee
+```
+
 **各層職責**:
 
 ### 第三層:Composables (最底層)

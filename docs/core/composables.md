@@ -4,6 +4,24 @@
 
 本專案提供 27 個可重用的組合式函式 (Composables),涵蓋 API 呼叫、資料處理、表單驗證、檔案操作等核心功能。
 
+## 🔍 快速查詢表
+
+| 分類           | Composables                                                                          | 主要用途                       |
+| -------------- | ------------------------------------------------------------------------------------ | ------------------------------ |
+| **API**        | `useApi`, `useClient`, `useRepository`                                               | API 呼叫與資料層封裝           |
+| **表單驗證**   | `useValidation`, `useDebounce`                                                       | 表單驗證規則、防抖處理         |
+| **檔案處理**   | `useFileUpload`, `useFileDownload`                                                   | 檔案上傳下載                   |
+| **資料格式化** | `useFormatter`, `useDateTime`                                                        | 數字、日期、字串格式化         |
+| **資料管理**   | `useOptions`, `useTableData`, `usePagination`                                        | 選項資料、表格、分頁           |
+| **UI 互動**    | `useLoading`, `useNotify`, `useModal`                                                | Loading、通知、彈窗            |
+| **安全**       | `usePermission`, `useEncryption`, `useWatermark`                                     | 權限、加密、浮水印             |
+| **儲存**       | `useStorage`                                                                         | LocalStorage/SessionStorage    |
+| **裝置環境**   | `useAppDevice`, `useNetwork`, `useIdle`                                              | 裝置偵測、網路、閒置           |
+| **其他工具**   | `useFeatureFlag`, `useErrorHandler`, `useLanguage`, `useMenuFilter`, `useCustomIcon` | 功能開關、錯誤處理、語言切換等 |
+
+> [!TIP]
+> 點擊下方目錄連結可快速跳轉到詳細說明。
+
 ## 📋 目錄
 
 ### 核心功能

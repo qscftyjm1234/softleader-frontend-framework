@@ -41,10 +41,12 @@
 日常開發流程與規範。
 
 - **[套件清單](./guides/package-guide.md)**: **每個套件的功能說明**。
+- **[ESLint 開發規範](./guides/eslint-rules.md)**: **完整的 ESLint 規則說明與範例**。
+- **[ESLint 設定修改指南](./guides/eslint-config-guide.md)**: **如何修改 ESLint 設定的手把手教學**。
 - **[開發手冊](./guides/development-manual.md)**: 完整開發指南 (環境、套件、命名規範)。
 - **[註解規範](./guides/comments.md)**: **JSDoc 完整規範** 與註解標準。
 - **[Git 工作流配置](./guides/git-workflow.md)**: Git 配置檔案說明 (Commitlint, Commitizen)。
-- [開發規範](./guides/development.md): 程式碼風格與開發流程。
+- [開發規範](./guides/coding-standards.md): 程式碼風格與開發流程。
 - [邏輯放置指南](./guides/logic-placement.md): **Composables vs Utils 使用準則**。
 - [除錯指南](./guides/troubleshooting.md): 常見問題排除。
 - **[DX 指南](./guides/dx.md)**: 開發者體驗工具。

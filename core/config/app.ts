@@ -14,12 +14,12 @@ import { productConfig } from '../../scripts/product-loader'
 export const appConfig: NuxtConfig['app'] = {
   head: {
     /** 網頁標題 - 顯示在瀏覽器分頁上 */
-    title: productConfig.meta?.title || '松凌科技前端開發包',
+    title: productConfig.meta?.title || 'Demo App Framework',
 
     /** 標題模板 - 用於動態設定頁面標題，%s 會被替換成頁面標題
-     * @example 產品列表 - 松凌科技
+     * @example 產品列表 - Demo App
      */
-    titleTemplate: '%s - 松凌科技',
+    titleTemplate: '%s - Demo App',
 
     /** HTML 語言屬性 */
     htmlAttrs: {
@@ -33,9 +33,10 @@ export const appConfig: NuxtConfig['app'] = {
       {
         name: 'description',
         content:
-          productConfig.meta?.description || '松凌科技前端開發包 - 基於 Nuxt 3 的企業級開發框架'
+          productConfig.meta?.description ||
+          'Demo App Framework - Enterprise-grade Nuxt 3 Development Kit'
       },
-      { name: 'author', content: '松凌科技股份有限公司' },
+      { name: 'author', content: 'Demo App' },
       { name: 'robots', content: 'index, follow' }, // SEO：允許搜尋引擎索引
       { name: 'format-detection', content: 'telephone=no' }
     ],

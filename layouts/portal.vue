@@ -13,7 +13,7 @@ import IApp from '~/components/uiInterface/IApp.vue'
       <slot />
     </main>
 
-    <footer class="portal-footer">Copyright © 2026 SoftLeader. All rights reserved.</footer>
+    <footer class="portal-footer">Copyright © 2026 Demo App. All rights reserved.</footer>
 
     <GlobalSnackbar />
     <GlobalModal />

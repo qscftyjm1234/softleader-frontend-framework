@@ -25,7 +25,7 @@ const navItems = [
         <IIcon
           size="64"
           color="primary"
-          icon="svg-softleader"
+          icon="mdi-domain"
         />
         <span class="brand-text">{{ appName }}</span>
       </NuxtLink>

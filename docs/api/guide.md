@@ -1,35 +1,25 @@
 [← 返回文件導覽](../index.md)
 
-# 前端 API 開發規範指引
+# API 開發進階參考
 
-本專案採用 Nuxt 3 `useFetch` 為核心，並封裝成 `useApi` 與 `useClient`。
-請遵循以下規範以確保程式碼統一、簡潔、易維護。
+本文件為 `useApi` 與 `useClient` 的完整參數參考手冊。
 
-## API 指南
+> [!NOTE]
+> 如果您是第一次使用，請先閱讀 [API 快速開始](./quick-start.md)。
 
-(`useClient`)
+---
 
-這是我們最新的標準寫法。透過 `useClient` 建立具備特定路徑前綴 (Prefix) 的客戶端，能大幅減少重複代碼。
+## useClient 標準寫法
 
-### ❌ 舊寫法 (不推薦)
-
-每次都要重複寫 prefix，容易出錯且冗長。
-
-```typescript
-useApi('/list', { prefix: '/jasmine-mar/policy', method: 'GET' })
-```
-
-### ✅ 新寫法 (標準)
+透過 `useClient` 建立具備特定路徑前綴的客戶端，減少重複代碼：
 
 ```typescript
 // repositories/modules/policy.ts
 import { useClient } from '~/composables/useApi'
 
-// 1. 定義 Client (集中管理路徑)
 const api = useClient('/jasmine-mar/mar/policy')
 
 export default {
-  // 2. 直接使用 (就像 axios 一樣直覺)
   getQotList: (params) => api.get('/qot', { query: params }),
   createQot: (data) => api.post('/qot', data)
 }
@@ -37,12 +27,11 @@ export default {
 
 ---
 
-## 2. 處理動態路徑 (Dynamic Paths)
+## 動態路徑處理
 
-當遇到類似結構但中間路徑不同 (如 `/qot`, `/pos`, `/mod`) 時，請使用**參數化**方式，不要複製貼上多個 function。
+當遇到類似結構但中間路徑不同時，使用參數化方式：
 
 ```typescript
-// 定義基底 Client
 const service = useClient('/jasmine-mar')
 
 export default {
@@ -52,7 +41,6 @@ export default {
    * @param id - 單號
    */
   getDetail(type: 'qot' | 'pos' | 'mod', id: string) {
-    // 自動組裝：/jasmine-mar/qot/policies/detail/123
     return service.get(`/${type}/policies/detail/${id}`)
   }
 }
@@ -60,64 +48,133 @@ export default {
 
 ---
 
-## 3. 參數總覽 (Options)
+## 完整參數參考表
 
-`useClient` 的第二個參數 (或是 `get` 的第二個參數) 支援所有強大功能：
+### 核心參數
 
-| 參數名稱            | 類型     | 預設   | 重點功能描述                                                                                          |
-| :------------------ | :------- | :----- | :---------------------------------------------------------------------------------------------------- |
-| **`loadingRef`**    | `Ref`    | -      | **✨ 自動 Loading**：傳入 `ref(false)`，API 發送時自動變 `true`，結束變 `false`。省去手動開關的麻煩。 |
-| **`watch`**         | `Array`  | -      | **✨ 自動重打**：傳入 `[page, filter]`，當這些變數改變時，API 會自動重新發送。                        |
-| **`globalLoading`** | `Bool`   | `true` | **介面優化**：是否顯示瀏覽器最上方的藍色進度條。若已有按鈕動畫，建議設為 `false` 以免干擾。           |
-| `query`             | `Object` | -      | URL 查詢參數 (會轉為 `?page=1`)。                                                                     |
-| `body`              | `Object` | -      | POST / PUT 的資料內容。                                                                               |
-| `headers`           | `Object` | -      | 自定義 HTTP Headers (如 `{ 'X-Custom': '1' }`)。                                                      |
-| `auth`              | `Bool`   | `true` | 是否檢查 Token。設為 `false` 可允許未登入呼叫 (如登入 API)。                                          |
-| `autoError`         | `Bool`   | `true` | 是否自動跳出紅底錯誤通知。                                                                            |
-| `transform`         | `Func`   | -      | **資料清洗**：`(res) => res.items`。在資料傳給前端前先過濾，減少 Payload。                            |
-| `pick`              | `Array`  | -      | **欄位篩選**：`['id', 'name']`。只取出需要的欄位，節省資源。                                          |
+| 參數名稱  | 類型     | 預設值  | 說明                                   |
+| --------- | -------- | ------- | -------------------------------------- |
+| `method`  | `String` | `'GET'` | HTTP 方法 (GET, POST, PUT, DELETE)     |
+| `query`   | `Object` | -       | URL 查詢參數 (轉為 `?page=1&q=search`) |
+| `body`    | `Object` | -       | POST/PUT 的請求內容                    |
+| `headers` | `Object` | -       | 自定義 HTTP Headers                    |
 
-### ✨ 進階技巧範例
+### 進階功能參數
+
+| 參數名稱            | 類型           | 預設值  | 說明                                   |
+| ------------------- | -------------- | ------- | -------------------------------------- |
+| **`loadingRef`**    | `Ref<boolean>` | -       | 綁定 Loading 狀態，自動管理 true/false |
+| **`watch`**         | `Array<Ref>`   | -       | 監聽變數變化，自動重新請求             |
+| **`globalLoading`** | `Boolean`      | `true`  | 是否顯示全域 Loading 條                |
+| `lazy`              | `Boolean`      | `false` | 是否延遲執行 (需手動呼叫 `execute()`)  |
+| `immediate`         | `Boolean`      | `true`  | 是否立即執行                           |
+| `server`            | `Boolean`      | `true`  | 是否在 SSR 時執行                      |
+
+### 資料處理參數
+
+| 參數名稱    | 類型            | 預設值 | 說明                                     |
+| ----------- | --------------- | ------ | ---------------------------------------- |
+| `transform` | `Function`      | -      | 資料轉換函式 `(data) => transformedData` |
+| `pick`      | `Array<string>` | -      | 只取出指定欄位 `['id', 'name']`          |
+| `default`   | `Function`      | -      | 預設值函式 `() => defaultValue`          |
+
+### 通知與錯誤處理
+
+| 參數名稱      | 類型                | 預設值  | 說明                                     |
+| ------------- | ------------------- | ------- | ---------------------------------------- |
+| `autoError`   | `Boolean`           | `true`  | 是否自動顯示錯誤通知                     |
+| `autoSuccess` | `String \| Boolean` | `false` | 成功時自動顯示通知 (傳入字串為訊息內容)  |
+| `auth`        | `Boolean`           | `true`  | 是否檢查 Token (登入 API 應設為 `false`) |
+
+---
+
+## 進階使用範例
+
+### 1. 自動 Loading + 關閉全域進度條
 
 ```typescript
-// 完整火力展示
-api.get('/list', {
-  // 1. 綁定按鈕，自動轉圈圈
-  loadingRef: isBtnLoading,
+const isSubmitting = ref(false)
 
-  // 2. 既然有按鈕轉圈了，就把上面藍條關掉
-  globalLoading: false,
-
-  // 3. 當頁碼或搜尋改變時，自動重打 (省去 watch 程式碼)
-  watch: [page, search],
-
-  // 4. 只取需要的欄位 (優化效能)
-  // 注意：這是針對 "已經拆包後" 的資料做篩選 (對 business data 做 pick，不是 response envelope)
-  pick: ['id', 'title']
+const { data } = await api.post('/create', payload, {
+  loadingRef: isSubmitting, // 按鈕自動 Loading
+  globalLoading: false, // 關閉上方藍條
+  autoSuccess: '建立成功！' // 成功通知
 })
 ```
 
-### 完整範例
+### 2. 自動監聽變數重新請求
 
 ```typescript
-const { data, pending } = await api.get('/list', {
-  query: { page: 1 },
-  loadingRef: isSubmitting, // 按鈕會自動轉圈圈
-  globalLoading: false, // 關掉上方藍條
-  autoSuccess: '儲存成功！' // 成功時自動跳綠色通知
+const page = ref(1)
+const search = ref('')
+
+// 當 page 或 search 改變時，自動重新請求
+const { data } = await api.get('/list', {
+  query: { page, q: search },
+  watch: [page, search]
 })
+```
+
+### 3. 資料轉換與欄位篩選
+
+```typescript
+// 只取出 items，忽略其他欄位
+const { data } = await api.get('/list', {
+  transform: (response) => response.items
+})
+
+// 或使用 pick 只取特定欄位
+const { data } = await api.get('/list', {
+  pick: ['id', 'title', 'status']
+})
+```
+
+### 4. 延遲執行 (Lazy Loading)
+
+```typescript
+const { data, execute } = await api.get('/heavy-data', {
+  lazy: true // 不立即執行
+})
+
+// 稍後手動觸發
+const handleLoad = () => {
+  execute()
+}
+```
+
+### 5. 自定義錯誤處理
+
+```typescript
+const { data, error } = await api.get('/list', {
+  autoError: false // 關閉自動錯誤通知
+})
+
+if (error.value) {
+  // 自定義錯誤處理
+  myCustomErrorHandler(error.value)
+}
 ```
 
 ---
 
-## 4. 回傳值與回應處理 (Response)
+## 回傳值說明
 
-`useApi` 與 `useClient` 回傳的是 Nuxt 原生的 **AsyncData** 物件。
-但請注意：**我們已經自動拆包 (Auto Unwrap)**。
+所有 API 呼叫都回傳 Nuxt 的 `AsyncData` 物件：
 
-### 什麼是自動拆包？
+```typescript
+const {
+  data, // T | null - 已自動拆包的資料
+  pending, // boolean - 是否正在載入
+  error, // Error | null - 錯誤物件
+  refresh, // () => Promise<void> - 重新請求
+  execute, // () => Promise<void> - 執行請求 (lazy 模式)
+  status // 'idle' | 'pending' | 'success' | 'error'
+} = await api.get('/endpoint')
+```
 
-後端回傳的格式通常是：
+### 自動拆包機制
+
+後端回傳：
 
 ```json
 {
@@ -127,38 +184,17 @@ const { data, pending } = await api.get('/list', {
 }
 ```
 
-但在前端，您拿到的 `data.value` 會直接是 `{ "id": 1, "name": "Gino" }`，不需要再寫 `.data.data`。
-
-### 常用變數解構
+前端取得：
 
 ```typescript
-import repository from '~/repositories/modules/policy'
-
-// 呼叫 Repository 方法 (其底層就是 useApi)
-const {
-  data, // T | null (您的資料, e.g. QotListResponse)
-  pending, // boolean (是否正在載入，可用於 Skeleton)
-  error, // error | null (若發生錯誤會有值)
-  refresh, // function (呼叫可重新打一次 API)
-  execute // function (同 refresh，但在 lazy: true 時很有用)
-} = await repository.policy.getQotList({ page: 1 })
-
-// 使用資料 (請注意：要用 .value 取值)
-console.log(data.value?.items)
-```
-
-### 錯誤處理流程
-
-1. **自動攔截 (預設)**：`autoError: true` 會自動跳出紅底 Notify，通常您不需要在 Component 寫 `if (error.value)`。
-2. **手動處理**：若您想自己控制錯誤 UI：
-
-```typescript
-const { error } = await api.get('/list', { autoError: false })
-
-if (error.value) {
-  // 自己處理介面顯示
-  myErrorState.value = true
-}
+data.value // { "id": 1, "name": "Gino" }
 ```
 
 ---
+
+## 延伸閱讀
+
+- [API 快速開始](./quick-start.md) - 新手入門指南
+- [Repository Pattern](./repository-pattern.md) - Repository 層設計
+- [後端 API 規範](./backend-contract.md) - 後端格式規範
+- [Mock Server](./mock-server.md) - Mock 系統使用

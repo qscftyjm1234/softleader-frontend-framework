@@ -106,7 +106,7 @@ export interface LayoutConfig {
  * ```typescript
  * // 在元件中使用
  * const appStore = useAppStore()
- * console.log(appStore.config.branding.title) // '松凌科技前端開發包'
+ * console.log(appStore.config.branding.title) // 'Demo App Framework'
  * ```
  *
  * @see {@link LayoutConfig} 完整的設定介面定義
@@ -116,8 +116,8 @@ export const defaultLayoutConfig: LayoutConfig = {
     logo: {
       icon: 'mdi-rocket-launch'
     },
-    title: '松凌科技前端開發包',
-    subtitle: 'SoftLeader Framework'
+    title: 'Demo App Framework',
+    subtitle: 'Enterprise Framework'
   },
   header: {
     visible: true,
@@ -147,7 +147,7 @@ export const defaultLayoutConfig: LayoutConfig = {
   footer: {
     visible: true,
     fixed: false,
-    content: 'Copyright © 2026 SoftLeader. All rights reserved.'
+    content: 'Copyright © 2026 Demo App. All rights reserved.'
   },
   theme: {
     defaultTheme: 'light',

@@ -14,7 +14,8 @@
     "postinstall": "nuxt prepare",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
-    "commit": "cz"
+    "commit": "cz",
+    "clone": "clone-project.bat"
   },
   "config": {
     "commitizen": {
