@@ -18,7 +18,7 @@ import IIcon from './IIcon.vue' // 原生實作需要引入 Icon
 // true = 使用 Vuetify 實作
 // false = 使用 原生 HTML/CSS 實作
 // ====================================================
-const USE_FRAMEWORK = true
+const shouldUseFramework = true
 
 // 1. 定義標準 Props (20% 核心)
 interface Props {
@@ -133,7 +133,7 @@ const buttonStyle = computed(() => {
     原則：屬性透傳 ($attrs) 讓 Vue 自動處理剩下的 80% 屬性
   -->
   <v-btn
-    v-if="USE_FRAMEWORK"
+    v-if="shouldUseFramework"
     v-bind="{ ...vuetifyBindings, ...$attrs }"
     :block="block"
     :loading="loading"
@@ -188,9 +188,7 @@ const buttonStyle = computed(() => {
     <span
       v-if="loading"
       class="i-button__loading"
-    >
-      ⏳
-    </span>
+    ></span>
 
     <!-- Icons -->
     <IIcon

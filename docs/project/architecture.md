@@ -1,85 +1,178 @@
 [← 返回文件導覽](../index.md)
 
-# 系統架構說明 (System Architecture)
+# 系統架構說明
 
-## 核心理念 - 框架無關 (Framework Agnostic)
+## 核心理念:框架無關設計
 
-本開發包採用 **Headless Components** 設計模式,提供完整的業務邏輯,但不綁定任何 UI 框架。
+這個開發包的設計重點是「業務邏輯」和「UI 呈現」分離。
 
-## 架構層次
+**白話來說**:
+
+- 我們把「做什麼事」的邏輯寫好了
+- 但「長什麼樣子」由你自己決定
+- 你可以用任何 UI 框架 (Vuetify、Element Plus、Ant Design 等) 來呈現
+
+這樣做的好處:
+
+- 換 UI 框架時,業務邏輯不用重寫
+- 團隊可以自由選擇喜歡的 UI 風格
+- 核心功能穩定,不受 UI 框架版本影響
+
+---
+
+## 架構分層說明
+
+系統分成三層,從上到下依序是:
 
 ```
 ┌─────────────────────────────────────────┐
-│  使用者選擇的 UI 框架                      │
+│  第一層:UI 框架層                         │
+│  你選擇的 UI 元件庫                       │
 │  (Vuetify / Element Plus / Ant Design)  │
 └─────────────────────────────────────────┘
-              ↓ 使用
+               ↓ 呼叫
 ┌─────────────────────────────────────────┐
-│  Headless Components (邏輯層)            │
-│  - DataTable.vue                        │
-│  - Pagination.vue                       │
-│  - Modal.vue                            │
+│  第二層:Headless Components              │
+│  負責處理資料流程和狀態管理                │
+│  不管 UI 長什麼樣子                       │
 └─────────────────────────────────────────┘
-              ↓ 使用
+               ↓ 呼叫
 ┌─────────────────────────────────────────┐
-│  Composables (業務邏輯)                   │
-│  - useDataTable                         │
-│  - usePagination                        │
-│  - useForm                              │
+│  第三層:Composables                      │
+│  純粹的業務邏輯函式                       │
+│  可以在任何地方重複使用                   │
 └─────────────────────────────────────────┘
 ```
 
-## 目錄結構
+**各層職責**:
+
+### 第三層:Composables (最底層)
+
+- 這層只負責「做事情」
+- 不管畫面,不管元件
+- 就是純粹的功能函式
+- 可以被任何元件或頁面呼叫
+
+### 第二層:Headless Components (中間層)
+
+- 這層負責「組織資料和狀態」
+- 知道資料怎麼流動,狀態怎麼變化
+- 但不決定畫面長什麼樣子
+- 提供插槽讓你自己決定 UI
+
+### 第一層:UI 框架層 (最上層)
+
+- 這層負責「畫面呈現」
+- 決定按鈕長什麼樣、表格怎麼排版
+- 使用你選擇的 UI 框架元件
+- 從下面兩層拿資料來顯示
+
+---
+
+## 目錄結構與用途
 
 ```
 nuxt3-test/
-├── core/
-│   ├── composables/       # 25+ 業務 composables
-│   ├── headless/          # Headless Components
-│   ├── utils/             # 工具函數
-│   └── types/             # TypeScript 類型
-│
-├── examples/              # 多框架範例
-│   ├── native/            # 原生 HTML 範例
-│   ├── vuetify/           # Vuetify 範例 (計劃中)
-│   └── element/           # Element Plus 範例 (計劃中)
-│
-├── pages/
-│   ├── layout-demo/       # Layout 系統展示
-│   └── headless-demo.vue  # Headless Components 展示
-│
-└── docs/                  # 文件
+├── components/            # 所有 UI 元件放這裡
+│   ├── uiInterface/       # 基礎 UI 元件 (按鈕、輸入框、表格等)
+│   ├── uiBusiness/        # 業務專用元件 (包含特定業務邏輯)
+│   ├── layout/            # 版面配置元件 (導航列、側邊欄等)
+│   ├── auth/              # 登入相關元件
+
+├── composables/           # 可重複使用的業務邏輯函式
+├── utils/                 # 通用工具函數 (日期處理、格式化等)
+├── types/                 # TypeScript 型別定義
+├── modules/               # 大功能模組 (認證、CRM 等)
+
+├── pages/                 # 網頁路由頁面
+
+├── core/                  # 核心設定檔
+│   ├── config/            # 各種功能的設定檔
+│   └── schema/            # 資料驗證規則
+
+└── docs/                  # 你現在看的文件
 ```
 
-## 使用方式
+**各目錄說明**:
 
-### 1. 使用 Composables (推薦)
+### components/ - 元件目錄
 
-```typescript
-import { useDataTable } from '~/composables'
+- **uiInterface/**: 純 UI 元件,不包含業務邏輯,可以在任何專案使用
+- **uiBusiness/**: 業務元件,包含特定業務邏輯,專為這個專案設計
+- **layout/**: 版面配置元件,決定整體頁面結構
+- **auth/**: 登入、註冊、權限相關的元件
 
-const { data, loading, fetchData } = useDataTable({
-  apiEndpoint: '/api/users'
-})
+### composables/ - 業務邏輯函式
 
-// 用任何 UI 框架渲染
-```
+- 可重複使用的功能函式
+- 不依賴特定元件
+- 可以在任何地方呼叫
 
-### 2. 使用 Headless Components
+### core/ - 核心設定
 
-```vue
-<DataTable :data="data" :columns="columns">
-  <template #default="{ data, onSort }">
-    <!-- 用您選擇的 UI 框架渲染 -->
-  </template>
-</DataTable>
-```
+- **config/**: 頁面設定、功能開關等設定檔
+- **schema/**: 資料驗證規則,確保資料格式正確
 
-## 查看範例
+---
 
-- `/layout-demo` - 框架無關的 Layout 系統
-- `/headless-demo` - Headless Components 展示
+## 兩種使用方式
 
-## 下一步
+### 方式一:直接使用 Composables
 
-查看 `examples/` 目錄了解如何在不同 UI 框架中使用本開發包。
+適合:你想要完全自己控制 UI
+
+做法:
+
+1. 從 `composables/` 引入需要的函式
+2. 呼叫函式取得資料和方法
+3. 用你喜歡的 UI 框架元件來呈現
+
+優點:最大彈性,完全掌控 UI
+
+### 方式二:使用 UI Interface Components
+
+適合:你想要快速開發,但保留客製化空間
+
+做法:
+
+1. 使用 `components/uiInterface/` 裡的元件
+2. 透過插槽 (slot) 客製化部分內容
+3. 元件已經處理好資料流程和狀態
+
+優點:開發快速,同時保有彈性
+
+---
+
+## 設計原則
+
+### 1. 關注點分離
+
+- UI 歸 UI,邏輯歸邏輯
+- 修改畫面不影響功能
+- 修改功能不影響畫面
+
+### 2. 可重複使用
+
+- Composables 可以在任何地方使用
+- UI 元件可以組合搭配
+- 不重複寫相同的程式碼
+
+### 3. 易於測試
+
+- 業務邏輯獨立,容易測試
+- UI 和邏輯分開,測試更簡單
+- 不需要渲染畫面就能測試功能
+
+### 4. 易於維護
+
+- 職責清楚,知道要改哪裡
+- 結構一致,容易找到檔案
+- 文件完整,降低學習成本
+
+---
+
+## 延伸閱讀
+
+- [元件說明](../core/components.md) - 了解各類元件的設計原則
+- [Composables 說明](../core/composables.md) - 了解可用的業務邏輯函式
+- [資料夾結構](./folder-structure.md) - 完整的目錄結構說明

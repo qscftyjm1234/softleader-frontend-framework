@@ -1,11 +1,13 @@
 [← 返回文件導覽](../index.md)
 
-# 前端 API 開發規範指引 (API Guide)
+# 前端 API 開發規範指引
 
 本專案採用 Nuxt 3 `useFetch` 為核心，並封裝成 `useApi` 與 `useClient`。
 請遵循以下規範以確保程式碼統一、簡潔、易維護。
 
-## 1. 核心觀念：Smart Client (`useClient`)
+## API 指南
+
+(`useClient`)
 
 這是我們最新的標準寫法。透過 `useClient` 建立具備特定路徑前綴 (Prefix) 的客戶端，能大幅減少重複代碼。
 

@@ -16,12 +16,9 @@ export const runtimeConfig = {
     app: {
       // 當前執行環境 (development, production, test)
       env: process.env.NODE_ENV,
-      // 是否開啟除錯模式 (true: 顯示更多 Log)
-      debug: process.env.LOG_DEBUG === 'true',
-      // 是否為開發環境 (true: 開發中, false: 正式站)
-      isDev: process.env.IS_DEV === 'true',
 
       /**
+
        * App 識別字串 (User-Agent)
        * 用於判斷網頁是否在 App 的 Webview 中開啟
        */

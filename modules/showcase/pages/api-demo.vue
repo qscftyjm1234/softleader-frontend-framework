@@ -648,21 +648,15 @@ const { data } = api.post('/create', payload)"
             </ul>
 
             <div class="principles-list">
-              <span class="principles-title">
-                <span class="text-amber-400">✦</span>
-                開發原則：
-              </span>
+              <span class="principles-title">開發原則：</span>
               <ul>
                 <li>
-                  <span class="icon">✦</span>
                   <span>集中管理：Component 禁止出現 API URL</span>
                 </li>
                 <li>
-                  <span class="icon">✦</span>
                   <span>單一職責：Component 只負責呼叫與接收</span>
                 </li>
                 <li>
-                  <span class="icon">✦</span>
                   <span>模組化：使用 useClient 鎖定前綴</span>
                 </li>
               </ul>
@@ -703,10 +697,7 @@ export const repository = {
     </ShowcaseSection>
 
     <!-- 5. 實戰演練 -->
-    <ShowcaseSection
-      title="5. 實戰演練"
-      icon="🎮"
-    >
+    <ShowcaseSection title="5. 實戰演練">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Left Column: Interactive Scenario -->
         <div class="lg:col-span-2">

@@ -61,7 +61,7 @@ export async function checkMockData(url: string, options: any): Promise<any> {
   // 4. 產生回應
   let responseData
   if (typeof route.response === 'function') {
-    const query = extractQueryParams(url)
+    const query = parseQueryParams(url)
     const body = options.body || {}
     responseData = route.response({ query, body, url })
   } else {
@@ -80,22 +80,8 @@ export async function checkMockData(url: string, options: any): Promise<any> {
  * @param config - Runtime Config
  */
 function isMockEnabled(url: string, config: any): boolean {
-  // 優先檢查特定 API 的 Mock 開關
-  // 若特定開關有設定 (不為 undefined)，則以該設定為準
-  if (url.includes('/users')) {
-    const val = config.public.mockUserApi
-    if (val !== undefined && val !== '') return String(val) === 'true' || val === true
-  }
-  if (url.includes('/orders')) {
-    const val = config.public.mockOrderApi
-    if (val !== undefined && val !== '') return String(val) === 'true' || val === true
-  }
-  if (url.includes('/dashboard')) {
-    const val = config.public.mockDashboardApi
-    if (val !== undefined && val !== '') return String(val) === 'true' || val === true
-  }
-
-  // 若無特定設定，則使用預設全域開關
+  // 簡化邏輯：只檢查全域開關
+  // 若未來需要個別開關，再由此處擴充
   return config.public.featureApiMock === 'true' || config.public.featureApiMock === true
 }
 
@@ -103,7 +89,7 @@ function isMockEnabled(url: string, config: any): boolean {
  * 輔助：解析 Query Params
  * @param url - 完整請求路徑
  */
-function extractQueryParams(url: string): Record<string, string> {
+function parseQueryParams(url: string): Record<string, string> {
   const params: Record<string, string> = {}
   const queryString = url.split('?')[1]
   if (!queryString) return params

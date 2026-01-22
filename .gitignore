@@ -14,6 +14,8 @@ logs
 *.log
 lint_*.txt
 lint_*.log
+lint_report.json
+all_files.txt
 
 # Misc
 .DS_Store

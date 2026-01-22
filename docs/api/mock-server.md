@@ -1,10 +1,10 @@
 [← 返回文件導覽](../index.md)
 
-# Mock API 系統使用指南 (Mock API Guide)
+# Mock API 系統使用指南
 
 ## 概述
 
-本專案使用 **Repository 層 Mock** 實現 Mock API 系統，讓前端可以獨立開發，不依賴後端 API。
+本專案使用 **Repository 層 Mock** 實現 Mock API 系統，直接在 API 請求發出前由 `useApi` 攔截，回傳預定義的假資料。
 
 > **注意**：本專案已移除 MSW (Mock Service Worker)，改用更輕量的 Repository 層 Mock 方式。
 
@@ -25,238 +25,115 @@ NUXT_PUBLIC_MOCK_DELAY=500
 npm run dev
 ```
 
-當您在 Console 看到 `Mock API 攔截: /api/users` 時，表示 Mock 系統已成功啟動。
-
 ### 3. 測試 Mock API
 
-所有發送到 `/api/*` 的請求都會被攔截並回傳 Mock 資料。
+當 Mock 啟用時，Console 會顯示 `Mock Hit: /api/xxx`，表示請求已被攔截。
 
 ## 專案結構
 
+Mock 系統的所有程式碼都位於 `mock/` 目錄下：
+
 ```
 mock/
-├── types/            # TypeScript Interfaces
-│   ├── user.ts      # User 相關型別
-│   └── order.ts     # Order 相關型別
-└── factories/        # Mock 資料工廠
+├── routes.ts         # 核心：定義所有 Mock 路由與回傳資料
+├── core.ts           # 核心邏輯：攔截器實作與 Mock 開關判斷
+├── types/            # TypeScript Interfaces (選用)
+│   ├── user.ts
+│   └── order.ts
+└── factories/        # Mock 資料產生器 (假資料工廠)
     ├── user.factory.ts
-    ├── order.factory.ts
+    └── order.factory.ts
+```
 
-utils/api/interceptors/
-└── mock.ts           # Mock 資料攔截器
+## 如何新增 Mock API
 
-composables/
-└── useApi.ts         # 整合 Mock 攔截器
+所有的 Mock 規則都集中定義在 [`mock/routes.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/mock/routes.ts)。
+
+### 步驟 1: 開啟配置文件
+
+編輯 `mock/routes.ts`，你會看到 `MOCK_ROUTES` 陣列。
+
+### 步驟 2: 加入新的路由規則
+
+在陣列中加入一個新的物件：
+
+```typescript
+{
+  // 1. URL 匹配規則 (支援字串或 Regex)
+  url: '/api/products',
+
+  // 2. HTTP 方法
+  method: 'GET',
+
+  // 3. 模擬延遲 (毫秒)
+  delay: 1000,
+
+  // 4. 回傳資料 (可以是物件或函式)
+  response: {
+    data: [
+      { id: 1, name: 'Product A', price: 100 },
+      { id: 2, name: 'Product B', price: 200 }
+    ],
+    total: 2
+  }
+}
+```
+
+### 進階範例：動態回傳
+
+如果需要根據請求參數 (Params/Body) 回傳不同資料，可以使用函式：
+
+```typescript
+{
+  url: /\/api\/products\/\d+/, // Regex 匹配 ID
+  method: 'GET',
+  response: (context) => {
+    // context.url   -> 請求 URL
+    // context.body  -> POST Body
+    // context.query -> Query String
+
+    // 從 URL 提取 ID
+    const id = Number(context.url.match(/\/api\/products\/(\d+)/)?.[1] || 1)
+
+    return {
+      data: {
+        id: id,
+        name: `Dynamic Product ${id}`,
+        price: Math.floor(Math.random() * 1000)
+      }
+    }
+  }
+}
 ```
 
 ## 使用範例
 
 ### 在 Repository 中使用
 
+開發時不需要修改 Repository 程式碼，`useApi` 會自動處理 Mock。
+
 ```typescript
 // repositories/modules/user.ts
-// repositories/modules/user.ts
-import type { UserListResponse } from '~/mock/types/user'
-
 export async function getUsers(params: any) {
-  // 如果 Mock 啟用，會自動回傳假資料
-  // 如果 Mock 關閉，會發送真實請求
+  // 如果 .env 設定了 Mock=true 且 routes.ts 有對應規則，這裡會直接拿到假資料
   const response = await useApi<UserListResponse>('/api/users', { params })
-
   return response
 }
 ```
 
-### 在元件中使用
+## 環境與開關控制
 
-```vue
-<script setup lang="ts">
-const { data, pending } = await useFetch('/api/users', {
-  query: {
-    page: 1,
-    limit: 10
-  }
-})
-</script>
-```
-
-## 新增新的 Mock API
-
-### 1. 定義 Interface
-
-在 `mock/types/` 建立新的型別檔案:
-
-```typescript
-// mock/types/product.ts
-
-export interface Product {
-  id: number
-  name: string
-  price: number
-}
-```
-
-### 2. 創建 Factory
-
-在 `mock/factories/` 建立 Factory:
-
-```typescript
-// mock/factories/product.factory.ts
-import type { Product } from '../types/product'
-
-function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-function randomFloat(min: number, max: number): number {
-  return Number((Math.random() * (max - min) + min).toFixed(2))
-}
-
-const PRODUCT_NAMES = ['筆記型電腦', '滑鼠', '鍵盤', '顯示器', '耳機']
-
-export function createMockProduct(): Product {
-  return {
-    id: randomInt(1, 1000),
-    name: PRODUCT_NAMES[randomInt(0, PRODUCT_NAMES.length - 1)],
-    price: randomFloat(10, 1000)
-  }
-}
-```
-
-### 3. 在 Mock 攔截器中添加 URL 匹配
-
-在 `utils/api/interceptors/mock.ts` 中添加:
-
-```typescript
-// GET /api/products - 商品列表
-if (method === 'GET' && url.includes('/api/products')) {
-  return {
-    data: Array.from({ length: 20 }, () => createMockProduct()),
-    total: 20
-  }
-}
-
-// GET /api/products/:id - 商品詳細
-if (method === 'GET' && url.match(/\/api\/products\/\d+/)) {
-  const id = parseInt(url.match(/\/api\/products\/(\d+)/)?.[1] || '1')
-  return {
-    data: createMockProduct({ id })
-  }
-}
-```
-
-## 環境切換
-
-### 開發環境 (使用 Mock)
+Mock 系統使用單一的全域開關，可以在 `.env` 中設定：
 
 ```bash
-# .env.development
+# 全域開關 (Master Switch)
 NUXT_PUBLIC_FEATURE_API_MOCK=true
-NUXT_PUBLIC_MOCK_DELAY=500
 ```
 
-### 測試環境 (使用真實 API)
-
-```bash
-# .env.staging
-NUXT_PUBLIC_FEATURE_API_MOCK=false
-NUXT_PUBLIC_API_BASE_URL=https://test-api.example.com
-```
-
-### 正式環境 (使用真實 API)
-
-```bash
-# .env.production
-NUXT_PUBLIC_FEATURE_API_MOCK=false
-NUXT_PUBLIC_API_BASE_URL=https://api.example.com
-```
-
-## 進階功能
-
-### 模擬錯誤
-
-```typescript
-// 在 utils/api/interceptors/mock.ts 中
-if (method === 'GET' && url.match(/\/api\/users\/\d+/)) {
-  const userId = parseInt(url.match(/\/api\/users\/(\d+)/)?.[1] || '1')
-
-  // 模擬 404 錯誤
-  if (userId === 999) {
-    throw createError({
-      statusCode: 404,
-      message: 'User not found'
-    })
-  }
-
-  return { data: createMockUser({ id: userId }) }
-}
-```
-
-### 模擬延遲
-
-延遲時間可以透過環境變數設定:
-
-```bash
-NUXT_PUBLIC_MOCK_DELAY=1000  # 1 秒延遲
-```
-
-### 選擇性 Mock
-
-只 Mock 特定的 API:
-
-```typescript
-// 在 utils/api/interceptors/mock.ts 中
-export async function checkMockData(url: string, options: any): Promise<any> {
-  const config = useRuntimeConfig()
-
-  // 只 Mock User API
-  if (url.includes('/api/users') && config.public.mockUserApi === 'true') {
-    return getMockDataByUrl(url, options)
-  }
-
-  // 其他 API 發送真實請求
-  return null
-}
-```
-
-## 除錯
-
-### 查看 Mock 攔截
-
-打開瀏覽器 DevTools Console，應該看到:
-
-```
-Mock API 攔截: /api/users
-```
-
-### 停用 Mock
-
-```bash
-# 方法 1: 環境變數
-NUXT_PUBLIC_FEATURE_API_MOCK=false npm run dev
-
-# 方法 2: 修改 .env
-NUXT_PUBLIC_FEATURE_API_MOCK=false
-```
-
-## 最佳實踐
-
-1. **保持 Interface 同步**: Mock 的 Interface 應與真實 API 一致
-2. **使用 TypeScript**: 在 Repository 層使用 TypeScript 確保型別安全
-3. **真實的假資料**: 使用簡單的隨機函數生成合理的假資料
-4. **模擬真實場景**: 包含延遲、錯誤、分頁等
-5. **環境隔離**: 開發用 Mock,測試/正式用真實 API
-
-## 相關資源
-
-- [Repository 層 Mock 詳細指南](./REPOSITORY_MOCK.md)
+當設定為 `true` 時，系統會攔截 `mock/routes.ts` 中定義的所有請求。設定為 `false` 時，則完全關閉 Mock 功能，所有請求都會直接發送到真實後端。
 
 ## 優勢
 
-相比 MSW (Mock Service Worker):
-
-- ✅ **零額外套件** - 不需要 MSW (~160KB)
-- ✅ **部署簡單** - 不需要 mockServiceWorker.js
-- ✅ **更輕量** - 只是簡單的攔截邏輯
-- ✅ **更靈活** - 可以精確控制哪些 API 用 Mock
-- ✅ **正式站友好** - 可以安全地在任何環境使用
+- **集中管理**：所有路由規則都在 `mock/routes.ts`，一目了然。
+- **熱更新**：修改 `routes.ts` 後，Nuxt 會自動熱重載，無需重啟伺服器。
+- **型別安全**：支援 TypeScript，可引入 Interface 確保假資料格式正確。

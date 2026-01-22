@@ -421,7 +421,7 @@ const appStore = useAppStore()
 
 ### 3. 使用 Transition 增加動畫
 
-```vue
+````vue
 <template>
   <div>
     <AppHeader />
@@ -442,7 +442,18 @@ const appStore = useAppStore()
   opacity: 0;
 }
 </style>
-```
+
+--- ## 佈局切換的影響與注意事項 當切換到使用「不同佈局」的頁面時,Nuxt 會面臨以下情況： ### 1.
+元件生命週期 (Component Lifecycle) - **重新掛載**: 當佈局名稱變更 (如從 `default` 換到
+`blank`),舊佈局的元件會被卸載 (unmount),新佈局的元件會重新掛載 (mount)。 - **效能**:
+如果佈局非常複雜,頻繁切換可能會有些微的渲染負擔。 ### 2. 狀態保存 (State Persistence) -
+**元件內部狀態**: 儲存在佈局元件 (如 `AppHeader.vue`) 內的 `ref` 狀態**會遺失**。 - **全域狀態
+(Pinia)**: 儲存在 Store 中的狀態**不會遺失**,這是跨頁面保存資料的最佳方式。 ### 3. 如何達成平滑切換
+- **使用相同的佈局**: 如果只是選單收合或小部分 UI 變動,建議維持相同佈局,用 `v-if` 或 Store 控制。 -
+**Layout Transitions**: 在 `app.vue` 或 `nuxt.config.ts` 設定過渡動畫,減少視覺閃爍。 ```typescript
+// nuxt.config.ts export default defineNuxtConfig({ app: { layoutTransition: { name: 'layout', mode:
+'out-in' } } })
+````
 
 ---
 

@@ -12,7 +12,8 @@ components/
 ├── uiBusiness/       # 業務 UI 元件 (含業務邏輯)
 ├── layout/           # 佈局元件
 ├── auth/             # 認證相關元件
-└── renderer/         # 動態渲染元件
+├── auth/             # 認證相關元件
+
 ```
 
 ---
@@ -202,15 +203,6 @@ const handleSubmit = async (data) => {
 ### 核心元件清單
 
 - `LoginForm.vue` - 登入表單
-
----
-
-## 5. renderer - 動態渲染元件
-
-### 設計原則
-
-- **動態渲染**: 根據設定檔動態生成 UI
-- **Schema Driven**: 由資料結構驅動介面
 
 ---
 
