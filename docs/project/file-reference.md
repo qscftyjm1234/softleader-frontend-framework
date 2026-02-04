@@ -10,33 +10,33 @@
 
 ### 核心配置
 
-| 檔案                                     | 用途            | 說明                              |
-| :--------------------------------------- | :-------------- | :-------------------------------- |
-| [`package.json`](../../package.json)     | NPM 套件配置    | 定義專案依賴、腳本指令、版本資訊  |
-| [`nuxt.config.ts`](../../nuxt.config.ts) | Nuxt 核心配置   | Nuxt 框架設定、模組載入、路由規則 |
-| [`tsconfig.json`](../../tsconfig.json)   | TypeScript 配置 | TypeScript 編譯選項與路徑別名     |
+| 檔案                                                                                | 用途            | 說明                              |
+| :---------------------------------------------------------------------------------- | :-------------- | :-------------------------------- |
+| [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json)     | NPM 套件配置    | 定義專案依賴、腳本指令、版本資訊  |
+| [`nuxt.config.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/nuxt.config.ts) | Nuxt 核心配置   | Nuxt 框架設定、模組載入、路由規則 |
+| [`tsconfig.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/tsconfig.json)   | TypeScript 配置 | TypeScript 編譯選項與路徑別名     |
 
 ### 程式碼品質
 
-| 檔案                                           | 用途              | 說明                                 |
-| :--------------------------------------------- | :---------------- | :----------------------------------- |
-| [`eslint.config.mjs`](../../eslint.config.mjs) | ESLint 規則配置   | 程式碼檢查規則、JSDoc 規範、Vue 規則 |
-| [`.prettierrc.json`](../../.prettierrc.json)   | Prettier 格式配置 | 程式碼格式化規則 (引號、分號、縮排)  |
-| [`.prettierignore`](../../.prettierignore)     | Prettier 忽略清單 | 不需要格式化的檔案/目錄              |
+| 檔案                                                                                      | 用途              | 說明                                 |
+| :---------------------------------------------------------------------------------------- | :---------------- | :----------------------------------- |
+| [`eslint.config.mjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/eslint.config.mjs) | ESLint 規則配置   | 程式碼檢查規則、JSDoc 規範、Vue 規則 |
+| [`.prettierrc.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/.prettierrc.json)   | Prettier 格式配置 | 程式碼格式化規則 (引號、分號、縮排)  |
+| [`.prettierignore`](file:///c:/Users/gino.huang/Documents/nuxt3-test/.prettierignore)     | Prettier 忽略清單 | 不需要格式化的檔案/目錄              |
 
 ### Git 工作流
 
-| 檔案                                                   | 用途            | 說明                                     |
-| :----------------------------------------------------- | :-------------- | :--------------------------------------- |
-| [`commitlint.config.cjs`](../../commitlint.config.cjs) | Commitlint 入口 | 引用 `configs/git/commitlint.config.cjs` |
-| [`.gitignore`](../../.gitignore)                       | Git 忽略清單    | 不納入版本控制的檔案                     |
+| 檔案                                                                                              | 用途            | 說明                                     |
+| :------------------------------------------------------------------------------------------------ | :-------------- | :--------------------------------------- |
+| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/commitlint.config.cjs) | Commitlint 入口 | 引用 `configs/git/commitlint.config.cjs` |
+| [`.gitignore`](file:///c:/Users/gino.huang/Documents/nuxt3-test/.gitignore)                       | Git 忽略清單    | 不納入版本控制的檔案                     |
 
 ### 環境變數
 
-| 檔案                                 | 用途            | 說明                              |
-| :----------------------------------- | :-------------- | :-------------------------------- |
-| `.env`                               | 環境變數 (本地) | 本地開發環境變數 (不納入版本控制) |
-| [`.env.example`](../../.env.example) | 環境變數範例    | 環境變數範本,供團隊參考           |
+| 檔案                                                                            | 用途            | 說明                              |
+| :------------------------------------------------------------------------------ | :-------------- | :-------------------------------- |
+| `.env`                                                                          | 環境變數 (本地) | 本地開發環境變數 (不納入版本控制) |
+| [`.env.example`](file:///c:/Users/gino.huang/Documents/nuxt3-test/.env.example) | 環境變數範例    | 環境變數範本,供團隊參考           |
 
 ---
 
@@ -44,18 +44,18 @@
 
 ### configs/git/ - Git 工作流配置
 
-| 檔案                                                               | 用途            | 說明                                            |
-| :----------------------------------------------------------------- | :-------------- | :---------------------------------------------- |
-| [`commit-types.cjs`](../../configs/git/commit-types.cjs)           | Commit 類型定義 | 定義所有允許的 Commit 類型 (feat, fix, docs...) |
-| [`commitlint.config.cjs`](../../configs/git/commitlint.config.cjs) | Commitlint 規則 | Commit 訊息檢查規則 (實際配置)                  |
-| [`cz-config.cjs`](../../configs/git/cz-config.cjs)                 | Commitizen 配置 | `npm run commit` 互動式介面配置                 |
+| 檔案                                                                                                          | 用途            | 說明                                            |
+| :------------------------------------------------------------------------------------------------------------ | :-------------- | :---------------------------------------------- |
+| [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 | 定義所有允許的 Commit 類型 (feat, fix, docs...) |
+| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commitlint 規則 | Commit 訊息檢查規則 (實際配置)                  |
+| [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 配置 | `npm run commit` 互動式介面配置                 |
 
 ### configs/ - 產品配置
 
-| 檔案                                         | 用途              | 說明                              |
-| :------------------------------------------- | :---------------- | :-------------------------------- |
-| `configs/`                                   | 專案設定檔 (JSON) | 存放產品設定,如 `default.json`    |
-| [`default.json`](../../configs/default.json) | 預設產品配置      | 定義啟用的模組、主題色、Meta 資訊 |
+| 檔案                                                                                    | 用途              | 說明                              |
+| :-------------------------------------------------------------------------------------- | :---------------- | :-------------------------------- |
+| `configs/`                                                                              | 專案設定檔 (JSON) | 存放產品設定,如 `default.json`    |
+| [`default.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/default.json) | 預設產品配置      | 定義啟用的模組、主題色、Meta 資訊 |
 
 ---
 
@@ -73,11 +73,11 @@ Nuxt 使用檔案系統路由,`pages/` 目錄中的檔案會自動產生路由�
 
 ## layouts/ - 佈局模板
 
-| 檔案                                       | 用途        | 說明                                    |
-| :----------------------------------------- | :---------- | :-------------------------------------- |
-| [`default.vue`](../../layouts/default.vue) | 預設佈局    | 包含 Header、Sidebar、Footer 的標準佈局 |
-| `portal.vue`                               | Portal 佈局 | 管理後台佈局 (含側邊欄)                 |
-| `blank.vue`                                | 空白佈局    | 無框架的空白佈局 (登入頁、錯誤頁)       |
+| 檔案                                                                                  | 用途        | 說明                                    |
+| :------------------------------------------------------------------------------------ | :---------- | :-------------------------------------- |
+| [`default.vue`](file:///c:/Users/gino.huang/Documents/nuxt3-test/layouts/default.vue) | 預設佈局    | 包含 Header、Sidebar、Footer 的標準佈局 |
+| `portal.vue`                                                                          | Portal 佈局 | 管理後台佈局 (含側邊欄)                 |
+| `blank.vue`                                                                           | 空白佈局    | 無框架的空白佈局 (登入頁、錯誤頁)       |
 
 ---
 
@@ -115,23 +115,23 @@ Nuxt 使用檔案系統路由,`pages/` 目錄中的檔案會自動產生路由�
 
 ## stores/ - 狀態管理 (Pinia)
 
-| 檔案                            | 用途         | 說明                       |
-| :------------------------------ | :----------- | :------------------------- |
-| [`app.ts`](../../stores/app.ts) | 應用程式狀態 | 側邊欄、載入狀態、全域配置 |
-| `user.ts`                       | 使用者狀態   | 使用者資訊、權限、登入狀態 |
-| `sidebar.ts`                    | 側邊欄狀態   | 選單項目、展開/收合狀態    |
-| `features.ts`                   | 功能開關     | 功能旗標管理               |
+| 檔案                                                                       | 用途         | 說明                       |
+| :------------------------------------------------------------------------- | :----------- | :------------------------- |
+| [`app.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/stores/app.ts) | 應用程式狀態 | 側邊欄、載入狀態、全域配置 |
+| `user.ts`                                                                  | 使用者狀態   | 使用者資訊、權限、登入狀態 |
+| `sidebar.ts`                                                               | 側邊欄狀態   | 選單項目、展開/收合狀態    |
+| `features.ts`                                                              | 功能開關     | 功能旗標管理               |
 
 ---
 
 ## plugins/ - Nuxt 插件
 
-| 檔案                                                     | 用途           | 說明                            |
-| :------------------------------------------------------- | :------------- | :------------------------------ |
-| [`api.ts`](../../plugins/api.ts)                         | API 整合       | 提供全域 `$api` 存取點          |
-| [`vuetify.ts`](../../plugins/vuetify.ts)                 | Vuetify 初始化 | UI 框架設定                     |
-| `dayjs.global.ts`                                        | Day.js 初始化  | 日期處理工具                    |
-| [`security.client.ts`](../../plugins/security.client.ts) | 前端資安防護   | 禁用右鍵、截圖偵測等 (僅客戶端) |
+| 檔案                                                                                                | 用途           | 說明                            |
+| :-------------------------------------------------------------------------------------------------- | :------------- | :------------------------------ |
+| [`api.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/api.ts)                         | API 整合       | 提供全域 `$api` 存取點          |
+| [`vuetify.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/vuetify.ts)                 | Vuetify 初始化 | UI 框架設定                     |
+| `dayjs.global.ts`                                                                                   | Day.js 初始化  | 日期處理工具                    |
+| [`security.client.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/security.client.ts) | 前端資安防護   | 禁用右鍵、截圖偵測等 (僅客戶端) |
 
 ---
 
@@ -193,54 +193,54 @@ Nuxt 使用檔案系統路由,`pages/` 目錄中的檔案會自動產生路由�
 
 ### docs/guides/ - 開發指南
 
-| 檔案                                                               | 用途       | 說明                         |
-| :----------------------------------------------------------------- | :--------- | :--------------------------- |
-| [`development-manual.md`](../../docs/guides/development-manual.md) | 開發手冊   | 環境需求、系統套件、命名規範 |
-| [`comments.md`](../../docs/guides/comments.md)                     | 註解規範   | JSDoc 完整規範與範例         |
-| [`git-workflow.md`](../../docs/guides/git-workflow.md)             | Git 工作流 | Git 配置檔案說明             |
-| [`development.md`](../../docs/guides/development.md)               | 開發規範   | Commit 規範、版本發布        |
-| [`dx.md`](../../docs/guides/dx.md)                                 | DX 指南    | 開發環境設定、Git Hooks      |
-| [`troubleshooting.md`](../../docs/guides/troubleshooting.md)       | 問題排除   | 常見問題與解決方案           |
-| [`schema-driven-ui.md`](../../docs/guides/schema-driven-ui.md)     | SDUI 指南  | Schema-Driven UI 使用說明    |
+| 檔案                                                                                                          | 用途       | 說明                         |
+| :------------------------------------------------------------------------------------------------------------ | :--------- | :--------------------------- |
+| [`development-manual.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/development-manual.md) | 開發手冊   | 環境需求、系統套件、命名規範 |
+| [`comments.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/comments.md)                     | 註解規範   | JSDoc 完整規範與範例         |
+| [`git-workflow.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/git-workflow.md)             | Git 工作流 | Git 配置檔案說明             |
+| [`development.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/development.md)               | 開發規範   | Commit 規範、版本發布        |
+| [`dx.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/dx.md)                                 | DX 指南    | 開發環境設定、Git Hooks      |
+| [`troubleshooting.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/troubleshooting.md)       | 問題排除   | 常見問題與解決方案           |
+| [`schema-driven-ui.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/guides/schema-driven-ui.md)     | SDUI 指南  | Schema-Driven UI 使用說明    |
 
 ### docs/core/ - 核心功能
 
-| 檔案                                             | 用途     | 說明                         |
-| :----------------------------------------------- | :------- | :--------------------------- |
-| [`components.md`](../../docs/core/components.md) | 元件系統 | 元件分類、使用範例、開發規範 |
-| [`stores.md`](../../docs/core/stores.md)         | 狀態管理 | Pinia Store 架構與使用       |
-| [`i18n.md`](../../docs/core/i18n.md)             | 多語系   | i18n 系統架構與使用          |
-| [`layout.md`](../../docs/core/layout.md)         | 佈局系統 | 佈局類型與使用方式           |
-| [`plugins.md`](../../docs/core/plugins.md)       | 插件系統 | Nuxt 插件說明                |
-| [`security.md`](../../docs/core/security.md)     | 資安機制 | Token 管理、前端資安防護     |
+| 檔案                                                                                        | 用途     | 說明                         |
+| :------------------------------------------------------------------------------------------ | :------- | :--------------------------- |
+| [`components.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/components.md) | 元件系統 | 元件分類、使用範例、開發規範 |
+| [`stores.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/stores.md)         | 狀態管理 | Pinia Store 架構與使用       |
+| [`i18n.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/i18n.md)             | 多語系   | i18n 系統架構與使用          |
+| [`layout.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/layout.md)         | 佈局系統 | 佈局類型與使用方式           |
+| [`plugins.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/plugins.md)       | 插件系統 | Nuxt 插件說明                |
+| [`security.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/core/security.md)     | 資安機制 | Token 管理、前端資安防護     |
 
 ### docs/project/ - 專案概覽
 
-| 檔案                                                                    | 用途       | 說明                   |
-| :---------------------------------------------------------------------- | :--------- | :--------------------- |
-| [`architecture.md`](../../docs/project/architecture.md)                 | 系統架構   | 框架無關設計、架構層次 |
-| [`architecture-details.md`](../../docs/project/architecture-details.md) | 架構細節   | Config-Driven 架構說明 |
-| [`features.md`](../../docs/project/features.md)                         | 功能開關   | Feature Flags 系統說明 |
-| [`folder-structure.md`](../../docs/project/folder-structure.md)         | 資料夾結構 | 目錄結構與命名規範     |
-| [`modules.md`](../../docs/project/modules.md)                           | 模組說明   | 各功能模組的說明       |
-| [`roadmap.md`](../../docs/project/roadmap.md)                           | 開發規劃   | 專案願景與技術棧       |
+| 檔案                                                                                                               | 用途       | 說明                   |
+| :----------------------------------------------------------------------------------------------------------------- | :--------- | :--------------------- |
+| [`architecture.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/architecture.md)                 | 系統架構   | 框架無關設計、架構層次 |
+| [`architecture-details.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/architecture-details.md) | 架構細節   | Config-Driven 架構說明 |
+| [`features.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/features.md)                         | 功能開關   | Feature Flags 系統說明 |
+| [`folder-structure.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/folder-structure.md)         | 資料夾結構 | 目錄結構與命名規範     |
+| [`modules.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/modules.md)                           | 模組說明   | 各功能模組的說明       |
+| [`roadmap.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/project/roadmap.md)                           | 開發規劃   | 專案願景與技術棧       |
 
 ### docs/api/ - API 與資料
 
-| 檔案                                              | 用途            | 說明                    |
-| :------------------------------------------------ | :-------------- | :---------------------- |
-| [`guide.md`](../../docs/api/guide.md)             | API 指南        | Smart Client 使用說明   |
-| [`mock-server.md`](../../docs/api/mock-server.md) | Mock API        | Mock API 系統使用指南   |
-| `mock-fine-grained.md`                            | 細粒度 Mock     | 進階 Mock 配置          |
-| `mock-switching.md`                               | Mock 切換       | Mock 與真實 API 切換    |
-| `repository-pattern.md`                           | Repository 模式 | Repository 設計模式說明 |
+| 檔案                                                                                         | 用途            | 說明                    |
+| :------------------------------------------------------------------------------------------- | :-------------- | :---------------------- |
+| [`guide.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/api/guide.md)             | API 指南        | Smart Client 使用說明   |
+| [`mock-server.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/api/mock-server.md) | Mock API        | Mock API 系統使用指南   |
+| `mock-fine-grained.md`                                                                       | 細粒度 Mock     | 進階 Mock 配置          |
+| `mock-switching.md`                                                                          | Mock 切換       | Mock 與真實 API 切換    |
+| `repository-pattern.md`                                                                      | Repository 模式 | Repository 設計模式說明 |
 
 ### docs/tools/ - 工具與測試
 
-| 檔案                                                                | 用途           | 說明                           |
-| :------------------------------------------------------------------ | :------------- | :----------------------------- |
-| [`vscode-eslint.md`](../../docs/tools/vscode-eslint.md)             | VS Code ESLint | ESLint 設定與問題排除          |
-| [`integration-testing.md`](../../docs/tools/integration-testing.md) | 整合測試       | Vue + TypeScript + ESLint 整合 |
+| 檔案                                                                                                           | 用途           | 說明                           |
+| :------------------------------------------------------------------------------------------------------------- | :------------- | :----------------------------- |
+| [`vscode-eslint.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/tools/vscode-eslint.md)             | VS Code ESLint | ESLint 設定與問題排除          |
+| [`integration-testing.md`](file:///c:/Users/gino.huang/Documents/nuxt3-test/docs/tools/integration-testing.md) | 整合測試       | Vue + TypeScript + ESLint 整合 |
 
 ---
 

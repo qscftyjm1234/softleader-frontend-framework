@@ -7,6 +7,7 @@
 
 interface Props {
   title?: string
+  icon?: string
 }
 
 defineProps<Props>()
@@ -16,6 +17,11 @@ defineProps<Props>()
   <div class="showcase-section-wrapper">
     <div class="section-header">
       <h2 class="section-title">
+        <v-icon
+          v-if="icon"
+          :icon="icon"
+          class="title-icon"
+        />
         <span class="title-text">{{ title }}</span>
       </h2>
       <div class="title-decoration"></div>
@@ -41,11 +47,23 @@ defineProps<Props>()
   font-size: 1.75rem;
   font-weight: 800;
   color: #f8fafc;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   letter-spacing: -0.02em;
+}
+
+.title-icon {
+  color: #38bdf8;
+  font-size: 2rem;
+}
+
+.section-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .title-decoration {

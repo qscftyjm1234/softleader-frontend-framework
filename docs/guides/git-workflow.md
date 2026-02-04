@@ -8,13 +8,13 @@
 
 ## 配置檔案總覽
 
-所有 Git 相關配置檔案位於 [`configs/git/`](../../configs/git) 目錄:
+所有 Git 相關配置檔案位於 [`configs/git/`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git) 目錄:
 
-| 檔案                                                               | 用途                       | 相依套件          |
-| :----------------------------------------------------------------- | :------------------------- | :---------------- |
-| [`commit-types.cjs`](../../configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                 |
-| [`commitlint.config.cjs`](../../configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli` |
-| [`cz-config.cjs`](../../configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`      |
+| 檔案                                                                                                          | 用途                       | 相依套件          |
+| :------------------------------------------------------------------------------------------------------------ | :------------------------- | :---------------- |
+| [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                 |
+| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli` |
+| [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`      |
 
 ### 配置檔案架構說明
 
@@ -37,7 +37,7 @@
 
 **工作原理:**
 
-根目錄的 [`commitlint.config.cjs`](../../commitlint.config.cjs) 內容:
+根目錄的 [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/commitlint.config.cjs) 內容:
 
 ```javascript
 /**
@@ -49,13 +49,13 @@ module.exports = require('./configs/git/commitlint.config.cjs')
 
 **要修改規則時:**
 
-👉 修改 [`configs/git/commitlint.config.cjs`](../../configs/git/commitlint.config.cjs) - 這裡才是真正的配置內容
+👉 修改 [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) - 這裡才是真正的配置內容
 
 ---
 
 ## 1. commit-types.cjs - Commit 類型定義
 
-**檔案路徑**: [`configs/git/commit-types.cjs`](../../configs/git/commit-types.cjs)
+**檔案路徑**: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
 
 ### 用途
 
@@ -86,7 +86,7 @@ maxLineLength: 100 // Commit 內文每行最大長度
 
 ## 2. commitlint.config.cjs - Commit 訊息檢查
 
-**檔案路徑**: [`configs/git/commitlint.config.cjs`](../../configs/git/commitlint.config.cjs)
+**檔案路徑**: [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs)
 
 ### 用途
 
@@ -141,15 +141,15 @@ Closes #123
 
 ### 相關檔案
 
-- 配置檔: [`configs/git/commitlint.config.cjs`](../../configs/git/commitlint.config.cjs)
-- 類型定義: [`configs/git/commit-types.cjs`](../../configs/git/commit-types.cjs)
-- Package: [`package.json`](../../package.json) (devDependencies: `@commitlint/cli`, `@commitlint/config-conventional`)
+- 配置檔: [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs)
+- 類型定義: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
+- Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `@commitlint/cli`, `@commitlint/config-conventional`)
 
 ---
 
 ## 3. cz-config.cjs - Commitizen 配置
 
-**檔案路徑**: [`configs/git/cz-config.cjs`](../../configs/git/cz-config.cjs)
+**檔案路徑**: [`configs/git/cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)
 
 ### 用途
 
@@ -183,9 +183,9 @@ npm run commit
 
 ### 相關檔案
 
-- 配置檔: [`configs/git/cz-config.cjs`](../../configs/git/cz-config.cjs)
-- 類型定義: [`configs/git/commit-types.cjs`](../../configs/git/commit-types.cjs)
-- Package: [`package.json`](../../package.json) (devDependencies: `commitizen`, `cz-customizable`)
+- 配置檔: [`configs/git/cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)
+- 類型定義: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
+- Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `commitizen`, `cz-customizable`)
 
 ---
 
@@ -224,7 +224,7 @@ git push --follow-tags origin main
 
 ### 已安裝的 NPM 套件
 
-在 [`package.json`](../../package.json) 的 `devDependencies`:
+在 [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) 的 `devDependencies`:
 
 ```json
 {
