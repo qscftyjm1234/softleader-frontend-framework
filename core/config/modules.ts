@@ -20,5 +20,11 @@ export const modulesConfig: NuxtConfig['modules'] = [
   '@pinia/nuxt',
 
   // ESLint 整合 (程式碼品質檢查)
-  '@nuxt/eslint'
+  '@nuxt/eslint',
+
+  // Ant Design Vue 整合
+  '@ant-design-vue/nuxt',
+
+  // Tailwind CSS 整合
+  '@nuxtjs/tailwindcss'
 ]

@@ -33,11 +33,32 @@ const cardStyle = computed(() => ({
       ? `0 ${props.elevation}px ${props.elevation * 2}px rgba(0, 0, 0, 0.1)`
       : 'none'
 }))
+const shouldUseFramework = true
+
+const antDBindings = computed(() => ({
+  title: props.title,
+  bordered: props.variant === 'outlined',
+  hoverable: true
+}))
 </script>
 
 <template>
+  <a-card
+    v-if="shouldUseFramework"
+    v-bind="antDBindings"
+  >
+    <template
+      v-if="$slots.header"
+      #title
+    >
+      <slot name="header" />
+    </template>
+    <slot />
+  </a-card>
+
   <!-- 目前使用原生 HTML -->
   <div
+    v-else
     class="ui-card"
     :class="cardClass"
     :style="cardStyle"
@@ -65,19 +86,6 @@ const cardStyle = computed(() => ({
       <slot />
     </div>
   </div>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VCard
-    :title="title"
-    :subtitle="subtitle"
-    :elevation="elevation"
-    :color="color"
-    :variant="variant"
-  >
-    <slot />
-  </VCard>
-  -->
 </template>
 
 <style scoped>

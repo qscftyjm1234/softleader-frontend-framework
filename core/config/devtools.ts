@@ -21,7 +21,7 @@ export const devtoolsConfig: NuxtConfig['devtools'] = {
    * - true: 開發時會顯示 DevTools 面板
    * - false: 關閉 DevTools
    */
-  enabled: true // Nuxt 3 可以正常使用
+  enabled: false // 暫時停用以修復啟動錯誤
 }
 
 /**

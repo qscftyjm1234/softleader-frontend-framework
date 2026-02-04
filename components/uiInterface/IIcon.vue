@@ -206,6 +206,12 @@ const RawIcon = (props: { svg: string }) =>
   color: inherit;
 }
 
+/* MDI 專用修正：MDI 使用 ::before 呈現圖示，需要 inline-block 才能正確運作 */
+.ui-icon.mdi {
+  display: inline-block;
+  text-align: center;
+}
+
 .ui-icon__raw {
   display: contents;
   width: 100%;

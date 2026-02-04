@@ -181,7 +181,7 @@
 
 ### 12. **plugins/** - Nuxt 插件
 
-**核心職責**: Nuxt 插件 (Vuetify, i18n 等)。
+**核心職責**: Nuxt 插件 (Ant Design Vue, i18n 等)。
 
 ---
 

@@ -126,12 +126,12 @@ Nuxt 使用檔案系統路由,`pages/` 目錄中的檔案會自動產生路由�
 
 ## plugins/ - Nuxt 插件
 
-| 檔案                                                                                                | 用途           | 說明                            |
-| :-------------------------------------------------------------------------------------------------- | :------------- | :------------------------------ |
-| [`api.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/api.ts)                         | API 整合       | 提供全域 `$api` 存取點          |
-| [`vuetify.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/vuetify.ts)                 | Vuetify 初始化 | UI 框架設定                     |
-| `dayjs.global.ts`                                                                                   | Day.js 初始化  | 日期處理工具                    |
-| [`security.client.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/security.client.ts) | 前端資安防護   | 禁用右鍵、截圖偵測等 (僅客戶端) |
+| 檔案                                                                                                | 用途              | 說明                            |
+| :-------------------------------------------------------------------------------------------------- | :---------------- | :------------------------------ |
+| [`api.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/api.ts)                         | API 整合          | 提供全域 `$api` 存取點          |
+| [`ant-design.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/ant-design.ts)           | Ant Design 初始化 | UI 框架註冊與設定               |
+| `dayjs.global.ts`                                                                                   | Day.js 初始化     | 日期處理工具                    |
+| [`security.client.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/plugins/security.client.ts) | 前端資安防護      | 禁用右鍵、截圖偵測等 (僅客戶端) |
 
 ---
 

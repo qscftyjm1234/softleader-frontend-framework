@@ -12,11 +12,11 @@
 
 ### 核心框架與 UI
 
-| 套件名稱    | 版本   | 功能說明                                                             | 安裝指令                       |
-| ----------- | ------ | -------------------------------------------------------------------- | ------------------------------ |
-| `nuxt`      | 3.14.0 | Nuxt 3 核心框架,提供 SSR、檔案系統路由、自動 Import、TypeScript 支援 | `npm install nuxt@3.14.0`      |
-| `vuetify`   | 3.9.3  | Material Design UI 元件庫,提供 100+ 現成元件、響應式網格、主題客製化 | `npm install vuetify@3.9.3`    |
-| `@mdi/font` | 7.4.47 | Material Design Icons 圖示集,7000+ 圖示,Vuetify 預設圖示庫           | `npm install @mdi/font@7.4.47` |
+| 套件名稱              | 版本   | 功能說明                                                             | 安裝指令                          |
+| --------------------- | ------ | -------------------------------------------------------------------- | --------------------------------- |
+| `nuxt`                | 3.14.0 | Nuxt 3 核心框架,提供 SSR、檔案系統路由、自動 Import、TypeScript 支援 | `npm install nuxt@3.14.0`         |
+| `ant-design-vue`      | 4.x    | 企業級 UI 設計語言與 Vue 實作，提供高品質的元件庫                    | `npm install ant-design-vue`      |
+| `@nuxtjs/tailwindcss` | 6.12.0 | Tailwind CSS 整合模組，提供 Utility-First 的樣式解決方案             | `npm install @nuxtjs/tailwindcss` |
 
 ### 狀態管理
 
@@ -121,7 +121,8 @@ pnpm install
 ### 必須套件 (缺一不可)
 
 - nuxt
-- vuetify
+- ant-design-vue
+- tailwindcss
 - pinia
 - @pinia/nuxt
 - @vueuse/nuxt
@@ -141,7 +142,7 @@ pnpm install
 
 ### 可選套件 (可替換)
 
-- @mdi/font (可用其他圖示庫)
+- @ant-design/icons-vue
 - lodash.clonedeep (可用原生 `structuredClone`)
 - @nuxtjs/i18n (如不需多語系可移除)
 
@@ -153,8 +154,9 @@ pnpm install
 專案根目錄
 ├── 核心框架
 │   ├── nuxt (核心)
-│   ├── vuetify (UI 元件)
-│   └── @mdi/font (圖示)
+│   ├── ant-design-vue (UI 元件)
+│   ├── tailwindcss (樣式系統)
+│   └── @ant-design/icons-vue (圖示)
 │
 ├── 狀態管理
 │   ├── pinia (狀態管理)

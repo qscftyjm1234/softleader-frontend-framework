@@ -9,7 +9,7 @@ Nuxt 3 的插件系統允許在應用程式啟動時註冊全域功能、第三�
 ```
 plugins/
 ├── api.ts                # API 整合層
-├── vuetify.ts            # Vuetify UI 框架
+├── ant-design.ts         # Ant Design Vue 框架
 ├── dayjs.global.ts       # Day.js 日期處理
 └── security.client.ts    # 前端資安防護 (僅客戶端)
 ```
@@ -58,31 +58,24 @@ const { data: order } = await $api.order.getOrderById(1)
 
 ---
 
-## 2. vuetify.ts - UI 框架
+## 2. ant-design.ts - UI 框架
 
 ### 職責
 
-初始化 Vuetify UI 框架,提供豐富的 UI 元件。
+初始化 Ant Design Vue UI 框架,提供豐富的企業級 UI 元件。
 
 ### 實作方式
 
+透過 `@ant-design-vue/nuxt` 模組自動處理大部分配置。但在需要進階自訂 (如全域配置 ConfigProvider) 時，可透過插件進行設定。
+
+Nuxt Config:
+
 ```typescript
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-
-export default defineNuxtPlugin((nuxtApp) => {
-  const vuetify = createVuetify({
-    components,
-    directives,
-    defaults: {
-      VCard: {
-        elevation: 2
-      }
-    }
-  })
-
-  nuxtApp.vueApp.use(vuetify)
+export default defineNuxtConfig({
+  modules: ['@ant-design-vue/nuxt', '@nuxtjs/tailwindcss'],
+  antd: {
+    // 這裡可以配置 Ant Design Vue 全域選項
+  }
 })
 ```
 
@@ -90,29 +83,22 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 ```vue
 <template>
-  <v-btn color="primary">按鈕</v-btn>
-  <v-card>
-    <v-card-title>卡片標題</v-card-title>
-  </v-card>
+  <a-button type="primary">按鈕</a-button>
+  <a-card
+    title="卡片標題"
+    class="shadow-md"
+  >
+    <p>卡片內容</p>
+  </a-card>
 </template>
 ```
 
-### 自訂配置
+### 樣式整合 (Tailwind CSS)
 
-```typescript
-const vuetify = createVuetify({
-  theme: {
-    defaultTheme: 'light',
-    themes: {
-      light: {
-        colors: {
-          primary: '#1976D2',
-          secondary: '#424242'
-        }
-      }
-    }
-  }
-})
+Ant Design Vue 元件可以無縫搭配 Tailwind CSS Utility Classes 使用：
+
+```vue
+<a-button class="!bg-teal-500 hover:!bg-teal-600">自訂顏色按鈕</a-button>
 ```
 
 ---
@@ -402,7 +388,7 @@ Nuxt 會按照以下順序載入插件:
 ```
 plugins/
 ├── 01.api.ts          # 第一個執行
-├── 02.vuetify.ts      # 第二個執行
+├── 02.ant-design.ts   # 第二個執行
 └── 03.security.client.ts
 ```
 

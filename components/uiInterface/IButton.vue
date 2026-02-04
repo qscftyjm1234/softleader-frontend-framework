@@ -63,40 +63,30 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-// ====================================================
-// 2. 屬性對照表 (把我們的標準轉成 Vuetify 看得懂的樣子)
-// ====================================================
-const vuetifyBindings = computed(() => {
+const antDBindings = computed(() => {
   const bindings: Record<string, any> = {}
 
   // [Size Mapping]
   const sizeMap: Record<string, string> = {
-    small: 'x-small',
+    small: 'small',
     medium: 'default',
     large: 'large'
   }
   bindings.size = sizeMap[props.size] || 'default'
 
-  // [Variant & Color Mapping]
-  const colorMap: Record<string, string> = {
-    danger: 'error',
-    primary: 'primary',
-    secondary: 'secondary',
-    success: 'success',
-    warning: 'warning',
-    info: 'info'
-  }
-
-  if (props.variant === 'text') {
-    bindings.variant = 'text'
-    bindings.color = props.color
+  // [Type Mapping]
+  if (props.variant === 'primary') {
+    bindings.type = 'primary'
+  } else if (props.variant === 'danger') {
+    bindings.type = 'primary'
+    bindings.danger = true
+  } else if (props.variant === 'text') {
+    bindings.type = 'text'
   } else if (props.variant === 'outlined') {
-    bindings.variant = 'outlined'
-    bindings.color = props.color || 'primary'
-  } else {
-    // 預設實心
-    bindings.variant = 'elevated'
-    bindings.color = props.color || colorMap[props.variant] || props.variant
+    bindings.type = 'default'
+    bindings.ghost = false // AntD uses ghost for transparent bg
+  } else if (props.variant === 'link') {
+    bindings.type = 'link'
   }
 
   return bindings
@@ -132,9 +122,9 @@ const buttonStyle = computed(() => {
     實作 A: 底層框架 (Vuetify)
     原則：屬性透傳 ($attrs) 讓 Vue 自動處理剩下的 80% 屬性
   -->
-  <v-btn
+  <a-button
     v-if="shouldUseFramework"
-    v-bind="{ ...vuetifyBindings, ...$attrs }"
+    v-bind="{ ...antDBindings, ...$attrs }"
     :block="block"
     :loading="loading"
     :disabled="disabled"
@@ -142,23 +132,22 @@ const buttonStyle = computed(() => {
     :target="target"
     @click="handleClick"
   >
-    <!-- 使用 slot 搭配 IIcon 以支援所有圖示類型 (包含 svg- 格式) -->
     <template
       v-if="prependIcon"
-      #prepend
+      #icon
     >
       <IIcon :icon="prependIcon" />
     </template>
 
     <slot />
 
-    <template
+    <!-- Ant Design Vue 不直接支援 appendIcon slot, 這裡手動放一個 -->
+    <IIcon
       v-if="appendIcon"
-      #append
-    >
-      <IIcon :icon="appendIcon" />
-    </template>
-  </v-btn>
+      :icon="appendIcon"
+      class="ml-1"
+    />
+  </a-button>
 
   <!-- 
     實作 B: 原生 HTML/CSS

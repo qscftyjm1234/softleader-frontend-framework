@@ -22,7 +22,7 @@ components/
 
 ### 設計原則
 
-- **框架無關**: 不依賴特定 UI 框架 (Vuetify, Element Plus 等)
+- **框架無關**: 設計上保持獨立，底層目前採用 Ant Design Vue，但介面保持抽象
 - **無業務邏輯**: 僅處理 UI 互動,不包含 API 呼叫或狀態管理
 - **高度可重用**: 可在任何頁面、任何模組中使用
 - **命名規範**: 使用 `I` 前綴 + PascalCase (例: `IButton.vue`)

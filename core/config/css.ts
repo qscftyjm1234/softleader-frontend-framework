@@ -15,7 +15,7 @@ import type { NuxtConfig } from 'nuxt/schema'
  * @see https://nuxt.com/docs/api/nuxt-config#css
  */
 export const cssConfig: NuxtConfig['css'] = [
-  'vuetify/styles', // Vuetify 框架樣式（必須在前）
-  '~/assets/mdi/css/materialdesignicons.css', // MDI 離線圖示字型 (Local Vendor)
+  // 'vuetify/styles', // Vuetify 框架樣式（必須在前）
+  '@mdi/font/css/materialdesignicons.css', // 恢復 MDI 圖示庫 (使用 npm 最新版)
   '~/assets/css/main.css' // 自訂全域樣式（可覆蓋 Vuetify）
 ]
