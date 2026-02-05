@@ -1,277 +1,214 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
-# Git 工作流配置說明 (Git Workflow Configuration)
+# Git 工作流與實戰指南
 
-本專案使用一套完整的 Git 工作流配置,確保 Commit 訊息的一致性與自動化版本管理。
+本文件旨在協助團隊成員快速上手專案的 Git 工作流程。分為兩大部分：
 
----
-
-## 配置檔案總覽
-
-所有 Git 相關配置檔案位於 [`configs/git/`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git) 目錄:
-
-| 檔案                                                                                                          | 用途                       | 相依套件          |
-| :------------------------------------------------------------------------------------------------------------ | :------------------------- | :---------------- |
-| [`commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                 |
-| [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli` |
-| [`cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`      |
-
-### 配置檔案架構說明
-
-#### Commitlint 雙層結構
-
-專案採用**入口檔案 + 實際配置**的雙層結構:
-
-```
-根目錄/
-├── commitlint.config.cjs          ← 入口檔案 (6 行)
-└── configs/git/
-    └── commitlint.config.cjs      ← 實際配置 (82 行)
-```
-
-**為什麼這樣設計?**
-
-1. **工具要求**: `commitlint` 必須在根目錄找到配置檔案
-2. **集中管理**: 所有 Git 相關配置統一放在 `configs/git/` 目錄
-3. **保持整潔**: 根目錄只保留入口檔案,避免配置檔案過多
-
-**工作原理:**
-
-根目錄的 [`commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/commitlint.config.cjs) 內容:
-
-```javascript
-/**
- * Commitlint 設定入口
- * 引用 configs/git/commitlint.config.cjs 中的實際設定
- */
-module.exports = require('./configs/git/commitlint.config.cjs')
-```
-
-**要修改規則時:**
-
-👉 修改 [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs) - 這裡才是真正的配置內容
+1.  **實戰教學**：針對日常開發情境的操作指南 (新人必讀)。
+2.  **進階配置**：專案的 Git 工具設定細節與原理。
 
 ---
 
-## 1. commit-types.cjs - Commit 類型定義
+## Part 1: 務實 Git 指令與情境教學 (實戰篇)
 
-**檔案路徑**: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
+我們採用簡化的 Git Flow 流程，核心原則如下：
 
-### 用途
+1.  **Main 分支保持乾淨**：`main` 隨時要是可部署的狀態，禁止直接 Commit。
+2.  **開分支開發**：所有新功能或修補都在獨立分支進行 (`feature/...` `)。
+3.  **透過 PR 合併**：開發完成後，發起 Pull Request (PR) 請求合併回 `main`。
+4.  **標準化 Commit**：使用 `npm run commit` 來產生符合規範的 Commit 訊息。
 
-作為 `commitlint` 和 `commitizen` 的**單一來源 (Single Source of Truth)**,定義所有允許的 Commit 類型。
+### 常用情境指令總表
 
-### 定義的 Commit 類型
+以下整理開發中最常遇到的情境，以及對應的標準指令。
 
-| 類型         | 說明                        | 範例                             |
-| :----------- | :-------------------------- | :------------------------------- |
-| **feat**     | 新功能                      | `feat(auth): add login page`     |
-| **fix**      | 修補 bug                    | `fix(api): handle timeout error` |
-| **docs**     | 文件修改                    | `docs: update README`            |
-| **style**    | 格式調整 (不影響程式碼運行) | `style: format code`             |
-| **refactor** | 重構                        | `refactor(user): simplify logic` |
-| **perf**     | 效能改進                    | `perf(api): cache responses`     |
-| **test**     | 測試相關                    | `test(auth): add unit tests`     |
-| **chore**    | 雜務 (不修改 src 或 test)   | `chore: update dependencies`     |
-| **revert**   | 回退版本                    | `revert: undo previous commit`   |
+#### 情境 1：剛把專案抓下來 / 每天早上開工
 
-### 長度限制
+**目標**：確保自己的程式碼是最新的，避免跟別人衝突。
 
-```javascript
-maxHeaderLength: 72 // Commit 標題最大長度
-maxLineLength: 100 // Commit 內文每行最大長度
+```bash
+# 1. 切換回主分支
+git checkout main
+
+# 2. 拉取遠端最新程式碼
+git pull origin main
+```
+
+#### 情境 2：開始做一個新功能 (Feature) 或修 Bug (Fix)
+
+**目標**：在獨立的空間開發，互不干擾。
+
+```bash
+# 命名規則：
+# - 新功能：feat/功能名稱 (例如 feat/user-login)
+# - 修 Bug：fix/問題描述 (例如 fix/login-error)
+
+# 範例：新增「使用者登入」功能
+git checkout -b feature/user-login
+```
+
+#### 情境 3：寫到一半，要存檔 (Commit)
+
+**目標**：將目前的進度保存下來。
+**重點**：我們使用 `commitizen` 工具來確保 Commit 訊息格式統一，方便日後追查與自動產生 Changelog。
+
+```bash
+# 1. 加入所有修改的檔案到暫存區
+git add .
+
+# 2. 啟動互動式提交介面 (🔥🔥 強烈建議使用這個！)
+npm run commit
+
+# --- 接下來會進入互動模式，請依序回答 ---
+# ? Select the type of change? (選擇類型)
+#   > feat:     新功能
+#     fix:      修補 Bug
+#     docs:     文件修改
+#     style:    格式調整 (不影響程式碼)
+#     refactor: 重構程式碼
+#
+# ? What is the scope? (選填，影響範圍)
+#   > 例如輸入: auth (代表影響認證模組)
+#
+# ? Write a short... description? (必填，簡短說明)
+#   > 例如輸入: 新增登入頁面與路由設定
+#
+# ? Provide a longer description? (選填，詳細內容)
+#   > (通常直接 Enter 跳過)
+#
+# ? Are there any breaking changes? (是否有破壞性更新)
+#   > N (通常是 No)
+# ---------------------------------------------
+```
+
+> **Q: 為什麼不直接用 `git commit -m "..."`？**
+> A: 因為我們有設定 `commitlint` 檢查機制。如果你手打的格式不符規範（例如：忘了加 type、字首沒小寫），提交會被擋下來。使用 `npm run commit` 可以引導你正確填寫，省去被擋的麻煩。
+
+#### 情境 4：東西做好了，要推上去 (Push)
+
+**目標**：將你的分支上傳到遠端伺服器 (GitHub/GitLab)，準備發 PR。
+
+```bash
+# 第一次推送這個分支 (設定上游)
+# -u 代表設定 upstream，下次在這個分支直接打 git push 就好
+git push -u origin feat/user-login
+```
+
+#### 情境 5：開發太久，要把主分支的更新合進來 (Sync)
+
+**目標**：如果你開發了三天，`main` 可能已經被別人更新了。這時候要用 Rebase (變基) 把別人的新東西墊在你的修改之下，保持線圖乾淨。
+
+```bash
+# 1. 先切回 main 更新到最新
+git checkout main
+git pull
+
+# 2. 切回你的分支
+git checkout feature/user-login
+
+# 3. 把 main 的進度「Rebase」進來
+git rebase main
+
+# --- 如果遇到衝突 (Conflict) ---
+# 1. 打開衝突檔案，手動修正程式碼
+# 2. 加入修正後的檔案: git add .
+# 3. 繼續 Rebase:      git rebase --continue
+# -----------------------------
+```
+
+#### 情境 6：寫到一半，老闆叫你修緊急 Bug (Hotfix)
+
+**目標**：目前工作還沒好，不能 commit，但也捨不得刪掉？用 `stash` (暫存) 先藏起來。
+
+```bash
+# 1. 把目前的修改先「藏」起來
+git stash
+
+# 2. 確認工作區乾淨了，切回 main 開新分支修 Bug
+git checkout main
+git checkout -b fix/critical-bug
+# ... (修修修) ...
+# ... (Commit & Push) ...
+
+# 3. Bug 修完後，切回來原本的分支
+git checkout feat/user-login
+
+# 4. 把藏起來的東西「拿」出來
+git stash pop
 ```
 
 ---
 
-## 2. commitlint.config.cjs - Commit 訊息檢查
+## Part 2: 進階配置與規範 (設定篇)
 
-**檔案路徑**: [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs)
+以下內容為 Git 工作流的底層配置說明，主要供架構師或想深入了解工具原理的開發者參考。
 
-### 用途
+### 1. 配置檔案總覽
 
-配置 `commitlint` 的檢查規則,確保所有 Commit 訊息符合規範。
+所有 Git 相關配置檔案位於 `configs/git/` 目錄:
 
-### 主要規則
+| 檔案                                                               | 用途                       | 相依套件          |
+| :----------------------------------------------------------------- | :------------------------- | :---------------- |
+| [`commit-types.cjs`](../../configs/git/commit-types.cjs)           | Commit 類型定義 (單一來源) | -                 |
+| [`commitlint.config.cjs`](../../configs/git/commitlint.config.cjs) | Commit 訊息檢查規則        | `@commitlint/cli` |
+| [`cz-config.cjs`](../../configs/git/cz-config.cjs)                 | Commitizen 互動式介面配置  | `commitizen`      |
 
-#### Type (類型) 規則
+#### 配置架構
 
-- `type-enum`: 必須是 `commit-types.cjs` 中定義的類型之一
-- `type-case`: 必須是小寫 (lower-case)
-- `type-empty`: 不能為空
+專案採用 **入口檔案 (Root) + 實際配置 (Config Dir)** 的雙層結構，以保持根目錄整潔。
+例如 `commitlint.config.cjs` 實際上只是引用了 rules 目錄下的設定。
 
-#### Scope (範圍) 規則
+### 2. Commit 類型定義 (commit-types.cjs)
 
-- `scope-case`: 必須是小寫
-- `scope-empty`: 允許為空 (可選)
+這是專案的 **單一來源**，定義了所有允許的 Commit 類型：
 
-#### Subject (主旨) 規則
+| 類型         | 說明     | 範例                             |
+| :----------- | :------- | :------------------------------- |
+| **feat**     | 新功能   | `feat(auth): add login page`     |
+| **fix**      | 修補 bug | `fix(api): handle timeout error` |
+| **docs**     | 文件修改 | `docs: update README`            |
+| **style**    | 格式調整 | `style: format code`             |
+| **refactor** | 重構     | `refactor(user): simplify logic` |
+| **perf**     | 效能改進 | `perf(api): cache responses`     |
+| **test**     | 測試相關 | `test(auth): add unit tests`     |
+| **chore**    | 雜務     | `chore: update dependencies`     |
+| **revert**   | 回退版本 | `revert: undo previous commit`   |
 
-- `subject-empty`: 不能為空
-- `subject-full-stop`: 結尾不要有句號
-- `header-max-length`: 最大 72 字元
+### 3. Commit 訊息檢查 (Commitlint)
 
-#### Body & Footer 規則
+我們使用 `commitlint` 強制執行 Conventional Commits 規範。
+這會在執行 `git commit` 時由 **Husky** 自動觸發。
 
-- `body-leading-blank`: Header 與 Body 之間要有空行
-- `body-max-line-length`: 每行最大 100 字元
-- `footer-leading-blank`: Body 與 Footer 之間要有空行
-
-### Commit 訊息格式
+**格式規則**：
 
 ```
 <type>(<scope>): <subject>
-                              ← 空行
-<body>
-                              ← 空行
-<footer>
 ```
 
-**範例:**
+- **Type**: 必須是上述列表之一，全小寫。
+- **Scope**: (選填) 影響範圍，全小寫。
+- **Subject**: 簡短描述，結尾不加句號。
 
-```
-feat(auth): add two-factor authentication
+### 4. 版本發布流程 (Standard Version)
 
-- Implement TOTP-based 2FA
-- Add QR code generation
-- Update login flow
-
-Closes #123
-```
-
-### 相關檔案
-
-- 配置檔: [`configs/git/commitlint.config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commitlint.config.cjs)
-- 類型定義: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
-- Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `@commitlint/cli`, `@commitlint/config-conventional`)
-
----
-
-## 3. cz-config.cjs - Commitizen 配置
-
-**檔案路徑**: [`configs/git/cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)
-
-### 用途
-
-配置 `commitizen` 的互動式介面,引導開發者撰寫符合規範的 Commit 訊息。
-
-### 使用方式
+專案配置了 `standard-version` 來自動化版本管理：
 
 ```bash
-npm run commit
-```
-
-### 互動流程
-
-1. **選擇提交類型** - 從 `commit-types.cjs` 定義的類型中選擇
-2. **輸入影響範圍** - 可選,例如: `auth`, `api`, `ui`
-3. **簡短描述** - Commit 主旨,最多 72 字元
-4. **確認提交** - 確認後執行 `git commit`
-
-### 配置選項
-
-```javascript
-{
-  types: [...],                    // 從 commit-types.cjs 引入
-  scopes: [],                      // 允許自訂範圍
-  allowCustomScopes: true,         // 允許自訂範圍
-  allowBreakingChanges: ['feat', 'fix'],  // 允許 Breaking Changes 的類型
-  skipQuestions: ['body', 'breaking', 'footer'],  // 跳過的問題
-  subjectLimit: 72                 // 主旨最大長度
-}
-```
-
-### 相關檔案
-
-- 配置檔: [`configs/git/cz-config.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/cz-config.cjs)
-- 類型定義: [`configs/git/commit-types.cjs`](file:///c:/Users/gino.huang/Documents/nuxt3-test/configs/git/commit-types.cjs)
-- Package: [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) (devDependencies: `commitizen`, `cz-customizable`)
-
----
-
-## 完整工作流程
-
-### 1. 開發階段
-
-```bash
-# 正常開發
-git add .
-
-# 使用 Commitizen 撰寫 Commit 訊息
-npm run commit
-```
-
-### 2. Commit 檢查
-
-當執行 `git commit` 時,會自動觸發:
-
-1. **Husky Pre-commit Hook** - 執行 `lint-staged` 檢查程式碼
-2. **Husky Commit-msg Hook** - 執行 `commitlint` 檢查 Commit 訊息
-
-### 3. 版本發布
-
-```bash
-# 自動升級版本並產生 Changelog
 npm run release
-
-# 推送到遠端 (包含 Tag)
-git push --follow-tags origin main
 ```
 
----
+此指令會自動執行以下動作：
 
-## 相關套件
+1.  bump `package.json` 版本號
+2.  根據 Commit 紀錄自動產生 `CHANGELOG.md`
+3.  產生一個版本 Tag (例如 `v1.2.0`)
+4.  Commit 上述變更
 
-### 已安裝的 NPM 套件
+### 5. 相關 NPM 套件
 
-在 [`package.json`](file:///c:/Users/gino.huang/Documents/nuxt3-test/package.json) 的 `devDependencies`:
+詳細依賴列表請見 `package.json` 的 `devDependencies`：
 
-```json
-{
-  "@commitlint/cli": "^19.6.1",
-  "@commitlint/config-conventional": "^19.6.0",
-  "commitizen": "^4.3.1",
-  "cz-customizable": "^7.2.1",
-  "husky": "^9.1.7",
-  "lint-staged": "^16.2.7",
-  "standard-version": "^9.5.0"
-}
-```
-
-### 套件說明
-
-| 套件                              | 用途                          |
-| :-------------------------------- | :---------------------------- |
-| `@commitlint/cli`                 | Commit 訊息檢查工具           |
-| `@commitlint/config-conventional` | Conventional Commits 規範     |
-| `commitizen`                      | 互動式 Commit 訊息撰寫工具    |
-| `cz-customizable`                 | Commitizen 自訂配置支援       |
-| `husky`                           | Git Hooks 管理工具            |
-| `lint-staged`                     | 只對暫存區檔案執行檢查        |
-| `standard-version`                | 自動版本管理與 Changelog 產生 |
-
----
-
-## 配置檔案關聯圖
-
-```
-configs/git/commit-types.cjs (單一來源)
-    ├── commitlint.config.cjs (引入 types, maxHeaderLength)
-    └── cz-config.cjs (引入 types, maxHeaderLength)
-
-configs/git/versionrc.json
-    └── standard-version (讀取配置)
-
-package.json
-    ├── scripts.commit → commitizen
-    ├── scripts.release → standard-version
-    └── config.commitizen.path → cz-config.cjs
-```
-
----
-
-## 相關文件
-
-- [開發規範 (Development)](../guides/development.md) - Commit 規範說明
-- [開發手冊 (Development Manual)](../guides/development-manual.md) - Commit 類型與格式
-- [DX 指南 (Developer Experience)](../guides/dx.md) - Git Hooks 設定
+- `@commitlint/cli`: 檢查工具
+- `commitizen`: 互動式 CLI
+- `husky`: Git Hooks 管理 (以前要在 `.git/hooks` 寫 shell script，現在用 husky 設定)
+- `lint-staged`: 只對本次 commit 的檔案跑 eslint，加快速度

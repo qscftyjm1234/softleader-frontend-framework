@@ -1,4 +1,4 @@
-[返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 開發手冊
 
@@ -95,29 +95,79 @@ npx nuxi typecheck
 
 ## 專案結構
 
-### 邏輯層
+本專案採用 **Layered Architecture (分層架構)** 與 **Module-based (模組化)** 設計，確保各組件責任分明。
 
-| 目錄             | 說明                  |
-| :--------------- | :-------------------- |
-| **api/**         | API Repository 服務層 |
-| **composables/** | 商業邏輯封裝 (Hooks)  |
-| **stores/**      | Pinia 全域狀態管理    |
+### 目錄樹狀圖 (完整版)
 
-### 視圖層
+```text
+root/
+├── core/                # 核心配置：基礎建設、全域設定、API 客戶端
+├── repositories/        # 資料存取：專門處理 API 請求 (Repository Pattern)
+├── stores/              # 狀態管理：Pinia 全域資料存儲
+├── api/                 # 介面定義：API 資料結構與介面 (Interface)
+├── composables/         # 邏輯掛鉤：可重用的 Vue Composition API
+├── utils/               # 工具函式：純 JS 邏輯 (如日期格式化、計算)
+├── types/               # 型別定義：全域 TypeScript 型別與介面
+├── components/          # 元件庫：UI 元件 (分為基礎介面與業務元件)
+├── pages/               # 路由頁面：定義各個網址路徑的畫面
+├── layouts/             # 佈局範本：頁面的共同外框 (如 Header/Sidebar)
+├── modules/             # 業務模組：獨立的大型功能區塊
+├── i18n/                # 多語系：管理各國語言的翻譯文字檔
+├── assets/              # 靜態資源：CSS 樣式表、圖片、字體檔
+├── plugins/             # 插件：註冊第三方工具 (如 UI 框架、i18n)
+├── router/              # 路由強化：動態路由掃描與配置
+├── mock/                # 模擬數據：開發環境用的假 API 數據
+├── server/              # 後端邏輯：Nuxt Server Engine (Nitro) 相關
+├── scripts/             # 工具腳本：負責自動化建置與載入任務
+├── configs/             # 規範配置：ESLint、Commitlint 等工具設定
+└── public/              # 原始靜態檔：直接對外公開的資源 (如 favicon)
+```
 
-| 目錄            | 說明                          |
-| :-------------- | :---------------------------- |
-| **pages/**      | 頁面路由 (File-based Routing) |
-| **components/** | Vue 共用與業務元件            |
-| **layouts/**    | 頁面佈局模板                  |
+### 各層級「在幹嘛」詳細介紹
 
-### 配置層
+#### 1. 核心層 (Core Module)
 
-| 檔案                  | 說明            |
-| :-------------------- | :-------------- |
-| **nuxt.config.ts**    | Nuxt 核心設定檔 |
-| **.env**              | 環境變數設定    |
-| **eslint.config.mjs** | ESLint 規則設定 |
+這是專案的「大腦」。我們把複雜的 `nuxt.config.ts` 拆解到 `core/config/`，讓設定檔更易於維護。
+
+- **`core/api/`**: 負責處理所有的 API 請求攔截。例如：在請求標頭加上 Token，或在報錯時跳出通知。
+
+#### 2. 資料與 API 層 (Data Layer)
+
+負責「拿資料」與「存資料」。我們嚴格禁止在頁面中直接寫 API URL。
+
+- **`repositories/`**: 這裡是唯一可以發送 API 請求的地方。頁面只需要呼叫 Repo 的方法，不需要管後端網址是什麼，方便以後修改或更換 API。
+- **`stores/`**: 當資料需要「跨頁面」共享時（例如：用戶登入資訊、目前的權限），就放在這裡。
+- **`api/`**: 定義資料的「規格」。讓 TypeScript 幫你檢查 API 回來的數據有沒有少欄位。
+
+#### 3. 邏輯與工具層 (Logic Layer)
+
+負責「處理資料」。
+
+- **`composables/`**: 存放會用到 Vue 功能 (如響應式屬性 `ref`) 的邏輯。例如：一個會自動倒數的計時器。
+- **`utils/`**: 存放「純粹」的 JS 函式。例如：把數字轉換成千分位格式。這些函式在任何環境都能跑，不依賴 Vue。
+- **`types/`**: 確保型別安全的重要宣告檔。
+
+#### 4. 視圖與佈局層 (View Layer)
+
+負責「畫出畫面」。
+
+- **`components/uiInterface/`**: 最基礎的按鈕、輸入框。它們很單純，不知道什麼是後端 API。
+- **`components/uiBusiness/`**: 比較複雜的元件，例如：訂單查詢列表、使用者頭像卡片。
+- **`layouts/`**: 控制頁面的整體外框。有些頁面可能需要全螢幕，有些要側邊選單，都在這裡控制。
+
+#### 5. 業務模組層 (Module Layer)
+
+當專案規模變大時，我們會把「一整套完整功能」包進 `modules/`。
+
+- **`modules/`**: 每個模組都可以有自己的頁面和元件。系統會動態合併這些模組到主程式中。
+
+#### 6. 支援與配置層
+
+- **`i18n/`**: 網站上的所有中英文文字都寫在這裡。
+- **`assets/`**: 專案的視覺效果中心，包含樣式檔與圖檔。
+- **`mock/`**: 當後端同事還沒寫好 API 時，我們在這裡寫假資料，讓前端開發不被中斷。
+
+> **更詳盡的目錄說明與命名規範請參考**: [資料夾結構與命名規範文件](../project/folder-structure.md)
 
 ---
 

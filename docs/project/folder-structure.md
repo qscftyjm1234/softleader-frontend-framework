@@ -1,205 +1,61 @@
-﻿[← 返回文件導覽](../index.md)
+﻿[← 返回 README.md](../../README.md)
 
 # 資料夾結構與命名規範
 
 ## 資料夾結構概覽
 
-### 1. **pages/** - 頁面路由
-
-**核心職責**: Nuxt 自動根據目錄結構產生路由。
-
-**目錄結構示範**:
-
-- `pages/index.vue` -> 首頁 (/)
-- `pages/about.vue` -> 關於頁面 (/about)
-- `pages/users/index.vue` -> 使用者列表 (/users)
-- `pages/users/[id].vue` -> 動態路由 (/users/123)
-- `pages/users/create.vue` -> 表單頁面 (/users/create)
-- `pages/[...all].vue` -> 404 頁面
-
-**命名規則**:
-
-- 使用 **kebab-case** (小寫+連字號)。
-- 動態路由使用 `[id].vue`, `[slug].vue`。
-- Catch-all 路由使用 `[...all].vue`。
-- 禁止使用 PascalCase (`UserList.vue`) 或 camelCase (`userList.vue`)。
-
 ---
 
-### 2. **layouts/** - 頁面佈局
+## 專案核心架構與分層說明
 
-**核心職責**: 定義頁面的公共外框 (header, footer, sidebar)。
+本專案採用 **Layered Architecture (分層架構)**，將不同性質的程式碼嚴格分開，以達到「高內聚、低耦合」的目標。以下是各層級的詳細功能介紹：
 
-**目錄結構示範**:
+### 1. 核心與配置層 (Core & Configs)
 
-- `layouts/default.vue` -> 預設佈局
-- `layouts/portal.vue` -> Portal 佈局 (含側邊欄)
-- `layouts/auth.vue` -> 登入頁面佈局 (無 header/footer)
+這是整個專案的基礎建設。
 
-**命名規則**:
+- **`core/`**: 存放專案最核心的邏輯。包含模組化的 Nuxt 配置、全域 API 攔截器（處理 Token 與報錯）、全域常數等。
+- **`configs/`**: 存放各種開發工具的設定檔。例如 ESLint (程式碼風格)、Commitlint (Git 提交規範) 的具體規則。
+- **`nuxt.config.ts`**: 專案的總進入點設定，它會動態載入 `core/config` 中的各項子配置。
 
-- 使用 **kebab-case**。
-- 命名應簡潔明瞭，描述佈局用途。
+### 2. 資料持久與通訊層 (Data Layer)
 
----
+負責「處理資料的來源」。
 
-### 3. **components/** - UI 元件
+- **`repositories/`**: **【極重要】** 這是專案中唯一允許發送 API 請求的地方。我們採用 Repository Pattern，頁面不需要知道後端的 URL 是什麼，只需要呼叫 `userRepo.getUser()` 即可。這樣以後後端改網址，我們只需要改一個地方。
+- **`stores/`**: 使用 Pinia 管理全域狀態。適合存放「跨頁面」需要共享的資料，如登入者資訊、全域 UI 狀態。
+- **`api/`**: 定義 API 的資料結構 (TypeScript Interfaces)，確保前後端溝通的資料格式正確。
 
-**核心職責**: 封裝可重複使用的 Vue 元件。
+### 3. 商業邏輯與工具層 (Logic Layer)
 
-**目錄結構示範**:
+負責「資料的處理與運算」。
 
-- **uiInterface/**: 基礎 UI 元件 (無業務邏輯)。
-  - `IButton.vue` -> 按鈕
-  - `ICard.vue` -> 卡片
-  - `IInput.vue` -> 輸入框
-  - `IModal.vue` -> 彈窗
-- **uiBusiness/**: 具備業務邏輯的 UI 元件。
-  - `UserCard.vue` -> 使用者資訊卡片
-  - `ProductList.vue` -> 產品列表
-  - `OrderTable.vue` -> 訂單表格
-- **business/**: 業務邏輯封裝組件。
-  - `GlobalSnackbar.vue` -> 全域通知
-  - `ErrorBoundary.vue` -> 錯誤處理
+- **`composables/`**: 存放與 Vue 生命週期或響應式相關的邏輯掛鉤 (Hooks)。例如：處理複雜的分頁邏輯、自動儲存草稿的功能。
+- **`utils/`**: 存放「純粹」的 JavaScript 工具函式。這些函式不依賴 Vue，在任何 JS 環境都能跑。例如：千分位轉換、日期格式化。
+- **`types/`**: 全域共用的 TypeScript 型別定義。
 
-**命名規則**:
+### 4. 組件與視圖層 (View Layer)
 
-- **uiInterface/**: 使用 `I` 前綴 + PascalCase (如 `IButton.vue`)。
-- **uiBusiness/**: 使用 PascalCase。
-- **business/**: 使用 PascalCase。
+負責「畫面的呈現與互動」。
 
----
+- **`components/uiInterface/`**: 基礎原子元件。如按鈕、輸入框、彈窗。它們是「笨元件」，只負責顯示畫面，不應該包含任何 API 請求。
+- **`components/uiBusiness/`**: 具備業務邏輯的組件。如：使用者頭像卡片、包含搜尋功能的訂單列表。
+- **`layouts/`**: 定義網頁的整體骨架，如是否包含側邊欄、頂部導覽列。
+- **`pages/`**: 根據目錄結構自動產生的路由頁面。
 
-### 4. **composables/** - 組合式函式
+### 5. 業務模組層 (Module Layer)
 
-**核心職責**: 封裝商業邏輯 (Vue Composition API)。
+- **`modules/`**: 為了解決專案過大導致的維護困難，我們將相關聯的功能（如「後台管理」）包裝成獨立模組。每個模組可以有自己的獨立頁面、組件與邏輯。
 
-**目錄結構示範**:
+### 6. 測試與模擬層
 
-- `composables/useAuth.ts` -> 認證邏輯
-- `composables/useApi.ts` -> API 呼叫
-- `composables/useValidation.ts` -> 驗證邏輯
-- `composables/useFileUpload.ts` -> 檔案上傳
-- `composables/useLocalStorage.ts` -> LocalStorage 封裝
+- **`mock/`**: 當後端還沒開發完成時，我們在這裡寫假資料 (Mock Server)，讓前端開發不被卡住。
 
-**命名規則**:
+### 7. 資源與其他
 
-- 必須以 `use` 開頭。
-- 使用 **camelCase**。
-
----
-
-### 5. **stores/** - 狀態管理
-
-**核心職責**: Pinia 全域狀態管理。
-
-**目錄結構示範**:
-
-- `stores/user.ts` -> 使用者狀態
-- `stores/cart.ts` -> 購物車狀態
-- `stores/auth.ts` -> 認證狀態
-- `stores/ui.ts` -> UI 狀態
-
-**命名規則**:
-
-- 使用 **camelCase**。
-- Store ID 應使用具體名稱。
-
----
-
-### 6. **core/** - 核心功能
-
-**核心職責**: 專案的核心邏輯封裝，與具體業務無關。
-
-**目錄結構示範**:
-
-- `core/api/client.ts` -> API 客戶端
-- `core/api/interceptors.ts` -> 攔截器
-- `core/errors/handler.ts` -> 錯誤處理
-- `core/constants/api.ts` -> API 定數
-
-**命名規則**:
-
-- 使用 **camelCase**。
-
----
-
-### 7. **repositories/** - 資料層
-
-**核心職責**: API 呼叫的統一封裝 (Repository Pattern)。
-
-**目錄結構示範**:
-
-- `repositories/userRepo.ts` -> 使用者 API
-- `repositories/orderRepo.ts` -> 訂單 API
-- `repositories/productRepo.ts` -> 產品 API
-
-**命名規則**:
-
-- 使用 **camelCase** + `Repo` 後綴。
-
----
-
-### 8. **modules/** - 功能模組
-
-**核心職責**: 將相關聯的功能集結成模組。
-
-**命名規則**:
-
-- 內部文件夾使用 **kebab-case**。
-- 模組內部結構應自成體系。
-
----
-
-### 9. **utils/** - 工具函式
-
-**核心職責**: 純粹的功能函式，不依賴於 Vue。
-
-**命名規則**:
-
-- 使用 **camelCase**。
-- 使用分類目錄管理。
-
----
-
-### 10. **types/** - 型別定義
-
-**核心職責**: TypeScript 型別定義。
-
-**命名規則**:
-
-- Interface/Type: 使用 **PascalCase**。
-- Enum: 使用 **PascalCase**。
-
----
-
-### 11. **mock/** - 模擬數據
-
-**核心職責**: 分離開發中的測試數據。
-
----
-
-### 12. **plugins/** - Nuxt 插件
-
-**核心職責**: Nuxt 插件 (Ant Design Vue, i18n 等)。
-
----
-
-### 13. **middleware/** - 路由守衛
-
-**核心職責**: 路由切換時的邏輯處理。
-
----
-
-### 14. **assets/** - 靜態資源
-
-**核心職責**: CSS、圖片、字體等。
-
----
-
-### 15. **public/** - 不變資源
-
-**核心職責**: 不需要經過 Webpack 處理的文件。
+- **`assets/`**: 存放需要被編譯的資源，如 SCSS/CSS 樣式表、需要經過 Webpack 處理的圖片。
+- **`public/`**: 直接對外公開、不需處理的檔案，如 favicon.ico。
+- **`i18n/`**: 多語系語系檔，存放中英文對照文字。
 
 ---
 

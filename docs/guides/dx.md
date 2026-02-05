@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 開發環境設定指南 (Developer Experience Guide)
 

@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 狀態管理系統 (Pinia Stores)
 

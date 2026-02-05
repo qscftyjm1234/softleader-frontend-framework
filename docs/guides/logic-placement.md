@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 邏輯放置指南 (Composables vs Utils)
 

@@ -26,7 +26,7 @@
 1.  **原子 (Atoms)**: 最基礎的元件，如按鈕、輸入框、圖示。
     - _本專案位置_: `components/uiInterface` (開頭都是 `I`)
 2.  **分子/組織 (Molecules/Organisms)**: 由原子組合而成的複合元件，如「使用者卡片」、「登入表單」。
-    - _本專案位置_: `components/uiBusiness` 或 `components/tutorial`
+    - _本專案位置_: `components/uiBusiness` 或 `components/demo`
 
 ---
 
@@ -49,12 +49,12 @@
 
 ### Step 1: 建立檔案與骨架
 
-在 `components/tutorial` 資料夾下建立 `UserInfoCard.vue`。
+在 `components/demo` 資料夾下建立 `UserInfoCard.vue`。
 
 Vue 檔案由三個區塊組成：
 
 ```vue
-<!-- components/tutorial/UserInfoCard.vue -->
+<!-- components/demo/UserInfoCard.vue -->
 
 <!-- 1. Script: 邏輯層 (JS/TS) -->
 <script setup lang="ts">
@@ -154,13 +154,13 @@ withDefaults(defineProps<Props>(), {
 
 ## 4. 在頁面中使用元件
 
-現在我們的「積木」做好了，回到頁面 (`pages/tutorial/index.vue`) 把這塊積木放上去。
+現在我們的「積木」做好了，回到頁面 (`pages/demo/index.vue`) 把這塊積木放上去。
 
 ```vue
-<!-- pages/tutorial/index.vue -->
+<!-- pages/demo/index.vue -->
 <script setup lang="ts">
 // 引入我們剛做的元件 (Nuxt 通常會自動引入，但手動引入可以更明確)
-// import UserInfoCard from '~/components/tutorial/UserInfoCard.vue'
+// import UserInfoCard from '~/components/demo/UserInfoCard.vue'
 
 // 準備要在卡片上顯示的資料
 const engineer = {

@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 功能展示與範例使用指南
 
@@ -79,7 +79,7 @@ npm run dev
 
 為了讓新功能出現在 `/showcase` 的主頁面上,你需要修改 Dashbaord 的清單:
 
-編輯 [`modules/showcase/components/ShowcaseDashboard.vue`](file:///c:/Users/gino.huang/Documents/nuxt3-test/modules/showcase/components/ShowcaseDashboard.vue):
+編輯 [`modules/showcase/components/ShowcaseDashboard.vue`](../../modules/showcase/components/ShowcaseDashboard.vue):
 
 在對應的清單 (如 `componentsList` 或 `functionsList`) 中加入新項目:
 

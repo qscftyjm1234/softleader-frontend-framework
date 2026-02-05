@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # Mock API 系統使用指南
 
@@ -47,7 +47,7 @@ mock/
 
 ## 如何新增 Mock API
 
-所有的 Mock 規則都集中定義在 [`mock/routes.ts`](file:///c:/Users/gino.huang/Documents/nuxt3-test/mock/routes.ts)。
+所有的 Mock 規則都集中定義在 [`mock/routes.ts`](../../mock/routes.ts)。
 
 ### 步驟 1: 開啟配置文件
 

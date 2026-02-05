@@ -4,38 +4,25 @@
 
 ## 快速開始
 
-新進人員請優先參考此區塊以快速建立開發環境。
+新進人員請優先參考此區塊以快速建立開發環境。更詳細的說明（如 node 版本要求、報錯處理）請參閱 **[開發手冊](./docs/guides/development-manual.md)**。
 
-### 1. 打開你的終端機，安裝相依套件
-
-這時候他會依照package.json中的套件相依關係，自動安裝對應的套件，
-安裝完後會產生node_modules的資料夾
+### 1. 安裝相依套件
 
 ```bash
-# 快捷鍵 Ctrl + `
 npm install
 ```
 
 ### 2. 環境設定
 
+複製範例設定檔並手動調整 `.env` 內容：
+
 ```bash
-# 複製指令快捷鍵
 cp .env.example .env
-```
-
-複製 `.env.example` 為 `.env` 並設定：
-
-```bash
-# API 基礎網址
-NUXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
-
-# Mock 模式 (開發時可設為 true)
-NUXT_PUBLIC_FEATURE_API_MOCK=false
 ```
 
 完整環境變數說明請參考 **[環境設定指南](./docs/api/environment-setup.md)**。
 
-### 3. 啟動開發伺服器，
+### 3. 啟動開發伺服器
 
 ```bash
 npm run dev
@@ -43,13 +30,15 @@ npm run dev
 
 開啟瀏覽器訪問 `http://localhost:3000`
 
-### 4. 開發必讀
+## 核心指南與規範
+
+新進人員在開始開發前，請務必先閱讀以下文件以確保符合團隊規範：
 
 - **[開發手冊](./docs/guides/development-manual.md)**: 完整開發指南 (環境、套件、命名規範)。這是一份**必讀**的文件。
 - **[Git 工作流配置](./docs/guides/git-workflow.md)**: 了解 Commitlint 與 Commitizen 規範。
 - **[ESLint 開發規範](./docs/guides/eslint-rules.md)**: 完整的程式碼風格規範。
 
-## 開發課程
+## 從無到有，開發簡易課程
 
 專為新進人員設計的循序漸進教學。
 

@@ -1,4 +1,4 @@
-[← 返回文件導覽](../index.md)
+[← 返回 README.md](../../README.md)
 
 # 程式碼註解規範 (Code Comments Guidelines)
 

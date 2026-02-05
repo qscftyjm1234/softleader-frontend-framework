@@ -4,27 +4,27 @@
 
 ## 步驟 1: 建立佈局 (Layout)
 
-在 `layouts` 資料夾中建立 `tutorial.vue`，定義頁面的基本結構。
+在 `layouts` 資料夾中建立 `demo.vue`，定義頁面的基本結構。
 
 ```vue
-<!-- layouts/tutorial.vue -->
+<!-- layouts/demo.vue -->
 <script setup lang="ts">
 // 這裡可以放置佈局特定的邏輯
 </script>
 
 <template>
-  <div class="tutorial-layout">
-    <header>Tutorial Header</header>
+  <div class="demo-layout">
+    <header>Demo Header</header>
     <main>
       <slot />
       <!-- 這是頁面內容插入的地方 -->
     </main>
-    <footer>Tutorial Footer</footer>
+    <footer>Demo Footer</footer>
   </div>
 </template>
 
 <style scoped>
-.tutorial-layout {
+.demo-layout {
   padding: 20px;
   border: 2px dashed #ccc;
 }
@@ -33,15 +33,15 @@
 
 ## 步驟 2: 建立頁面 (Page)
 
-在 `pages` 資料夾中建立 `tutorial/index.vue`。
+在 `pages` 資料夾中建立 `demo/index.vue`。
 **注意**: 我們使用 Interface Layer 元件 (如 `IButton`) 來保持代碼與底層 UI 框架的解耦。
 
 ```vue
-<!-- pages/tutorial/index.vue -->
+<!-- pages/demo/index.vue -->
 <script setup lang="ts">
 // 設定此頁面使用剛建立的 layout
 definePageMeta({
-  layout: 'tutorial'
+  layout: 'demo'
 })
 
 const handleClick = () => {
@@ -50,7 +50,7 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="tutorial-page">
+  <div class="demo-page">
     <h1>我的第一個頁面</h1>
     <p>這是一個示範頁面。</p>
 
@@ -67,7 +67,7 @@ const handleClick = () => {
 
 ## 步驟 3: 查看成果
 
-前往 `http://localhost:3000/tutorial` 查看您的頁面。
+前往 `http://localhost:3000/demo` 查看您的頁面。
 您應該會看到帶有虛線邊框的佈局，以及一個功能正常的按鈕。
 
 ---
