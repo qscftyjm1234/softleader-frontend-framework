@@ -214,10 +214,10 @@ const users = ref([
 
             <!-- Arrow Right -->
             <div class="flow-arrow horizontal">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-right"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">使用</span>
             </div>
@@ -266,10 +266,10 @@ const label = computed(() => {
 
             <!-- Arrow Right -->
             <div class="flow-arrow horizontal">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-right"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">渲染</span>
             </div>
@@ -315,10 +315,10 @@ defineProps<{
           <!-- Result Flow (Vertical) -->
           <div class="result-flow">
             <div class="flow-arrow vertical">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-down"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">輸出</span>
             </div>
@@ -400,10 +400,10 @@ defineProps<{
             </div>
 
             <div class="flow-arrow horizontal">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-right"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">傳入</span>
             </div>
@@ -434,10 +434,10 @@ defineProps<{ title: string }>()
             </div>
 
             <div class="flow-arrow horizontal">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-right"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">透傳</span>
             </div>
@@ -470,10 +470,10 @@ defineProps<{ title: string }>()
           <!-- Result Flow -->
           <div class="result-flow">
             <div class="flow-arrow vertical">
-              <v-icon
+              <IIcon
                 icon="mdi-arrow-down"
                 size="32"
-                color="rgba(255,255,255,0.2)"
+                class="text-white/20"
               />
               <span class="text-xs text-slate-500 mt-1">組合</span>
             </div>
@@ -516,7 +516,7 @@ defineProps<{ title: string }>()
 
         <div class="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg text-blue-200">
           <div class="flex items-start gap-3">
-            <v-icon
+            <IIcon
               icon="mdi-information-outline"
               class="mt-1"
             />
@@ -600,11 +600,10 @@ defineProps<{ title: string }>()
         </div>
 
         <div class="mt-8 text-center">
-          <v-icon
+          <IIcon
             icon="mdi-arrow-down"
             size="large"
-            color="white"
-            class="animate-bounce"
+            class="text-white animate-bounce"
           />
           <p class="text-xl font-bold text-white mt-4">
             「發現了嗎？不管選方案 A 還是 B，
@@ -689,7 +688,7 @@ defineProps<{ title: string }>()
             <!-- 錯誤示範 -->
             <div class="bg-red-900/20 border border-red-500/30 rounded p-4 mb-4">
               <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
-                <v-icon icon="mdi-close-circle" />
+                <IIcon icon="mdi-close-circle" />
                 錯誤 (跟業務綁死)
               </div>
               <ShowcaseCodeBlock
@@ -706,7 +705,7 @@ interface Props {
             <!-- 正確示範 -->
             <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
               <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
-                <v-icon icon="mdi-check-circle" />
+                <IIcon icon="mdi-check-circle" />
                 正確 (只管外觀)
               </div>
               <ShowcaseCodeBlock
@@ -794,7 +793,7 @@ const frameworkSize = computed(() => {
           <ShowcaseAlert type="warning">
             <template #title>
               <div class="font-bold flex items-center gap-2">
-                <v-icon icon="mdi-alert" />
+                <IIcon icon="mdi-alert" />
                 給團隊的決策 SOP
               </div>
             </template>
@@ -869,7 +868,7 @@ const frameworkSize = computed(() => {
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
               <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
-                <v-icon icon="mdi-check-circle" />
+                <IIcon icon="mdi-check-circle" />
                 歡迎光臨 (准入標準)
               </div>
               <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
@@ -890,7 +889,7 @@ const frameworkSize = computed(() => {
 
             <div class="bg-red-900/20 border border-red-500/30 rounded p-4">
               <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
-                <v-icon icon="mdi-cancel" />
+                <IIcon icon="mdi-cancel" />
                 禁止進入 (滾去業務層)
               </div>
               <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
@@ -989,7 +988,7 @@ const frameworkSize = computed(() => {
             <!-- 錯誤示範 -->
             <div class="bg-red-900/20 border border-red-500/30 rounded p-4 mb-4">
               <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
-                <v-icon icon="mdi-close-circle" />
+                <IIcon icon="mdi-close-circle" />
                 錯誤 (頁面邏輯管太多)
               </div>
               <ShowcaseCodeBlock
@@ -1005,7 +1004,7 @@ const frameworkSize = computed(() => {
             <!-- 正確示範 -->
             <div class="bg-green-900/20 border border-green-500/30 rounded p-4">
               <div class="flex items-center gap-2 text-green-400 font-bold mb-2">
-                <v-icon icon="mdi-check-circle" />
+                <IIcon icon="mdi-check-circle" />
                 正確 (元件自己算)
               </div>
               <ShowcaseCodeBlock
@@ -1020,7 +1019,7 @@ const frameworkSize = computed(() => {
           <!-- override -->
           <div class="mt-6 bg-slate-800 rounded p-4 border border-slate-700">
             <div class="flex items-center gap-2 text-sky-400 font-bold mb-2">
-              <v-icon icon="mdi-lightbulb-on" />
+              <IIcon icon="mdi-lightbulb-on" />
               進階技巧：預留後路 (Override Pattern)
             </div>
             <div class="text-sm text-slate-300 mb-2">
@@ -1051,7 +1050,7 @@ const finalDisabled = computed(() => isNoMoney.value || props.disabled)'
           >
             <template #title>
               <div class="font-bold flex items-center gap-2">
-                <v-icon icon="mdi-help-circle" />
+                <IIcon icon="mdi-help-circle" />
                 Q: 萬一 API 欄位從 `disabled` 改成 `disableds` 怎麼辦？
               </div>
             </template>

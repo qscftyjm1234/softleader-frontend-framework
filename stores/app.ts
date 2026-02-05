@@ -61,16 +61,15 @@ export const useAppStore = defineStore('app', () => {
   }
 
   // 開發模式下啟用熱重載
-  if (import.meta.hot) {
-    console.log('1414')
-    // {import.meta.hot.accept} 如果有人改了我裡面的程式碼，直接把我的新邏輯「塞」進去就好，不准重新整理網頁
-    import.meta.hot.accept('~/core/config/layout', (newModule) => {
-      if (newModule && newModule.defaultLayoutConfig) {
-        // 使用新模組的設定資料
-        reloadConfig(newModule.defaultLayoutConfig)
-      }
-    })
-  }
+  // if (import.meta.hot) {
+  //   // {import.meta.hot.accept} 如果有人改了我裡面的程式碼，直接把我的新邏輯「塞」進去就好，不准重新整理網頁
+  //   import.meta.hot.accept('~/core/config/layout', (newModule) => {
+  //     if (newModule && newModule.defaultLayoutConfig) {
+  //       // 使用新模組的設定資料
+  //       reloadConfig(newModule.defaultLayoutConfig)
+  //     }
+  //   })
+  // }
 
   return {
     config,

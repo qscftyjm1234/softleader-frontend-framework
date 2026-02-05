@@ -66,7 +66,7 @@ const formatJson = (data: any) => JSON.stringify(data, null, 2)
             <div class="mt-4 p-4 rounded bg-slate-800/50 border border-slate-700/50">
               <div class="text-xs text-slate-400 mb-1">當前語系 (Current)</div>
               <div class="text-2xl font-bold text-primary-400 flex items-center gap-2">
-                <v-icon icon="mdi-translate" />
+                <IIcon icon="mdi-translate" />
                 {{ currentLocale?.name }}
                 <span class="text-lg opacity-50 font-mono">{{ locale }}</span>
               </div>

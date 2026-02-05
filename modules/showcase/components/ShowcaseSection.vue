@@ -17,7 +17,7 @@ defineProps<Props>()
   <div class="showcase-section-wrapper">
     <div class="section-header">
       <h2 class="section-title">
-        <v-icon
+        <IIcon
           v-if="icon"
           :icon="icon"
           class="title-icon"

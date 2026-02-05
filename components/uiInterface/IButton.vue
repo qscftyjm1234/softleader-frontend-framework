@@ -38,7 +38,9 @@ interface Props {
   block?: boolean
   loading?: boolean
   disabled?: boolean
+  // 連結
   href?: string
+  to?: string // Nuxt 路由路徑
   target?: string
   color?: string // 自訂顏色
   // 圖示
@@ -55,6 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
   target: undefined,
   color: undefined,
   href: undefined,
+  to: undefined,
   prependIcon: undefined,
   appendIcon: undefined
 })
@@ -97,7 +100,11 @@ const antDBindings = computed(() => {
 // ====================================================
 const handleClick = (event: MouseEvent) => {
   if (!props.disabled && !props.loading) {
-    emit('click', event)
+    if (props.to) {
+      navigateTo(props.to)
+    } else {
+      emit('click', event)
+    }
   }
 }
 

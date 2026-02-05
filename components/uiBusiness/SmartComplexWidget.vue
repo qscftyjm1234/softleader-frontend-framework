@@ -51,9 +51,9 @@ defineOptions({
         color="rgba(56, 189, 248, 0.1)"
         rounded="8px"
       >
-        <v-icon
+        <IIcon
           icon="mdi-cube-scan"
-          color="#38bdf8"
+          class="text-[#38bdf8]"
         />
       </IAvatar>
     </div>

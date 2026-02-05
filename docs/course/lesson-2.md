@@ -7,9 +7,6 @@
 
 ## 1. 觀念介紹：什麼是元件？
 
-### 給後端開發者的比喻
-
-如果您熟悉後端開發 (Java/C#)，可以這樣理解：
 
 - **Component (元件)** = **Class (類別)**
   - 它封裝了 **HTML (結構)**、**CSS (樣式)** 與 **JavaScript (邏輯)**。
@@ -106,9 +103,9 @@ withDefaults(defineProps<Props>(), {
   <ICard class="user-info-card">
     <div class="card-content">
       <!-- IAvatar: 專案統一的頭像元件 -->
-      <!-- :src 是 v-bind:src 的縮寫，代表屬性值是變數而非字串 -->
+      <!-- :image 是 v-bind:image 的縮寫，代表屬性值是變數而非字串 -->
       <IAvatar
-        :src="avatarUrl"
+        :image="avatarUrl"
         :alt="name"
         size="large"
         class="mr-4"

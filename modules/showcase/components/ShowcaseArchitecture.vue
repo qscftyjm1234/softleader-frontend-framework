@@ -33,7 +33,7 @@ import ICard from '@/components/uiInterface/ICard.vue'
     <div class="arrow-container">
       <div class="arrow-line" />
       <div class="arrow-label">使用</div>
-      <v-icon
+      <IIcon
         icon="mdi-arrow-down"
         class="arrow-icon"
       />
@@ -57,26 +57,26 @@ import ICard from '@/components/uiInterface/ICard.vue'
             <span class="principles-title">開發原則：</span>
             <ul>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>定義「業務語言」 (如 status)</span>
               </li>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>屏蔽「實作細節」 (如 color)</span>
               </li>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>自動轉換對應樣式</span>
               </li>
@@ -92,7 +92,7 @@ import ICard from '@/components/uiInterface/ICard.vue'
     <div class="arrow-container">
       <div class="arrow-line" />
       <div class="arrow-label">呼叫</div>
-      <v-icon
+      <IIcon
         icon="mdi-arrow-down"
         class="arrow-icon"
       />
@@ -116,26 +116,26 @@ import ICard from '@/components/uiInterface/ICard.vue'
             <span class="principles-title">開發原則：</span>
             <ul>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>只負責顯示畫面</span>
               </li>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>名字要通用</span>
               </li>
               <li>
-                <v-icon
+                <IIcon
                   icon="mdi-star-four-points-small"
                   size="small"
-                  color="amber"
+                  class="text-amber-400"
                 />
                 <span>多用 Slot 留彈性</span>
               </li>
@@ -339,7 +339,7 @@ import ICard from '@/components/uiInterface/ICard.vue'
   gap: 0.5rem;
 }
 
-.principles-list li .v-icon {
+.principles-list li :deep(.i-icon) {
   opacity: 0.8;
 }
 </style>

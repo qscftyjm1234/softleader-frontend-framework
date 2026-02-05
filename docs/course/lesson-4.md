@@ -4,8 +4,6 @@
 
 ## 步驟 1: 建立 Repository 模組
 
-## 步驟 1: 建立 Repository 模組
-
 專案將所有 API 呼叫封裝在 `repositories` 資料夾中。
 在 `repositories/modules` 中建立新檔案 `demo.ts`：
 
@@ -56,17 +54,21 @@ export default {
 ```vue
 <!-- pages/demo/[id].vue -->
 <script setup lang="ts">
+definePageMeta({
+  layout: 'demo'
+})
 const route = useRoute()
-const { $repos } = useNuxtApp() // 或使用 useRepository()
+const route = useRoute()
+const { demo } = useRepository() // 使用 Composable 取得 Repository
 
 const id = Number(route.params.id)
 
-// 使用 useAsyncData 搭配 Repository 獲取資料
+// 專案的 Repository 已經封裝了 useAsyncData，直接呼叫即可
 const {
-  data: demo,
+  data,
   pending,
   error
-} = await useAsyncData(`demo-${id}`, () => $repos.demo.getDetail(id))
+} = await demo.getDetail(id)
 </script>
 
 <template>
@@ -74,15 +76,110 @@ const {
     <div v-if="pending">載入中...</div>
     <div v-else-if="error">發生錯誤: {{ error.message }}</div>
 
-    <div v-else-if="demo">
-      <h1>{{ demo.title }}</h1>
-      <p>{{ demo.content }}</p>
+    <div v-else-if="data">
+      <h1>{{ data.title }}</h1>
+      <p>{{ data.content }}</p>
     </div>
   </div>
 </template>
 ```
+```
 
-> **注意**: 如果沒有真實後端，請確保 `.env` 中開啟了 Mock 模式 (`NUXT_PUBLIC_FEATURE_API_MOCK=true`) 或自行建立 Mock Server。
+## 步驟 5: 串接列表到詳情頁
+
+最後，我們回到 `pages/demo/index.vue`，讓原本的卡片可以點擊並跳轉到詳情頁。
+
+```vue
+<!-- pages/demo/index.vue -->
+<script setup lang="ts">
+// ... 其他程式碼
+
+const router = useRouter()
+
+// 定義點擊事件處理 function
+const handleUserClick = (id: number) => {
+  router.push(`/demo/${id}`)
+}
+
+// 模擬資料加上 ID
+const engineer = {
+  id: 1,
+  name: '王小明',
+  // ...
+}
+</script>
+
+<template>
+  <!-- ... -->
+  <UserInfoCard
+    :name="engineer.name"
+    :role="engineer.role"
+    :avatar-url="engineer.photo"
+    class="cursor-pointer hover:shadow-lg transition-shadow"
+    @click="handleUserClick(engineer.id)"
+  />
+  <!-- ... -->
+</template>
+```
+
+現在，點擊首頁的卡片，就會導向 `/demo/1`，並且由 API (Mock) 載入並顯示資料！
+
+## 步驟 6: 設定 Mock Data (模擬資料)
+
+在開發階段還沒有後端 API 時，我們可以使用專案內建的 Mock 系統。
+
+### 1. 啟用 Mock 模式
+
+開啟 `.env` 檔案，確保以下設定為 `true`：
+
+```bash
+# .env
+NUXT_PUBLIC_FEATURE_API_MOCK=true
+```
+
+### 2. 新增 Mock 路徑
+
+開啟 `mock/routes.ts`，在 `MOCK_ROUTES` 陣列中加入您的 API 模擬資料：
+
+```typescript
+// mock/routes.ts
+export const MOCK_ROUTES: MockRoute[] = [
+  // ... 其他路由
+  
+  // 新增 Demo 列表 API
+  {
+    url: '/demo/list',
+    method: 'GET',
+    delay: 500, // 模擬網路延遲 0.5 秒
+    response: {
+      data: [
+        { id: 1, title: 'Nuxt 3 入門', content: '學習 Nuxt 3 的基礎知識...' },
+        { id: 2, title: 'Repository Pattern', content: '了解如何封裝 API...' }
+      ]
+    }
+  },
+  
+  // 新增 Demo 詳情 API (支援正則表達式)
+  {
+    url: /\/demo\/\d+/, // 匹配 /demo/1, /demo/2 ...
+    method: 'GET',
+    delay: 300,
+    response: (context) => {
+      // 從網址取得 ID
+      const id = Number(context.url.match(/\/demo\/(\d+)/)?.[1] || 1)
+      return {
+        data: {
+          id,
+          title: `Demo ${id} - 詳細教學`,
+          content: '這是一篇虛擬的教學文章內容...'
+        }
+      }
+    }
+  }
+]
+```
+
+儲存後，API 請求就會被攔截並回傳定義好的假資料，無需重啟伺服器。
 
 ---
 

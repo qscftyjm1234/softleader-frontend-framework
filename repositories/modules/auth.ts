@@ -1,4 +1,4 @@
-import { useClient } from '~/composables/useApi'
+
 import type { UseFetchOptions } from 'nuxt/app'
 
 // 定義 Client，指向 /auth (假設後端路由是 /api/auth)

@@ -215,7 +215,7 @@ const guidesList = [
       <section class="group-section">
         <div class="section-header">
           <div class="header-icon doc-icon">
-            <v-icon icon="mdi-book-open-variant" />
+            <IIcon icon="mdi-book-open-variant" />
           </div>
           <h2 class="section-title">專案文件 (Documentation)</h2>
         </div>
@@ -233,7 +233,7 @@ const guidesList = [
                   class="icon-box"
                   :style="{ background: `${item.color}20`, color: item.color }"
                 >
-                  <v-icon
+                  <IIcon
                     :icon="item.icon"
                     size="24"
                   />
@@ -243,7 +243,7 @@ const guidesList = [
               <p class="card-desc">{{ item.desc }}</p>
               <div class="card-action">
                 <span>前往</span>
-                <v-icon
+                <IIcon
                   icon="mdi-arrow-right"
                   size="14"
                 />
@@ -257,7 +257,7 @@ const guidesList = [
       <section class="group-section">
         <div class="section-header">
           <div class="header-icon comp-icon">
-            <v-icon icon="mdi-puzzle-outline" />
+            <IIcon icon="mdi-puzzle-outline" />
           </div>
           <h2 class="section-title">介面元件 (UI Components)</h2>
         </div>
@@ -275,7 +275,7 @@ const guidesList = [
                   class="icon-box"
                   :style="{ background: `${item.color}20`, color: item.color }"
                 >
-                  <v-icon
+                  <IIcon
                     :icon="item.icon"
                     size="24"
                   />
@@ -285,7 +285,7 @@ const guidesList = [
               <p class="card-desc">{{ item.desc }}</p>
               <div class="card-action">
                 <span>前往</span>
-                <v-icon
+                <IIcon
                   icon="mdi-arrow-right"
                   size="14"
                 />
@@ -299,7 +299,7 @@ const guidesList = [
       <section class="group-section">
         <div class="section-header">
           <div class="header-icon func-icon">
-            <v-icon icon="mdi-cogs" />
+            <IIcon icon="mdi-cogs" />
           </div>
           <h2 class="section-title">核心功能 (Core Functions)</h2>
         </div>
@@ -317,7 +317,7 @@ const guidesList = [
                   class="icon-box"
                   :style="{ background: `${item.color}20`, color: item.color }"
                 >
-                  <v-icon
+                  <IIcon
                     :icon="item.icon"
                     size="24"
                   />
@@ -327,7 +327,7 @@ const guidesList = [
               <p class="card-desc">{{ item.desc }}</p>
               <div class="card-action">
                 <span>前往</span>
-                <v-icon
+                <IIcon
                   icon="mdi-arrow-right"
                   size="14"
                 />

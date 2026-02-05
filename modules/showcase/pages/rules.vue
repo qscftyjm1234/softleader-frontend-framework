@@ -51,12 +51,11 @@ definePageMeta({
               <span class="rule-type">Boolean</span>
               <span class="rule-desc">如果是 Yes/No</span>
               <div class="config-source">
-                <v-icon
+                <IIcon
                   size="12"
-                  color="slate-400"
-                >
-                  mdi-target
-                </v-icon>
+                  class="text-slate-400"
+                  icon="mdi-target"
+                />
                 <span>selector: 'variable' (types: boolean)</span>
               </div>
             </div>
@@ -89,12 +88,11 @@ definePageMeta({
               <span class="rule-type">Class / Interface</span>
               <span class="rule-desc">類別與介面</span>
               <div class="config-source">
-                <v-icon
+                <IIcon
                   size="12"
-                  color="slate-400"
-                >
-                  mdi-file-cog
-                </v-icon>
+                  class="text-slate-400"
+                  icon="mdi-file-cog"
+                />
                 <span>eslint: naming-convention</span>
               </div>
             </div>
@@ -116,12 +114,11 @@ definePageMeta({
               <span class="rule-type">Function</span>
               <span class="rule-desc">函式命名</span>
               <div class="config-source">
-                <v-icon
+                <IIcon
                   size="12"
-                  color="slate-400"
-                >
-                  mdi-target
-                </v-icon>
+                  class="text-slate-400"
+                  icon="mdi-target"
+                />
                 <span>selector: 'function'</span>
               </div>
             </div>
@@ -154,12 +151,11 @@ definePageMeta({
               <span class="rule-type">Constants</span>
               <span class="rule-desc">常數</span>
               <div class="config-source">
-                <v-icon
+                <IIcon
                   size="12"
-                  color="slate-400"
-                >
-                  mdi-file-cog
-                </v-icon>
+                  class="text-slate-400"
+                  icon="mdi-file-cog"
+                />
                 <span>eslint: naming-convention</span>
               </div>
             </div>
@@ -181,13 +177,11 @@ definePageMeta({
         <!-- Function Naming Cheat Sheet -->
         <div class="naming-cheatsheet mt-8">
           <div class="cheatsheet-title">
-            <v-icon
-              color="amber-400"
+            <IIcon
+              class="mr-2 text-amber-400"
               size="20"
-              class="mr-2"
-            >
-              mdi-lightbulb-on
-            </v-icon>
+              icon="mdi-lightbulb-on"
+            />
             函式命名動詞速查表 (Cheat Sheet)
           </div>
           <div class="cheatsheet-grid">
@@ -287,13 +281,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="blue-400"
+              <IIcon
+                class="folder-icon text-blue-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-file-document-multiple
-              </v-icon>
+                icon="mdi-file-document-multiple"
+              />
               <span class="folder-name">pages/</span>
             </div>
             <span class="naming-badge">kebab-case</span>
@@ -302,21 +294,19 @@ definePageMeta({
             <p class="folder-desc">頁面路由 - Nuxt 自動生成</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>user-profile.vue</span>
               </div>
               <div class="example-row invalid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="red-400"
-                >
-                  mdi-close
-                </v-icon>
+                  class="text-red-400"
+                  icon="mdi-close"
+                />
                 <span>UserProfile.vue</span>
               </div>
             </div>
@@ -327,13 +317,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="purple-400"
+              <IIcon
+                class="folder-icon text-purple-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-page-layout-header
-              </v-icon>
+                icon="mdi-page-layout-header"
+              />
               <span class="folder-name">layouts/</span>
             </div>
             <span class="naming-badge">kebab-case</span>
@@ -342,12 +330,11 @@ definePageMeta({
             <p class="folder-desc">共用的頁面與版型框架</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>default.vue</span>
               </div>
             </div>
@@ -358,13 +345,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="green-400"
+              <IIcon
+                class="folder-icon text-green-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-puzzle
-              </v-icon>
+                icon="mdi-puzzle"
+              />
               <span class="folder-name">components/</span>
             </div>
             <span class="naming-badge mixed">Mixed</span>
@@ -401,13 +386,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="blue-400"
+              <IIcon
+                class="folder-icon text-blue-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-function-variant
-              </v-icon>
+                icon="mdi-function-variant"
+              />
               <span class="folder-name">composables/</span>
             </div>
             <span class="naming-badge">camelCase</span>
@@ -416,21 +399,19 @@ definePageMeta({
             <p class="folder-desc">共用邏輯 (Composition API)</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>useAuth.ts</span>
               </div>
               <div class="example-row invalid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="red-400"
-                >
-                  mdi-close
-                </v-icon>
+                  class="text-red-400"
+                  icon="mdi-close"
+                />
                 <span>auth.ts</span>
               </div>
             </div>
@@ -441,13 +422,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="pink-400"
+              <IIcon
+                class="folder-icon text-pink-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-database
-              </v-icon>
+                icon="mdi-database"
+              />
               <span class="folder-name">stores/</span>
             </div>
             <span class="naming-badge">camelCase</span>
@@ -456,21 +435,19 @@ definePageMeta({
             <p class="folder-desc">全域狀態管理 (Pinia)</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>user.ts</span>
               </div>
               <div class="example-row invalid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="red-400"
-                >
-                  mdi-close
-                </v-icon>
+                  class="text-red-400"
+                  icon="mdi-close"
+                />
                 <span>userStore.ts</span>
               </div>
             </div>
@@ -481,13 +458,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="orange-400"
+              <IIcon
+                class="folder-icon text-orange-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-cog
-              </v-icon>
+                icon="mdi-cog"
+              />
               <span class="folder-name">core/</span>
             </div>
             <span class="naming-badge">camelCase</span>
@@ -496,12 +471,11 @@ definePageMeta({
             <p class="folder-desc">系統核心功能與設定</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>client.ts</span>
               </div>
             </div>
@@ -512,13 +486,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="teal-400"
+              <IIcon
+                class="folder-icon text-teal-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-source-repository
-              </v-icon>
+                icon="mdi-source-repository"
+              />
               <span class="folder-name">repositories/</span>
             </div>
             <span class="naming-badge">camelCase</span>
@@ -527,12 +499,11 @@ definePageMeta({
             <p class="folder-desc">API 資料層封裝 (+Repo)</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>userRepo.ts</span>
               </div>
             </div>
@@ -543,13 +514,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="amber-400"
+              <IIcon
+                class="folder-icon text-amber-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-folder-open
-              </v-icon>
+                icon="mdi-folder-open"
+              />
               <span class="folder-name">modules/</span>
             </div>
             <span class="naming-badge">kebab-case</span>
@@ -558,12 +527,11 @@ definePageMeta({
             <p class="folder-desc">獨立功能模組分類</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>showcase/</span>
               </div>
             </div>
@@ -574,13 +542,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="cyan-400"
+              <IIcon
+                class="folder-icon text-cyan-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-toolbox
-              </v-icon>
+                icon="mdi-toolbox"
+              />
               <span class="folder-name">utils/</span>
             </div>
             <span class="naming-badge">camelCase</span>
@@ -589,12 +555,11 @@ definePageMeta({
             <p class="folder-desc">純共用工具函式</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>formatDate.ts</span>
               </div>
             </div>
@@ -605,13 +570,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="indigo-400"
+              <IIcon
+                class="folder-icon text-indigo-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-code-braces
-              </v-icon>
+                icon="mdi-code-braces"
+              />
               <span class="folder-name">types/</span>
             </div>
             <span class="naming-badge">PascalCase</span>
@@ -620,12 +583,11 @@ definePageMeta({
             <p class="folder-desc">TypeScript 型別定義</p>
             <div class="folder-examples">
               <div class="example-row valid">
-                <v-icon
+                <IIcon
                   size="14"
-                  color="emerald-400"
-                >
-                  mdi-check
-                </v-icon>
+                  class="text-emerald-400"
+                  icon="mdi-check"
+                />
                 <span>UserData.ts</span>
               </div>
             </div>
@@ -636,13 +598,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="lime-400"
+              <IIcon
+                class="folder-icon text-lime-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-image-multiple
-              </v-icon>
+                icon="mdi-image-multiple"
+              />
               <span class="folder-name">assets/</span>
             </div>
             <span class="naming-badge">kebab-case</span>
@@ -656,13 +616,11 @@ definePageMeta({
         <div class="folder-card">
           <div class="folder-header">
             <div class="folder-identity">
-              <v-icon
-                color="grey-400"
+              <IIcon
+                class="folder-icon text-grey-400"
                 size="24"
-                class="folder-icon"
-              >
-                mdi-folder-open-outline
-              </v-icon>
+                icon="mdi-folder-open-outline"
+              />
               <span class="folder-name">public/</span>
             </div>
             <span class="naming-badge gray">Original</span>
@@ -691,12 +649,11 @@ definePageMeta({
             <div class="arch-do-dont">
               <div class="arch-block valid">
                 <div class="arch-badge">
-                  <v-icon
+                  <IIcon
                     size="14"
                     class="mr-1"
-                  >
-                    mdi-check
-                  </v-icon>
+                    icon="mdi-check"
+                  />
                   Do (Repository)
                 </div>
                 <ShowcaseCodeBlock
@@ -715,12 +672,11 @@ const { data } = await userRepo.getProfile()"
               </div>
               <div class="arch-block invalid">
                 <div class="arch-badge">
-                  <v-icon
+                  <IIcon
                     size="14"
                     class="mr-1"
-                  >
-                    mdi-close
-                  </v-icon>
+                    icon="mdi-close"
+                  />
                   Don't (Direct Call)
                 </div>
                 <ShowcaseCodeBlock
@@ -805,12 +761,11 @@ export function useCounter() {
         <div class="ts-rules-grid">
           <div class="ts-rule-card">
             <div class="ts-rule-header">
-              <v-icon
+              <IIcon
                 size="20"
-                color="emerald-400"
-              >
-                mdi-check-circle
-              </v-icon>
+                class="text-emerald-400"
+                icon="mdi-check-circle"
+              />
               <span class="ts-rule-title">必須明確標註型別</span>
             </div>
             <ul class="ts-rule-list">
@@ -835,12 +790,11 @@ const handleSubmit = (data: FormData): void => {
 
           <div class="ts-rule-card">
             <div class="ts-rule-header">
-              <v-icon
+              <IIcon
                 size="20"
-                color="blue-400"
-              >
-                mdi-information
-              </v-icon>
+                class="text-blue-400"
+                icon="mdi-information"
+              />
               <span class="ts-rule-title">可以省略型別</span>
             </div>
             <ul class="ts-rule-list">
@@ -862,12 +816,11 @@ const double = (n: number) => n * 2"
 
           <div class="ts-rule-card">
             <div class="ts-rule-header">
-              <v-icon
+              <IIcon
                 size="20"
-                color="red-400"
-              >
-                mdi-close-circle
-              </v-icon>
+                class="text-red-400"
+                icon="mdi-close-circle"
+              />
               <span class="ts-rule-title">禁止使用</span>
               <div class="config-source ml-2">
                 <span>eslint: no-explicit-any</span>
@@ -913,21 +866,19 @@ function process(data: unknown) {
         <div class="ts-comparison">
           <div class="ts-comparison-item">
             <div class="ts-comparison-header">
-              <v-icon
+              <IIcon
                 size="20"
-                color="purple-400"
-              >
-                mdi-code-braces
-              </v-icon>
+                class="text-purple-400"
+                icon="mdi-code-braces"
+              />
               <span class="ts-comparison-title">使用 Interface</span>
             </div>
             <div class="ts-comparison-when">
-              <v-icon
+              <IIcon
                 size="16"
-                color="purple-300"
-              >
-                mdi-arrow-right
-              </v-icon>
+                class="text-purple-300"
+                icon="mdi-arrow-right"
+              />
               <span>適用於: 物件結構、類別、可擴展的定義</span>
             </div>
             <ShowcaseCodeBlock
@@ -949,21 +900,19 @@ interface AdminUser extends User {
 
           <div class="ts-comparison-item">
             <div class="ts-comparison-header">
-              <v-icon
+              <IIcon
                 size="20"
-                color="amber-400"
-              >
-                mdi-format-letter-case
-              </v-icon>
+                class="text-amber-400"
+                icon="mdi-format-letter-case"
+              />
               <span class="ts-comparison-title">使用 Type</span>
             </div>
             <div class="ts-comparison-when">
-              <v-icon
+              <IIcon
                 size="16"
-                color="amber-300"
-              >
-                mdi-arrow-right
-              </v-icon>
+                class="text-amber-300"
+                icon="mdi-arrow-right"
+              />
               <span>適用於: 聯合型別、交集型別、工具型別</span>
             </div>
             <ShowcaseCodeBlock
@@ -1061,12 +1010,11 @@ type ApiResponse<T> = {
             <div class="examples-list">
               <div class="example-item">
                 <div class="example-header">
-                  <v-icon
+                  <IIcon
                     size="16"
-                    color="emerald-400"
-                  >
-                    mdi-check-circle
-                  </v-icon>
+                    class="text-emerald-400"
+                    icon="mdi-check-circle"
+                  />
                   <span class="example-title">新增功能</span>
                 </div>
                 <div class="example-code">
@@ -1079,12 +1027,11 @@ type ApiResponse<T> = {
 
               <div class="example-item">
                 <div class="example-header">
-                  <v-icon
-                    size="16"
-                    color="blue-400"
-                  >
-                    mdi-check-circle
-                  </v-icon>
+                  <IIcon
+                    size="14"
+                    class="mr-1 text-blue-400"
+                    icon="mdi-check"
+                  />
                   <span class="example-title">修復錯誤</span>
                 </div>
                 <div class="example-code">
@@ -1097,12 +1044,11 @@ type ApiResponse<T> = {
 
               <div class="example-item">
                 <div class="example-header">
-                  <v-icon
-                    size="16"
-                    color="purple-400"
-                  >
-                    mdi-check-circle
-                  </v-icon>
+                  <IIcon
+                    size="14"
+                    class="mr-1 text-purple-400"
+                    icon="mdi-check"
+                  />
                   <span class="example-title">代碼重構</span>
                 </div>
                 <div class="example-code">
@@ -1115,12 +1061,11 @@ type ApiResponse<T> = {
 
               <div class="example-item">
                 <div class="example-header">
-                  <v-icon
-                    size="16"
-                    color="orange-400"
-                  >
-                    mdi-check-circle
-                  </v-icon>
+                  <IIcon
+                    size="14"
+                    class="mr-1 text-orange-400"
+                    icon="mdi-check"
+                  />
                   <span class="example-title">文件更新</span>
                 </div>
                 <div class="example-code">
@@ -1153,7 +1098,7 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
           </div>
 
           <!-- Step 2 -->
@@ -1166,7 +1111,7 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
           </div>
 
           <!-- Step 3 -->
@@ -1179,7 +1124,7 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
           </div>
 
           <!-- Step 4 -->
@@ -1192,7 +1137,7 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
           </div>
 
           <!-- Step 5 -->
@@ -1205,7 +1150,7 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <v-icon color="slate-500">mdi-arrow-right</v-icon>
+            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
           </div>
 
           <!-- Step 6 -->
@@ -1230,12 +1175,11 @@ type ApiResponse<T> = {
         <!-- ESLint -->
         <div class="package-card">
           <div class="package-header">
-            <v-icon
+            <IIcon
               size="24"
-              color="purple-400"
-            >
-              mdi-eslint
-            </v-icon>
+              class="text-purple-400"
+              icon="mdi-eslint"
+            />
             <div class="package-name">ESLint 檢查</div>
           </div>
           <div class="package-desc">程式碼風格與品質檢查</div>
@@ -1250,12 +1194,11 @@ type ApiResponse<T> = {
         <!-- Git Hooks -->
         <div class="package-card">
           <div class="package-header">
-            <v-icon
+            <IIcon
               size="24"
-              color="emerald-400"
-            >
-              mdi-git
-            </v-icon>
+              class="text-emerald-400"
+              icon="mdi-git"
+            />
             <div class="package-name">Git Hooks</div>
           </div>
           <div class="package-desc">Commit 前自動執行檢查</div>
@@ -1270,12 +1213,11 @@ type ApiResponse<T> = {
         <!-- Emergency Skip -->
         <div class="package-card">
           <div class="package-header">
-            <v-icon
+            <IIcon
               size="24"
-              color="amber-400"
-            >
-              mdi-alert
-            </v-icon>
+              class="text-amber-400"
+              icon="mdi-alert"
+            />
             <div class="package-name">緊急跳過</div>
           </div>
           <div class="package-desc">僅在緊急情況使用</div>
@@ -1299,12 +1241,11 @@ type ApiResponse<T> = {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-emerald">
-            <v-icon
+            <IIcon
               size="20"
-              color="emerald-400"
-            >
-              mdi-shield-check-outline
-            </v-icon>
+              class="text-emerald-400"
+              icon="mdi-shield-check-outline"
+            />
           </div>
           <h3 class="category-title">自動檢查工具 (ESLint)</h3>
         </div>
@@ -1313,12 +1254,11 @@ type ApiResponse<T> = {
           <div class="package-card">
             <div class="package-header">
               <div class="package-name">TypeScript 檢查</div>
-              <v-icon
-                size="20"
-                color="blue-400"
-              >
-                mdi-language-typescript
-              </v-icon>
+              <IIcon
+                class="folder-icon text-teal-400"
+                size="24"
+                icon="mdi-language-typescript"
+              />
             </div>
             <div class="config-badge">
               <span>@typescript-eslint/no-unused-vars</span>
@@ -1340,12 +1280,11 @@ const user: User = {
           <div class="package-card">
             <div class="package-header">
               <div class="package-name">Prettier 排版</div>
-              <v-icon
+              <IIcon
                 size="20"
-                color="pink-400"
-              >
-                mdi-format-paint
-              </v-icon>
+                class="text-pink-400"
+                icon="mdi-format-paint"
+              />
             </div>
             <div class="config-badge">
               <span>prettier/prettier</span>
@@ -1364,12 +1303,11 @@ const user: User = {
           <div class="package-card">
             <div class="package-header">
               <div class="package-name">JSDoc 註解</div>
-              <v-icon
+              <IIcon
                 size="20"
-                color="amber-400"
-              >
-                mdi-comment-text-outline
-              </v-icon>
+                class="text-amber-400"
+                icon="mdi-comment-text-outline"
+              />
             </div>
             <div class="config-badge">
               <span>eslint.config.mjs</span>
@@ -1405,12 +1343,11 @@ const user: User = {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-blue">
-            <v-icon
+            <IIcon
               size="20"
-              color="blue-400"
-            >
-              mdi-git
-            </v-icon>
+              class="text-blue-400"
+              icon="mdi-git"
+            />
           </div>
           <h3 class="category-title">Git 工作流工具 (Workflow)</h3>
         </div>
@@ -1486,22 +1423,20 @@ fix: 修正錯誤"
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-amber">
-            <v-icon
+            <IIcon
               size="20"
-              color="amber-400"
-            >
-              mdi-alert
-            </v-icon>
+              class="text-amber-400"
+              icon="mdi-alert"
+            />
           </div>
           <h3 class="category-title">緊急略過檢查 (盡量少用)</h3>
         </div>
         <div class="qa-warning-note">
-          <v-icon
+          <IIcon
             size="20"
-            color="amber-400"
-          >
-            mdi-alert-circle-outline
-          </v-icon>
+            class="text-amber-400"
+            icon="mdi-alert-circle-outline"
+          />
           <span>注意:僅在緊急情況使用,跳過檢查可能導致代碼品質問題。</span>
         </div>
         <div class="packages-grid">
@@ -1509,12 +1444,11 @@ fix: 修正錯誤"
           <div class="package-card qa-warning-card">
             <div class="package-header">
               <div class="package-name">Commit 時跳過</div>
-              <v-icon
+              <IIcon
                 size="20"
-                color="amber-400"
-              >
-                mdi-close-circle-outline
-              </v-icon>
+                class="text-amber-400"
+                icon="mdi-close-circle-outline"
+              />
             </div>
             <div class="package-desc">跳過所有 Git Hooks 檢查</div>
             <div class="package-install">
@@ -1529,12 +1463,11 @@ fix: 修正錯誤"
           <div class="package-card qa-warning-card">
             <div class="package-header">
               <div class="package-name">某一行跳過</div>
-              <v-icon
+              <IIcon
                 size="20"
-                color="amber-400"
-              >
-                mdi-code-not-equal-variant
-              </v-icon>
+                class="text-amber-400"
+                icon="mdi-code-not-equal-variant"
+              />
             </div>
             <div class="package-desc">跳過特定行的 ESLint 檢查</div>
             <div class="package-install">
@@ -1550,12 +1483,11 @@ console.log('debug')"
           <div class="package-card qa-warning-card">
             <div class="package-header">
               <div class="package-name">整個檔案跳過</div>
-              <v-icon
+              <IIcon
                 size="20"
-                color="amber-400"
-              >
-                mdi-file-cancel-outline
-              </v-icon>
+                class="text-amber-400"
+                icon="mdi-file-cancel-outline"
+              />
             </div>
             <div class="package-desc">跳過整個檔案的檢查</div>
             <div class="package-install">
@@ -1882,12 +1814,11 @@ const get = () => { return 'value' }"
           <!-- multi-word-component-names -->
           <div class="allowed-card">
             <div class="allowed-icon-wrapper">
-              <v-icon
+              <IIcon
                 size="24"
-                color="emerald-400"
-              >
-                mdi-check-decagram
-              </v-icon>
+                class="text-emerald-400"
+                icon="mdi-check-decagram"
+              />
             </div>
             <div class="allowed-content">
               <div class="allowed-head">
@@ -1907,12 +1838,11 @@ const get = () => { return 'value' }"
           <!-- no-multiple-template-root -->
           <div class="allowed-card">
             <div class="allowed-icon-wrapper">
-              <v-icon
+              <IIcon
                 size="24"
-                color="emerald-400"
-              >
-                mdi-layers-triple-outline
-              </v-icon>
+                class="text-emerald-400"
+                icon="mdi-layers-triple-outline"
+              />
             </div>
             <div class="allowed-content">
               <div class="allowed-head">
@@ -1930,12 +1860,11 @@ const get = () => { return 'value' }"
           <!-- html-self-closing -->
           <div class="allowed-card">
             <div class="allowed-icon-wrapper">
-              <v-icon
+              <IIcon
+                class="folder-icon text-indigo-400"
                 size="24"
-                color="emerald-400"
-              >
-                mdi-code-tags
-              </v-icon>
+                icon="mdi-code-json"
+              />
             </div>
             <div class="allowed-content">
               <div class="allowed-head">
@@ -1953,12 +1882,11 @@ const get = () => { return 'value' }"
           <!-- no-empty-alt -->
           <div class="allowed-card">
             <div class="allowed-icon-wrapper">
-              <v-icon
+              <IIcon
                 size="24"
-                color="emerald-400"
-              >
-                mdi-image-off-outline
-              </v-icon>
+                class="text-emerald-400"
+                icon="mdi-image-off-outline"
+              />
             </div>
             <div class="allowed-content">
               <div class="allowed-head">
@@ -1976,12 +1904,11 @@ const get = () => { return 'value' }"
           <!-- valid-v-slot -->
           <div class="allowed-card">
             <div class="allowed-icon-wrapper">
-              <v-icon
+              <IIcon
+                class="folder-icon text-blue-400"
                 size="24"
-                color="emerald-400"
-              >
-                mdi-contain
-              </v-icon>
+                icon="mdi-api"
+              />
             </div>
             <div class="allowed-content">
               <div class="allowed-head">

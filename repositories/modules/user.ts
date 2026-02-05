@@ -1,4 +1,4 @@
-import { useClient } from '~/composables/useApi'
+
 import type { UseFetchOptions } from 'nuxt/app'
 import type { UserListResponse } from '~/types/api'
 

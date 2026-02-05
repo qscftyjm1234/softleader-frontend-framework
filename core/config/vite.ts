@@ -15,6 +15,19 @@ export const viteConfig: NuxtConfig['vite'] = {
    */
   warmup: {
     clientFiles: ['./app.vue', './pages/**/*.vue']
-  }
+  },
   // 移除 SCSS modern-compiler 設定（Nuxt 3 不支援）
+
+  /**
+   * 依賴優化設定
+   * 強制 Vite 預先構建這些套件，避免 HMR Runtime 錯誤
+   */
+  optimizeDeps: {
+    include: [
+      'ant-design-vue',
+      '@ant-design/icons-vue',
+      'dayjs',
+      'lodash.clonedeep'
+    ]
+  }
 }

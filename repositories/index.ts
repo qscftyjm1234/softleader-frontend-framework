@@ -1,6 +1,7 @@
 import user from './modules/user'
 import auth from './modules/auth'
 
+
 /**
  * Repository Index (資料層)
  *
@@ -12,7 +13,8 @@ import auth from './modules/auth'
 
 const repositories = {
   user,
-  auth
+  auth,
+
 }
 
 export default repositories

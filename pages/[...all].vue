@@ -13,12 +13,11 @@ const goShowcase = () => router.push('/showcase')
       <div class="error-icon-wrapper">
         <div class="error-icon-glow" />
         <div class="error-icon-container">
-          <v-icon
-            color="orange-400"
+          <IIcon
+            class="text-orange-400"
             size="80"
-          >
-            mdi-alert-circle-outline
-          </v-icon>
+            icon="mdi-alert-circle-outline"
+          />
         </div>
       </div>
 
@@ -35,24 +34,22 @@ const goShowcase = () => router.push('/showcase')
           class="error-btn error-btn-primary"
           @click="goHome"
         >
-          <v-icon
+          <IIcon
             size="20"
             class="mr-2"
-          >
-            mdi-home
-          </v-icon>
+            icon="mdi-home"
+          />
           返回首頁
         </button>
         <button
           class="error-btn error-btn-secondary"
           @click="goShowcase"
         >
-          <v-icon
+          <IIcon
             size="20"
             class="mr-2"
-          >
-            mdi-view-grid-outline
-          </v-icon>
+            icon="mdi-view-grid-outline"
+          />
           查看範例
         </button>
       </div>
@@ -65,48 +62,44 @@ const goShowcase = () => router.push('/showcase')
             to="/showcase"
             class="error-link"
           >
-            <v-icon
+            <IIcon
               size="16"
               class="mr-1"
-            >
-              mdi-view-dashboard
-            </v-icon>
+              icon="mdi-view-dashboard"
+            />
             功能展示
           </NuxtLink>
           <NuxtLink
             to="/showcase/development"
             class="error-link"
           >
-            <v-icon
+            <IIcon
               size="16"
               class="mr-1"
-            >
-              mdi-book-open-page-variant
-            </v-icon>
+              icon="mdi-book-open-page-variant"
+            />
             開發指南
           </NuxtLink>
           <NuxtLink
             to="/showcase/api-demo"
             class="error-link"
           >
-            <v-icon
+            <IIcon
               size="16"
               class="mr-1"
-            >
-              mdi-api
-            </v-icon>
+              icon="mdi-api"
+            />
             API 管理
           </NuxtLink>
           <NuxtLink
             to="/showcase/component-showcase"
             class="error-link"
           >
-            <v-icon
+            <IIcon
               size="16"
               class="mr-1"
-            >
-              mdi-puzzle-outline
-            </v-icon>
+              icon="mdi-puzzle-outline"
+            />
             元件架構
           </NuxtLink>
         </div>

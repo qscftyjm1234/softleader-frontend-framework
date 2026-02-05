@@ -34,27 +34,25 @@ const navigateToRules = () => {
         @click="navigateToShowcase"
       >
         <div class="bento-bg-icon">
-          <v-icon
+          <IIcon
             size="120"
-            color="white"
-          >
-            mdi-view-grid-outline
-          </v-icon>
+            class="text-white"
+            icon="mdi-view-grid-outline"
+          />
         </div>
         <div class="bento-content text-left">
           <div class="bento-icon">
-            <v-icon
-              color="blue-400"
+            <IIcon
+              class="text-blue-400"
               size="28"
-            >
-              mdi-view-grid-outline
-            </v-icon>
+              icon="mdi-view-grid-outline"
+            />
           </div>
           <div class="bento-title text-blue-100">瀏覽所有範例頁面</div>
           <div class="bento-desc">查看 26 個功能展示頁面，包含各類元件與應用場景。</div>
           <div class="bento-action text-blue-300 mt-auto pt-4">
             Explore Showcase
-            <v-icon size="14">mdi-arrow-right</v-icon>
+            <IIcon size="14" icon="mdi-arrow-right" />
           </div>
         </div>
       </div>
@@ -64,27 +62,25 @@ const navigateToRules = () => {
         @click="navigateToRules"
       >
         <div class="bento-bg-icon">
-          <v-icon
+          <IIcon
             size="120"
-            color="white"
-          >
-            mdi-ruler-square
-          </v-icon>
+            class="text-white"
+            icon="mdi-ruler-square"
+          />
         </div>
         <div class="bento-content text-left">
           <div class="bento-icon">
-            <v-icon
-              color="orange-400"
+            <IIcon
+              class="text-orange-400"
               size="28"
-            >
-              mdi-ruler-square
-            </v-icon>
+              icon="mdi-ruler-square"
+            />
           </div>
           <div class="bento-title text-orange-100">查看開發規矩</div>
           <div class="bento-desc">完整的開發規範、命名約定與團隊最佳實踐指南。</div>
           <div class="bento-action text-orange-300 mt-auto pt-4">
             View Rules
-            <v-icon size="14">mdi-arrow-right</v-icon>
+            <IIcon size="14" icon="mdi-arrow-right" />
           </div>
         </div>
       </div>
@@ -120,12 +116,11 @@ const navigateToRules = () => {
                 target="_blank"
                 class="download-link"
               >
-                <v-icon
+                <IIcon
                   size="14"
                   class="mr-1"
-                >
-                  mdi-download
-                </v-icon>
+                  icon="mdi-download"
+                />
                 Download Node.js
               </a>
             </div>
@@ -159,12 +154,11 @@ const navigateToRules = () => {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-emerald">
-            <v-icon
+            <IIcon
               size="20"
-              color="emerald-400"
-            >
-              mdi-vuejs
-            </v-icon>
+              class="text-emerald-400"
+              icon="mdi-vuejs"
+            />
           </div>
           <h3 class="category-title">核心與介面 (Framework & UI)</h3>
         </div>
@@ -220,12 +214,11 @@ const navigateToRules = () => {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-blue">
-            <v-icon
+            <IIcon
               size="20"
-              color="blue-400"
-            >
-              mdi-state-machine
-            </v-icon>
+              class="text-blue-400"
+              icon="mdi-state-machine"
+            />
           </div>
           <h3 class="category-title">邏輯與狀態 (Logic & State)</h3>
         </div>
@@ -281,12 +274,11 @@ const navigateToRules = () => {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-orange">
-            <v-icon
+            <IIcon
               size="20"
-              color="orange-400"
-            >
-              mdi-toolbox-outline
-            </v-icon>
+              class="text-orange-400"
+              icon="mdi-toolbox-outline"
+            />
           </div>
           <h3 class="category-title">工具函式 (Utilities)</h3>
         </div>
@@ -342,12 +334,11 @@ const navigateToRules = () => {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-purple">
-            <v-icon
+            <IIcon
               size="20"
-              color="purple-400"
-            >
-              mdi-shield-check
-            </v-icon>
+              class="text-purple-400"
+              icon="mdi-shield-check"
+            />
           </div>
           <h3 class="category-title">品質確保 (Code Quality)</h3>
         </div>
@@ -403,12 +394,11 @@ const navigateToRules = () => {
       <div class="package-category">
         <div class="category-header">
           <div class="category-icon category-icon-red">
-            <v-icon
+            <IIcon
               size="20"
-              color="red-400"
-            >
-              mdi-git
-            </v-icon>
+              class="text-red-400"
+              icon="mdi-git"
+            />
           </div>
           <h3 class="category-title">Git 工作流 (Workflow)</h3>
         </div>
@@ -571,12 +561,11 @@ const navigateToRules = () => {
           <div class="rule-card rule-card-emerald min-w-0">
             <div class="rule-card-header">
               <span class="rule-badge">COMPONENT</span>
-              <v-icon
-                color="emerald-400"
+              <IIcon
+                class="text-emerald-400"
                 size="20"
-              >
-                mdi-cube-outline
-              </v-icon>
+                icon="mdi-cube-outline"
+              />
             </div>
             <div class="rule-card-body">
               <div class="rule-title">PascalCase</div>
@@ -602,12 +591,11 @@ NavBar.vue"
           <div class="rule-card rule-card-sky">
             <div class="rule-card-header">
               <span class="rule-badge">FUNCTION</span>
-              <v-icon
-                color="sky-400"
+              <IIcon
+                class="text-sky-400"
                 size="20"
-              >
-                mdi-function
-              </v-icon>
+                icon="mdi-function"
+              />
             </div>
             <div class="rule-card-body">
               <div class="rule-title">camelCase</div>
@@ -635,12 +623,11 @@ let isLoading = true"
           <div class="rule-card rule-card-purple">
             <div class="rule-card-header">
               <span class="rule-badge">CONSTANT</span>
-              <v-icon
-                color="purple-400"
+              <IIcon
+                class="text-purple-400"
                 size="20"
-              >
-                mdi-lock-outline
-              </v-icon>
+                icon="mdi-lock-outline"
+              />
             </div>
             <div class="rule-card-body">
               <div class="rule-title">UPPER_CASE</div>
@@ -678,36 +665,33 @@ const API_URL = '...'"
         <div class="structure-group">
           <div class="structure-label">Logic Layer</div>
           <div class="structure-item">
-            <v-icon
-              color="indigo-400"
+            <IIcon
+              class="text-indigo-400"
               size="20"
-            >
-              mdi-api
-            </v-icon>
+              icon="mdi-api"
+            />
             <div class="structure-info">
               <div class="structure-name">api/</div>
               <div class="structure-desc">API Repository 服務層</div>
             </div>
           </div>
           <div class="structure-item">
-            <v-icon
-              color="indigo-400"
+            <IIcon
+              class="text-indigo-400"
               size="20"
-            >
-              mdi-bottle-tonic-plus
-            </v-icon>
+              icon="mdi-bottle-tonic-plus"
+            />
             <div class="structure-info">
               <div class="structure-name">composables/</div>
               <div class="structure-desc">商業邏輯封裝 (Hooks)</div>
             </div>
           </div>
           <div class="structure-item">
-            <v-icon
-              color="indigo-400"
+            <IIcon
+              class="text-indigo-400"
               size="20"
-            >
-              mdi-database
-            </v-icon>
+              icon="mdi-database"
+            />
             <div class="structure-info">
               <div class="structure-name">stores/</div>
               <div class="structure-desc">Pinia 全域狀態管理</div>
@@ -719,36 +703,33 @@ const API_URL = '...'"
         <div class="structure-group">
           <div class="structure-label">View Layer</div>
           <div class="structure-item">
-            <v-icon
-              color="pink-400"
+            <IIcon
+              class="text-pink-400"
               size="20"
-            >
-              mdi-view-dashboard-outline
-            </v-icon>
+              icon="mdi-view-dashboard-outline"
+            />
             <div class="structure-info">
               <div class="structure-name">pages/</div>
               <div class="structure-desc">頁面路由 (File-based Routing)</div>
             </div>
           </div>
           <div class="structure-item">
-            <v-icon
-              color="pink-400"
+            <IIcon
+              class="text-pink-400"
               size="20"
-            >
-              mdi-view-module
-            </v-icon>
+              icon="mdi-view-module"
+            />
             <div class="structure-info">
               <div class="structure-name">components/</div>
               <div class="structure-desc">Vue 共用與業務元件</div>
             </div>
           </div>
           <div class="structure-item">
-            <v-icon
-              color="pink-400"
+            <IIcon
+              class="text-pink-400"
               size="20"
-            >
-              mdi-page-layout-header
-            </v-icon>
+              icon="mdi-page-layout-header"
+            />
             <div class="structure-info">
               <div class="structure-name">layouts/</div>
               <div class="structure-desc">頁面佈局模板</div>
@@ -760,12 +741,11 @@ const API_URL = '...'"
         <div class="structure-group">
           <div class="structure-label">Config Layer</div>
           <div class="structure-item">
-            <v-icon
-              color="amber-400"
+            <IIcon
+              class="text-amber-400"
               size="20"
-            >
-              mdi-file-cog
-            </v-icon>
+              icon="mdi-file-cog"
+            />
             <div class="structure-info">
               <div class="structure-name">nuxt.config.ts</div>
               <div class="structure-desc">Nuxt 核心設定檔</div>
@@ -789,22 +769,21 @@ const API_URL = '...'"
           @click="router.push('/showcase/api-demo')"
         >
           <div class="bento-bg-icon">
-            <v-icon>mdi-api</v-icon>
+            <IIcon icon="mdi-api" />
           </div>
           <div class="bento-content">
             <div class="bento-icon">
-              <v-icon
-                color="sky-400"
+              <IIcon
+                class="text-sky-400"
                 size="24"
-              >
-                mdi-api
-              </v-icon>
+                icon="mdi-api"
+              />
             </div>
             <div class="bento-title text-sky-400">API Request</div>
             <div class="bento-desc">標準化 API 請求層，整合 Repository 模式與攔截器。</div>
             <div class="bento-action text-sky-400">
               Explore API Values
-              <v-icon size="14">mdi-arrow-right</v-icon>
+              <IIcon size="14" icon="mdi-arrow-right" />
             </div>
           </div>
         </div>
@@ -815,22 +794,21 @@ const API_URL = '...'"
           @click="router.push('/showcase/validation')"
         >
           <div class="bento-bg-icon">
-            <v-icon>mdi-check-all</v-icon>
+            <IIcon icon="mdi-check-all" />
           </div>
           <div class="bento-content">
             <div class="bento-icon">
-              <v-icon
-                color="rose-400"
+              <IIcon
+                class="text-rose-400"
                 size="24"
-              >
-                mdi-check-all
-              </v-icon>
+                icon="mdi-check-all"
+              />
             </div>
             <div class="bento-title text-rose-400">Form Validation</div>
             <div class="bento-desc">Schema-based 驗證系統，支援 TW 身分證與手機號碼。</div>
             <div class="bento-action text-rose-400">
               View Patterns
-              <v-icon size="14">mdi-arrow-right</v-icon>
+              <IIcon size="14" icon="mdi-arrow-right" />
             </div>
           </div>
         </div>
@@ -841,22 +819,21 @@ const API_URL = '...'"
           @click="router.push('/showcase/formatter')"
         >
           <div class="bento-bg-icon">
-            <v-icon>mdi-format-text</v-icon>
+            <IIcon icon="mdi-format-text" />
           </div>
           <div class="bento-content">
             <div class="bento-icon">
-              <v-icon
-                color="amber-400"
+              <IIcon
+                class="text-amber-400"
                 size="24"
-              >
-                mdi-format-text
-              </v-icon>
+                icon="mdi-format-text"
+              />
             </div>
             <div class="bento-title text-amber-400">Data Formatting</div>
             <div class="bento-desc">金額、日期、隱碼處理，統一全站顯示邏輯。</div>
             <div class="bento-action text-amber-400">
               See Examples
-              <v-icon size="14">mdi-arrow-right</v-icon>
+              <IIcon size="14" icon="mdi-arrow-right" />
             </div>
           </div>
         </div>
@@ -867,22 +844,21 @@ const API_URL = '...'"
           @click="router.push('/showcase/icon')"
         >
           <div class="bento-bg-icon">
-            <v-icon>mdi-vector-square</v-icon>
+            <IIcon icon="mdi-vector-square" />
           </div>
           <div class="bento-content">
             <div class="bento-icon">
-              <v-icon
-                color="purple-400"
+              <IIcon
+                class="text-purple-400"
                 size="24"
-              >
-                mdi-vector-square
-              </v-icon>
+                icon="mdi-vector-square"
+              />
             </div>
             <div class="bento-title text-purple-400">Icon System</div>
             <div class="bento-desc">使用 IIcon 統一管理 SVG 與 MDI Icons，支援自動對齊。</div>
             <div class="bento-action text-purple-400">
               Browse Icons
-              <v-icon size="14">mdi-arrow-right</v-icon>
+              <IIcon size="14" icon="mdi-arrow-right" />
             </div>
           </div>
         </div>
