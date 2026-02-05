@@ -4,13 +4,13 @@
 
 ## 步驟 1: 建立 Store
 
-在 `stores` 資料夾中建立 `tutorial.ts`：
+在 `stores` 資料夾中建立 `demo.ts`：
 
 ```typescript
-// stores/tutorial.ts
+// stores/demo.ts
 import { defineStore } from 'pinia'
 
-export const useTutorialStore = defineStore('tutorial', () => {
+export const useDemoStore = defineStore('demo', () => {
   // State (資料)
   const counter = ref(0)
   const lastUpdated = ref<Date | null>(null)
@@ -41,18 +41,18 @@ export const useTutorialStore = defineStore('tutorial', () => {
 
 ## 步驟 2: 在頁面中使用 Store
 
-我們可以在任何頁面使用這個 Store。讓我們修改 `pages/tutorial/index.vue` 來顯示計數器。
+我們可以在任何頁面使用這個 Store。讓我們修改 `pages/demo/index.vue` 來顯示計數器。
 
 ```vue
-<!-- pages/tutorial/index.vue -->
+<!-- pages/demo/index.vue -->
 <script setup lang="ts">
-import { useTutorialStore } from '~/stores/tutorial'
+import { useDemoStore } from '~/stores/demo'
 
-const store = useTutorialStore()
+const store = useDemoStore()
 </script>
 
 <template>
-  <div class="tutorial-page">
+  <div class="demo-page">
     <!-- ... 其他內容 ... -->
 
     <ICard class="mt-4 p-4 bg-blue-50">

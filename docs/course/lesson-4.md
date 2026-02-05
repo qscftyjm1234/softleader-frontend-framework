@@ -4,31 +4,33 @@
 
 ## 步驟 1: 建立 Repository 模組
 
+## 步驟 1: 建立 Repository 模組
+
 專案將所有 API 呼叫封裝在 `repositories` 資料夾中。
-在 `repositories/modules` 中建立新檔案 `tutorial.ts`：
+在 `repositories/modules` 中建立新檔案 `demo.ts`：
 
 ```typescript
-// repositories/modules/tutorial.ts
+// repositories/modules/demo.ts
 import { useClient } from '~/composables/useApi'
 import type { UseFetchOptions } from 'nuxt/app'
 
 // 定義回傳資料的型別 (依照後端 API 規格)
-interface TutorialData {
+interface DemoData {
   id: number
   title: string
   content: string
 }
 
 // 建立 Client 實例 (設定 API 子路徑)
-const api = useClient('/tutorial')
+const api = useClient('/demo')
 
 export default {
   /**
    * 取得教學資料列表
-   * @returns List of tutorials
+   * @returns List of demos
    */
-  getList(options: UseFetchOptions<TutorialData[]> = {}) {
-    return api.get<TutorialData[]>('/list', options)
+  getList(options: UseFetchOptions<DemoData[]> = {}) {
+    return api.get<DemoData[]>('/list', options)
   },
 
   /**
@@ -36,7 +38,7 @@ export default {
    * @param id - 資料 ID
    */
   getDetail(id: number) {
-    return api.get<TutorialData>(`/${id}`)
+    return api.get<DemoData>(`/${id}`)
   }
 }
 ```
@@ -49,10 +51,10 @@ export default {
 
 ## 步驟 3: 在頁面中使用 API
 
-修改我們的詳情頁 `pages/tutorial/[id].vue`，改為從 API 獲取資料。
+修改我們的詳情頁 `pages/demo/[id].vue`，改為從 API 獲取資料。
 
 ```vue
-<!-- pages/tutorial/[id].vue -->
+<!-- pages/demo/[id].vue -->
 <script setup lang="ts">
 const route = useRoute()
 const { $repos } = useNuxtApp() // 或使用 useRepository()
@@ -61,10 +63,10 @@ const id = Number(route.params.id)
 
 // 使用 useAsyncData 搭配 Repository 獲取資料
 const {
-  data: tutorial,
+  data: demo,
   pending,
   error
-} = await useAsyncData(`tutorial-${id}`, () => $repos.tutorial.getDetail(id))
+} = await useAsyncData(`demo-${id}`, () => $repos.demo.getDetail(id))
 </script>
 
 <template>
@@ -72,9 +74,9 @@ const {
     <div v-if="pending">載入中...</div>
     <div v-else-if="error">發生錯誤: {{ error.message }}</div>
 
-    <div v-else-if="tutorial">
-      <h1>{{ tutorial.title }}</h1>
-      <p>{{ tutorial.content }}</p>
+    <div v-else-if="demo">
+      <h1>{{ demo.title }}</h1>
+      <p>{{ demo.content }}</p>
     </div>
   </div>
 </template>

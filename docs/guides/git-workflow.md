@@ -106,8 +106,8 @@ git pull
 # 2. 切回你的分支
 git checkout feature/user-login
 
-# 3. 把 main 的進度「Rebase」進來
-git rebase main
+# 3. 把 main 的進度「merge」進來
+git merge main
 
 # --- 如果遇到衝突 (Conflict) ---
 # 1. 打開衝突檔案，手動修正程式碼
@@ -135,6 +135,56 @@ git checkout feat/user-login
 
 # 4. 把藏起來的東西「拿」出來
 git stash pop
+```
+
+#### 情境 7：真的急死人，我要強制提交！(Bypass Checks)
+
+**目標**：ESLint 一直不過，或是 Commitlint 一直檔，但你現在**必須**把程式碼 commit 進去 (例如要下班了、或是先存檔再說)。
+
+```bash
+# 加入 -n (或是 --no-verify) 來跳過所有檢查
+git commit -n -m "急件處理：暫時略過檢查"
+```
+
+> **⚠️ 警告**：這會跳過程式碼品質檢查與 Commit 規範。請只在**緊急狀況**或**本地暫存**時使用，合併回 `main` 之前還是建議修好格式。
+
+#### 情境 8：剛 Commit 完發現寫錯了，想「悔棋」 (Undo Commit)
+
+**目標**：剛剛 Commit 了一個版本，但發現有 Bug 或忘了東西，且**還沒 Push 出去**。
+
+```bash
+# --soft: 你的程式碼修改都還在 (變回綠色的 git add 狀態)
+# HEAD~1: 回到上一個版本
+git reset --soft HEAD~1
+```
+
+> **注意**：如果不想要保留程式碼 (完全不要了)，請把 `--soft` 改成 `--hard` (危險動作，請小心使用)。
+
+#### 情境 9：已經 Push 上去了，結果那是個爛 Commit (Revert)
+
+**目標**：已經推到遠端給別人看到了，這時候不能用 `reset` (會害死隊友)，要用 `revert`。
+
+```bash
+# 產生一個「反向」的新 Commit 來抵銷之前的錯誤
+git revert HEAD
+
+# 然後再推上去!
+git push
+```
+
+#### 情境 10：只想修改最後一次的訊息或漏加檔案 (Amend)
+
+**目標**：剛剛的 Commit 訊息打錯字，或是少 add 了一個檔案，不想多產生一個 Commit。
+
+```bash
+# 1. 補 add 漏掉的檔案 (如果有的話)
+git add .
+
+# 2. 修改最後一次 Commit (會跳出編輯器讓你改訊息)
+git commit --amend
+
+# 如果不想改訊息，只想把檔案塞進去：
+git commit --amend --no-edit
 ```
 
 ---
