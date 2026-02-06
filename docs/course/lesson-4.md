@@ -1,186 +1,190 @@
-# 第四課：API 串接與資料層規範
+<!-- Author: cindy -->
 
-在這一課，我們將學習如何依循專案規範 (Repository Pattern) 來串接後端 API。
+# 第四課:UI 組件開發規範
 
-## 步驟 1: 建立 Repository 模組
+本課程說明本專案的 UI 開發規範。**主旨：一律使用 `uiInterface` 封裝組件。**
 
-專案將所有 API 呼叫封裝在 `repositories` 資料夾中。
-在 `repositories/modules` 中建立新檔案 `demo.ts`：
+## 1. 黃金原則 (The Golden Rule)
 
-```typescript
-// repositories/modules/demo.ts
-import { useClient } from '~/composables/useApi'
-import type { UseFetchOptions } from 'nuxt/app'
+開發頁面 (`pages/`) 或業務組件 (`components/business/`) 時：
 
-// 定義回傳資料的型別 (依照後端 API 規格)
-interface DemoData {
-  id: number
-  title: string
-  content: string
-}
-
-// 建立 Client 實例 (設定 API 子路徑)
-const api = useClient('/demo')
-
-export default {
-  /**
-   * 取得教學資料列表
-   * @returns List of demos
-   */
-  getList(options: UseFetchOptions<DemoData[]> = {}) {
-    return api.get<DemoData[]>('/list', options)
-  },
-
-  /**
-   * 根據 ID 取得教學資料
-   * @param id - 資料 ID
-   */
-  getDetail(id: number) {
-    return api.get<DemoData>(`/${id}`)
-  }
-}
-```
-
-## 步驟 2: 註冊 Repository (自動)
-
-專案通常已設定自動匯入，但我們需要確認 `repositories/index.ts` 有整合這個新模組。
-如果 `repositories/index.ts` 是自動掃描的，則不需額外動作；若為手動註冊，請記得加入。
-(本專案主要使用 Composables `useRepository` 來存取，通常不需要手動修改 index，視專案架構而定。)
-
-## 步驟 3: 在頁面中使用 API
-
-修改我們的詳情頁 `pages/demo/[id].vue`，改為從 API 獲取資料。
-
-```vue
-<!-- pages/demo/[id].vue -->
-<script setup lang="ts">
-definePageMeta({
-  layout: 'demo'
-})
-const route = useRoute()
-const route = useRoute()
-const { demo } = useRepository() // 使用 Composable 取得 Repository
-
-const id = Number(route.params.id)
-
-// 專案的 Repository 已經封裝了 useAsyncData，直接呼叫即可
-const {
-  data,
-  pending,
-  error
-} = await demo.getDetail(id)
-</script>
-
-<template>
-  <div class="detail-page">
-    <div v-if="pending">載入中...</div>
-    <div v-else-if="error">發生錯誤: {{ error.message }}</div>
-
-    <div v-else-if="data">
-      <h1>{{ data.title }}</h1>
-      <p>{{ data.content }}</p>
-    </div>
-  </div>
-</template>
-```
-```
-
-## 步驟 5: 串接列表到詳情頁
-
-最後，我們回到 `pages/demo/index.vue`，讓原本的卡片可以點擊並跳轉到詳情頁。
-
-```vue
-<!-- pages/demo/index.vue -->
-<script setup lang="ts">
-// ... 其他程式碼
-
-const router = useRouter()
-
-// 定義點擊事件處理 function
-const handleUserClick = (id: number) => {
-  router.push(`/demo/${id}`)
-}
-
-// 模擬資料加上 ID
-const engineer = {
-  id: 1,
-  name: '王小明',
-  // ...
-}
-</script>
-
-<template>
-  <!-- ... -->
-  <UserInfoCard
-    :name="engineer.name"
-    :role="engineer.role"
-    :avatar-url="engineer.photo"
-    class="cursor-pointer hover:shadow-lg transition-shadow"
-    @click="handleUserClick(engineer.id)"
-  />
-  <!-- ... -->
-</template>
-```
-
-現在，點擊首頁的卡片，就會導向 `/demo/1`，並且由 API (Mock) 載入並顯示資料！
-
-## 步驟 6: 設定 Mock Data (模擬資料)
-
-在開發階段還沒有後端 API 時，我們可以使用專案內建的 Mock 系統。
-
-### 1. 啟用 Mock 模式
-
-開啟 `.env` 檔案，確保以下設定為 `true`：
-
-```bash
-# .env
-NUXT_PUBLIC_FEATURE_API_MOCK=true
-```
-
-### 2. 新增 Mock 路徑
-
-開啟 `mock/routes.ts`，在 `MOCK_ROUTES` 陣列中加入您的 API 模擬資料：
-
-```typescript
-// mock/routes.ts
-export const MOCK_ROUTES: MockRoute[] = [
-  // ... 其他路由
-  
-  // 新增 Demo 列表 API
-  {
-    url: '/demo/list',
-    method: 'GET',
-    delay: 500, // 模擬網路延遲 0.5 秒
-    response: {
-      data: [
-        { id: 1, title: 'Nuxt 3 入門', content: '學習 Nuxt 3 的基礎知識...' },
-        { id: 2, title: 'Repository Pattern', content: '了解如何封裝 API...' }
-      ]
-    }
-  },
-  
-  // 新增 Demo 詳情 API (支援正則表達式)
-  {
-    url: /\/demo\/\d+/, // 匹配 /demo/1, /demo/2 ...
-    method: 'GET',
-    delay: 300,
-    response: (context) => {
-      // 從網址取得 ID
-      const id = Number(context.url.match(/\/demo\/(\d+)/)?.[1] || 1)
-      return {
-        data: {
-          id,
-          title: `Demo ${id} - 詳細教學`,
-          content: '這是一篇虛擬的教學文章內容...'
-        }
-      }
-    }
-  }
-]
-```
-
-儲存後，API 請求就會被攔截並回傳定義好的假資料，無需重啟伺服器。
+> ✅ **只能使用 `I` 開頭的組件 (e.g., `<IButton>`)**
+> ❌ **嚴禁使用 `a-` 開頭的原生組件 (e.g., `<a-button>`)**
 
 ---
 
-[上一課：頁面導航與路由](./lesson-3.md) | [回首頁](../../README.md) | [下一課：全域狀態管理](./lesson-5.md)
+## 2. 快速對照表
+
+| 功能         | ❌ 禁止寫法  | ✅ 正確寫法    |
+| :----------- | :----------- | :------------- |
+| **按鈕**     | `<a-button>` | `<IButton>`    |
+| **輸入框**   | `<a-input>`  | `<IInput>`     |
+| **表格**     | `<a-table>`  | `<IDataTable>` |
+| **彈窗**     | `<a-modal>`  | `<IModal>`     |
+| **下拉選單** | `<a-select>` | `<ISelect>`    |
+
+---
+
+## 3. 常見情境 (FAQ)
+
+### Q1: 我想修改按鈕顏色或樣式？
+
+請優先使用組件提供的 `props`，排版距離則用 Tailwind CSS。
+
+```vue
+<!-- ✅ 正確 -->
+<IButton
+  variant="primary"    <!-- 決定顏色風格 -->
+  size="large"         <!-- 決定大小 -->
+  class="mt-4 w-full"  <!-- 決定位置與寬度 -->
+>
+  送出
+</IButton>
+```
+
+### Q2: 介面組件 (`ISelect`) 少了我要的功能 (如搜尋) 怎辦？
+
+> **千萬不要因為少一個功能就回去用 `<a-select>`！**
+
+請直接去修改 `components/uiInterface/ISelect.vue`，把功能補上。
+
+**修改範例 (ISelect.vue):**
+
+```vue
+<script setup lang="ts">
+// 1. 在 Props 新增 showSearch
+defineProps<{
+  showSearch?: boolean
+}>()
+</script>
+
+<template>
+  <!-- 2. 透傳給底層 -->
+  <a-select :show-search="showSearch">
+    <slot />
+  </a-select>
+</template>
+```
+
+這樣這擴充的功能，全專案都能受惠。
+
+---
+
+## 4. 常用組件參數速查
+
+這些是經過封裝後，您最常會用到的參數：
+
+### IButton
+
+- `variant`: "primary" | "outline" | "text" | "danger"
+- `icon`: MDI 圖示名稱 (如 "mdi-check")
+- `loading`: true/false (自動轉圈)
+
+### IDataTable
+
+- `data`: 資料陣列
+- `columns`: 欄位設定 (同 AntD)
+- `pagination`: 分頁物件 (配合 `usePagination`)
+
+### IModal
+
+- `v-model:open`: 開關
+- `title`:標題
+- `width`: 寬度 (預設 520px)
+
+---
+
+## 5. 如何設計介面組件 (Interface Design)
+
+如果您需要自己封裝新的組件 (例如 `ICheckbox`)，請依照以下三個簡單步驟：
+
+### 步驟 1: 定義 Props (接收外部參數)
+
+使用 `defineProps` 接收業務需要的資料。
+
+```typescript
+// components/uiInterface/ICheckbox.vue
+const props = defineProps<{
+  label?: string
+  checked?: boolean
+  disabled?: boolean
+}>()
+```
+
+### 步驟 2: 透傳給底層 (Binding)
+
+將接收到的 Props 傳給底層 Ant Design 組件 (`a-checkbox`)。
+
+```vue
+<template>
+  <a-checkbox
+    :checked="checked"
+    :disabled="disabled"
+    @update:checked="(val) => $emit('update:checked', val)"
+  >
+    {{ label }}
+  </a-checkbox>
+</template>
+```
+
+### 步驟 3: 加上統一外觀 (Styling)
+
+使用 Tailwind CSS 加上專案統一的樣式 (例如文字顏色、邊距)。
+
+```vue
+<template>
+  <a-checkbox class="text-gray-700 font-medium px-2">
+    <!-- ... -->
+  </a-checkbox>
+</template>
+```
+
+---
+
+## 6. 如果包含業務邏輯? (Business Components)
+
+如果您的組件不僅是「長相」，還包含「呼叫 API」或「特定業務規則」，**請不要放在 `uiInterface`**。
+
+請改放到 `components/business/` 目錄。
+
+### 範例: 使用者選取器 (UserSelect)
+
+這不是單純的 Select，它需要「自動去後端抓使用者清單」。
+
+```vue
+<!-- components/business/UserSelect.vue -->
+<script setup lang="ts">
+// 1. 處理業務邏輯 (Call API)
+const { data } = await useApi.getUsers()
+
+// 2. 轉換資料格式
+const options = computed(() => data.value.map((u) => ({ label: u.name, value: u.id })))
+</script>
+
+<template>
+  <!-- 3. 組合介面組件 (ISelect) -->
+  <ISelect
+    :options="options"
+    placeholder="請選擇員工"
+    class="w-64"
+  />
+</template>
+```
+
+### 分工原則
+
+| 類型         | 目錄           | 職責                   | 能不能 Call API? |
+| :----------- | :------------- | :--------------------- | :--------------- |
+| **介面組件** | `uiInterface/` | 只管長相、互動 (純 UI) | ❌ 禁止          |
+| **業務組件** | `business/`    | 管資料來源、商業邏輯   | ✅ 可以          |
+
+---
+
+## 7. 小結
+
+記住一句話就好：**看到 UI 就打 `I`，不要打 `a`。**
+功能不夠就去改 `I`，不要繞過去用 `a`。
+
+---
+
+[上一課:UI 框架介紹](./lesson-3.md) | [下一課:客製化圖示系統](./lesson-5.md) | [回首頁](../../README.md)

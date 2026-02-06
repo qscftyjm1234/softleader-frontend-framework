@@ -1,98 +1,118 @@
-# 第五課：全域狀態管理 (Pinia)
+<!-- Author: cindy -->
 
-當多個頁面需要共用同一份資料時 (例如使用者登入狀態、購物車內容)，我們會使用 Pinia。
+# 第五課:客製化圖示系統
 
-## 步驟 1: 建立 Store
+本課程教您如何在專案中使用圖示,包含 MDI 圖示和自訂 SVG 圖示。
 
-在 `stores` 資料夾中建立 `demo.ts`：
+## 1. 使用 IIcon 組件
 
-```typescript
-// stores/demo.ts
-import { defineStore } from 'pinia'
+本專案使用 `IIcon` 組件來顯示圖示。
 
-export const useDemoStore = defineStore('demo', () => {
-  // State (資料)
-  const counter = ref(0)
-  const lastUpdated = ref<Date | null>(null)
-
-  // Getters (計算屬性)
-  const doubleCount = computed(() => counter.value * 2)
-
-  // Actions (方法)
-  function increment() {
-    counter.value++
-    lastUpdated.value = new Date()
-  }
-
-  function reset() {
-    counter.value = 0
-    lastUpdated.value = null
-  }
-
-  return {
-    counter,
-    lastUpdated,
-    doubleCount,
-    increment,
-    reset
-  }
-})
-```
-
-## 步驟 2: 在頁面中使用 Store
-
-我們可以在任何頁面使用這個 Store。讓我們修改 `pages/demo/index.vue` 來顯示計數器。
+### 基本用法
 
 ```vue
-<!-- pages/demo/index.vue -->
-<script setup lang="ts">
-import { useDemoStore } from '~/stores/demo'
-
-const store = useDemoStore()
-</script>
-
 <template>
-  <div class="demo-page">
-    <!-- ... 其他內容 ... -->
+  <IIcon name="mdi-home" />
+</template>
+```
 
-    <ICard class="mt-4 p-4 bg-blue-50">
-      <h3>全域計數器</h3>
-      <p>目前數值: {{ store.counter }}</p>
-      <p>雙倍數值: {{ store.doubleCount }}</p>
+---
 
-      <div class="flex gap-2 mt-2">
-        <IButton
-          variant="success"
-          size="small"
-          @click="store.increment"
-        >
-          +1
-        </IButton>
-        <IButton
-          variant="danger"
-          size="small"
-          @click="store.reset"
-        >
-          重置
-        </IButton>
-      </div>
-    </ICard>
+## 2. MDI 圖示
+
+MDI (Material Design Icons) 提供了數千個免費圖示。
+
+### 如何找圖示
+
+1. 前往 [Material Design Icons](https://pictogrammers.com/library/mdi/)
+2. 搜尋你要的圖示 (例如搜尋 "home")
+3. 複製圖示名稱 (例如 `mdi-home`)
+4. 在專案中使用
+
+### 常用圖示範例
+
+```vue
+<template>
+  <div class="flex gap-4">
+    <!-- 首頁 -->
+    <IIcon name="mdi-home" />
+
+    <!-- 使用者 -->
+    <IIcon name="mdi-account" />
+
+    <!-- 設定 -->
+    <IIcon name="mdi-cog" />
   </div>
 </template>
 ```
 
-## 恭喜！
+---
 
-您已經完成了基礎開發課程！您現在已經學會了：
+## 3. 調整圖示大小與顏色
 
-1. 建立頁面與佈局
-2. 使用介面元件
-3. 處理路由導航
-4. 串接 API
-5. 管理全域狀態
+### 使用 size 和 color 屬性
 
-接下來，您可以參考 [開發手冊](../guides/development-manual.md) 深入了解更多進階主題。
+```vue
+<template>
+  <div class="flex items-center gap-4">
+    <IIcon
+      name="mdi-heart"
+      size="small"
+      color="error"
+    />
+    <IIcon name="mdi-heart" />
+    <IIcon
+      name="mdi-heart"
+      size="large"
+      color="primary"
+    />
+  </div>
+</template>
+```
+
+### 使用 Tailwind 類別
+
+```vue
+<template>
+  <IIcon
+    name="mdi-star"
+    class="text-3xl text-yellow-500"
+  />
+</template>
+```
 
 ---
 
-[上一課：API 串接與資料層](./lesson-4.md) | [回首頁](../../README.md)
+## 4. 在按鈕中使用圖示
+
+### IButton 的 icon 屬性
+
+```vue
+<template>
+  <!-- 圖示 + 文字 -->
+  <IButton
+    icon="mdi-plus"
+    variant="primary"
+  >
+    新增
+  </IButton>
+
+  <!-- 只有圖示 -->
+  <IButton
+    icon="mdi-delete"
+    color="error"
+  />
+</template>
+```
+
+---
+
+## 5. 小結
+
+1. **組件**: `<IIcon name="mdi-xxx" />`
+2. **來源**: Material Design Icons
+3. **按鈕**: `<IButton icon="mdi-xxx">`
+
+---
+
+[上一課:UI 組件開發規範](./lesson-4.md) | [下一課:頁面導航與路由](./lesson-6.md) | [回首頁](../../README.md)

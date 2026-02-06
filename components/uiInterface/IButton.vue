@@ -44,6 +44,7 @@ interface Props {
   target?: string
   color?: string // 自訂顏色
   // 圖示
+  icon?: string // Icon-only mode
   prependIcon?: string
   appendIcon?: string
 }
@@ -58,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
   color: undefined,
   href: undefined,
   to: undefined,
+  icon: undefined,
   prependIcon: undefined,
   appendIcon: undefined
 })
@@ -140,10 +142,10 @@ const buttonStyle = computed(() => {
     @click="handleClick"
   >
     <template
-      v-if="prependIcon"
+      v-if="icon || prependIcon"
       #icon
     >
-      <IIcon :icon="prependIcon" />
+      <IIcon :icon="icon || prependIcon" />
     </template>
 
     <slot />
@@ -188,9 +190,9 @@ const buttonStyle = computed(() => {
 
     <!-- Icons -->
     <IIcon
-      v-if="!loading && prependIcon"
-      :icon="prependIcon"
-      class="i-button__icon mr-2"
+      v-if="!loading && (icon || prependIcon)"
+      :icon="icon || prependIcon"
+      :class="['i-button__icon', { 'mr-2': !!$slots.default && !icon }]"
     />
 
     <slot />

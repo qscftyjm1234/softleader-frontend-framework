@@ -196,128 +196,41 @@ const currentItems = computed(() => {
           description="調整分頁參數"
           full-width
         >
-          <div class="flex flex-col gap-6">
-            <div class="flex gap-4 flex-wrap">
-              <div class="flex flex-col gap-2 min-w-[200px]">
-                <label class="text-slate-400 text-xs uppercase tracking-wide">
-                  總筆數 (Total Items)
-                </label>
-                <input
-                  v-model.number="total"
-                  type="number"
-                  class="glass-input"
-                  @change="setTotal(total)"
-                />
-              </div>
-              <div class="flex flex-col gap-2 min-w-[200px]">
-                <label class="text-slate-400 text-xs uppercase tracking-wide">
-                  每頁筆數 (Page Size)
-                </label>
-                <select
-                  v-model.number="pageSize"
-                  class="glass-input"
-                  @change="setPageSize(pageSize)"
-                >
-                  <option :value="5">5 筆 / 頁</option>
-                  <option :value="10">10 筆 / 頁</option>
-                  <option :value="20">20 筆 / 頁</option>
-                  <option :value="50">50 筆 / 頁</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Data Table -->
-            <div
-              class="overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/20 backdrop-blur-sm"
+          <!-- Data Table with Ant Design -->
+          <div class="bg-slate-800/20 rounded-xl p-4 border border-slate-700/50">
+            <a-table
+              :columns="[
+                { title: '編號 (#ID)', dataIndex: 'id', width: 120 },
+                { title: '名稱 (Name)', dataIndex: 'name' },
+                { title: '數值 (Value)', dataIndex: 'value', align: 'right' }
+              ]"
+              :data-source="currentItems"
+              :pagination="{
+                current: currentPage,
+                pageSize: pageSize,
+                total: total,
+                showSizeChanger: true,
+                pageSizeOptions: ['5', '10', '20', '50'],
+                showTotal: (t) => `共 ${t} 筆`,
+                onChange: (page, size) => {
+                  goToPage(page)
+                  setPageSize(size)
+                }
+              }"
+              row-key="id"
+              size="middle"
+              :scroll="{ x: 600 }"
             >
-              <table class="w-full text-left text-sm">
-                <thead>
-                  <tr class="border-b border-slate-700/50 bg-slate-800/50">
-                    <th class="py-3 px-4 font-semibold text-slate-300 w-20">編號</th>
-                    <th class="py-3 px-4 font-semibold text-slate-300">名稱</th>
-                    <th class="py-3 px-4 font-semibold text-slate-300 text-right">數值</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-700/30">
-                  <tr
-                    v-for="item in currentItems"
-                    :key="item.id"
-                    class="group hover:bg-sky-500/5 transition-colors"
-                  >
-                    <td
-                      class="py-3 px-4 font-mono text-slate-500 group-hover:text-sky-400 transition-colors"
-                    >
-                      #{{ item.id }}
-                    </td>
-                    <td class="py-3 px-4 text-slate-200 group-hover:text-white transition-colors">
-                      {{ item.name }}
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                      <span
-                        class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20 group-hover:bg-sky-500/20 transition-colors"
-                      >
-                        {{ item.value }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Pagination Controls -->
-            <div class="flex justify-center flex-wrap gap-2 items-center">
-              <button
-                :disabled="!info.hasPrev"
-                class="glass-btn"
-                @click="firstPage"
-              >
-                首頁
-              </button>
-              <button
-                :disabled="!info.hasPrev"
-                class="glass-btn"
-                @click="prevPage"
-              >
-                上一頁
-              </button>
-
-              <div class="flex gap-1">
-                <button
-                  v-for="page in pageButtons"
-                  :key="page"
-                  class="glass-btn min-w-[40px]"
-                  :class="{ active: page === currentPage }"
-                  @click="goToPage(page as number)"
-                >
-                  {{ page }}
-                </button>
-              </div>
-
-              <button
-                :disabled="!info.hasNext"
-                class="glass-btn"
-                @click="nextPage"
-              >
-                下一頁
-              </button>
-              <button
-                :disabled="!info.hasNext"
-                class="glass-btn"
-                @click="lastPage"
-              >
-                末頁
-              </button>
-            </div>
-
-            <div class="text-center mt-4 text-slate-400 text-sm">
-              顯示第
-              <span class="text-slate-100">{{ info.startItem }}</span>
-              到
-              <span class="text-slate-100">{{ info.endItem }}</span>
-              筆，共
-              <span class="text-slate-100">{{ info.total }}</span>
-              筆資料
-            </div>
+              <!-- 自訂欄位渲染 -->
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.dataIndex === 'id'">
+                  <span class="font-mono text-sky-400">#{{ record.id }}</span>
+                </template>
+                <template v-if="column.dataIndex === 'value'">
+                  <a-tag color="blue">{{ record.value }}</a-tag>
+                </template>
+              </template>
+            </a-table>
           </div>
         </ShowcaseCard>
 

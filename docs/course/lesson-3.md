@@ -1,155 +1,246 @@
-# 第三課：頁面導航與路由
+<!-- Author: cindy -->
 
-在 Nuxt 3 中，路由是根據檔案結構自動產生的 (File-system Routing)。這一課我們將學習如何在頁面間跳轉。
+# 第三課:UI 框架介紹
 
-## 步驟 1: 建立列表頁面
+本課程介紹專案使用的 **Tailwind CSS** (樣式) 與 **Ant Design Vue** (組件) 的整合應用。
 
-我們已經有了 `pages/demo/index.vue` (首頁)，現在我們要建立一個列表頁 `pages/demo/list.vue`。
+## 1. Ant Design Vue (底層組件)
 
-修改 `pages/demo/list.vue` (我們將在這裡建立列表頁)：
+[Ant Design Vue](https://antdv.com/) 是一套企業級的 UI 組件庫，提供了豐富且高品質的基礎元件。
+本專案選用它作為底層的核心引擎，負責處理複雜的互動邏輯 (如日期選擇、表格排序、樹狀結構等)。
 
-```vue
-<!-- pages/demo/list.vue -->
-<script setup lang="ts">
-definePageMeta({
-  layout: 'demo'
-})
+### 1.1 這套框架包含什麼?
 
-const router = useRouter()
+雖然我們不直接使用，但您應該知道它提供了哪些強大功能：
 
-// 模擬一些資料
-const users = ref([
-  { id: 1, name: '王小明', role: '前端工程師' },
-  { id: 2, name: '李大華', role: '產品經理' },
-  { id: 3, name: '張阿姨', role: '測試人員' }
-])
+- **通用元件**: Button, Icon, Typography
+- **佈局元件**: Grid (24柵格系統), Layout, Space
+- **導航元件**: Menu, Dropdown, Pagination
+- **資料輸入**: Form, Input, Select, DatePicker
+- **資料展示**: Table, List, Tree, Tooltip
+- **反饋元件**: Modal, Message, Notification
 
-const navigateToDetail = (id: number) => {
-  router.push(`/user/${id}`)
-}
-</script>
+### 1.2 核心組件展示
 
-<template>
-  <div class="demo-list-page">
-    <a-space
-      direction="vertical"
-      size="large"
-      style="width: 100%"
-    >
-      <a-typography-title :level="2">使用者列表</a-typography-title>
+以下展示幾個 Ant Design Vue 最強大的組件，這些功能若要自己手刻會非常耗時，這也是我們選用它當底層的原因：
 
-      <p>
-        這裡展示如何使用
-        <code>v-for</code>
-        渲染列表，並跳轉至動態路由。
-      </p>
+#### 1. Form 表單驗證
 
-      <a-row :gutter="[16, 16]">
-        <a-col
-          :span="8"
-          v-for="user in users"
-          :key="user.id"
-        >
-          <!-- 使用 ICard (Interface Layer) -->
-          <ICard class="h-full">
-            <template #title>
-              {{ user.name }}
-            </template>
+內建強大的驗證規則引擎，支援 async 驗證。
 
-            <p>職稱: {{ user.role }}</p>
-            <p>ID: {{ user.id }}</p>
+```html
+<a-form
+  :model="formState"
+  @finish="onFinish"
+>
+  <!-- 必填、Email 格式驗證 -->
+  <a-form-item
+    name="email"
+    label="Email"
+    :rules="[{ required: true, type: 'email', message: '請輸入正確 Email' }]"
+  >
+    <a-input v-model:value="formState.email" />
+  </a-form-item>
 
-            <a-divider />
-
-            <!-- 使用 IButton -->
-            <IButton
-              variant="outlined"
-              block
-              @click="navigateToDetail(user.id)"
-            >
-              查看詳情
-            </IButton>
-          </ICard>
-        </a-col>
-      </a-row>
-
-      <div class="mt-4">
-        <IButton
-          variant="secondary"
-          to="/demo"
-        >
-          回 Demo 首頁
-        </IButton>
-      </div>
-    </a-space>
-  </div>
-</template>
+  <a-button html-type="submit">提交</a-button>
+</a-form>
 ```
 
-## 步驟 2: 建立動態路由頁面 (詳情頁)
+#### 2. Table 超級表格
 
-建立一個新檔案 `pages/user/[id].vue`。
-`[id]` 代表這是一個動態參數，可以匹配 `/user/1`, `/user/123` 等路徑。
+支援分頁、排序、篩選、固定欄位、多選等複雜功能。
 
-```vue
-<!-- pages/user/[id].vue -->
-<script setup lang="ts">
-definePageMeta({
-  layout: 'demo'
-})
-
-const route = useRoute()
-const userId = route.params.id
-</script>
-
-<template>
-  <div class="user-detail-page">
-    <a-space
-      direction="vertical"
-      size="large"
-    >
-      <a-typography-title :level="2">使用者詳情頁</a-typography-title>
-
-      <a-alert
-        message="動態路由測試"
-        :description="`你現在位於 User ID: ${userId} 的頁面`"
-        type="info"
-        show-icon
-      />
-
-      <ICard>
-        <p>
-          這是一個動態路由頁面 (
-          <code>pages/user/[id].vue</code>
-          )。
-        </p>
-        <p>
-          Nuxt 會自動將網址中的 ID 放入
-          <code>route.params.id</code>
-          。
-        </p>
-      </ICard>
-
-      <div>
-        <IButton
-          variant="secondary"
-          to="/demo/list"
-        >
-          返回列表
-        </IButton>
-      </div>
-    </a-space>
-  </div>
-</template>
+```html
+<a-table
+  :dataSource="data"
+  :columns="columns"
+  :pagination="{ pageSize: 10 }"
+  :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
+>
+  <!-- 自訂欄位內容 (Slot) -->
+  <template #bodyCell="{ column, record }">
+    <template v-if="column.key === 'action'">
+      <a>編輯</a>
+      <a-divider type="vertical" />
+      <a>刪除</a>
+    </template>
+  </template>
+</a-table>
 ```
 
-## 步驟 3: 測試導航
+#### 3. DatePicker 日期選擇
 
-1. 前往列表頁 `http://localhost:3000/demo/list`。
-2. 點擊卡片上的「查看詳情」，應跳轉至 `/user/1`。
-3. 在詳情頁，您應該會看到 "正在檢視使用者 ID: 1"。
-4. 點擊「返回列表」，應回到上一頁。
+支援多種模式：年/月/週/日選擇、區間選擇、以及時間選擇。
+
+```html
+<!-- 日期時間區間選擇 -->
+<a-range-picker
+  show-time
+  format="YYYY-MM-DD HH:mm:ss"
+  :placeholder="['開始時間', '結束時間']"
+/>
+```
+
+#### 4. Tree 樹狀結構
+
+處理階層式資料 (如部門組織圖、權限樹) 非常方便。
+
+```html
+<a-tree
+  checkable
+  :tree-data="treeData"
+  v-model:checkedKeys="checkedKeys"
+  defaultExpandAll
+>
+  <template #title="{ title, key }">
+    <span
+      v-if="key === '0-0-1'"
+      style="color: #1890ff"
+    >
+      {{ title }}
+    </span>
+    <template v-else>{{ title }}</template>
+  </template>
+</a-tree>
+```
+
+#### 5. Select 搜尋選單
+
+支援後端搜尋、標籤模式 (Tags)、多選。
+
+```html
+<a-select
+  v-model:value="value"
+  mode="multiple"
+  show-search
+  placeholder="請選擇標籤"
+  :options="options"
+  :filter-option="filterOption"
+/>
+```
 
 ---
 
-[上一課：使用介面元件](./lesson-2.md) | [回首頁](../../README.md) | [下一課：API 串接與資料層](./lesson-4.md)
+## 2. Tailwind CSS (樣式排版)
+
+Tailwind CSS 是 Utility-First 的 CSS 框架，讓您直接在 class 中寫樣式。
+
+### 2.1 常用排版技巧
+
+不需寫 `display: flex; justify-content: center; ...`，直接組合 class:
+
+```vue
+<template>
+  <!-- 水平垂直置中 -->
+  <div class="flex items-center justify-center h-screen bg-gray-50">
+    <!-- 內容 -->
+  </div>
+
+  <!-- 網格佈局 (Grid) -->
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-blue-100 p-4">區塊 1</div>
+    <div class="bg-blue-200 p-4">區塊 2</div>
+    <div class="bg-blue-300 p-4">區塊 3</div>
+  </div>
+</template>
+```
+
+### 2.2 狀態樣式 (Hover/Focus)
+
+```vue
+<template>
+  <button
+    class="
+    bg-blue-500          /* 預設背景 */
+    text-white           /* 文字顏色 */
+    px-4 py-2            /* 內距 */
+    rounded              /* 圓角 */
+    hover:bg-blue-600    /* 滑鼠懸停 */
+    active:bg-blue-700   /* 點擊 */
+    disabled:opacity-50  /* 禁用 */
+  "
+  >
+    按鈕範例
+  </button>
+</template>
+```
+
+### 2.3 響應式設計 (RWD)
+
+Tailwind 使用前綴來控制不同螢幕大小的樣式：
+
+- `md:` (平板 768px 以上)
+- `lg:` (電腦 1024px 以上)
+
+```vue
+<template>
+  <!-- 手機版垂直排列，電腦版並排 -->
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="w-full md:w-1/2 bg-red-100">左側</div>
+    <div class="w-full md:w-1/2 bg-green-100">右側</div>
+  </div>
+</template>
+```
+
+---
+
+## 3. 實戰範例: 登入卡片
+
+結合 `IInput` (封裝組件) 與 Tailwind (樣式) 的登入介面範例。
+
+```vue
+<template>
+  <div class="flex items-center justify-center min-h-[400px] bg-gray-50">
+    <!-- 卡片容器 -->
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg">
+      <!-- 標題區域 -->
+      <div class="mb-6 text-center">
+        <h2 class="text-2xl font-bold text-gray-800">歡迎回來</h2>
+        <p class="text-sm text-gray-500">請輸入您的帳號密碼</p>
+      </div>
+
+      <!-- 表單內容 -->
+      <div class="space-y-4">
+        <!-- 輸入框 (使用封裝組件) -->
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">帳號</label>
+          <IInput placeholder="請輸入 User ID" />
+        </div>
+
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">密碼</label>
+          <IInput
+            type="password"
+            placeholder="請輸入 Password"
+          />
+        </div>
+
+        <!-- 按鈕 (使用封裝組件，樣式調整寬度) -->
+        <IButton
+          variant="primary"
+          class="w-full mt-4"
+        >
+          登入系統
+        </IButton>
+      </div>
+
+      <!-- 底部連結 -->
+      <div class="mt-4 text-center text-xs text-gray-400">
+        <span class="hover:text-blue-500 cursor-pointer">忘記密碼?</span>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+---
+
+## 4. 小結
+
+1.  **Layout**: 使用 Tailwind 的 `flex`, `grid`, `w-full`, `p-4`。
+2.  **RWD**: 善用 `md:`, `lg:` 前綴。
+3.  **整合**: 外層用 Tailwind 排版，內層元件使用 `uiInterface`。
+
+---
+
+[上一課:建立您的第一個元件](./lesson-2.md) | [下一課:UI 組件開發規範](./lesson-4.md) | [回首頁](../../README.md)

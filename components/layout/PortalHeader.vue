@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import IButton from '@/components/uiInterface/IButton.vue'
 import HeaderUserMenu from '~/components/layout/header/HeaderUserMenu.vue'
-import HeaderLanguage from '~/components/layout/header/HeaderLanguage.vue'
 
 const config = useRuntimeConfig()
 const appName = config.public.app.productConfig?.meta?.title || 'Frontend Kit'
@@ -46,12 +45,6 @@ const navItems = [
 
       <!-- 右側操作區 -->
       <div class="header-actions">
-        <!-- 重用語言切換器 (若樣式衝突可能需透過 deep selector 或 wrapper 調整) -->
-        <div class="action-item">
-          <!-- 語言切換器的臨時佔位圖示，若元件樣式衝突或嘗試整合 -->
-          <HeaderLanguage />
-        </div>
-
         <div class="action-item">
           <IButton
             variant="text"

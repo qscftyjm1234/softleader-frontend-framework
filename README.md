@@ -1,10 +1,8 @@
 # Nuxt 3 開發包
 
-一個基於 Nuxt 3 的前端開發框架，採用Ant Design Vue框架，提供完整的開發工具與實踐。
+一個基於 Nuxt 3 與 Ant Design Vue 的完整開發框架。
 
 ## 快速開始
-
-新進人員請優先參考此區塊以快速建立開發環境。更詳細的說明（如 node 版本要求、報錯處理）請參閱 **[開發手冊](./docs/guides/development-manual.md)**。
 
 ### 1. 安裝相依套件
 
@@ -14,13 +12,13 @@ npm install
 
 ### 2. 環境設定
 
-複製範例設定檔並手動調整 `.env` 內容：
+複製範例設定檔：
 
 ```bash
 cp .env.example .env
 ```
 
-完整環境變數說明請參考 **[環境設定指南](./docs/api/environment-setup.md)**。
+詳細變數說明請參閱 **[環境設定指南](./docs/api/environment-setup.md)**。
 
 ### 3. 啟動開發伺服器
 
@@ -28,128 +26,68 @@ cp .env.example .env
 npm run dev
 ```
 
-開啟瀏覽器訪問 `http://localhost:3000`
+開啟瀏覽器訪問 `http://localhost:3000` 即可看到頁面。
 
-## 核心指南與規範
+---
 
-新進人員在開始開發前，請務必先閱讀以下文件以確保符合團隊規範：
+## 新手教學課程
 
-- **[開發手冊](./docs/guides/development-manual.md)**: 完整開發指南 (環境、套件、命名規範)。這是一份**必讀**的文件。
-- **[Git 工作流配置](./docs/guides/git-workflow.md)**: 了解 Commitlint 與 Commitizen 規範。
-- **[ESLint 開發規範](./docs/guides/eslint-rules.md)**: 完整的程式碼風格規範。
-
-## 從無到有，開發簡易課程
-
-專為新進人員設計的循序漸進教學。
+專為新進人員設計，請依照順序完成。
 
 - **[第一課：建立您的第一個頁面](./docs/course/lesson-1.md)**
-  - 學習如何建立 Layout 與 Page
-  - 使用 Interface Layer 元件 (IButton)
-- **[第二課：使用介面元件與 Props](./docs/course/lesson-2.md)**
-  - 學習如何使用 `ICard`、`IAvatar`
-  - 建立複合元件 `UserInfoCard`
-- **[第三課：頁面導航與路由](./docs/course/lesson-3.md)**
-  - 建立列表頁與詳情頁
-  - 學習動態路由 `[id].vue`
-- **[第四課：API 串接與資料層規範](./docs/course/lesson-4.md)**
-  - 學習 Repository Pattern
-  - 使用 `useAsyncData` 獲取資料
-- **[第五課：全域狀態管理 (Pinia)](./docs/course/lesson-5.md)**
-  - 建立 Store
-  - 跨頁面共享狀態
+- **[第二課：建立您的第一個元件](./docs/course/lesson-2.md)**
+- **[第三課：UI 框架介紹 (AntD + Tailwind)](./docs/course/lesson-3.md)**
+- **[第四課：UI 組件開發規範 (Components)](./docs/course/lesson-4.md)**
+- **[第五課：客製化圖示系統 (Icons)](./docs/course/lesson-5.md)**
+- **[第六課：頁面導航與路由 (Routing)](./docs/course/lesson-6.md)**
+- **[第七課：API 串接與資料層 (Repository)](./docs/course/lesson-7.md)**
+- **[第八課：全域狀態管理 (Pinia Store)](./docs/course/lesson-8.md)**
+- **[第九課：Git 提交與工作流](./docs/course/lesson-9.md)**
+- **[第十課：資安與權限控管 (Security & Watermark)](./docs/course/lesson-10.md)**
+- **[第十一課：環境變數設定 (Env Variables)](./docs/course/lesson-11.md)**
+- **[第十二課：進階表單處理 (Forms)](./docs/course/lesson-12.md)**
+- **[第十三課：複雜對話框處理 (Complex Dialogs)](./docs/course/lesson-13.md)**
+- **[第十四課：彈窗管理技巧 (Modal Management)](./docs/course/lesson-14.md)**
+- **[第十五課：檔案上傳實戰 (File Upload)](./docs/course/lesson-15.md)**
+- **[第十六課：資料格式化工具 (Utils)](./docs/course/lesson-16.md)**
+- **[第十七課：資料列表與分頁 (Data List & Pagination)](./docs/course/lesson-17.md)**
+- **[第十八課：搜尋與防抖 (Search & Debounce)](./docs/course/lesson-18.md)**
+- **[第十九課：選項數據管理 (Option Management)](./docs/course/lesson-19.md)**
+- **[第二十課：檔案下載與匯出 (File Download)](./docs/course/lesson-20.md)**
 
 ---
 
-## 文件目錄
+## 文件索引
 
-詳細文件說明。
+### 1. 核心指南 (必讀)
 
-### 1. [專案概覽](./docs/project/architecture.md)
+- **[開發手冊](./docs/guides/development-manual.md)**: 環境建置、套件說明、命名規範。
+- **[Git 工作流](./docs/guides/git-workflow.md)**: Commitizen 與 Conventional Commits 規範。
+- **[ESLint 規範](./docs/guides/eslint-rules.md)**: 程式碼風格標準。
 
-專案架構與設計理念。
+### 2. 專案架構
 
-- **[系統架構](./docs/project/architecture.md)**: 框架無關設計理念。
-- **[資料夾結構](./docs/project/folder-structure.md)**: 目錄結構與命名規範。
-- **[專案檔案說明](./docs/project/file-reference.md)**: 重點檔案用途說明。
-- **[功能展示與範例](./docs/guides/ui-showcase.md)**: 如何使用 Showcase 介面查看 UI 、模組與開發範例。
+- **[系統架構](./docs/project/architecture.md)**: 分層設計理念。
+- **[資料夾結構](./docs/project/folder-structure.md)**: 目錄用途說明。
+- **[檔案說明](./docs/project/file-reference.md)**: 關鍵檔案用途。
+- **[元件展示](./docs/guides/ui-showcase.md)**: UI Showcase 使用說明。
 
-### 2. [核心功能](./docs/core/components.md)
+### 3. 核心功能
 
-系統核心機制與基礎建設。
+- **[通用元件](./docs/core/components.md)**: UI Interface 與 Business 元件。
+- **[Composables](./docs/core/composables.md)**: 業務邏輯函式庫。
+- **[狀態管理](./docs/core/stores.md)**: Pinia Store 設計。
+- **[佈局系統](./docs/core/layout.md)**: Layout 與導航。
+- **[多語系](./docs/core/i18n.md)**: i18n 實作。
+- **[權限管理](./docs/core/security.md)**: 認證與授權。
 
-- **[通用元件](./docs/core/components.md)**: `components/common` 與 `uiInterface` 使用說明。
-- **[組合式函式 (Composables)](./docs/core/composables.md)**: 27 個可重用邏輯函式介紹。
-- **[狀態管理 (Pinia)](./docs/core/stores.md)**: Store 設計與規範。
-- **[插件系統](./docs/core/plugins.md)**: Nuxt 插件機制。
-- **[佈局系統](./docs/core/layout.md)**: 頁面佈局與導航。
-- **[多語系](./docs/core/i18n.md)**: i18n 整合與實作。
-- **[認證與權限](./docs/core/security.md)**: Token 與權限管理。
+### 4. API 與資料
 
-### 3. [API 與資料](./docs/api/guide.md)
-
-後端介接與資料模擬。
-
-- **[快速開始: API 串接](./docs/api/quick-start.md)**: 後端整合快速指南。
 - **[API 開發指南](./docs/api/guide.md)**: API 呼叫規範。
-- **[後端 API 規範](./docs/api/backend-contract.md)**: 後端 API 格式規範。
-- **[Repository Pattern](./docs/api/repository-pattern.md)**: 資料層封裝模式。
-- **[Mock Server](./docs/api/mock-server.md)**: 模擬伺服器使用說明。
+- **[Repository Pattern](./docs/api/repository-pattern.md)**: 資料層封裝。
+- **[Mock Server](./docs/api/mock-server.md)**: 前端模擬資料。
 
-### 4. [開發指南與規範](./docs/guides/development-manual.md)
+### 5. 開發工具
 
-日常開發流程與細節規範。
-
-- **[套件清單](./docs/guides/package-guide.md)**: 專案使用套件的功能說明。
-- **[註解規範](./docs/guides/comments.md)**: JSDoc 規範與註解標準。
-- **[邏輯放置指南](./docs/guides/logic-placement.md)**: Composables vs Utils 使用準則。
+- **[VS Code 設定](./docs/tools/vscode-eslint.md)**: 編輯器推薦設定。
 - **[除錯指南](./docs/guides/troubleshooting.md)**: 常見問題排除。
-- **[DX 指南](./docs/guides/dx.md)**: 開發者體驗工具。
-
-### 5. [工具與測試](./docs/tools/vscode-eslint.md)
-
-- **[VS Code & ESLint](./docs/tools/vscode-eslint.md)**: 編輯器環境設定。
-- **[Scripts 工具腳本](./docs/tools/scripts.md)**: 產品設定載入器與建置工具。
-
----
-
-## 專案開發指令
-
-### Git 提交
-
-本專案使用 Conventional Commits 規範：
-
-```bash
-pnpm commit
-```
-
-### 程式碼與 Lint
-
-```bash
-# 檢查格式
-pnpm format
-
-# 自動修正格式
-pnpm format:write
-
-# Lint 檢查
-pnpm lint
-```
-
-### 建置
-
-```bash
-# 建置正式版
-pnpm build
-```
-
-## 核心技術
-
-- **Nuxt 3** - Vue 3 全端框架
-- **Vuetify 3** - Material Design 元件庫
-- **Pinia** - 狀態管理
-- **TypeScript** - 型別安全
-- **i18n** - 國際化
-
-## 授權
-
-本專案為內部開發包，請遵守公司相關規範。

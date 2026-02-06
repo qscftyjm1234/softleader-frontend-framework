@@ -2,21 +2,21 @@
 
 # Repository 層 Mock 資料使用指南
 
-## 📋 概述
+## 概述
 
 我們已經將 Mock 資料攔截整合到 `useApi` 中，**不再依賴 MSW**。
 
-## ✅ 優勢
+## 優勢
 
 相比 MSW：
 
-- ✅ **零額外套件** - 不需要 MSW（節省 ~160KB）
-- ✅ **部署簡單** - 不需要 `mockServiceWorker.js`
-- ✅ **更靈活** - 可以精確控制哪些 API 用 Mock
-- ✅ **更輕量** - 只是簡單的 if-else 判斷
-- ✅ **正式站友好** - 可以安全地在任何環境使用
+- **零額外套件** - 不需要 MSW（節省 ~160KB）
+- **部署簡單** - 不需要 `mockServiceWorker.js`
+- **更靈活** - 可以精確控制哪些 API 用 Mock
+- **更輕量** - 只是簡單的 if-else 判斷
+- **正式站友好** - 可以安全地在任何環境使用
 
-## 🎯 工作原理
+## 工作原理
 
 ### 攔截位置
 
@@ -25,12 +25,12 @@
   ↓
 useApi('/api/users')
   ↓
-🛑 onRequest 攔截器
+onRequest 攔截器
   ↓
 checkMockData() 判斷
   ↓
-if (啟用 Mock) → 返回假資料 ✅
-else → 發送真實請求 ✅
+if (啟用 Mock) → 返回假資料
+else → 發送真實請求
 ```
 
 ### 程式碼流程
@@ -38,7 +38,7 @@ else → 發送真實請求 ✅
 ```typescript
 // composables/useApi.ts
 async onRequest({ request, options }) {
-  // 🎭 檢查是否需要返回 Mock 資料
+  // 檢查是否需要返回 Mock 資料
   const mockData = await checkMockData(request, options)
 
   if (mockData !== null) {
@@ -51,7 +51,7 @@ async onRequest({ request, options }) {
 }
 ```
 
-## 🚀 使用方式
+## 使用方式
 
 ### 1. 啟用 Mock
 
@@ -79,7 +79,7 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false
 NUXT_PUBLIC_API_BASE_URL=https://api.yourapp.com
 ```
 
-## 📁 檔案結構
+## 檔案結構
 
 ```
 utils/api/interceptors/
@@ -97,7 +97,7 @@ composables/
   └── useApi.ts            # 整合 Mock 攔截器
 ```
 
-## 🔧 添加新的 Mock API
+## 添加新的 Mock API
 
 ### 步驟 1：在 `mock.ts` 中添加 URL 匹配
 
@@ -145,7 +145,7 @@ export function createMockProduct(overrides?: Partial<Product>): Product {
 }
 ```
 
-## 🎨 進階功能
+## 進階功能
 
 ### 1. 選擇性 Mock
 
@@ -201,7 +201,7 @@ const delay = url.includes('/api/slow') ? 3000 : 500
 await new Promise((resolve) => setTimeout(resolve, delay))
 ```
 
-## 📊 環境設定
+## 環境設定
 
 ### 開發環境
 
@@ -235,14 +235,14 @@ NUXT_PUBLIC_FEATURE_API_MOCK=false
 NUXT_PUBLIC_API_BASE_URL=https://api.yourapp.com
 ```
 
-## 🔍 除錯
+## 除錯
 
 ### 檢查 Mock 是否啟用
 
 打開瀏覽器 Console，應該看到：
 
 ```
-🎭 Mock API 攔截: /api/users
+Mock API 攔截: /api/users
 ```
 
 ### 檢查環境變數
@@ -253,7 +253,7 @@ const config = useRuntimeConfig()
 console.log('Mock 啟用:', config.public.featureApiMock)
 ```
 
-## ⚠️ 注意事項
+## 注意事項
 
 ### 1. 不會在 Network 面板看到請求
 
@@ -267,7 +267,7 @@ console.log('Mock 啟用:', config.public.featureApiMock)
 
 ```typescript
 // 未匹配的 API
-console.warn('⚠️ 未找到對應的 Mock 資料:', url)
+console.warn('未找到對應的 Mock 資料:', url)
 return null // 讓請求繼續
 ```
 
@@ -275,19 +275,19 @@ return null // 讓請求繼續
 
 每次新增 API 都需要在 `mock.ts` 中添加對應的 URL 匹配邏輯。
 
-## 🎉 總結
+## 總結
 
 ### 與 MSW 的對比
 
-| 特性         | Repository 層 Mock  | MSW                          |
-| ------------ | ------------------- | ---------------------------- |
-| Bundle Size  | ✅ 小               | ❌ 大 (~160KB)               |
-| 部署複雜度   | ✅ 簡單             | ⚠️ 需要 mockServiceWorker.js |
-| Network 面板 | ❌ 看不到請求       | ✅ 可以看到                  |
-| 真實性       | ⚠️ 中等             | ✅ 高                        |
-| 靈活度       | ✅ 高               | ✅ 高                        |
-| 維護成本     | ⚠️ 需要手動匹配 URL | ✅ 低                        |
-| 適用場景     | 開發/測試/正式站    | 開發/測試                    |
+| 特性         | Repository 層 Mock | MSW                       |
+| ------------ | ------------------ | ------------------------- |
+| Bundle Size  | 小                 | 大 (~160KB)               |
+| 部署複雜度   | 簡單               | 需要 mockServiceWorker.js |
+| Network 面板 | 看不到請求         | 可以看到                  |
+| 真實性       | 中等               | 高                        |
+| 靈活度       | 高                 | 高                        |
+| 維護成本     | 需要手動匹配 URL   | 低                        |
+| 適用場景     | 開發/測試/正式站   | 開發/測試                 |
 
 ### 建議
 
@@ -295,4 +295,4 @@ return null // 讓請求繼續
 - **需要給客戶看真實網路請求** → 用 MSW
 - **正式站需要 Demo 模式** → 用 Repository 層 Mock
 
-現在你的專案已經支援兩種方式，可以根據需求選擇！🎉
+現在你的專案已經支援兩種方式，可以根據需求選擇！

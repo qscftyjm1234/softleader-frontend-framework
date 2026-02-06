@@ -29,7 +29,7 @@ import IApp from '~/components/uiInterface/IApp.vue'
 }
 
 .portal-main {
-  padding-top: 64px; /* Offset for fixed header */
+  /* padding-top: 64px; */
   flex: 1;
 }
 
