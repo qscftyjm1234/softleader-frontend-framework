@@ -52,7 +52,10 @@ const navigateToRules = () => {
           <div class="bento-desc">查看 26 個功能展示頁面，包含各類元件與應用場景。</div>
           <div class="bento-action text-blue-300 mt-auto pt-4">
             Explore Showcase
-            <IIcon size="14" icon="mdi-arrow-right" />
+            <IIcon
+              size="14"
+              icon="mdi-arrow-right"
+            />
           </div>
         </div>
       </div>
@@ -80,7 +83,10 @@ const navigateToRules = () => {
           <div class="bento-desc">完整的開發規範、命名約定與團隊最佳實踐指南。</div>
           <div class="bento-action text-orange-300 mt-auto pt-4">
             View Rules
-            <IIcon size="14" icon="mdi-arrow-right" />
+            <IIcon
+              size="14"
+              icon="mdi-arrow-right"
+            />
           </div>
         </div>
       </div>
@@ -783,7 +789,10 @@ const API_URL = '...'"
             <div class="bento-desc">標準化 API 請求層，整合 Repository 模式與攔截器。</div>
             <div class="bento-action text-sky-400">
               Explore API Values
-              <IIcon size="14" icon="mdi-arrow-right" />
+              <IIcon
+                size="14"
+                icon="mdi-arrow-right"
+              />
             </div>
           </div>
         </div>
@@ -808,7 +817,10 @@ const API_URL = '...'"
             <div class="bento-desc">Schema-based 驗證系統，支援 TW 身分證與手機號碼。</div>
             <div class="bento-action text-rose-400">
               View Patterns
-              <IIcon size="14" icon="mdi-arrow-right" />
+              <IIcon
+                size="14"
+                icon="mdi-arrow-right"
+              />
             </div>
           </div>
         </div>
@@ -833,7 +845,10 @@ const API_URL = '...'"
             <div class="bento-desc">金額、日期、隱碼處理，統一全站顯示邏輯。</div>
             <div class="bento-action text-amber-400">
               See Examples
-              <IIcon size="14" icon="mdi-arrow-right" />
+              <IIcon
+                size="14"
+                icon="mdi-arrow-right"
+              />
             </div>
           </div>
         </div>
@@ -858,7 +873,10 @@ const API_URL = '...'"
             <div class="bento-desc">使用 IIcon 統一管理 SVG 與 MDI Icons，支援自動對齊。</div>
             <div class="bento-action text-purple-400">
               Browse Icons
-              <IIcon size="14" icon="mdi-arrow-right" />
+              <IIcon
+                size="14"
+                icon="mdi-arrow-right"
+              />
             </div>
           </div>
         </div>

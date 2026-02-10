@@ -1098,7 +1098,10 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
+            <IIcon
+              class="text-slate-500"
+              icon="mdi-arrow-right"
+            />
           </div>
 
           <!-- Step 2 -->
@@ -1111,7 +1114,10 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
+            <IIcon
+              class="text-slate-500"
+              icon="mdi-arrow-right"
+            />
           </div>
 
           <!-- Step 3 -->
@@ -1124,7 +1130,10 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
+            <IIcon
+              class="text-slate-500"
+              icon="mdi-arrow-right"
+            />
           </div>
 
           <!-- Step 4 -->
@@ -1137,7 +1146,10 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
+            <IIcon
+              class="text-slate-500"
+              icon="mdi-arrow-right"
+            />
           </div>
 
           <!-- Step 5 -->
@@ -1150,7 +1162,10 @@ type ApiResponse<T> = {
           </div>
 
           <div class="flow-arrow">
-            <IIcon class="text-slate-500" icon="mdi-arrow-right" />
+            <IIcon
+              class="text-slate-500"
+              icon="mdi-arrow-right"
+            />
           </div>
 
           <!-- Step 6 -->

@@ -42,6 +42,12 @@ const props = withDefaults(defineProps<Props>(), {
 // 判斷是否為 MDI 字串
 const isMdi = computed(() => typeof props.icon === 'string' && props.icon.startsWith('mdi-'))
 
+// 轉換 MDI 名稱格式 (mdi-home -> mdi:home) 為 @nuxt/icon 使用
+const mdiIconName = computed(() => {
+  if (!isMdi.value) return ''
+  return (props.icon as string).replace('mdi-', 'mdi:')
+})
+
 // 判斷是否為 Custom Icon (svg-xxx 格式)
 const isCustomIcon = computed(() => typeof props.icon === 'string' && props.icon.startsWith('svg-'))
 
@@ -104,6 +110,19 @@ const processedSvg = computed(() => {
   return svg
 })
 
+// 計算 CSS 尺寸值
+const cssSize = computed(() => {
+  if (typeof props.size === 'number') return `${props.size}px`
+  const sizeMap: Record<string, string> = {
+    'x-small': '12px',
+    small: '16px',
+    default: '24px',
+    large: '32px',
+    'x-large': '48px'
+  }
+  return sizeMap[props.size] || props.size
+})
+
 // 計算樣式
 const styles = computed(() => {
   const s: Record<string, string> = {}
@@ -118,24 +137,10 @@ const styles = computed(() => {
   }
 
   if (props.size) {
-    if (typeof props.size === 'number') {
-      s.fontSize = `${props.size}px`
-      s.width = `${props.size}px`
-      s.height = `${props.size}px`
-    } else {
-      // 處理關鍵字大小映射
-      const sizeMap: Record<string, string> = {
-        'x-small': '12px',
-        small: '16px',
-        default: '24px',
-        large: '32px',
-        'x-large': '48px'
-      }
-      const mappedSize = sizeMap[props.size] || props.size
-      s.fontSize = mappedSize
-      s.width = mappedSize
-      s.height = mappedSize
-    }
+    const val = cssSize.value
+    s.fontSize = val
+    s.width = val
+    s.height = val
   }
 
   return s
@@ -145,8 +150,6 @@ const styles = computed(() => {
 const classes = computed(() => [
   'ui-icon',
   props.variant ? `ui-icon--${props.variant}` : '',
-  // 如果是 MDI，自動補上 mdi 與 mdi-xxx
-  isMdi.value ? `mdi ${props.icon}` : '',
   // 如果有指定顏色，加上強制變色 class (針對 Raw SVG)
   props.color ? '--forced-color' : ''
 ])
@@ -164,9 +167,16 @@ const RawIcon = (props: { svg: string }) =>
     :class="classes"
     :style="styles"
   >
+    <!-- MDI 圖示模式 (遷移至 @nuxt/icon) -->
+    <Icon
+      v-if="isMdi"
+      :name="mdiIconName"
+      :size="cssSize"
+    />
+
     <!-- SVG Path 模式 -->
     <svg
-      v-if="isSvgPath"
+      v-else-if="isSvgPath"
       viewBox="0 0 24 24"
     >
       <path :d="icon as string" />

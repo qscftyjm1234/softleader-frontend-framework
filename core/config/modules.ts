@@ -13,9 +13,6 @@ export const modulesConfig: NuxtConfig['modules'] = [
   // 國際化多語系支援
   '@nuxtjs/i18n',
 
-  // Vue Composition API 工具庫 (提供 useWindowSize, useStorage 等)
-  '@vueuse/nuxt',
-
   // 狀態管理工具 (取代 Vuex)
   '@pinia/nuxt',
 
@@ -26,5 +23,11 @@ export const modulesConfig: NuxtConfig['modules'] = [
   '@ant-design-vue/nuxt',
 
   // Tailwind CSS 整合
-  '@nuxtjs/tailwindcss'
+  '@nuxtjs/tailwindcss',
+
+  // 圖示模組
+  '@nuxt/icon',
+
+  // 字體模組
+  '@nuxt/fonts'
 ]
