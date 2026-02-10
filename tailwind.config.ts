@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { themeConfig } from './core/config/theme-tokens'
 
 export default <Config>{
   content: [
@@ -13,11 +14,12 @@ export default <Config>{
   theme: {
     extend: {
       colors: {
-        primary: '#1890ff',
-        success: '#52c41a',
-        warning: '#faad14',
-        error: '#f5222d',
-        info: '#1890ff'
+        primary: themeConfig.token.colorPrimary,
+        success: themeConfig.token.colorSuccess,
+        warning: themeConfig.token.colorWarning,
+        error: themeConfig.token.colorError,
+        info: themeConfig.token.colorInfo,
+        business: themeConfig.token.colorBusiness
       }
     }
   },
