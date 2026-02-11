@@ -55,6 +55,25 @@ npm run dev
 - **[第十九課：選項數據管理 (Option Management)](./docs/course/lesson-19.md)**
 - **[第二十課：檔案下載與匯出 (File Download)](./docs/course/lesson-20.md)**
 
+## 專案結構
+
+```bash
+.
+├── apps/                # 應用程式目錄
+│   └── template-app/    # 模板應用程式
+├── layers/              # Nuxt Layers 目錄
+│   └── core/            # 核心層 (Core Layer)
+├── modules/             # 功能模組
+│   └── showcase/        # UI 元件展示模組
+├── components/          # 全域元件
+├── composables/         # 業務邏輯 Hooks
+├── repositories/        # API 資料層
+├── stores/              # 全域狀態管理 (Pinia)
+├── docs/                # 完整說明文件
+├── CI.md                # 持續整合 (CI) 指南
+└── CD.md                # 持續部署 (CD) 指南
+```
+
 ---
 
 ## 文件索引
@@ -68,8 +87,7 @@ npm run dev
 ### 2. 專案架構
 
 - **[系統架構](./docs/project/architecture.md)**: 分層設計理念。
-- **[資料夾結構](./docs/project/folder-structure.md)**: 目錄用途說明。
-- **[檔案說明](./docs/project/file-reference.md)**: 關鍵檔案用途。
+- **[專案架構與檔案說明](./docs/project/structure-reference.md)**: 包含分層設計、目錄用途與關鍵檔案說明。
 - **[元件展示](./docs/guides/ui-showcase.md)**: UI Showcase 使用說明。
 
 ### 3. 核心功能
@@ -83,11 +101,20 @@ npm run dev
 
 ### 4. API 與資料
 
-- **[API 開發指南](./docs/api/guide.md)**: API 呼叫規範。
+- **[API 開發指南](./docs/api/guide.md)**: API 呼稱規範。
 - **[Repository Pattern](./docs/api/repository-pattern.md)**: 資料層封裝。
 - **[Mock Server](./docs/api/mock-server.md)**: 前端模擬資料。
+- **[環境設定指南](./docs/api/environment-setup.md)**: 環境變數變更詳細說明。
 
-### 5. 開發工具
+### 5. 部署與運維
+
+- **CI (持續整合, Continuous Integration)**: 頻繁地將程式碼合併到主線，並透過自動化測試與打包確保品質。
+  - **[CI 流程總覽](./CI.md)**: Image 打包與 Nginx 優化。
+  - **[Lazy Load 404 解決方案](./CI.md#3-部署注意事項解決-lazy-load-導致的-404-問題)**: 避免更新版本時的使用者斷網問題。
+- **CD (持續部署, Continuous Deployment)**: 將打包好的 Image 自動部署至環境，確保軟體快速交付。
+  - **[CD 部署架構](./CD.md)**: K8S 資源與多環境部署策略。
+
+### 6. 開發工具
 
 - **[VS Code 設定](./docs/tools/vscode-eslint.md)**: 編輯器推薦設定。
 - **[除錯指南](./docs/guides/troubleshooting.md)**: 常見問題排除。

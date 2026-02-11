@@ -1,99 +1,70 @@
 <!-- Author: cindy -->
 
-# 第十課:資安與權限控管
+# 第十課：UI 資安防護機制
 
-本課程教您如何啟用專案內建的 **UI 資安防護模組**，保護系統資料安全。
+本課程介紹如何啟用前端 UI 防護機制，保護系統資料與使用者隱私。
 
-## 1. UI 資安防護模組 (Security Plugin)
+## 1. 全域資安防護模式 (Security Mode)
 
-專案內建了一套強大的前端防護機制，包含防截圖、防錄影、浮水印等功能。
-
-### 如何啟用
-
-在 `.env` 檔案中設定：
+專案提供了一套開箱即用的防護模組，只需在 `.env` 檔案中開啟開關即可啟用：
 
 ```ini
-# 啟用資安防護模式
+# 啟用全域資安防護 (預設為 false)
 NUXT_PUBLIC_ENABLE_SECURITY_MODE=true
 ```
 
-### 防護功能一覽
+### 防護功能說明
 
-啟用後，系統會自動執行以下防護：
+當 `SECURITY_MODE` 啟用時，系統會自動在全域執行以下行為：
 
-1.  **防截圖/錄影**: 偵測 PrintScreen 或截圖行為時，自動模糊畫面。
-2.  **閒置模糊**: 使用者太久沒動作時，自動模糊畫面保護隱私。
-3.  **禁用開發者工具**: 阻擋 F12、Ctrl+Shift+I 等快捷鍵。
-4.  **禁用右鍵/複製**: 防止輕易複製文字或圖片。
-5.  **浮水印**: (需配合 `useWatermark` 使用)。
+1.  **防截圖與防錄影 (Anti-Screenshot)**
+    - 當使用者按下 `PrintScreen` 鍵或使用特定錄影軟體偵測時，畫面會出現短暫模糊，防止敏感報表被截錄。
+
+2.  **閒置模糊 (Idle Blur)**
+    - 當使用者超過一段時間（預設 5 分鐘）沒有滑動滑鼠或操作鍵盤，系統會自動模糊畫面。
+    - 用途：防止員工暫時離開座位時，路過的人看到敏感的客戶保單資料。
+
+3.  **禁用開發者工具 (Disable DevTools)**
+    - 阻擋 F12、`Ctrl+Shift+I` (Windows) 或 `Cmd+Option+I` (Mac)。
+    - 用途：防止非開發人員嘗試透過 Console 竄改資料或查看 API 請求。
+
+4.  **禁用右鍵與複製 (Disable Context Menu)**
+    - 禁止右鍵選單與 `Ctrl+C` 複製行為。
+    - 用途：防止使用者輕易複製公司內部文案、費率表或客戶電話。
 
 ---
 
 ## 2. 數位浮水印 (Watermark)
 
-使用 `useWatermark` 在頁面上壓上使用者資訊，防止資料外流時無法追溯。
+浮水印是保護資料不被「手機翻拍」的核心手段。
 
 ### 使用方式
 
-在 `app.vue` 或 `layouts/default.vue` 中全域使用：
+在 `app.vue` 或 Layout 中使用 `useWatermark` 即可在畫面上層壓上資訊。
 
 ```vue
 <script setup lang="ts">
 const { showWatermark } = useWatermark()
-const { user } = useAuthStore() // 假設有 user store
+const quoteStore = useQuotationStore() // 沿用第八課範例
 
 onMounted(() => {
-  if (user.isLoggedIn) {
-    showWatermark({
-      text: `${user.name} (${user.empId})`,
-      color: 'rgba(0, 0, 0, 0.05)' // 淺色浮水印
-    })
-  }
+  // 顯示當前操作人的浮水印
+  showWatermark({
+    text: `經辦人員：${quoteStore.policyHolder.name || '訪客'}`,
+    color: 'rgba(0, 0, 0, 0.05)' // 極淡的顏色
+  })
 })
 </script>
 ```
 
-### 參數說明
+---
 
-| 參數     | 說明     | 預設值           |
-| :------- | :------- | :--------------- |
-| `text`   | 顯示文字 | 當前時間         |
-| `color`  | 文字顏色 | rgba(0,0,0,0.06) |
-| `rotate` | 旋轉角度 | -25              |
-| `gapX`   | 水平間距 | 180              |
+## 3. 小結
+
+1.  **一鍵啟用**：修改 `.env` 中的 `NUXT_PUBLIC_ENABLE_SECURITY_MODE`。
+2.  **核心功能**：防截圖、閒置自動模糊、阻擋 F12。
+3.  **手機翻拍對策**：使用 `showWatermark` 追蹤洩密來源。
 
 ---
 
-## 3. 功能權限控制 (Permissions)
-
-處理按鈕或頁面的存取權限。
-
-### 使用 usePermission
-
-```vue
-<script setup lang="ts">
-const { hasPermission } = usePermission()
-</script>
-
-<template>
-  <!-- 只有主管能看到刪除按鈕 -->
-  <IButton
-    v-if="hasPermission('DELETE_USER')"
-    color="error"
-  >
-    刪除使用者
-  </IButton>
-</template>
-```
-
----
-
-## 4. 小結
-
-1.  **啟用防護**: 設定 `NUXT_PUBLIC_ENABLE_SECURITY_MODE=true`。
-2.  **浮水印**: 使用 `showWatermark({ text: 'User Name' })`。
-3.  **權限**: 使用 `hasPermission('CODE')` 控制按鈕。
-
----
-
-[上一課:Git 提交與工作流](./lesson-9.md) | [下一課:環境變數設定](./lesson-11.md) | [回首頁](../../README.md)
+[上一課：Git 提交與工作流](./lesson-9.md) | [下一課：環境變數設定](./lesson-11.md) | [回首頁](../../README.md)

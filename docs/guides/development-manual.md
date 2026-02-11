@@ -12,7 +12,7 @@
 
 | 工具        | 版本要求  | 檢查指令         | 下載連結                          |
 | :---------- | :-------- | :--------------- | :-------------------------------- |
-| **Node.js** | v18.18.0+ | `node --version` | [nodejs.org](https://nodejs.org/) |
+| **Node.js** | v20.19.2+ | `node --version` | [nodejs.org](https://nodejs.org/) |
 | **NPM**     | v9.0.0+   | `npm --version`  | 隨 Node.js 安裝                   |
 
 ---
