@@ -78,7 +78,7 @@ npm run dev
 - **[狀態管理](./docs/core/stores.md)**: Pinia Store 設計。
 - **[佈局系統](./docs/core/layout.md)**: Layout 與導航。
 - **[多語系](./docs/core/i18n.md)**: i18n 實作。
-- **[權限管理](./docs/core/security.md)**: 認證與授權。
+- **[登入與權限教學](./docs/core/security.md)**: 認證與授權。
 
 ### 4. API 與資料
 
@@ -90,12 +90,15 @@ npm run dev
 ### 5. 部署與運維
 
 - **CI (持續整合, Continuous Integration)**: 頻繁地將程式碼合併到主線，並透過自動化測試與打包確保品質。
-  - **[CI 流程總覽](./CI.md)**: Image 打包與 Nginx 優化。
-  - **[Lazy Load 404 解決方案](./CI.md#3-部署注意事項解決-lazy-load-導致的-404-問題)**: 避免更新版本時的使用者斷網問題。
+- [CI 流程總覽](./CI.md): Image 打包與 Nginx 優化。
 - **CD (持續部署, Continuous Deployment)**: 將打包好的 Image 自動部署至環境，確保軟體快速交付。
   - **[CD 部署架構](./CD.md)**: K8S 資源與多環境部署策略。
 
 ### 6. 開發工具
 
 - **[VS Code 設定](./docs/tools/vscode-eslint.md)**: 編輯器推薦設定。
-- **[除錯指南](./docs/guides/troubleshooting.md)**: 常見問題排除。
+
+### 7. 常見問題與解決方案
+
+- **[Lazy Load 404 解決方案](./docs/troubleshooting/lazy-load-404.md)**: 避免更新版本時的使用者斷網問題。
+- **[除錯指南](./docs/guides/troubleshooting.md)**: 一般性問題排除。

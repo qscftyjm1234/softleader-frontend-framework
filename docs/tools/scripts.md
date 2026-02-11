@@ -25,6 +25,7 @@
 | `npm run format:write`     | 格式修復         | 使用 Prettier 自動修復所有程式碼格式問題。                          |
 | `npm run commit`           | 規範提交         | 啟動 Commitizen 引導式介面，生成符合規範的 Commit Message。         |
 | `npm run clone`            | 複製專案         | 執行 `clone-project.bat` 腳本，快速複製排除 `node_modules` 的專案。 |
+| `npm run package-filter`   | 套件篩選         | 根據公司需求 (`package-clients.json`) 產生客製化的 `package.json`。 |
 
 ---
 
@@ -138,3 +139,33 @@ PRODUCT_CONFIG=staging npm run build
 
 - [專案檔案說明](../project/file-reference.md)
 - [開發手冊](./development-manual.md)
+
+---
+
+### package-filter.mjs
+
+**用途**: 客製化 Package 依賴管理工具
+
+**使用方式**:
+
+```bash
+npm run package-filter
+```
+
+**功能說明**:
+
+- **Source of Truth**: 以 `package.master.json` 作為唯一真理來源。
+- **Client Policy**: 讀取 `package-clients.json` 定義的各公司政策（白名單/黑名單）。
+- **自動修剪**: 根據選擇的公司政策，自動移除不允許或不需要的 `dependencies` 與 `scripts`。
+- **防止漂移**: 每次執行都會強制重置 `package.json`，確保專案依賴完全符合政策規範。
+
+**設定檔範例 (`package-clients.json`)**:
+
+```json
+{
+  "Fubon": {
+    "exclude": ["@nuxtjs/device", "@commitlint/cli"],
+    "description": "富邦銀行不使用 device 套件與 Git 開發工具"
+  }
+}
+```

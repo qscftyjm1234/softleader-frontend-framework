@@ -1,6 +1,6 @@
 [← 返回 README.md](../../README.md)
 
-# 認證與權限管理 (Authentication & Permissions)
+# 登入相關教學
 
 關於 Token (通常是 JWT) 的處理，前端工程師最常面臨的挑戰是：**「要存哪裡？」** 與 **「過期了怎麼辦？」**。
 
@@ -15,7 +15,7 @@
 | **Cookie (HttpOnly)** | 高     | 🟢 低 (JS 讀不到) | 🔴 高 (需防護) | 🟢 可    | ✅ **最推薦**     |
 | **In-Memory (變數)**  | 最高   | 🟢 無             | 🟢 無          | 🔴 無法  | ⚠️ 僅限極高敏資料 |
 
-### 🏆 最佳實踐：雙 Token 機制
+### 最佳實踐：雙 Token 機制
 
 最主流且安全的做法是結合 **短效存取權杖 (Access Token)** 與 **長效刷新權杖 (Refresh Token)**。
 
@@ -37,28 +37,6 @@
 ### 實作邏輯 (在 `useApi.ts` 中)
 
 我們利用 `onResponseError` (401 錯誤) 來攔截。
-
-```mermaid
-sequenceDiagram
-    participant App as 前端 App
-    participant Interceptor as 攔截器 (useApi)
-    participant API as 後端 API
-
-    App->>Interceptor: 1. 發送請求 (帶舊 Token)
-    Interceptor->>API: 2. 呼叫 API (例如: 取得個資)
-    API-->>Interceptor: 3. 回傳 401 錯誤 (Token 過期)
-
-    Note over Interceptor: 🛑 攔截到 401！暫停回傳
-
-    Interceptor->>API: 4. 請求刷新 Token (帶 HttpOnly Cookie)
-    API-->>Interceptor: 5. 回傳新 Access Token
-
-    Note over Interceptor: ✅ 更新 Token 並重發原請求
-
-    Interceptor->>API: 6. 重發原本的 API (帶新 Token)
-    API-->>Interceptor: 7. 回傳正確資料 (200 OK)
-    Interceptor-->>App: 8. 回傳資料 (使用者無感)
-```
 
 ### 程式碼範例 (`composables/useApi.ts`)
 
