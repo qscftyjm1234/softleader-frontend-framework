@@ -57,7 +57,7 @@ export default defineNuxtConfig({
   /**
    * @功能 使用 @nuxtjs/i18n 語系相關設定
    * */
-  i18n: i18nConfig,
+  i18n: modulesConfig?.includes('@nuxtjs/i18n') ? i18nConfig : undefined,
 
   /**
    * @功能 設定可自動導入 (auto import) 的資料夾

@@ -19,7 +19,8 @@
     "format:write": "prettier --write .",
     "commit": "cz",
     "clone": "clone-project.bat",
-    "open": "explorer ."
+    "open": "explorer .",
+    "package-filter": "node scripts/package-filter.mjs"
   },
   "config": {
     "commitizen": {
@@ -32,8 +33,6 @@
   "dependencies": {
     "@nuxt/fonts": "0.11.0",
     "@nuxt/icon": "^1.11.0",
-    "@nuxtjs/device": "3.2.4",
-    "@nuxtjs/i18n": "10.0.3",
     "@pinia/nuxt": "^0.10.1",
     "@vueuse/core": "^10.11.1",
     "ant-design-vue": "^4.2.6",
@@ -65,6 +64,6 @@
     "prettier": "^3.5.3",
     "sass": "^1.85.0",
     "typescript": "5.7.3",
-    "vue-tsc": "2.2.0"
+    "vue-tsc": "2.1.10"
   }
 }

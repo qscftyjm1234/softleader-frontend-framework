@@ -15,13 +15,67 @@
 | **Node.js** | v20.19.2+ | `node --version` | [nodejs.org](https://nodejs.org/) |
 | **NPM**     | v9.0.0+   | `npm --version`  | 隨 Node.js 安裝                   |
 
----
-
 ## 系統套件
 
 > **詳細套件清單與版本**：請參閱 **[套件清單](./package-guide.md)**
 >
 > 該文件包含了生產環境與開發環境的所有依賴套件說明、版本資訊與安裝指令。
+
+---
+
+## 甲方 Package 篩選
+
+針對不同甲方公司的部署需求與套件限制，專案提供自動化「Package 篩選」機制，能快速調整 `package.json` 的名稱、描述並過濾不必要的依賴項。
+
+| 檔案/目錄                    | 用途     | 說明                                               |
+| :--------------------------- | :------- | :------------------------------------------------- |
+| `package.master.json`        | 原始清單 | **重要**: 這是所有套件的完整來源，請勿直接修改此檔 |
+| `package-clients.json`       | 甲方清單 | 定義各公司的排除 (`exclude`) 或所需 (`include`)    |
+| `scripts/package-filter.mjs` | 篩選腳本 | 負責將 `package.json` 篩選為目標公司的版本         |
+
+**使用方式：**
+
+腳本優先順序為：**指令參數 > 環境變數 > 互動選單**。
+
+```bash
+# 1. 直接指定公司 (優先權最高)
+# 範例 (不分大小寫):
+npm run package-filter Fubon
+
+# 2. 使用環境變數 (CLIENT_ID) 執行
+# PowerShell:
+$env:CLIENT_ID="Fubon"; npm run package-filter
+
+# Command Prompt (cmd.exe):
+set CLIENT_ID=Fubon && npm run package-filter
+
+# 3. 彈出互動選單挑選 (以上皆無提供時)
+npm run package-filter
+```
+
+#### 重新安裝套件
+
+執行完篩選後，請務必重新安裝以套用變更：
+
+```bash
+npm install
+```
+
+> [!TIP]
+> 執行此腳本後，`package.json` 的 `name` 與 `description` 會自動根據 `package-clients.json` 的定義變更。
+
+#### 動態模組載入 (Dynamic Module Loading)
+
+為了確保專案在排除特定套件後仍能正常啟動，系統採用了「指令式檢查」：
+
+- **`core/config/modules.ts`**: 會讀取 `package.json` 確認套件是否存在。若套件已被篩選移除，Nuxt 將不會嘗試載入該模組，避免「Module Not Found」錯誤。
+
+#### 安全後備機制 (Safe Fallbacks)
+
+當某些功能模組（如 `@nuxtjs/i18n` 或 `@nuxtjs/device`）被移除時，相關的 Composables 會自動切換至安全模式：
+
+- **`useLanguage()`**: 若偵測到 i18n 未安裝，會自動回傳預設語系 (zh) 並提供警告，防止 UI 崩潰。
+- **`useAppDevice()`**: 若偵測到 device 模組未安裝，會預設裝置為 `desktop`，確保 `isDesktop`, `isMobile` 等屬性依然可用。
 
 ---
 
@@ -68,8 +122,6 @@ npm run lint
 ```bash
 npx nuxi typecheck
 ```
-
----
 
 ## 命名規範
 
@@ -265,6 +317,21 @@ Closes #123
 ```
 
 ---
+
+## 常見問題 (Troubleshooting)
+
+### 1. 修改套件後無法啟動 (Nitro Error)
+
+如果您剛執行完 `package-filter` 並 `npm install`，但 `npm run dev` 報錯找不到 `client.manifest.mjs`，請執行：
+
+```bash
+# 清除 Nuxt 快取並重新初始化環境
+npx nuxi cleanup ; npx nuxi prepare
+```
+
+### 2. Vue-TSC 版本衝突
+
+專案目前鎖定 `vue-tsc` 為 `2.1.10` 以相容於 `vite-plugin-checker`。請勿隨意升級至 `2.2.x` 以上版本，除非確認 `vite-plugin-checker` 已提供支援。
 
 ## 相關文件
 

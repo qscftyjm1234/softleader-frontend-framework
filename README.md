@@ -55,25 +55,6 @@ npm run dev
 - **[第十九課：選項數據管理 (Option Management)](./docs/course/lesson-19.md)**
 - **[第二十課：檔案下載與匯出 (File Download)](./docs/course/lesson-20.md)**
 
-## 專案結構
-
-```bash
-.
-├── apps/                # 應用程式目錄
-│   └── template-app/    # 模板應用程式
-├── layers/              # Nuxt Layers 目錄
-│   └── core/            # 核心層 (Core Layer)
-├── modules/             # 功能模組
-│   └── showcase/        # UI 元件展示模組
-├── components/          # 全域元件
-├── composables/         # 業務邏輯 Hooks
-├── repositories/        # API 資料層
-├── stores/              # 全域狀態管理 (Pinia)
-├── docs/                # 完整說明文件
-├── CI.md                # 持續整合 (CI) 指南
-└── CD.md                # 持續部署 (CD) 指南
-```
-
 ---
 
 ## 文件索引

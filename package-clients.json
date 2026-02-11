@@ -1,0 +1,14 @@
+{
+  "Company-Alpha": {
+    "exclude": ["lodash.clonedeep"],
+    "description": "甲方 A 公司禁止使用 lodash 相關套件"
+  },
+  "Company-Beta": {
+    "include": ["nuxt", "ant-design-vue", "@pinia/nuxt", "pinia", "dayjs", "@vueuse/core"],
+    "description": "甲方 B 公司僅允許白名單內的套件"
+  },
+  "Fubon": {
+    "exclude": ["@nuxtjs/device", "@nuxtjs/i18n"],
+    "description": "富邦銀行不使用 device 與 i18n 套件"
+  }
+}

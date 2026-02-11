@@ -26,22 +26,37 @@
  * ```
  */
 export const useLanguage = () => {
-  const { locale, locales, setLocale } = useI18n()
+  // 嘗試取得 i18n 實例，如果沒裝模組就給預設值
+  let i18n: any
+  try {
+    i18n = useI18n()
+  } catch {
+    // 沒裝模組時的後備 (Fallback)
+    i18n = {
+      locale: ref('zh'),
+      locales: ref([{ code: 'zh', name: '中文' }]),
+      setLocale: () => console.warn('[I18n] 模組未安裝，無法切換語系')
+    }
+  }
+
+  const { locale, locales, setLocale } = i18n
 
   /**
    * 目前的語系設定物件
    */
-  const currentLocale = computed(() =>
-    (locales.value as any[]).find((l) => l.code === locale.value)
-  )
+  const currentLocale = computed(() => {
+    const list = unref(locales) as any[]
+    return list.find((l) => l.code === unref(locale)) || list[0]
+  })
 
   /**
    * 其他可用的語系清單 (排除目前語系)
    * 用於語言切換選單
    */
-  const availableLocales = computed(() =>
-    (locales.value as any[]).filter((l) => l.code !== locale.value)
-  )
+  const availableLocales = computed(() => {
+    const list = unref(locales) as any[]
+    return list.filter((l) => l.code !== unref(locale))
+  })
 
   return {
     locale,

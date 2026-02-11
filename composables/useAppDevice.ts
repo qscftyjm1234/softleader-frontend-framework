@@ -13,11 +13,18 @@ export const useAppDevice = () => {
   // 注意：這裡不能呼叫 useDevice()，因為會遞迴呼叫自己
   // 我們改為從 NuxtApp Context 取得 @nuxtjs/device 注入的 $device
   const nuxtApp = useNuxtApp()
-  const device = nuxtApp.$device as any // $device 是由 @nuxtjs/device plugin 注入
+  // 如果沒裝 @nuxtjs/device 模組，就給一個空的物件預設值
+  const device = (nuxtApp.$device || {
+    isIos: false,
+    isAndroid: false,
+    isMobile: false,
+    isDesktop: true, // 預設為電腦版
+    isTablet: false
+  }) as any
 
   // 2. 取得 Runtime Config (讀取 App 識別字串設定)
   const config = useRuntimeConfig() as any
-  const appIdentifier = config.public.app.uaIdentifier as string
+  const appIdentifier = (config.public?.app?.uaIdentifier as string) || 'MyApp'
 
   // 3. 判斷是否為 App 環境
   // 邏輯：檢查 User-Agent 是否包含特定的識別字串 (例如 "MyApp")
@@ -25,7 +32,7 @@ export const useAppDevice = () => {
     // SSR 處理：從 Request Headers 讀取 User-Agent
     if (import.meta.server) {
       const headers = useRequestHeaders(['user-agent'])
-      const ua = headers['user-agent'] || ''
+      const ua = (headers['user-agent'] as string) || ''
       return ua.includes(appIdentifier)
     }
 
@@ -36,11 +43,11 @@ export const useAppDevice = () => {
 
   // 4. 判斷作業系統 (整合 Device 資訊)
   // 注意：需要確保 device 物件存在 (雖然後端 plugin 應該保證存在，但加個防呆較安全)
-  const isIOS = computed(() => device?.isIos)
-  const isAndroid = computed(() => device?.isAndroid)
-  const isMobile = computed(() => device?.isMobile)
-  const isDesktop = computed(() => device?.isDesktop)
-  const isTablet = computed(() => device?.isTablet)
+  const isIOS = computed(() => !!device?.isIos)
+  const isAndroid = computed(() => !!device?.isAndroid)
+  const isMobile = computed(() => !!device?.isMobile)
+  const isDesktop = computed(() => !!device?.isDesktop)
+  const isTablet = computed(() => !!device?.isTablet)
 
   /**
    * 為了方便使用，回傳一個整合過的裝置字串
