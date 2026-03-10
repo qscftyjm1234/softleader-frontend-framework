@@ -17,11 +17,14 @@ defineOptions({
     Vuetify 需要 v-app 作為最外層容器來提供 Theme 和 Overlay context。
     在此處封裝，讓外部 Layout 只需使用 <IApp>。
   -->
-  <v-app v-bind="$attrs">
+  <div
+    v-bind="$attrs"
+    class="bg-zinc-50 text-slate-900 font-sans selection:bg-indigo-100 min-h-screen"
+  >
     <slot />
-  </v-app>
+  </div>
 </template>
 
 <style scoped>
-/* 可以在此定義全域的 App 層級樣式，或讓 slot 內容決定 */
+/* 全域的 App 層級樣式由 Tailwind class 取代 */
 </style>

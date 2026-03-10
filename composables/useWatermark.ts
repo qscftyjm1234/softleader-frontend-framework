@@ -1,16 +1,10 @@
+import { ref } from 'vue'
+
+const isWatermarkVisible = ref(false)
+
 /**
  * @功能 浮水印 Composable
  * @description 在頁面上繪製浮水印，用於追溯資料來源
- * @用法
- * ```vue
- * <script setup>
- * const { showWatermark, hideWatermark } = useWatermark()
- *
- * onMounted(() => {
- *   showWatermark({ text: '使用者帳號' })
- * })
- * </script>
- * ```
  */
 
 interface WatermarkOptions {
@@ -18,7 +12,7 @@ interface WatermarkOptions {
   text?: string
   /** 字體大小（預設：16） */
   fontSize?: number
-  /** 字體顏色（預設：rgba(0, 0, 0, 0.08)） */
+  /** 字體顏色（預設：rgba(255, 255, 255, 0.15)） */
   color?: string
   /** 旋轉角度（預設：-25） */
   rotate?: number
@@ -29,13 +23,12 @@ interface WatermarkOptions {
   /** z-index（預設：9999） */
   zIndex?: number
 }
-
 /**
  *
  */
 export function useWatermark() {
   const watermarkId = 'app-watermark'
-  let watermarkEl: HTMLDivElement | null = null
+  // Removed: let watermarkEl: HTMLDivElement | null = null
 
   /**
    * 建立浮水印 Canvas
@@ -47,21 +40,20 @@ export function useWatermark() {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')!
 
-    // 計算文字寬度以設定 canvas 尺寸
-    ctx.font = `${fontSize}px Microsoft JhengHei, sans-serif`
+    ctx.font = `bold ${fontSize}px "Microsoft JhengHei", "PingFang TC", sans-serif`
     const textWidth = ctx.measureText(text).width
 
-    // 設定 canvas 尺寸（包含間距）
     canvas.width = textWidth + gapX
     canvas.height = fontSize + gapY
 
-    // 設定文字樣式
-    ctx.font = `${fontSize}px Microsoft JhengHei, sans-serif`
+    // 極致美化：加入白色發光效果
+    ctx.font = `bold ${fontSize}px "Microsoft JhengHei", "PingFang TC", sans-serif`
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'
+    ctx.shadowBlur = 4
     ctx.fillStyle = color
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    // 旋轉並繪製文字
     ctx.translate(canvas.width / 2, canvas.height / 2)
     ctx.rotate((rotate * Math.PI) / 180)
     ctx.fillText(text, 0, 0)
@@ -70,29 +62,26 @@ export function useWatermark() {
   }
 
   /**
-   * 顯示浮水印
+   * 執行渲染浮水印 (內部使用)
    * @param options
    */
-  const showWatermark = (options: WatermarkOptions = {}) => {
-    // 移除舊的浮水印
-    hideWatermark()
+  const render = (options: WatermarkOptions = {}) => {
+    // 徹底清除現有的所有浮水印，防止重複疊加
+    document.querySelectorAll(`[id="${watermarkId}"]`).forEach((el) => el.remove())
 
-    // 預設值
     const defaultOptions: Required<WatermarkOptions> = {
       text: options.text || `${new Date().toLocaleDateString()}`,
-      fontSize: options.fontSize ?? 14,
-      color: options.color ?? 'rgba(0, 0, 0, 0.06)',
+      fontSize: options.fontSize ?? 16,
+      color: options.color ?? 'rgba(255, 255, 255, 0.2)', // 預設使用半透明白
       rotate: options.rotate ?? -25,
-      gapX: options.gapX ?? 180,
-      gapY: options.gapY ?? 120,
+      gapX: options.gapX ?? 220,
+      gapY: options.gapY ?? 160,
       zIndex: options.zIndex ?? 9999
     }
 
-    // 建立浮水印圖片
     const watermarkImage = createWatermarkCanvas(defaultOptions)
 
-    // 建立浮水印元素
-    watermarkEl = document.createElement('div')
+    const watermarkEl = document.createElement('div')
     watermarkEl.id = watermarkId
     watermarkEl.style.cssText = `
       position: fixed;
@@ -104,62 +93,32 @@ export function useWatermark() {
       z-index: ${defaultOptions.zIndex};
       background-image: url('${watermarkImage}');
       background-repeat: repeat;
+      backdrop-filter: blur(1px); /* 輕微模糊背景提升質感 */
+      -webkit-backdrop-filter: blur(1px);
     `
 
     document.body.appendChild(watermarkEl)
-
-    // 使用 MutationObserver 防止浮水印被移除
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        // 如果浮水印被移除，重新加入
-        if (mutation.type === 'childList') {
-          const removed = Array.from(mutation.removedNodes).find(
-            (node) => (node as HTMLElement).id === watermarkId
-          )
-          if (removed && watermarkEl) {
-            document.body.appendChild(watermarkEl)
-          }
-        }
-
-        // 如果浮水印屬性被修改，重新建立
-        if (mutation.type === 'attributes' && (mutation.target as HTMLElement).id === watermarkId) {
-          hideWatermark()
-          showWatermark(options)
-        }
-      })
-    })
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class']
-    })
   }
 
   /**
-   * 隱藏浮水印
+   * 切換浮水印狀態
+   * @param visible 是否顯示
+   * @param options 配置項目
    */
-  const hideWatermark = () => {
-    const existing = document.getElementById(watermarkId)
-    if (existing) {
-      existing.remove()
+  const toggle = (visible: boolean, options?: WatermarkOptions) => {
+    isWatermarkVisible.value = visible
+    if (visible) {
+      render(options)
+    } else {
+      document.querySelectorAll(`[id="${watermarkId}"]`).forEach((el) => el.remove())
     }
-    watermarkEl = null
-  }
-
-  /**
-   * 更新浮水印文字
-   * @param text
-   */
-  const updateWatermark = (text: string) => {
-    hideWatermark()
-    showWatermark({ text })
   }
 
   return {
-    showWatermark,
-    hideWatermark,
-    updateWatermark
+    showWatermark: isWatermarkVisible,
+    toggle,
+    // Removed: 保持舊版相容性 (如果有其他地方使用的話)
+    // Removed: renderWatermark: render,
+    hideWatermark: () => toggle(false)
   }
 }

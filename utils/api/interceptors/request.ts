@@ -9,7 +9,8 @@ const COOKIE_CSRF = 'XSRF-TOKEN'
 /**
  * 設定身分驗證 Header
  * @param headers
- * @param config
+ * @param config - axios 請求設定
+ * @param headers
  */
 export function setAuthHeader(headers: Record<string, string>, config: any) {
   const token = useCookie(config.public.auth.tokenKey as string)

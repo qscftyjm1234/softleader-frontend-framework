@@ -1,10 +1,21 @@
+/**
+ * ESLint 程式碼檢查設定檔
+ * 負責定義程式碼風格規範、命名規則及自動修正行為，確保團隊開發品質。
+ *
+ * @author Gino Huang
+ * @since 2024-12-24
+ * @version 1.0.0
+ *
+ * @changelog
+ * - 2024-12-24 v1.0.0 [Gino] 初始版本
+ */
 // 引入 ESLint 相關套件
 import js from '@eslint/js' // JavaScript 基礎規則
 import vue from 'eslint-plugin-vue' // Vue 規則
 import jsdoc from 'eslint-plugin-jsdoc' // JSDoc 註解檢查
 import vueParser from 'vue-eslint-parser' // Vue 檔案解析器
 import tsParser from '@typescript-eslint/parser' // TypeScript 解析器
-import tsPlugin from '@typescript-eslint/eslint-plugin' // TypeScript 外掛
+import tseslint from 'typescript-eslint' // TypeScript 外掛
 import prettierConfig from 'eslint-config-prettier' // 避免與 Prettier 衝突
 import prettierPlugin from 'eslint-plugin-prettier' // 整合 Prettier
 
@@ -40,7 +51,7 @@ export default [
       vue,
       jsdoc,
       prettier: prettierPlugin,
-      '@typescript-eslint': tsPlugin
+      '@typescript-eslint': tseslint.plugin
     },
 
     // 規則設定
@@ -243,12 +254,19 @@ export default [
       'playwright/', // E2E 測試
       'node_modules/', // 套件
       'dist/', // 編譯輸出
-      '.nuxt', // Nuxt 快取
+      '**/.nuxt/', // Nuxt 快取 (包含 layer 中的 .nuxt)
+      '.output/', // Nuxt build output
       '.config/', // 設定檔
       'tsconfig.json', // TS 設定
       'plugins/', // 外掛
       'generate/', // 生成檔案
       'public/js/hanlinks/', // 第三方 JS
+      '**/*.cjs', // 輔助腳本
+      '*.js', // 根目錄的輔助腳本
+      'scripts/', // 輔助腳本
+      'configs/', // 獨立配置
+      'types/api.d.ts', // 自動產生的型別
+
       '**/*-test.{js,ts,vue}', // 忽略所有結尾是 -test 的檔案
       '**/*.test.{js,ts,vue}', // 忽略所有 .test. 的檔案
       '**/*.ignore.{js,ts,vue}' // 忽略所有 .ignore. 的檔案

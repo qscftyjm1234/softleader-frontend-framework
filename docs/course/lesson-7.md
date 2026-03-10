@@ -1,133 +1,94 @@
-<!-- Author: cindy -->
+<!-- Author: antigravity -->
 
-# 第七課:API 串接與資料層
+# 第七課：UI 組件開發規範
 
-本課程教您如何使用專案內建的 Mock 系統與 Repository 模式進行開發。
-
-## 1. 核心工具 (useApi)
-
-本專案封裝了 `useApi` 來處理所有的 HTTP 請求。它內建了：
-
-- **自動處理 Token**
-- **統一錯誤處理**
-- **Mock 資料攔截**
-
-```typescript
-// 範例：取得 ID 為 1 的使用者
-const { data, error } = await useApi('/users/1')
-```
+本課程說明本專案的 UI 開發規範。核心目標是：一律使用核心開發包封裝好的組件。
 
 ---
 
-## 2. 前端模擬資料 (Mock Data)
+## 1. 使用核心組件
 
-在後端 API 還沒好之前，我們可以先用 Mock 系統開發。
+在開發頁面或業務組件時，應優先使用系統提供的標準零件。
 
-### 步驟 1: 啟用 Mock
-
-在 `.env.development` 中設定：
-
-```ini
-# 開啟 Mock 功能
-NUXT_PUBLIC_FEATURE_API_MOCK=true
-```
-
-### 步驟 2: 定義假資料 (mock/routes.ts)
-
-開啟 `mock/routes.ts`，加入您的 API 定義。支援 **靜態網址** 與 **動態網址**。
-
-```typescript
-// mock/routes.ts
-export const MOCK_ROUTES = [
-  // 情境 1: 靜態網址 (列表)
-  {
-    url: '/users',
-    method: 'GET',
-    delay: 1000,
-    response: {
-      data: [
-        { id: 1, name: '模擬用戶 A' },
-        { id: 2, name: '模擬用戶 B' }
-      ]
-    }
-  },
-
-  // 情境 2: 動態網址 (取得單一使用者)
-  // 對應 useApi('/users/1') 或 useApi('/users/99')
-  {
-    url: /\/users\/\d+/, // 使用正規表達式匹配 (users/ 加上數字)
-    method: 'GET',
-    response: (context) => {
-      // context.url 就是請求的網址，例如 "/users/1"
-      // 我們可以從這裡取出 ID
-      const id = context.url.split('/').pop()
-
-      return {
-        data: {
-          id: Number(id),
-          name: `模擬用戶 ${id}`, // 回傳動態名稱
-          role: 'admin'
-        }
-      }
-    }
-  }
-]
-```
-
-### 步驟 3: 呼叫 API
-
-完全不用改程式碼！系統會自動攔截。
-
-```typescript
-// 1. 呼叫列表 -> 對應情境 1
-const list = await useApi('/users')
-
-// 2. 呼叫單筆 -> 對應情境 2 (Regex)
-const user = await useApi('/users/1') // 拿到 { name: '模擬用戶 1' }
-```
+(1.) 開啟您的頁面檔案（例如 `pages/hello.vue`）。
+(2.) 檢查標籤名稱，確保使用 `I` 開頭的組件。
 
 ---
 
-## 3. Repository 模式 (資料層)
+## 3. 擴充組件功能
 
-為了避免 API 網址散落在各個頁面，我們使用 Repository 模式統一管理。
+如果您發現現有的組件（例如 `ISelect`）缺少您需要的功能，請不要繞過它，而是選擇擴充它。
 
-### 步驟 1: 定義 Repository (repositories/modules/user.ts)
-
-```typescript
-export default {
-  // 取得使用者列表
-  getUsers: (params?: any) => useApi('/users', { method: 'GET', params }),
-
-  // 取得單一使用者 (動態 ID)
-  getUserById: (id: number) => useApi(`/users/${id}`, { method: 'GET' })
-}
-```
-
-### 步驟 2: 在頁面使用
+(1.) 找到組件路徑：`components/uiInterface/ISelect.vue`。
+(2.) 在 `defineProps` 中新增您的參數。
+(3.) 貼入以下完整範例代碼：
 
 ```vue
 <script setup lang="ts">
-const { user } = useRepository()
-
-// 乾淨！完全看不到 API 網址
-const { data, pending } = await user.getUsers({ page: 1 })
+// 增加搜尋功能參數
+defineProps<{
+  showSearch?: boolean
+}>()
 </script>
 
 <template>
-  <div v-if="pending">Loading...</div>
-  <div v-else>{{ data }}</div>
+  <!-- 將參數往下傳給底層組件 -->
+  <a-select :show-search="showSearch">
+    <slot />
+  </a-select>
 </template>
 ```
 
 ---
 
-## 4. 小結
+## 4. 建立業務組件
 
-1.  **Mock**: 設定 `.env` -> 修改 `mock/routes.ts` (支援 Regex)。
-2.  **Repo**: 定義在 `repositories/` -> 頁面用 `useRepository()`。
-3.  **好處**: 後端沒好也能開發 (Mock)，API 改網址只需改一個地方 (Repo)。
+如果組件包含特定的業務邏輯（例如直接向後端抓資料），應將其放在業務資料夾中。
+
+(1.) 建立 `components/business/` 資料夾。
+(2.) 建立 `UserSelect.vue` 檔案。
+(3.) 貼入以下完整程式碼：
+
+```vue
+<script setup lang="ts">
+// 在這裡處理業務邏輯，例如抓取使用者清單
+const users = [
+  { label: '王小明', value: '001' },
+  { label: '李小華', value: '002' }
+]
+</script>
+
+<template>
+  <ISelect
+    :options="users"
+    placeholder="請選擇對應的員工"
+    class="w-full"
+  />
+</template>
+```
 
 ---
 
-[上一課:頁面導航與路由](./lesson-6.md) | [下一課:全域狀態管理](./lesson-8.md) | [回首頁](../../README.md)
+## 5. 小結
+
+一
+看到介面零件就打 `I`，不要打 `a`。
+二
+功能不夠就去改 `I`，不要繞過去用原生組件。
+三
+業務邏輯請放在 `business/` 子目錄中。
+
+---
+
+```vue
+<script setup lang="ts">
+definePageMeta({
+  title: '資料列表範例',
+  layout: 'portal'
+})
+</script>
+```
+
+---
+
+[上一課 第六課：UI 框架介紹與實戰 (Ant Design Vue)](./lesson-6.md) | [下一課 第八課：客製化圖示系統](./lesson-8.md) | [回首頁](../../README.md)

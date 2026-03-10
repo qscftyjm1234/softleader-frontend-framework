@@ -116,7 +116,7 @@ export const defaultLayoutConfig: LayoutConfig = {
     logo: {
       icon: 'mdi-rocket-launch'
     },
-    title: 'Demo App Framework',
+    title: 'Vue前端開發包系統',
     subtitle: 'Enterprise Framework'
   },
   header: {
@@ -147,7 +147,7 @@ export const defaultLayoutConfig: LayoutConfig = {
   footer: {
     visible: true,
     fixed: false,
-    content: 'Copyright © 2026 Demo App. All rights reserved.'
+    content: 'Copyright © 2026 Vue前端開發包系統. All rights reserved.'
   },
   theme: {
     defaultTheme: 'light',

@@ -1,22 +1,21 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Textarea as ATextarea } from 'ant-design-vue'
+
 /**
  * ITextarea - 多行文字輸入介面層
- *
- * 用途：統一的 Textarea 介面，內部可替換 UI 框架
- *
- * 設計原則：
- * - 只定義 props 和 events
- * - 支援自動高度調整
+ * 基底更換為 Ant Design Vue (a-textarea)
  */
 
 interface Props {
   modelValue: string
+  label?: string
   placeholder?: string
   disabled?: boolean
   readonly?: boolean
   rows?: number
   maxlength?: number
-  autoResize?: boolean // 自動調整高度
+  autoResize?: boolean
   // 驗證相關
   error?: boolean
   errorMessage?: string
@@ -28,9 +27,11 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: '',
   disabled: false,
   readonly: false,
-  rows: 3,
+  rows: 4,
+  maxlength: undefined,
   autoResize: false,
   error: false,
+  errorMessage: '',
   showCount: false
 })
 
@@ -41,8 +42,6 @@ const emit = defineEmits<{
   focus: [event: FocusEvent]
 }>()
 
-const textareaRef = ref<HTMLTextAreaElement>()
-
 const internalValue = computed({
   get: () => props.modelValue,
   set: (val) => {
@@ -51,156 +50,134 @@ const internalValue = computed({
   }
 })
 
-// 字數統計
-const charCount = computed(() => props.modelValue?.length || 0)
+const status = computed(() => {
+  if (props.error || props.errorMessage) return 'error'
+  return ''
+})
 
-// 自動調整高度
-const adjustHeight = () => {
-  if (props.autoResize && textareaRef.value) {
-    textareaRef.value.style.height = 'auto'
-    textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
-  }
-}
-
-watch(
-  () => props.modelValue,
-  () => {
-    nextTick(adjustHeight)
-  }
-)
-
-onMounted(() => {
-  adjustHeight()
+const autoSize = computed(() => {
+  if (props.autoResize) return { minRows: props.rows }
+  return false
 })
 </script>
 
 <template>
-  <div class="i-textarea">
-    <div
-      class="textarea-wrapper"
-      :class="{ 'has-error': error, 'is-disabled': disabled }"
+  <div class="i-textarea-container">
+    <label
+      v-if="label"
+      class="text-[0.875rem] font-bold text-slate-700 tracking-tight ml-1 mb-1.5 block"
     >
-      <textarea
-        ref="textareaRef"
-        v-model="internalValue"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :readonly="readonly"
-        :rows="rows"
-        :maxlength="maxlength"
-        class="textarea-field"
-        @blur="emit('blur', $event)"
-        @focus="emit('focus', $event)"
-      />
-    </div>
+      {{ label }}
+    </label>
+    <ATextarea
+      v-model:value="internalValue"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :readonly="readonly"
+      :rows="rows"
+      :maxlength="maxlength"
+      :show-count="showCount"
+      :status="status"
+      :auto-size="autoSize"
+      class="i-textarea-wrapper"
+      @blur="emit('blur', $event)"
+      @focus="emit('focus', $event)"
+    />
 
-    <!-- 底部資訊列 -->
+    <!-- 錯誤訊息 -->
     <div
-      v-if="error || showCount"
-      class="textarea-footer"
+      v-if="errorMessage"
+      class="mt-1.5 ml-1 text-[0.85rem] font-semibold text-red-500"
     >
-      <!-- 錯誤訊息 -->
-      <div
-        v-if="error && errorMessage"
-        class="error-message"
-      >
-        {{ errorMessage }}
-      </div>
-
-      <!-- 字數統計 -->
-      <div
-        v-if="showCount"
-        class="char-count"
-      >
-        {{ charCount }}{{ maxlength ? ` / ${maxlength}` : '' }}
-      </div>
+      {{ errorMessage }}
     </div>
   </div>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VTextarea
-    v-model="internalValue"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :readonly="readonly"
-    :rows="rows"
-    :maxlength="maxlength"
-    :error="error"
-    :error-messages="errorMessage"
-    :auto-grow="autoResize"
-    :counter="showCount"
-    @blur="emit('blur', $event)"
-    @focus="emit('focus', $event)"
-  />
-  -->
 </template>
 
-<style scoped>
-.i-textarea {
+<style scoped lang="scss">
+.i-textarea-container {
   width: 100%;
 }
 
-.textarea-wrapper {
-  position: relative;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  transition: all 0.2s;
-}
+:deep(.i-textarea-wrapper) {
+  // Ant Design 啟用 show-count 時會包一層 .ant-input-textarea-show-count
+  // 需要同時處理有無 show-count 的情況
 
-.textarea-wrapper:hover:not(.is-disabled) {
-  border-color: #3498db;
-}
+  // 直接是 textarea 的情況
+  &.ant-input {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1e293b;
+    resize: vertical;
+  }
 
-.textarea-wrapper:focus-within {
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
+  // 有 show-count 外層容器的情況
+  &.ant-input-textarea-show-count {
+    .ant-input {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background-color: white;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #1e293b;
+      resize: vertical;
 
-.textarea-wrapper.has-error {
-  border-color: #e74c3c;
-}
+      &:hover {
+        border-color: #cbd5e1;
+      }
 
-.textarea-wrapper.has-error:focus-within {
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-}
+      &:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      }
+    }
 
-.textarea-wrapper.is-disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
+    &.ant-input-textarea-in-form-item .ant-input-data-count,
+    .ant-input-data-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+  }
 
-.textarea-field {
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  font-family: inherit;
-  background: transparent;
-  resize: vertical;
-}
+  &::placeholder,
+  .ant-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+  }
 
-.textarea-field:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+  &:hover {
+    border-color: #cbd5e1;
+  }
 
-.textarea-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-}
+  &.ant-input-focused,
+  &:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  }
 
-.error-message {
-  color: #e74c3c;
-}
+  &.ant-input-status-error,
+  &.ant-input-status-error .ant-input {
+    border-color: #f87171;
+    &:focus,
+    &.ant-input-focused {
+      box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.1);
+    }
+  }
 
-.char-count {
-  color: #999;
-  margin-left: auto;
+  &.ant-input-disabled,
+  &.ant-input-disabled .ant-input {
+    background-color: #f8fafc;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
 }
 </style>

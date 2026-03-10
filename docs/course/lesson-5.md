@@ -1,118 +1,93 @@
-<!-- Author: cindy -->
+<!-- Author: antigravity -->
 
-# 第五課:客製化圖示系統
+# 第五課：環境變數設定
 
-本課程教您如何在專案中使用圖示,包含 MDI 圖示和自訂 SVG 圖示。
+本課程教您如何針對不同環境（開發、測試、正式）管理系統參數。透過環境變數，您可以輕鬆切換 API 網址而無需修改程式碼。
 
-## 1. 使用 IIcon 組件
+---
 
-本專案使用 `IIcon` 組件來顯示圖示。
+## 1. 建立環境配置檔
 
-### 基本用法
+系統會根據目前的執行模式自動讀取對應的檔案。以下是指令與環境變數檔案的對應關係：
 
-```vue
-<template>
-  <IIcon name="mdi-home" />
-</template>
+| 執行指令                | 模式 (Mode)   | 優先載入的環境變數檔案 | 適用場景        |
+| :---------------------- | :------------ | :--------------------- | :-------------- |
+| `npm run dev`           | `development` | `.env.development`     | 本機開發、除錯  |
+| `npm run build`         | `production`  | `.env.production`      | 正式環境佈署    |
+| `npm run build:staging` | `staging`     | `.env.staging`         | 測試/預發布環境 |
+
+> [!NOTE]
+> 載入規則：`.env` (通用設定) 會先被讀取，接著讀取特定模式的檔案（如 `.env.development`）。若兩者有同名變數，則**模式特定檔案**的優先權較高，會覆蓋通用設定。
+
+(1.) 在專案根目錄下建立 `.env.development` 檔案。
+(2.) 貼入以下完整設定：
+
+```ini
+# API 基礎網址
+NUXT_PUBLIC_API_BASE=https://dev-api.example.com
+
+# 頁面標題前綴
+NUXT_PUBLIC_SITE_NAME=開發版系統
 ```
 
 ---
 
-## 2. MDI 圖示
+## 2. 存取環境變數
 
-MDI (Material Design Icons) 提供了數千個免費圖示。
+在程式碼中，我們統一透過 `useRuntimeConfig` 組合式函式來讀取這些設定。
 
-### 如何找圖示
-
-1. 前往 [Material Design Icons](https://pictogrammers.com/library/mdi/)
-2. 搜尋你要的圖示 (例如搜尋 "home")
-3. 複製圖示名稱 (例如 `mdi-home`)
-4. 在專案中使用
-
-### 常用圖示範例
+(1.) 在 `pages/` 資料夾下建立 `env-test.vue`。
+(2.) 貼入以下完整程式碼：
 
 ```vue
 <template>
-  <div class="flex gap-4">
-    <!-- 首頁 -->
-    <IIcon name="mdi-home" />
+  <div class="p-10 min-h-screen bg-slate-50 flex items-center justify-center">
+    <div class="max-w-md w-full bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm">
+      <h1 class="text-2xl font-black text-slate-900 mb-6">環境變數讀取測試</h1>
 
-    <!-- 使用者 -->
-    <IIcon name="mdi-account" />
+      <div class="space-y-4">
+        <div class="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+          <label class="block text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">
+            目前站台名稱
+          </label>
+          <div class="text-xl font-black text-blue-900">{{ config.public.siteName }}</div>
+        </div>
 
-    <!-- 設定 -->
-    <IIcon name="mdi-cog" />
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+            API 基礎網址
+          </label>
+          <div class="text-sm font-bold text-slate-600 break-all">{{ config.public.apiBase }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+// 取得全域執行環境設定
+const config = useRuntimeConfig()
+
+definePageMeta({
+  title: '環境變數範例',
+  layout: 'portal'
+})
+</script>
 ```
 
 ---
 
-## 3. 調整圖示大小與顏色
+## 3. 小結
 
-### 使用 size 和 color 屬性
-
-```vue
-<template>
-  <div class="flex items-center gap-4">
-    <IIcon
-      name="mdi-heart"
-      size="small"
-      color="error"
-    />
-    <IIcon name="mdi-heart" />
-    <IIcon
-      name="mdi-heart"
-      size="large"
-      color="primary"
-    />
-  </div>
-</template>
-```
-
-### 使用 Tailwind 類別
-
-```vue
-<template>
-  <IIcon
-    name="mdi-star"
-    class="text-3xl text-yellow-500"
-  />
-</template>
-```
+一
+環境變數檔必須放在根目錄，並遵循 `.env.[mode]` 的命名規則。
+二
+開發模式對應 `.env.development`，正式模式對應 `.env.production`。
+三
+在程式碼中僅讀取 `config.public`，絕對不要將機密資訊（如 API Key）直接寫死在程式碼中。
+四
+修改任何以 `.env` 開頭的檔案後，必須重啟開發伺服器 (`npm run dev`) 才能確保變數正確載入。
 
 ---
 
-## 4. 在按鈕中使用圖示
-
-### IButton 的 icon 屬性
-
-```vue
-<template>
-  <!-- 圖示 + 文字 -->
-  <IButton
-    icon="mdi-plus"
-    variant="primary"
-  >
-    新增
-  </IButton>
-
-  <!-- 只有圖示 -->
-  <IButton
-    icon="mdi-delete"
-    color="error"
-  />
-</template>
-```
-
----
-
-## 5. 小結
-
-1. **組件**: `<IIcon name="mdi-xxx" />`
-2. **來源**: Material Design Icons
-3. **按鈕**: `<IButton icon="mdi-xxx">`
-
----
-
-[上一課:UI 組件開發規範](./lesson-4.md) | [下一課:頁面導航與路由](./lesson-6.md) | [回首頁](../../README.md)
+[上一課 第四課：頁面導航與路由](./lesson-4.md) | [下一課 第六課：UI 框架介紹與實戰 (Ant Design Vue)](./lesson-6.md) | [回首頁](../../README.md)

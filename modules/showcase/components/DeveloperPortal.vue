@@ -10,14 +10,14 @@ const modules = [
     description: '專案開發指南，包含環境建置、程式碼規範 (ESLint)、Git 流程與架構設計說明。',
     icon: 'mdi-book-open-page-variant',
     to: '/showcase/development',
-    gradient: 'from-orange-400 to-orange-600'
+    gradient: 'from-orange-500 to-rose-500' // Adjusted for light theme
   },
   {
     title: '元件模組',
     description: '一覽所有元件、功能模組與範例程式碼，包含 UI 元件與業務邏輯展示。',
     icon: 'mdi-view-dashboard',
     to: '/showcase',
-    gradient: 'from-cyan-400 to-blue-600'
+    gradient: 'from-emerald-400 to-teal-600' // Adjusted for light theme
   }
 ]
 
@@ -27,43 +27,43 @@ const features = [
     subtitle: '日期時間處理',
     icon: 'mdi-calendar-clock',
     to: '/showcase/datetime',
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-400/10'
+    color: 'text-emerald-500',
+    bgColor: 'bg-emerald-50'
   },
   {
     title: '檔案處理',
     subtitle: '檔案操作整合',
     icon: 'mdi-file-sync',
     to: '/showcase/file-upload',
-    color: 'text-sky-400',
-    bgColor: 'bg-sky-400/10'
+    color: 'text-sky-500',
+    bgColor: 'bg-sky-50'
   },
   {
     title: '資料檢測器',
     subtitle: '資料開發工具',
     icon: 'mdi-bug',
     to: '/showcase/data-inspector',
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-400/10'
+    color: 'text-indigo-500',
+    bgColor: 'bg-indigo-50'
   },
   {
     title: '更多功能',
     subtitle: '通用工具函式',
     icon: 'mdi-tools',
     to: '/showcase',
-    color: 'text-slate-400',
-    bgColor: 'bg-slate-400/10'
+    color: 'text-slate-500',
+    bgColor: 'bg-slate-100'
   }
 ]
 </script>
 
 <template>
   <div
-    class="min-h-screen relative flex flex-col items-center justify-center py-16 px-8 bg-[#0f172a] overflow-hidden text-white font-sans"
+    class="min-h-screen relative flex flex-col items-center justify-center py-16 px-8 bg-slate-50 overflow-hidden text-slate-800 font-sans"
   >
     <!-- Background Decoration -->
     <div
-      class="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.08),transparent_40%),radial-gradient(circle_at_85%_60%,rgba(139,92,246,0.08),transparent_40%)]"
+      class="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(52,211,153,0.08),transparent_40%),radial-gradient(circle_at_85%_60%,rgba(99,102,241,0.05),transparent_40%)]"
     ></div>
 
     <IStack
@@ -74,25 +74,25 @@ const features = [
     >
       <!-- Hero Section -->
       <div
-        class="text-center mb-20 max-w-3xl relative after:content-[''] after:absolute after:-bottom-10 after:left-1/2 after:-translate-x-1/2 after:w-14 after:h-1 after:bg-white/10 after:rounded-full"
+        class="text-center mb-20 max-w-3xl relative after:content-[''] after:absolute after:-bottom-10 after:left-1/2 after:-translate-x-1/2 after:w-14 after:h-1 after:bg-slate-200 after:rounded-full"
       >
         <div
-          class="inline-flex items-center gap-2 py-2 px-5 bg-white/10 border border-white/20 rounded-full text-sm font-semibold tracking-wider text-slate-200 mb-8 backdrop-blur-lg hover:bg-white/15 hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] transition-all"
+          class="inline-flex items-center gap-2 py-2 px-5 bg-white/60 border border-slate-200/60 rounded-full text-sm font-semibold tracking-wider text-emerald-600 mb-8 backdrop-blur-md hover:bg-white/80 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(52,211,153,0.15)] hover:border-emerald-200 transition-all cursor-default"
         >
           前端開發套件
         </div>
         <h1
-          class="text-7xl font-extrabold leading-tight mb-8 tracking-tight text-white transition-all"
+          class="text-7xl w-full font-extrabold leading-tight mb-8 tracking-tight text-slate-800 transition-all drop-shadow-sm"
         >
           企業級前端
           <br />
           <span
-            class="bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent animate-gradientFlow bg-[length:200%_auto]"
+            class="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent animate-gradientFlow bg-[length:200%_auto] pb-2"
           >
             標準化架構系統
           </span>
         </h1>
-        <p class="text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
+        <p class="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto font-medium">
           前端標準化開發套件，整合 UI 介面、業務邏輯與核心工具。
           <br />
           加速專案開發效率，確保程式碼品質與一致性。
@@ -110,7 +110,7 @@ const features = [
           >
             <IButton
               size="large"
-              class="!bg-white !text-slate-900 !font-bold rounded-full !px-8 shadow-lg shadow-white/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-white/40 transition-all"
+              class="!bg-emerald-500 !text-white !font-bold rounded-full !px-8 shadow-[0_8px_20px_rgba(52,211,153,0.3)] hover:-translate-y-0.5 hover:shadow-[0_12px_25px_rgba(52,211,153,0.4)] transition-all"
               @click="navigate"
             >
               <template #icon>
@@ -128,7 +128,7 @@ const features = [
             <IButton
               variant="outlined"
               size="large"
-              class="!border-white/30 !text-white backdrop-blur-sm !bg-white/5 rounded-full !px-8 hover:!bg-white/15 hover:!border-white/40 transition-all"
+              class="!border-slate-300 !text-slate-600 backdrop-blur-sm !bg-white/50 rounded-full !px-8 hover:!bg-white hover:!border-slate-400 hover:text-slate-800 transition-all shadow-sm"
               @click="navigate"
             >
               <template #icon>
@@ -149,27 +149,29 @@ const features = [
           class="no-underline group"
         >
           <ICard
-            class="h-full bg-slate-800/70 border-white/15 backdrop-blur-xl p-10 rounded-2xl transition-all group-hover:-translate-y-2 group-hover:bg-slate-800/90 group-hover:border-sky-400/50 shadow-lg group-hover:shadow-2xl"
+            class="h-full bg-white/70 border-slate-100/80 backdrop-blur-xl p-10 rounded-2xl transition-all duration-300 group-hover:-translate-y-2 group-hover:bg-white/90 group-hover:border-emerald-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_rgba(52,211,153,0.08)]"
           >
             <template #header>
               <div class="flex items-center gap-6 mb-6">
                 <div
                   :class="[
-                    'w-16 h-16 rounded-2xl flex items-center justify-center bg-black/20 border border-white/10 bg-gradient-to-br',
+                    'w-16 h-16 rounded-2xl flex items-center justify-center bg-white border border-slate-100/50 bg-gradient-to-br shadow-sm',
                     mod.gradient
                   ]"
                 >
                   <IIcon
                     :icon="mod.icon"
-                    class="text-2xl text-white"
+                    class="text-2xl text-white drop-shadow-sm"
                   />
                 </div>
-                <h3 class="text-2xl font-bold text-white m-0 tracking-tight">{{ mod.title }}</h3>
+                <h3 class="text-2xl font-bold text-slate-800 m-0 tracking-tight">
+                  {{ mod.title }}
+                </h3>
               </div>
             </template>
-            <p class="text-slate-300 leading-relaxed mb-8 text-[1.05rem]">{{ mod.description }}</p>
+            <p class="text-slate-500 leading-relaxed mb-8 text-[1.05rem]">{{ mod.description }}</p>
             <div
-              class="inline-flex items-center gap-2 text-white font-semibold text-sm py-3 px-6 rounded-full bg-sky-500/80 group-hover:bg-sky-600 transition-all shadow-md group-hover:pr-7"
+              class="inline-flex items-center gap-2 text-emerald-600 font-bold text-sm py-2.5 px-5 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition-all group-hover:pr-6"
             >
               <span>查看詳情</span>
               <IIcon
@@ -182,9 +184,9 @@ const features = [
       </div>
 
       <!-- Feature Badges -->
-      <div class="w-full text-center mt-8 pt-16 border-t border-white/10">
-        <h2 class="text-sm uppercase tracking-[0.15em] text-slate-400 mb-10 font-bold">核心模組</h2>
-        <div class="flex justify-center flex-wrap gap-6">
+      <div class="w-full text-center mt-8 pt-16 border-t border-slate-200/60">
+        <h2 class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-10 font-bold">核心模組</h2>
+        <div class="flex justify-center flex-wrap gap-5">
           <NuxtLink
             v-for="feat in features"
             :key="feat.title"
@@ -192,11 +194,11 @@ const features = [
             class="no-underline"
           >
             <div
-              class="flex items-center gap-4 py-4 px-6 bg-slate-800/50 border border-white/10 rounded-xl hover:bg-slate-800/80 hover:-translate-y-0.5 hover:border-white/30 transition-all"
+              class="flex items-center gap-4 py-3.5 px-5 bg-white/60 border border-slate-200/60 rounded-xl hover:bg-white/90 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-[0_8px_20px_rgba(52,211,153,0.06)] transition-all backdrop-blur-sm"
             >
               <div
                 :class="[
-                  'w-10 h-10 rounded-lg flex items-center justify-center',
+                  'w-10 h-10 rounded-[0.6rem] flex items-center justify-center shadow-sm',
                   feat.color,
                   feat.bgColor
                 ]"
@@ -207,8 +209,8 @@ const features = [
                 />
               </div>
               <div class="text-left">
-                <div class="text-slate-100 font-semibold text-[0.95rem]">{{ feat.title }}</div>
-                <div class="text-slate-400 text-xs mt-0.5">{{ feat.subtitle }}</div>
+                <div class="text-slate-700 font-bold text-[0.95rem]">{{ feat.title }}</div>
+                <div class="text-slate-400 text-xs mt-0.5 font-medium">{{ feat.subtitle }}</div>
               </div>
             </div>
           </NuxtLink>

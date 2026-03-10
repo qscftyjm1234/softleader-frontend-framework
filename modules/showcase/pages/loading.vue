@@ -1,543 +1,419 @@
 <script setup lang="ts">
-import ShowcasePage from '../components/ShowcasePage.vue'
-import ShowcaseSection from '../components/ShowcaseSection.vue'
+import { ref, computed, watch } from 'vue'
+import IIcon from '~/components/uiInterface/IIcon.vue'
+import IButton from '~/components/uiInterface/IButton.vue'
+import IBreadcrumbs from '~/components/uiInterface/layout/IBreadcrumbs.vue'
+import { useBreadcrumbs } from '~/composables/useBreadcrumbs'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
+const { breadcrumbs: breadcrumbItems } = useBreadcrumbs()
+
 definePageMeta({
-  title: '載入狀態 (Loading State)',
-  icon: 'mdi-progress-clock',
+  title: '載入狀態核心 (Loading System)',
   layout: 'portal'
 })
 
 const loading = useLoading()
+const { count, isLoading } = loading
 
-const { count } = loading
+const units = ref([
+  {
+    id: 'concept',
+    title: '單元 00：核心概念',
+    icon: 'mdi-progress-clock',
+    description:
+      'Loading 系統採用「計數器 (Stack)」機制。當多個異步請求併發時，遮罩會維持開啟直到最後一個請求完成。',
+    useCase: '理解全域 Loading 如何避免頁面因頻繁的請求完成而產生閃爍現象。'
+  },
+  {
+    id: 'stack',
+    title: '單元 01：計數器機制',
+    icon: 'mdi-layers-outline',
+    description:
+      '展示 Stack 數量的變化。即使手動觸發多次 start()，也需要等量的 finish() 才能關閉遮罩。',
+    useCase: '處理儀表板或是複雜報表頁面中，多個獨立組件同時發起 API 的情境。'
+  },
+  {
+    id: 'api',
+    title: '單元 02：API 自動化整合',
+    icon: 'mdi-api',
+    description: '核心 `useApi` 已自動整合全域 Loading。開發者通常不需要手動呼叫 start/finish。',
+    useCase: '絕大多數的後台數據查詢情境。'
+  },
+  {
+    id: 'local',
+    title: '單元 03：局部狀態綁定',
+    icon: 'mdi-link-variant',
+    description:
+      '透過 `loadingRef` 參數，可以將 API 狀態直接同步到特定組件（如按鈕的 loading 屬性）。',
+    useCase: '表單送出按鈕、局部列表更新。'
+  }
+])
 
-// 模擬資料筆數
+const activeUnitIndex = ref(0)
+const activeUnit = computed(() => units.value[activeUnitIndex.value])
+
+const scrollContainer = ref<HTMLElement | null>(null)
+watch(activeUnitIndex, () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+})
+
+// Simulation Logic
+const localLoading = ref(false)
 const mockDataCount = ref(0)
 
-const simulateDataChange = () => {
-  // 模擬 Loading 後資料增加
-  const increase = Math.floor(Math.random() * 5) + 1
-  mockDataCount.value += increase
+const handleApiSimulate = async (type: 'global' | 'local' | 'stack') => {
+  if (type === 'global') {
+    await useApi('/dashboard/stats', { autoSuccess: true })
+  } else if (type === 'local') {
+    await useApi('/orders', { loadingRef: localLoading, autoSuccess: true })
+  } else if (type === 'stack') {
+    const timestamp = Date.now()
+    await Promise.all([
+      useApi('/users', { query: { _t: timestamp } }),
+      useApi('/activities', { query: { _t: timestamp } }),
+      useApi('/orders', { query: { _t: timestamp } })
+    ])
+  }
+  mockDataCount.value += Math.floor(Math.random() * 5) + 1
 }
 
-const handleStart = async () => {
-  // 呼叫真實 Mock API: 取得儀表板統計
-  // useApi 預設會開啟 globalLoading，所以這裡不需要 loading.start()
-  await useApi('/dashboard/stats', {
-    autoSuccess: true
-  })
-
-  // 模擬收到資料後的變化
-  simulateDataChange()
-}
-
-// 模擬 useApi 的 loadingRef 行為
-const localLoading = ref(false)
-const handleLocalLoading = async () => {
-  // 呼叫真實 Mock API: 取得訂單資料
-  // 透過 loadingRef 自動綁定按鈕狀態
-  await useApi('/orders', {
-    loadingRef: localLoading,
-    autoSuccess: true
-  })
-
-  simulateDataChange()
-}
-
-const handleSimulateStack = async () => {
-  // 同時觸發 3 個請求，測試 Stack 疊加
-  // 注意：不使用 await 讓它們同時發出
-  const timestamp = Date.now()
-  const p1 = useApi('/users', { query: { _t: timestamp } })
-  const p2 = useApi('/dashboard/activities', { query: { _t: timestamp } })
-  const p3 = useApi('/orders', { query: { _t: timestamp } })
-
-  await Promise.all([p1, p2, p3])
-  simulateDataChange()
+// Snippets
+const snippets = {
+  hook: `const { start, finish, isLoading } = useLoading()\n\nloading.start() // Count +1\nloading.finish() // Count -1`,
+  api: `// 預設自動啟動全域 Loading\nawait useApi('/api/users')\n\n// 若不需遮罩可手動關閉\nawait useApi('/api/log', { globalLoading: false })`,
+  ref: `const isSubmitting = ref(false)\n\n// 自動將 API 狀態綁定到 isSubmitting\nawait useApi('/submit', { loadingRef: isSubmitting })`
 }
 </script>
 
 <template>
-  <ShowcasePage
-    title="全域 Loading 系統"
-    description="展示 useLoading Composable 的計數器機制。支援多重請求堆疊 (Stack/Queue)，確保 Loading 遮罩在所有請求完成後才消失，避免畫面閃爍。"
-  >
-    <!-- 基礎用法 -->
-    <ShowcaseSection
-      title="基礎用法"
-      icon=""
+  <div class="vue-course-layout min-h-screen bg-white">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-slate-100 px-8 py-4"
     >
-      <ShowcaseCard
-        title="核心功能"
-        description="Loading 系統的核心特色"
-        full-width
-      >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
+      <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-5">
+          <NuxtLink
+            to="/showcase"
+            class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-all group"
           >
-            <strong>可用方法：</strong>
-          </p>
-          <ShowcaseCodeBlock
-            code="const {
-  start,      // 開始 Loading
-  finish,     // 結束 Loading
-  isLoading   // Loading 狀態
-} = useLoading()"
-            label="useLoading() 提供的方法"
-          />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>計數器機制:</strong>
-              支援多重請求堆疊，避免閃爍
-            </li>
-            <li>
-              <strong>全域遮罩:</strong>
-              整個畫面的 Loading 遮罩
-            </li>
-            <li>
-              <strong>自動管理:</strong>
-              自動追蹤請求數量
-            </li>
-          </ul>
-        </div>
-        <template #footer>
-          <ShowcaseCodeBlock
-            code="const loading = useLoading()
-
-// 開始 Loading
-loading.start()
-
-// 結束 Loading
-loading.finish()"
-            label="快速開始"
-          />
-        </template>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <!-- 互動測試 -->
-    <ShowcaseSection
-      title="互動測試"
-      icon="🎮"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="基本操作"
-          description="手動觸發 Loading 狀態"
-        >
-          <div class="flex flex-wrap gap-4">
-            <button
-              class="glass-btn primary"
-              @click="handleStart"
-            >
-              Start (Get Stats)
-            </button>
-          </div>
-          <ShowcaseCodeBlock
-            code="const handleStart = async () => {
-  // 單一 API 請求
-  // 系統自動 handle Loading start/finish
-  await useApi('/dashboard/stats')
-}"
-            language="typescript"
-            label="單一請求邏輯"
-            :lines="false"
-            class="mt-4"
-          />
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="多重請求測試"
-          description="同時發送多個請求以測試 Queue 機制"
-          full-width
-        >
-          <div class="mb-6 flex justify-center">
-            <button
-              class="glass-btn primary w-full md:w-auto"
-              @click="handleSimulateStack"
-            >
-              Simulate Stack (同時發送 3 個請求)
-            </button>
-          </div>
-          <ShowcaseCodeBlock
-            code="const handleSimulateStack = async () => {
-  // 同時觸發 3 個請求，測試 Stack 疊加
-  // 注意：不使用 await 讓它們同時發出
-  const timestamp = Date.now()
-  const p1 = useApi('/users', { query: { _t: timestamp } })
-  const p2 = useApi('/dashboard/activities', { query: { _t: timestamp } })
-  const p3 = useApi('/orders', { query: { _t: timestamp } })
-
-  // Stack Count 瞬間 +3
-  await Promise.all([p1, p2, p3])
-  // 隨請求完成依序 -1
-}"
-            language="typescript"
-            label="堆疊請求邏輯 (Stack Logic)"
-            :lines="false"
-            class="mt-4"
-          />
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- API 整合 -->
-    <ShowcaseSection
-      title="API 模組整合"
-      icon="🔗"
-    >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="全域 Loading 控制"
-          description="useApi 預設會自動觸發全域 Loading"
-        >
-          <div class="flex flex-col gap-4">
-            <div class="text-sm text-slate-400">
-              <code>useApi</code>
-              預設將
-              <code>globalLoading</code>
-              設為
-              <code>true</code>
-              。若該請求不需要阻擋畫面 (例如背景更新)，可將其關閉。
-            </div>
-            <ShowcaseCodeBlock
-              code="// 關閉全域 Loading
-const { data } = await useApi('/api/news', {
-  globalLoading: false
-})"
-              language="typescript"
-              label="Disable Global Loading"
-              :lines="false"
+            <IIcon
+              icon="mdi-home-outline"
+              size="22"
+              class="group-hover:scale-110 transition-transform"
             />
-          </div>
-        </ShowcaseCard>
-
-        <ShowcaseCard
-          title="局部 Loading (loadingRef)"
-          description="自動綁定 Loading 狀態至變數 (如按鈕狀態)"
-        >
-          <div class="flex flex-col gap-4">
-            <div class="text-sm text-slate-400">
-              透過
-              <code>loadingRef</code>
-              參數，
-              <code>useApi</code>
-              會在請求期間自動將傳入的 Ref 設為
-              <code>true</code>
-              ，結束後設為
-              <code>false</code>
-              。
+          </NuxtLink>
+          <div class="h-8 w-px bg-slate-200 mx-1"></div>
+          <IBreadcrumbs :items="breadcrumbItems" />
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="text-right">
+            <span class="text-[10px] font-black text-emerald-500 uppercase">單元進度</span>
+            <div class="text-sm font-mono font-bold text-slate-600">
+              {{ activeUnitIndex + 1 }} / {{ units.length }}
             </div>
-
+          </div>
+          <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
             <div
-              class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
-            >
-              <button
-                class="glass-btn primary"
-                :disabled="localLoading"
-                @click="handleLocalLoading"
-              >
-                <i
-                  v-if="localLoading"
-                  class="mdi mdi-loading mdi-spin"
-                ></i>
-                <span v-else>送出表單</span>
-                {{ localLoading ? '處理中...' : '' }}
-              </button>
-              <div class="text-xs text-slate-500 font-mono">loadingRef: {{ localLoading }}</div>
-            </div>
-
-            <ShowcaseCodeBlock
-              code="const isSubmitting = ref(false)
-
-// 自動處理 isSubmitting 的 true/false
-await useApi('/api/submit', {
-  method: 'POST',
-  body: form,
-  loadingRef: isSubmitting
-})"
-              language="typescript"
-              label="Auto Loading Binding"
-              :lines="false"
-            />
+              class="h-full bg-emerald-500 transition-all duration-500"
+              :style="{ width: `${((activeUnitIndex + 1) / units.length) * 100}%` }"
+            ></div>
           </div>
-        </ShowcaseCard>
+        </div>
       </div>
-    </ShowcaseSection>
+    </header>
 
-    <!-- API 參考 -->
-    <ShowcaseSection
-      title="API 參考"
-      icon="📝"
-    >
-      <ShowcaseCard
-        title="API 詳細說明"
-        description="useLoading() 回傳方法列表"
-        full-width
-      >
-        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
-          提供全域 Loading 控制，採用計數器機制 (Stack) 避免閃爍。
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse border border-slate-700">
-            <thead>
-              <tr>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                >
-                  方法名稱 (Name)
-                </th>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                >
-                  型別 (Type)
-                </th>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
-                >
-                  說明 (Description)
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700/50">
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                  start()
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  開始 Loading，計數器 +1。全域遮罩顯示。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                  finish()
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  結束 Loading，計數器 -1。當計數器歸零時，遮罩消失。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
-                  isLoading
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
-                  Ref&lt;Boolean&gt;
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  目前是否處於 Loading 狀態。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
-                  count
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
-                  Ref&lt;Number&gt;
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  目前 Loading 堆疊數量 (Stack Size)。
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <div class="monitor-widget">
-      <div class="monitor-item">
-        <span class="label">堆疊層數</span>
-        <span
-          class="value"
-          :class="{ active: count > 0 }"
+    <div class="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-73px)]">
+      <!-- Sidebar -->
+      <aside class="lg:col-span-3 border-r border-slate-50 p-6 space-y-2 bg-slate-50/30">
+        <div
+          class="px-4 py-2 mb-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]"
         >
-          {{ count }}
-        </span>
-      </div>
-      <div class="monitor-divider"></div>
-      <div class="monitor-item">
-        <span class="label">資料筆數</span>
-        <span class="value highlight">{{ mockDataCount }}</span>
+          課程單元
+        </div>
+        <button
+          v-for="(unit, index) in units"
+          :key="unit.id"
+          class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group"
+          :class="
+            activeUnitIndex === index
+              ? 'bg-white shadow-sm text-emerald-600 ring-1 ring-emerald-50'
+              : 'text-slate-500 hover:bg-slate-100/50 hover:text-slate-900'
+          "
+          @click="activeUnitIndex = index"
+        >
+          <div
+            class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors"
+            :class="
+              activeUnitIndex === index
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-100 text-slate-400'
+            "
+          >
+            {{ index + 1 }}
+          </div>
+          <span class="text-sm font-black tracking-tight">{{ unit.title }}</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <div
+        ref="scrollContainer"
+        class="lg:col-span-9 h-full overflow-y-auto bg-slate-50/10"
+      >
+        <main class="max-w-4xl mx-auto p-10 space-y-12 pb-32">
+          <!-- Intro Section -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm"
+              >
+                <IIcon
+                  :icon="activeUnit.icon"
+                  size="28"
+                />
+              </div>
+              <div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+                  {{ activeUnit.title }}
+                </h1>
+                <p class="text-lg text-slate-500 font-medium mt-1 leading-relaxed">
+                  {{ activeUnit.description }}
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-5 flex items-start gap-4"
+            >
+              <div
+                class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-500 shrink-0"
+              >
+                <IIcon
+                  icon="mdi-shield-check"
+                  size="24"
+                />
+              </div>
+              <div>
+                <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+                  實戰應用 (Use Case)
+                </div>
+                <p class="text-sm font-bold text-slate-600">{{ activeUnit.useCase }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unit Content -->
+          <div class="space-y-10 animate-fadeIn">
+            <!-- Unit 00: Hook -->
+            <template v-if="activeUnit.id === 'concept'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <ShowcaseCard title="Composable API">
+                  <ShowcaseCodeBlock :code="snippets.hook" />
+                </ShowcaseCard>
+                <div class="space-y-6 pt-2">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    系統特性
+                  </h4>
+                  <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                      <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>防閃爍</strong>
+                        ：只有在 Count 從 0 到 1 時才會顯示遮罩，避免同步代碼中的狀態跳動。
+                      </p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                      <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>全域反應式</strong>
+                        ：狀態存儲於 Pinia/State 中，跨頁面組件皆可直接觀察
+                        <code>isLoading</code>
+                        。
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </template>
+
+            <!-- Unit 01: Stack -->
+            <template v-if="activeUnit.id === 'stack'">
+              <ShowcaseCard
+                title="併發請求堆疊測試"
+                description="點擊下方按鈕同時發起 3 個模擬 API 請求（間隔 2 秒），觀察堆疊數字變化。"
+              >
+                <div class="py-10 flex flex-col items-center gap-8">
+                  <div class="flex items-center gap-12">
+                    <div class="text-center">
+                      <div
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1"
+                      >
+                        Stack Count
+                      </div>
+                      <div
+                        class="text-5xl font-mono font-black transition-all"
+                        :class="count > 0 ? 'text-emerald-500 scale-110' : 'text-slate-200'"
+                      >
+                        {{ count }}
+                      </div>
+                    </div>
+                    <div class="w-px h-16 bg-slate-100"></div>
+                    <div class="text-center">
+                      <div
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1"
+                      >
+                        Overlay Status
+                      </div>
+                      <div
+                        class="text-sm font-black flex items-center gap-2"
+                        :class="isLoading ? 'text-emerald-600' : 'text-slate-400'"
+                      >
+                        <IIcon :icon="isLoading ? 'mdi-eye' : 'mdi-eye-off'" />
+                        {{ isLoading ? 'VISIBLE' : 'HIDDEN' }}
+                      </div>
+                    </div>
+                  </div>
+                  <IButton
+                    prepend-icon="mdi-flash"
+                    color="primary"
+                    @click="handleApiSimulate('stack')"
+                  >
+                    發起 3 重併發請求
+                  </IButton>
+                </div>
+              </ShowcaseCard>
+            </template>
+
+            <!-- Unit 02: API -->
+            <template v-if="activeUnit.id === 'api'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <ShowcaseCard title="自動化控制">
+                  <div
+                    class="p-8 bg-slate-50 rounded-2xl flex flex-col items-center justify-center gap-6 border border-slate-100"
+                  >
+                    <div class="flex gap-4">
+                      <div class="w-3 h-3 rounded-full bg-slate-300 animate-pulse"></div>
+                      <div class="w-3 h-3 rounded-full bg-slate-300 animate-pulse delay-75"></div>
+                      <div class="w-3 h-3 rounded-full bg-slate-300 animate-pulse delay-150"></div>
+                    </div>
+                    <IButton @click="handleApiSimulate('global')">測試一般 API 請求</IButton>
+                    <p class="text-xs text-slate-400 font-bold">
+                      已載入總筆數: {{ mockDataCount }}
+                    </p>
+                  </div>
+                </ShowcaseCard>
+                <div class="space-y-4">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    開發代碼
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.api" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Unit 03: local -->
+            <template v-if="activeUnit.id === 'local'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <ShowcaseCard title="單點綁定 (Scoped)">
+                  <div class="p-8 flex flex-col items-center gap-6">
+                    <IButton
+                      :loading="localLoading"
+                      prepend-icon="mdi-send"
+                      color="primary"
+                      class="w-full h-14 rounded-2xl"
+                      @click="handleApiSimulate('local')"
+                    >
+                      送出資料
+                    </IButton>
+                    <div class="flex items-center gap-3">
+                      <div class="text-xs font-bold text-slate-400">localLoading Ref:</div>
+                      <code
+                        class="text-xs font-mono font-bold"
+                        :class="localLoading ? 'text-emerald-500 font-black' : 'text-slate-300'"
+                      >
+                        {{ localLoading }}
+                      </code>
+                    </div>
+                  </div>
+                </ShowcaseCard>
+                <div class="space-y-4">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    綁定代碼
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.ref" />
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Footer Navigation -->
+          <div class="mt-12 border-t border-slate-100 pt-8 flex justify-between items-center">
+            <button
+              v-if="activeUnitIndex > 0"
+              class="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex--"
+            >
+              <IIcon
+                icon="mdi-arrow-left"
+                size="18"
+              />
+              上一章節
+            </button>
+            <div v-else></div>
+
+            <button
+              v-if="activeUnitIndex < units.length - 1"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex++"
+            >
+              前進單元：{{ units[activeUnitIndex + 1].title.split('：')[1] }}
+              <IIcon
+                icon="mdi-arrow-right"
+                size="18"
+              />
+            </button>
+            <NuxtLink
+              v-else
+              to="/showcase"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-200 font-bold text-sm active:scale-95 transition-all"
+            >
+              完成載入核心課程
+              <IIcon
+                icon="mdi-check-circle"
+                size="18"
+              />
+            </NuxtLink>
+          </div>
+        </main>
       </div>
     </div>
-  </ShowcasePage>
+  </div>
 </template>
 
 <style scoped>
-.glass-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #e2e8f0;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: center;
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
-.glass-btn:hover {
-  background: rgba(51, 65, 85, 0.8);
-  border-color: #94a3b8;
-}
-
-.glass-btn.primary {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.5);
-  color: #38bdf8;
-}
-
-.glass-btn.primary:hover {
-  background: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-}
-
-.glass-btn.danger {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #ef4444;
-}
-
-.glass-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.3);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-}
-
-/* Benefit List */
-.benefit-list {
-  padding-left: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  margin: 0;
-}
-
-.benefit-list li {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
-  padding: 1.25rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  color: #e2e8f0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.benefit-list li::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.benefit-list li:hover {
-  border-color: rgba(56, 189, 248, 0.3);
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
-}
-
-.benefit-list li:hover::before {
-  opacity: 1;
-}
-
-.benefit-list li strong {
-  color: #38bdf8;
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1.05em;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-/* Monitor Widget */
-.monitor-widget {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  border-radius: 12px;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-  font-family: 'JetBrains Mono', monospace;
-  z-index: 10000;
-  animation: slideIn 0.5s ease-out;
-}
-
-.monitor-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.monitor-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(148, 163, 184, 0.2);
-}
-
-.monitor-widget .label {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.monitor-widget .value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #e2e8f0;
-  line-height: 1;
-  transition: all 0.3s;
-}
-
-.monitor-widget .value.active {
-  color: #38bdf8;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-}
-
-.monitor-widget .value.highlight {
-  color: #10b981;
-}
-
-@keyframes slideIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.delay-75 {
+  animation-delay: 75ms;
+}
+.delay-150 {
+  animation-delay: 150ms;
 }
 </style>

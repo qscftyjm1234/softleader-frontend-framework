@@ -39,7 +39,7 @@ export const runtimeConfig = {
     // API 連線相關設定
     api: {
       // API 伺服器的基礎路徑 (Base URL)
-      baseUrl: process.env.VITE_API_BASE_URL,
+      baseUrl: process.env.VITE_API_BASE_URL || '',
       // 請求超時時間 (毫秒)，預設 30 秒
       timeout: Number(process.env.VITE_API_TIMEOUT) || 30000,
       // 請求失敗後的自動重試次數，預設 0 次 (不重試)

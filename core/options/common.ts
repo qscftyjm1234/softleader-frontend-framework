@@ -67,3 +67,16 @@ export const vocabularies = computed(() =>
     { label: '香蕉', value: 'banana' }
   ]
 )
+
+// 1. 靜態選項：性別
+export const genderOptions: OptionItem[] = [
+  { label: '男性', value: 'M' },
+  { label: '女性', value: 'F' }
+]
+
+// 2. 靜態選項：審核狀態 (可自帶顏色以便支援 UI 元件)
+export const statusOptions: OptionItem[] = [
+  { label: '審核中', value: 1, color: 'processing' },
+  { label: '已通過', value: 2, color: 'success' },
+  { label: '已駁回', value: 3, color: 'error' }
+]

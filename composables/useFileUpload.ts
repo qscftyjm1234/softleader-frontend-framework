@@ -308,7 +308,7 @@ export function useFileUpload() {
       const validation = validateFiles(files, {
         maxSize,
         accept,
-        maxFiles: multiple ? undefined : 1
+        maxFiles: options.multiple ? undefined : 1
       })
       if (!validation.valid) {
         throw new Error(validation.error)
@@ -466,15 +466,43 @@ export function useFileUpload() {
     let files: FileList | null = null
 
     if (event.type === 'drop') {
-      // Drag Event
+      // 拖曳事件 (Drag Event)
       files = (event as DragEvent).dataTransfer?.files || null
     } else {
-      // Input Event
+      // Input 事件
       const target = event.target as HTMLInputElement
       files = target.files
     }
 
     return files ? Array.from(files) : []
+  }
+
+  /**
+   * 檢查檔案大小
+   * @param file - 檔案
+   * @param maxSizeMB - 最大 MB 數
+   * @returns 是否通過驗證
+   */
+  const checkFileSize = (file: File, maxSizeMB: number): boolean => {
+    const result = validateFile(file, { maxSize: maxSizeMB * 1024 * 1024 })
+    if (!result.valid && result.error) {
+      notify.error(result.error)
+    }
+    return result.valid
+  }
+
+  /**
+   * 檢查檔案類型
+   * @param file - 檔案
+   * @param allowedTypes - 允許的類型
+   * @returns 是否通過驗證
+   */
+  const checkFileType = (file: File, allowedTypes: string[]): boolean => {
+    const result = validateFile(file, { accept: allowedTypes })
+    if (!result.valid && result.error) {
+      notify.error(result.error)
+    }
+    return result.valid
   }
 
   return {
@@ -483,8 +511,11 @@ export function useFileUpload() {
     uploadFromInput,
     uploadFromBase64,
     uploadFromBlob,
-    validate,
-    validateMultiple,
+    validate: (file: File, options: FileValidationOptions = {}) => validateFile(file, options),
+    validateMultiple: (files: File[], options: FileValidationOptions = {}) =>
+      validateFiles(files, options),
+    checkFileSize,
+    checkFileType,
     // 工具方法
     getSelectedFiles,
     formatFileSize,

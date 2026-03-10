@@ -1,150 +1,207 @@
-<!-- Author: cindy -->
+<!-- Author: antigravity -->
 
-# 第十二課:進階表單處理
+# 第十二課：選項數據管理
 
-本課程教您如何結合 **Ant Design Form** 與專案內建的 **useValidation** 模組。
+本課程介紹本專案強大的選項（Options）數據管理系統。我們不建議在各個頁面重複寫死下拉選單或核選方塊的選項，而是將其集中在 `core/options/` 中進行管理，以降低長期維護成本。
 
-## 1. 使用 IForm 與 Rules
+---
 
-專案使用 `a-form` 配合 `a-form-item` 進行排版與錯誤顯示。
+## 1. 定義共用選項
 
-### 步驟 1: 定義表單資料
+在本專案架構中，所有的選項資料都不是寫在 Vue 組件或 Composable 裡面的，而是統一集中在此路徑中：`core/options/common.ts`。
+
+(1.) 開啟 `core/options/common.ts`。
+(2.) 按照以下格式，新增您的選項陣列並 `export` 出來：
 
 ```typescript
-const formState = reactive({
-  username: '',
-  password: '',
-  email: '',
-  phone: ''
+import type { OptionItem } from './types'
+
+// 1. 靜態選項：性別
+export const genderOptions: OptionItem[] = [
+  { label: '男性', value: 'M' },
+  { label: '女性', value: 'F' }
+]
+
+// 2. 靜態選項：審核狀態 (可自帶顏色以便支援 UI 元件)
+export const statusOptions: OptionItem[] = [
+  { label: '審核中', value: 1, color: 'processing' },
+  { label: '已通過', value: 2, color: 'success' },
+  { label: '已駁回', value: 3, color: 'error' }
+]
+```
+
+當您在 `common.ts` 中 `export` 出去後，系統底層的 `core/options/registry.ts` 會自動將其註冊到全域，供後續使用。
+
+---
+
+## 2. 在頁面中使用選項
+
+專案內建的 `useOptions()` 鉤子，會自動讀取您剛剛在 `core` 裡面註冊好的變數，並賦予它們額外的方法（例如自動轉換 Label）。
+
+(1.) 開啟您的頁面檔案。
+(2.) 引入 `useOptions`，並直接解構出您剛剛定義的變數名稱。
+(3.) 綁定到 `ISelect` 組件。
+
+```vue
+<template>
+  <div class="p-10">
+    <ISelect
+      v-model="userStatus"
+      :options="statusOptions"
+      label="變更帳號狀態"
+      class="w-64"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  title: '選項數據管理',
+  layout: 'portal'
 })
-```
-
-### 步驟 2: 引入驗證模組 (useValidation)
-
-我們不再手寫 Regex，而是使用專案統一的 `useValidation`。
-
-```typescript
-const { required, email, phone, minLength } = useValidation()
-```
-
-### 步驟 3: 設定 Rules (整合 AntD)
-
-將 `useValidation` 的檢查邏輯整合進 Ant Design 的 `validator`。
-
-```typescript
-const rules = {
-  // 1. 基本規則 (可直接用 AntD 原生)
-  username: [{ required: true, message: '請輸入帳號' }],
-
-  // 2. 自訂驗證 (使用 useValidation)
-  email: [
-    { required: true, message: '必填' },
-    {
-      validator: async (_rule, value) => {
-        // 使用我們的模組檢查
-        const res = email(value)
-        if (!res.valid) return Promise.reject(res.message)
-        return Promise.resolve()
-      }
-    }
-  ],
-
-  // 3. 組合驗證 (手機)
-  phone: [
-    { required: true, message: '必填' },
-    {
-      validator: async (_rule, value) => {
-        const res = phone(value) // 內建台灣手機格式檢查
-        if (!res.valid) return Promise.reject(res.message)
-        return Promise.resolve()
-      }
-    }
-  ]
-}
+// 從全域選項代理中解構出您需要的選項
+const { statusOptions } = useOptions()
+const userStatus = ref(1)
+</script>
 ```
 
 ---
 
-## 2. 完整範例
+## 3. 選項系統的進階用法
+
+`useOptions` 取出的陣列不只是純陣列，而是一個「被代理 (Proxy) 過的超級陣列」，自帶許多強大的輔助功能：
+
+```typescript
+const { statusOptions } = useOptions()
+
+// 1. 取得帶有「全部」的選單 (常用於搜尋列)
+const optionsWithAll = statusOptions.withAll
+console.log('1. 加上 [全部]:', optionsWithAll)
+
+// 2. 取得帶有「其他」的選單 (常用於問卷表單)
+const optionsWithOther = statusOptions.other
+console.log('2. 加上 [其他]:', optionsWithOther)
+
+// 3. 靠 value 自動找出對應的 label (表格顯示神器)
+const displayText = statusOptions.label(2)
+console.log('3. 尋找標籤 (value=2):', displayText)
+
+// 4. 靠 value 找出完整的物件
+const fullItem = statusOptions.findByValue(2)
+console.log('4. 尋找物件 (value=2):', fullItem)
+
+// 5. 排除部分選項 (常用於權限控管)
+const excludedOptions = statusOptions.exclude([3])
+console.log('5. 排除選項 (排除3):', excludedOptions)
+
+// 6. 只保留特定選項
+const onlyOptions = statusOptions.only([1, 2])
+console.log('6. 保留選項 (保留1,2):', onlyOptions)
+
+// 7. 取得原始的純陣列資料 (解除 Proxy，用於需要傳給特定套件時)
+const rawValue = statusOptions.value
+console.log('7. 取得原始純粹陣列:', rawValue)
+
+// 8. 狀態相關 (針對非同步 API 的選項特別好用)
+console.log('8. 是否載入中 (isLoading):', statusOptions.isLoading)
+console.log('8. 是否已載入 (isLoaded):', statusOptions.isLoaded)
+
+// 9. 強制重新向後端載入資料 (這是一支 Promise)
+// await statusOptions.reload()
+```
+
+---
+
+## 4. 動態與非同步 API 選項
+
+除了靜態陣列，這套系統還支援 **動態 (Computed)** 與 **非同步 (API)** 的選項定義。只要您在 `core/options/` 中宣告好，用法完全一樣！
+
+### 寫法 A：Vue 的 Computed 響應式選項
+
+當選項需要根據別的變數（例如：語系切換、Store 狀態）即時變更時：
+
+```typescript
+// 在 core/options/common.ts 宣告
+import { computed } from 'vue'
+
+export const vocabularies = computed(() => {
+  // 這裡可以放入需要監聽依賴的邏輯
+  return [
+    { label: '蘋果', value: 'apple' },
+    { label: '香蕉', value: 'banana' }
+  ]
+})
+```
+
+### 寫法 B：非同步 API (Promise) 的選項
+
+當下拉選單的資料必須從後端 API 取得，甚至需要傳遞參數（例如：選擇城市後，才去抓取該城市的鄉鎮區）：
+
+```typescript
+// 在 core/options/modules/geography.ts 宣告
+export const townships = async (cityId?: string): Promise<OptionItem[]> => {
+  if (!cityId) return []
+
+  // 模擬呼叫 API
+  const res = await api.getTownships(cityId)
+  return res.map((item) => ({ label: item.name, value: item.id }))
+}
+```
+
+### 🎈 對應的頁面用法
+
+不論底層是陣列、Computed 還是 Promise，您在頁面調用 `useOptions()` 的感覺都是一模一樣的：
+
+```vue
+<template>
+  <!-- UI 組件直接綁定即可，它會自己處理非同步的 Loading 狀態！ -->
+  <ISelect
+    :options="taipeiTownships"
+    label="請選擇鄉鎮區"
+  />
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  title: '數據管理',
+  layout: 'portal'
+})
+const { vocabularies, townships } = useOptions()
+
+// 1. Computed 選項：資料更新時，UI 會自動響應變更
+console.log('當前語彙:', vocabularies)
+
+// 2. API 選項 (帶參數)：用法就像呼叫 Function 一樣，但它回傳的依然是具有 .withAll 等方法的超級陣列！
+const taipeiTownships = townships('TPE')
+console.log('台北市的鄉鎮區 (加上全部):', taipeiTownships.withAll)
+
+// 3. API 選項獨享的狀態
+console.log('正在從 API 載入嗎？', taipeiTownships.isLoading)
+</script>
+```
+
+---
+
+## 5. 小結
+
+一
+絕對不要去改 `composables/useOptions.ts`，那是系統底層邏輯。
+二
+需要新增選項時，請到 `core/options/common.ts` 宣告並 `export` 陣列。
+三
+在 Vue 當中呼叫 `useOptions()`，它的 Proxy 機制會為您的純資料添加好用的 `.label()`, `.withAll()` 等方法，大幅簡化表格渲染與表單開發。
+
+---
 
 ```vue
 <script setup lang="ts">
-const { required, email } = useValidation()
-
-const formState = reactive({
-  account: '',
-  mail: ''
+definePageMeta({
+  title: '資料列表範例',
+  layout: 'portal'
 })
-
-const rules = {
-  account: [{ required: true, message: '請輸入帳號' }],
-  mail: [
-    { required: true, message: '請輸入信箱' },
-    {
-      validator: async (_r, v) => {
-        const res = email(v)
-        return res.valid ? Promise.resolve() : Promise.reject(res.message)
-      }
-    }
-  ]
-}
-
-const handleFinish = (values: any) => {
-  console.log('Success:', values)
-}
 </script>
-
-<template>
-  <a-form
-    :model="formState"
-    :rules="rules"
-    @finish="handleFinish"
-  >
-    <!-- 帳號 -->
-    <a-form-item
-      label="帳號"
-      name="account"
-    >
-      <IInput v-model="formState.account" />
-    </a-form-item>
-
-    <!-- 信箱 -->
-    <a-form-item
-      label="信箱"
-      name="mail"
-    >
-      <IInput v-model="formState.mail" />
-    </a-form-item>
-
-    <IButton html-type="submit">送出</IButton>
-  </a-form>
-</template>
 ```
 
 ---
 
-## 3. useValidation 支援的功能
-
-我們的驗證模組非常強大，支援以下功能：
-
-- **required**: 必填
-- **email**: Email 格式
-- **phone**: 台灣手機 (09xx)
-- **taiwanId**: 身分證字號 (含檢查碼邏輯)
-- **url**:網址格式
-- **number / integer**: 數字/整數
-- **minLength(len) / maxLength(len)**: 長度限制
-- **range(min, max)**: 數值範圍
-- **sameAs(val)**: 確認密碼用
-
----
-
-## 4. 小結
-
-1.  **引入**: `const { ... } = useValidation()`
-2.  **整合**: 在 `validator` 中呼叫驗證函式，失敗 `reject`，成功 `resolve`。
-3.  **優點**: 全站統一驗證邏輯 (例如手機格式、身分證演算法)，不用每個人重寫 Regex。
-
----
-
-[上一課:環境變數設定](./lesson-11.md) | [下一課:複雜對話框處理](./lesson-13.md) | [回首頁](../../README.md)
+[上一課 第十一課：全域狀態管理 (Pinia)](./lesson-11.md) | [下一課 第十三課：資料列表與分頁](./lesson-13.md) | [回首頁](../../README.md)

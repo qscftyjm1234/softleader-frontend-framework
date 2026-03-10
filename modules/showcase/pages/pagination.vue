@@ -114,7 +114,7 @@ definePageMeta({
         </div>
         <template #footer>
           <ShowcaseCodeBlock
-            code="const { currentPage, total, goToPage, nextPage } = usePagination({
+            code="usePagination({
   currentPage: 1,
   pageSize: 20,
   total: 100
@@ -142,7 +142,7 @@ nextPage()"
 
           <ShowcaseCodeBlock
             code="// 1. 初始化
-const { currentPage, pageSize, setTotal } = usePagination()
+usePagination()
 
 // 2. 監聽並請求 API
 watch([currentPage, pageSize], async () => {
@@ -171,7 +171,7 @@ watch([currentPage, pageSize], async () => {
           <ShowcaseCodeBlock
             code="// 1. 初始化 (傳入總數)
 const allData = ref([...])
-const { paginateArray } = usePagination({ 
+usePagination({ 
   total: allData.value.length 
 })
 

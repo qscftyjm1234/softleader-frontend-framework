@@ -1,45 +1,34 @@
 <script setup lang="ts">
+import { Space as ASpace } from 'ant-design-vue'
+
 /**
  * IChipGroup - UI 介面層 Chip 群組容器
- *
- * 用途：統一的 Chip Group 介面，內部可使用原生 HTML 或 UI 框架
- * 未來要換 UI 框架，只需要修改這個檔案
+ * 基底更換為 Ant Design Vue (a-space)
  */
 
 interface Props {
   gap?: string | number
+  wrap?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  gap: '0.5rem'
+withDefaults(defineProps<Props>(), {
+  gap: 8,
+  wrap: true
 })
-
-const groupStyle = computed(() => ({
-  gap: typeof props.gap === 'number' ? `${props.gap}px` : props.gap
-}))
 </script>
 
 <template>
-  <!-- 目前使用原生 HTML -->
-  <div
-    class="ui-chip-group"
-    :style="groupStyle"
+  <ASpace
+    :size="gap"
+    :wrap="wrap"
+    class="i-chip-group-wrapper"
   >
     <slot />
-  </div>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VChipGroup>
-    <slot />
-  </VChipGroup>
-  -->
+  </ASpace>
 </template>
 
-<style scoped>
-.ui-chip-group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+<style scoped lang="scss">
+.i-chip-group-wrapper {
+  max-width: 100%;
 }
 </style>

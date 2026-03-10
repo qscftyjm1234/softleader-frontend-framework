@@ -1,20 +1,25 @@
+﻿/**
+ * Nuxt 3 專案核心設定檔
+ * 負責設定模組、套件、自動編譯路徑及所有全域的框架行為。
+ *
+ * @author Gino Huang
+ * @since 2024-12-24
+ * @version 1.0.0
+ *
+ * @changelog
+ * - 2024-12-24 v1.0.0 [Gino] 初始版本
+ */
 import { scanModulePages } from './router/routes-scanner'
 import { productConfig } from './scripts/product-loader'
 import { runtimeConfig as projectRuntimeConfig } from './core/config/runtime'
 import { i18nConfig } from './core/config/i18n'
 import { appConfig } from './core/config/app'
 import { securityConfig } from './core/config/security'
-import { buildConfig } from './core/config/build'
-import { importsConfig } from './core/config/imports'
-import { componentsConfig } from './core/config/components'
+import { buildConfig, viteConfig, nitroConfig } from './core/config/compiler'
+import { importsConfig, componentsConfig } from './core/config/auto-imports'
 import { modulesConfig } from './core/config/modules'
 import { cssConfig } from './core/config/css'
 import { typescriptConfig } from './core/config/typescript'
-import { viteConfig } from './core/config/vite'
-
-// Force reload for new routes
-// 強制重新載入 Nuxt 設定以修復自動導入 (Auto-imports)
-import { nitroConfig } from './core/config/nitro'
 
 console.table({
   專案名稱: productConfig.meta?.title || 'N/A',
@@ -28,10 +33,6 @@ console.table({
  * @功能 建置、編譯 nuxt3 專案時，所使用之參數和模式
  * */
 export default defineNuxtConfig({
-  /**
-   * @功能 是否需要 SSR
-   * */
-
   ssr: false,
 
   /**
@@ -45,7 +46,7 @@ export default defineNuxtConfig({
   app: appConfig,
 
   /**
-   * @功能 全域 `css` 設定
+   * @功能 全域 css 設定
    * */
   css: cssConfig,
 
@@ -113,5 +114,5 @@ export default defineNuxtConfig({
     appManifest: false
   },
 
-  compatibilityDate: '2026-02-04'
+  compatibilityDate: '2024-04-03'
 })

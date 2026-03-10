@@ -5,6 +5,7 @@ interface Props {
   title?: string
   description?: string
   noPadding?: boolean
+  compact?: boolean
 }
 
 defineProps<Props>()
@@ -12,40 +13,59 @@ defineProps<Props>()
 
 <template>
   <ICard
-    class="showcase-card-dark"
-    :class="{ 'no-padding': noPadding }"
+    class="bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-visible relative z-10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-100 group"
+    :class="{ 'p-0': noPadding }"
   >
+    <!-- Highlight Ambient Glow -->
+    <div
+      class="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
+    ></div>
+
     <div
       v-if="title || $slots.header"
-      class="card-header"
+      class="relative z-10 border-b border-slate-100/60 flex flex-col justify-center items-start gap-2"
+      :class="compact ? 'px-4 pt-4 pb-2' : 'px-6 pt-6 pb-4'"
     >
       <div
         v-if="title"
-        class="header-content"
+        class="flex-1 w-full"
       >
-        <h3 class="card-title">{{ title }}</h3>
+        <h3
+          class="m-0 text-lg font-black text-slate-800 leading-tight tracking-tight flex items-center gap-2 group-hover:text-blue-600 transition-colors duration-300"
+          :class="{ 'text-base': compact }"
+        >
+          {{ title }}
+        </h3>
         <p
           v-if="description"
-          class="card-desc"
+          class="mt-2 mb-0 text-sm text-slate-500 leading-relaxed font-normal"
+          :class="{ 'text-xs': compact }"
         >
           {{ description }}
         </p>
       </div>
       <div
         v-if="$slots.header"
-        class="header-slot"
+        class="w-full"
       >
         <slot name="header" />
       </div>
     </div>
 
-    <div class="card-body">
+    <div
+      class="relative z-10 bg-slate-50/50"
+      :class="[
+        noPadding ? 'p-0' : '',
+        !noPadding && compact ? 'p-4' : '',
+        !noPadding && !compact ? 'p-6' : ''
+      ]"
+    >
       <slot />
     </div>
 
     <div
       v-if="$slots.footer"
-      class="card-footer"
+      class="relative z-10 px-6 py-4 bg-slate-50/80 border-t border-slate-100/60 rounded-b-2xl"
     >
       <slot name="footer" />
     </div>
@@ -53,86 +73,6 @@ defineProps<Props>()
 </template>
 
 <style scoped>
-/* Premium Glass Box */
-.showcase-card-dark {
-  background: rgba(15, 23, 42, 0.6) !important; /* Deep Slate Background */
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  border-radius: 24px !important; /* Modern large radius */
-  backdrop-filter: blur(16px);
-  color: #e2e8f0;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 24px 32px -12px rgba(0, 0, 0, 0.2); /* Deep shadow */
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: visible !important; /* Allow glow to spill if needed, but usually hidden is safer for ICard */
-  position: relative;
-  z-index: 1;
-}
-
-/* Hover Effect - The "Lift" */
-.showcase-card-dark:hover {
-  transform: translateY(-4px);
-  border-color: rgba(56, 189, 248, 0.2) !important; /* Sky blue hint */
-  box-shadow:
-    0 0 0 1px rgba(56, 189, 248, 0.1),
-    0 20px 25px -5px rgba(0, 0, 0, 0.2),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  background: rgba(15, 23, 42, 0.8) !important;
-}
-
-/* Header */
-.card-header {
-  padding: 1.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  display: flex;
-  flex-direction: column; /* 改為垂直排列 */
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.5rem; /* 標題與副標題的間距 */
-}
-
-.header-content {
-  flex: 1;
-}
-
-.card-title {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #f8fafc;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.card-desc {
-  margin: 0.5rem 0 0 0;
-  font-size: 0.9rem;
-  color: #94a3b8;
-  line-height: 1.6;
-  font-weight: 400;
-}
-
-/* Body */
-.card-body {
-  padding: 1.75rem;
-  background: rgba(0, 0, 0, 0.1); /* Subtle inner contrast */
-}
-
-.no-padding .card-body {
-  padding: 0;
-}
-
-/* Footer */
-.card-footer {
-  padding: 1.25rem 1.75rem;
-  background: rgba(15, 23, 42, 0.3);
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
-}
-
 /* Typography Reset */
 :deep(p) {
   margin-bottom: 1rem;
@@ -149,7 +89,7 @@ defineProps<Props>()
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(100, 116, 139, 0.2);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-track {

@@ -1,105 +1,100 @@
 <!-- Author: cindy -->
 
-# 第十六課:資料格式化工具
+# 第十六課：複雜對話框處理
 
-本課程介紹專案內建的 `useFormatter` 和 `useDateTime`，讓您不必手寫正規表達式來處理資料。
+本課程教您如何使用 `IModal` 顯示對話框，以及使用確認視窗。
 
-## 1. 數字與金額 (useFormatter)
+## 1. 什麼時候使用 IModal?
+
+當您需要顯示自訂內容、表單，或是較複雜的資訊時，使用 `IModal`。
+
+### 基本用法
 
 ```vue
 <script setup lang="ts">
-const { formatNumber, formatCurrency, formatPercent, formatFileSize } = useFormatter()
+const visible = ref(false)
+
+function openModal() {
+  visible.value = true
+}
+
+function handleOk() {
+  // 處理確認邏輯
+  visible.value = false
+}
 </script>
 
 <template>
-  <div class="space-y-4">
-    <!-- 千分位: 1,234,567 -->
-    <p>數字: {{ formatNumber(1234567) }}</p>
+  <IButton @click="openModal">開啟設定</IButton>
 
-    <!-- 金額: NT$ 1,234,567 -->
-    <p>金額: {{ formatCurrency(1234567) }}</p>
-    <p>美金: {{ formatCurrency(1234567, 'USD') }}</p>
-
-    <!-- 百分比: 85.00% -->
-    <p>進度: {{ formatPercent(0.85) }}</p>
-
-    <!-- 檔案大小: 1.50 MB -->
-    <p>大小: {{ formatFileSize(1572864) }}</p>
-  </div>
+  <IModal
+    v-model:open="visible"
+    title="系統設定"
+    width="600px"
+    @ok="handleOk"
+  >
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <span>啟用通知</span>
+        <ASwitch />
+      </div>
+      <div class="flex items-center justify-between">
+        <span>深色模式</span>
+        <ASwitch />
+      </div>
+    </div>
+  </IModal>
 </template>
 ```
 
 ---
 
-## 2. 日期與時間 (useDateTime)
+## 2. 什麼時候使用 Modal.confirm?
 
-```vue
-<script setup lang="ts">
-const {
-  formatDate, // YYYY-MM-DD
-  formatDateTime, // YYYY-MM-DD HH:mm:ss
-  formatRelative, // 3 分鐘前
-  today,
-  add
-} = useDateTime()
+當您只需要一個簡單的「確認」動作 (例如刪除前詢問)，不需要寫模板 HTML 時。
 
-const now = new Date()
-</script>
+### 使用方法
 
-<template>
-  <div class="space-y-4">
-    <p>日期: {{ formatDate(now) }}</p>
-    <p>時間: {{ formatDateTime(now) }}</p>
+```typescript
+import { Modal } from 'ant-design-vue'
 
-    <!-- 如果是昨天的時間，會顯示 "1 天前" -->
-    <p>相對: {{ formatRelative(add(now, -1, 'day')) }}</p>
-
-    <!-- 取得下週日期 -->
-    <p>截止: {{ formatDate(add(now, 7, 'day')) }}</p>
-  </div>
-</template>
+function handleDelete() {
+  Modal.confirm({
+    title: '確定要刪除嗎?',
+    content: '此動作無法復原，請謹慎操作。',
+    okText: '刪除',
+    okType: 'danger',
+    cancelText: '取消',
+    async onOk() {
+      // 支援 Promise，會自動顯示 loading
+      await api.deleteUser(currentId)
+      message.success('刪除成功')
+    }
+  })
+}
 ```
 
 ---
 
-## 3. 個資遮罩與字串處理
+## 3. 小結
 
-保護使用者隱私，自動遮蔽敏感資訊。
+| 功能       | IModal 組件       | Modal.confirm 函式 |
+| :--------- | :---------------- | :----------------- |
+| **用途**   | 複雜內容、表單    | 簡單確認、警告     |
+| **寫法**   | 寫在 `<template>` | 寫在 `<script>`    |
+| **自訂性** | 高 (Slot)         | 低 (文字為主)      |
+
+---
 
 ```vue
 <script setup lang="ts">
-const { maskPhone, maskEmail, formatTaiwanId, truncate } = useFormatter()
+definePageMeta({
+  title: '資料列表範例',
+  layout: 'portal'
+})
 </script>
-
-<template>
-  <div class="space-y-4">
-    <!-- 手機: 0912-***-789 -->
-    <p>手機: {{ maskPhone('0912345678') }}</p>
-
-    <!-- Email: ci***@example.com -->
-    <p>Email: {{ maskEmail('cindy@example.com') }}</p>
-
-    <!-- 身分證: A123456789 (自動轉大寫) -->
-    <p>ID: {{ formatTaiwanId('a123456789') }}</p>
-
-    <!-- 截斷: 這是一段很長... -->
-    <p>摘要: {{ truncate('這是一段很長很長的文章內容', 6) }}</p>
-  </div>
-</template>
 ```
 
 ---
 
-## 4. 小結
-
-| 分類     | 常用函式         | 範例結果        |
-| :------- | :--------------- | :-------------- |
-| **金額** | `formatCurrency` | NT$ 1,000       |
-| **日期** | `formatDate`     | 2023-12-25      |
-| **相對** | `formatRelative` | 剛剛            |
-| **遮罩** | `maskPhone`      | 0912-\*\*\*-789 |
-| **檔案** | `formatFileSize` | 2.5 MB          |
-
----
-
-[上一課:檔案上傳實戰](./lesson-15.md) | [下一課:資料列表與分頁](./lesson-17.md) | [回首頁](../../README.md)
+[上一課 第十五課：表單處理與驗證](./lesson-15.md) | [下一課 第十七課：彈窗管理技巧](./lesson-17.md) | [回首頁](../../README.md)

@@ -68,7 +68,6 @@ const handleChange = (value: string | number) => {
   const formatted = formatPhone(String(value))
   emit('update:modelValue', formatted)
   emit('change', formatted)
-  emit('change', formatted)
 }
 
 defineOptions({

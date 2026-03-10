@@ -15,13 +15,13 @@ export const useUserStore = defineStore('user', () => {
 
   // 👉 動作 (Actions)
   /**
-   *
-   * @param payload
-   * @param payload.name
-   * @param payload.email
-   * @param payload.token
+   * 登入
+   * @param payload - 登入資訊
+   * @param payload.name - 名稱
+   * @param payload.email - Email
+   * @param payload.token - 權限 token
    */
-  function login(payload: { name: string; email: string; token: string }) {
+  function handleLogin(payload: { name: string; email: string; token: string }) {
     user.value = { name: payload.name, email: payload.email }
     token.value = payload.token
   }
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   /**
    *
    */
-  function logout() {
+  function handleLogout() {
     user.value = null
     token.value = null
   }
@@ -50,8 +50,8 @@ export const useUserStore = defineStore('user', () => {
     token,
     permissions,
     isLoggedIn,
-    login,
-    logout,
+    login: handleLogin,
+    logout: handleLogout,
     fetchUserInfo
   }
 })

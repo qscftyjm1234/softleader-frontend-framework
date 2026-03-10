@@ -1,13 +1,13 @@
 {
-  "name": "Default Product",
-  "description": "Standard configuration enabling all modules",
+  "name": "Vue前端開發包系統",
+  "description": "企業級 Vue 3 & Nuxt 3 前端開發框架預設核心設定",
   "modules": ["showcase"],
   "theme": {
     "primary": "#1976D2"
   },
   "meta": {
-    "title": "Demo App",
-    "description": "Demo App",
+    "title": "Vue前端開發包系統",
+    "description": "Vue前端開發包系統",
     "favicon": "/favicon.ico",
     "themeColor": "#ffffff"
   }

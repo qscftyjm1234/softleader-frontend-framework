@@ -152,6 +152,7 @@ const securityFeatures = computed<SecurityFeature[]>(() => [
 ])
 
 // HTTP 安全標頭 (從 realSecurityHeaders 轉換)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const securityHeaders = computed(() =>
   Object.entries(realSecurityHeaders.headers).map(([key, value]) => {
     // 簡單的描述映射

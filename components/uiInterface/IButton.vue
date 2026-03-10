@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IIcon from './IIcon.vue' // 原生實作需要引入 Icon
+import { Button as AButton } from 'ant-design-vue'
+import IIcon from './IIcon.vue'
 
 /**
  * Component: IButton (按鈕元件)
  *
  * 介面層 (Interface Layer) 標準元件。
- * 負責將統一的 Props 轉換為底層 UI 框架 (Vuetify) 的屬性。
- * 內部保留了「與 UI 框架解耦」的能力，可隨時切換回原生或其他框架。
- *
- * @example
- * <IButton variant="danger" size="large" loading>刪除</IButton>
+ * 基底更換為 Ant Design Vue (a-button)，並保留企業級 SaaS 視覺封裝。
  */
 
-// ====================================================
-// 框架切換開關 (DEMO USE ONLY)
-// true = 使用 Vuetify 實作
-// false = 使用 原生 HTML/CSS 實作
-// ====================================================
-const shouldUseFramework = true
-
-// 1. 定義標準 Props (20% 核心)
 interface Props {
+  // 文字
+  label?: string
   // 樣式變體
   variant?:
     | 'primary'
@@ -44,12 +35,13 @@ interface Props {
   target?: string
   color?: string // 自訂顏色
   // 圖示
-  icon?: string // Icon-only mode
+  icon?: string // 僅圖示模式 (Icon-only mode)
   prependIcon?: string
   appendIcon?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  label: undefined,
   variant: 'primary',
   size: 'medium',
   block: false,
@@ -68,38 +60,6 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-const antDBindings = computed(() => {
-  const bindings: Record<string, any> = {}
-
-  // [Size Mapping]
-  const sizeMap: Record<string, string> = {
-    small: 'small',
-    medium: 'default',
-    large: 'large'
-  }
-  bindings.size = sizeMap[props.size] || 'default'
-
-  // [Type Mapping]
-  if (props.variant === 'primary') {
-    bindings.type = 'primary'
-  } else if (props.variant === 'danger') {
-    bindings.type = 'primary'
-    bindings.danger = true
-  } else if (props.variant === 'text') {
-    bindings.type = 'text'
-  } else if (props.variant === 'outlined') {
-    bindings.type = 'default'
-    bindings.ghost = false // AntD uses ghost for transparent bg
-  } else if (props.variant === 'link') {
-    bindings.type = 'link'
-  }
-
-  return bindings
-})
-
-// ====================================================
-// 3. 原生實作邏輯 (Native Logic)
-// ====================================================
 const handleClick = (event: MouseEvent) => {
   if (!props.disabled && !props.loading) {
     if (props.to) {
@@ -110,179 +70,158 @@ const handleClick = (event: MouseEvent) => {
   }
 }
 
-const isLink = computed(() => !!props.href)
-const componentTag = computed(() => (isLink.value ? 'a' : 'button'))
+// 映射 Ant Design 的 Type
+const antdVariant = computed(() => {
+  if (props.variant === 'outlined') return 'dashed'
+  if (props.variant === 'text') return 'text'
+  if (props.variant === 'secondary') return 'default'
+  if (['success', 'danger', 'warning', 'info'].includes(props.variant || '')) return 'primary'
+  return props.variant as any
+})
 
-const buttonStyle = computed(() => {
-  if (!props.color) return {}
-  const colorValue =
-    props.color.startsWith('var(') || props.color.startsWith('#') || props.color.startsWith('rgb')
-      ? props.color
-      : `var(--color-${props.color}, ${props.color})`
-  return {
-    color: props.variant === 'text' ? colorValue : undefined,
-    backgroundColor: props.variant !== 'text' ? colorValue : undefined
-  }
+// 映射 Ant Design 的 Size
+const antdSize = computed(() => {
+  if (props.size === 'large') return 'large'
+  if (props.size === 'small') return 'small'
+  return 'middle'
+})
+
+// 語義化顏色 Class 映射 (Tailwind)
+const colorClasses = computed(() => {
+  if (props.variant === 'success') return 'antd-btn-success'
+  if (props.variant === 'danger') return 'antd-btn-danger'
+  if (props.variant === 'warning') return 'antd-btn-warning'
+  if (props.variant === 'info') return 'antd-btn-info'
+  if (props.variant === 'secondary') return 'antd-btn-secondary'
+  return ''
 })
 </script>
 
 <template>
-  <!-- 
-    實作 A: 底層框架 (Vuetify)
-    原則：屬性透傳 ($attrs) 讓 Vue 自動處理剩下的 80% 屬性
-  -->
-  <a-button
-    v-if="shouldUseFramework"
-    v-bind="{ ...antDBindings, ...$attrs }"
+  <AButton
+    :type="antdVariant"
+    :size="antdSize"
     :block="block"
     :loading="loading"
     :disabled="disabled"
-    :href="href"
-    :target="target"
+    :danger="variant === 'danger'"
+    :class="[
+      'i-button-wrapper',
+      colorClasses,
+      { 'is-icon-only': icon && !$slots.default && !label }
+    ]"
     @click="handleClick"
   >
     <template
-      v-if="icon || prependIcon"
+      v-if="prependIcon || icon"
       #icon
     >
-      <IIcon :icon="icon || prependIcon" />
+      <IIcon :icon="prependIcon || icon" />
     </template>
 
-    <slot />
+    <span v-if="label || $slots.default">
+      <slot>{{ label }}</slot>
+    </span>
 
-    <!-- Ant Design Vue 不直接支援 appendIcon slot, 這裡手動放一個 -->
-    <IIcon
+    <template
       v-if="appendIcon"
-      :icon="appendIcon"
-      class="ml-1"
-    />
-  </a-button>
-
-  <!-- 
-    實作 B: 原生 HTML/CSS
-    完全不依賴任何第三方 UI 庫，證明介面層解耦能力
-  -->
-  <component
-    :is="componentTag"
-    v-else
-    :type="isLink ? undefined : 'button'"
-    :href="isLink ? href : undefined"
-    :target="isLink ? target : undefined"
-    :disabled="isLink ? undefined : disabled || loading"
-    :class="[
-      'i-button',
-      `i-button--${variant}`,
-      `i-button--${size}`,
-      {
-        'i-button--block': block,
-        'i-button--loading': loading,
-        'i-button--disabled': disabled
-      }
-    ]"
-    :style="buttonStyle"
-    @click="handleClick"
-  >
-    <!-- Loading -->
-    <span
-      v-if="loading"
-      class="i-button__loading"
-    ></span>
-
-    <!-- Icons -->
-    <IIcon
-      v-if="!loading && (icon || prependIcon)"
-      :icon="icon || prependIcon"
-      :class="['i-button__icon', { 'mr-2': !!$slots.default && !icon }]"
-    />
-
-    <slot />
-
-    <IIcon
-      v-if="!loading && appendIcon"
-      :icon="appendIcon"
-      class="i-button__icon ml-2"
-    />
-  </component>
+      #append
+    >
+      <IIcon
+        :icon="appendIcon"
+        class="ml-1"
+      />
+    </template>
+  </AButton>
 </template>
 
-<style scoped>
-/* 
- 注意：這些樣式僅在使用「原生實作」時才會生效
- 當切換到 Vuetify 時，這些樣式完全不會被載入 (因為 v-btn 有自己的樣式)
-*/
-.i-button {
+<style scoped lang="scss">
+.i-button-wrapper {
+  height: auto;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  line-height: 1.5;
-}
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-/* Sizes */
-.i-button--small {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-}
-.i-button--medium {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-}
-.i-button--large {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.125rem;
-}
-
-/* Variants (Simplified for demo) */
-.i-button--primary {
-  background: #1976d2;
-  color: white;
-}
-.i-button--secondary {
-  background: #9e9e9e;
-  color: white;
-}
-.i-button--danger {
-  background: #f44336;
-  color: white;
-}
-.i-button--text {
-  background: transparent;
-  color: inherit;
-}
-.i-button--outlined {
-  background: transparent;
-  border: 1px solid currentColor;
-  color: inherit;
-}
-
-/* States */
-.i-button--block {
-  width: 100%;
-  display: flex;
-}
-.i-button--disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-.i-button__loading {
-  animation: spin 1s linear infinite;
-  margin-right: 0.5rem;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+  &.ant-btn-lg {
+    padding: 14px 28px;
+    font-size: 16px;
   }
-  to {
-    transform: rotate(360deg);
+
+  &.ant-btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  &.is-icon-only {
+    padding: 0;
+    width: 42px;
+    height: 42px;
+
+    &.ant-btn-sm {
+      width: 32px;
+      height: 32px;
+    }
+    &.ant-btn-lg {
+      width: 52px;
+      height: 52px;
+    }
+  }
+}
+
+// 擴展 Ant Design 語義化顏色 (透過範例代碼中的企業藍與高級灰)
+.antd-btn-success {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+  color: white !important;
+  &:hover {
+    background-color: #059669 !important;
+    border-color: #059669 !important;
+  }
+}
+
+.antd-btn-warning {
+  background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
+  color: white !important;
+  &:hover {
+    background-color: #d97706 !important;
+    border-color: #d97706 !important;
+  }
+}
+
+.antd-btn-info {
+  background-color: #0ea5e9 !important;
+  border-color: #0ea5e9 !important;
+  color: white !important;
+  &:hover {
+    background-color: #0284c7 !important;
+    border-color: #0284c7 !important;
+  }
+}
+
+.antd-btn-danger {
+  // Antd 已經有 danger 變體，但我們希望使用自定義的 rose-600 顏色
+  background-color: #e11d48 !important;
+  border-color: #e11d48 !important;
+  color: white !important;
+  &:hover {
+    background-color: #be123c !important;
+    border-color: #be123c !important;
+  }
+}
+
+.antd-btn-secondary {
+  background-color: #475569 !important;
+  border-color: #475569 !important;
+  color: white !important;
+  &:hover {
+    background-color: #334155 !important;
+    border-color: #334155 !important;
   }
 }
 </style>

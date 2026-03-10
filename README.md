@@ -32,28 +32,54 @@ npm run dev
 
 ## 新手教學課程
 
-專為新進人員設計，請依照順序完成。
+專為新進人員設計，為了讓學習曲線更平滑，請依照以下 **五個階段** 完成課程：
 
-- **[第一課：建立您的第一個頁面](./docs/course/lesson-1.md)**
-- **[第二課：建立您的第一個元件](./docs/course/lesson-2.md)**
-- **[第三課：UI 框架介紹 (AntD + Tailwind)](./docs/course/lesson-3.md)**
-- **[第四課：UI 組件開發規範 (Components)](./docs/course/lesson-4.md)**
-- **[第五課：客製化圖示系統 (Icons)](./docs/course/lesson-5.md)**
-- **[第六課：頁面導航與路由 (Routing)](./docs/course/lesson-6.md)**
-- **[第七課：API 串接與資料層 (Repository)](./docs/course/lesson-7.md)**
-- **[第八課：全域狀態管理 (Pinia Store)](./docs/course/lesson-8.md)**
-- **[第九課：Git 提交與工作流](./docs/course/lesson-9.md)**
-- **[第十課：資安與權限控管 (Security & Watermark)](./docs/course/lesson-10.md)**
-- **[第十一課：環境變數設定 (Env Variables)](./docs/course/lesson-11.md)**
-- **[第十二課：進階表單處理 (Forms)](./docs/course/lesson-12.md)**
-- **[第十三課：複雜對話框處理 (Complex Dialogs)](./docs/course/lesson-13.md)**
-- **[第十四課：彈窗管理技巧 (Modal Management)](./docs/course/lesson-14.md)**
-- **[第十五課：檔案上傳實戰 (File Upload)](./docs/course/lesson-15.md)**
-- **[第十六課：資料格式化工具 (Utils)](./docs/course/lesson-16.md)**
-- **[第十七課：資料列表與分頁 (Data List & Pagination)](./docs/course/lesson-17.md)**
-- **[第十八課：搜尋與防抖 (Search & Debounce)](./docs/course/lesson-18.md)**
-- **[第十九課：選項數據管理 (Option Management)](./docs/course/lesson-19.md)**
-- **[第二十課：檔案下載與匯出 (File Download)](./docs/course/lesson-20.md)**
+### 階段一：基礎與核心觀念 (Basics & Core Concepts)
+
+新手上路必備，了解專案架構、如何新增頁面與路由，以及環境變數設定。
+
+- **[第一課：開發包導論與介面理念](./docs/course/lesson-1.md)**
+- **[第二課：建立您的第一個頁面](./docs/course/lesson-2.md)**
+- **[第三課：建立您的第一個元件](./docs/course/lesson-3.md)**
+- **[第四課：頁面導航與路由 (Routing)](./docs/course/lesson-4.md)**
+- **[第五課：環境變數設定 (Env Variables)](./docs/course/lesson-5.md)**
+
+### 階段二：UI 與元件開發 (UI & Component Development)
+
+學習本專案專屬的 UI 組件規範與共用小工具。
+
+- **[第六課：UI 框架介紹 (AntD + Tailwind)](./docs/course/lesson-6.md)**
+- **[第七課：UI 組件開發規範 (Components)](./docs/course/lesson-7.md)**
+- **[第八課：客製化圖示系統 (Icons)](./docs/course/lesson-8.md)**
+- **[第九課：資料格式化工具 (Utils)](./docs/course/lesson-9.md)**
+
+### 階段三：資料與狀態管理 (Data & State Management)
+
+開始接觸後端 API、全域狀態，以及強大的全域選項系統。
+
+- **[第十課：API 串接與資料層 (Repository)](./docs/course/lesson-10.md)**
+- **[第十一課：全域狀態管理 (Pinia Store)](./docs/course/lesson-11.md)**
+- **[第十二課：選項數據管理 (Option Management)](./docs/course/lesson-12.md)**
+
+### 階段四：進階實戰技巧 (Advanced Practical Skills)
+
+各類業務情境的實作與應用。
+
+- **[第十三課：資料列表與分頁 (Data List & Pagination)](./docs/course/lesson-13.md)**
+- **[第十四課：搜尋與防抖 (Search & Debounce)](./docs/course/lesson-14.md)**
+- **[第十五課：進階表單處理 (Forms)](./docs/course/lesson-15.md)**
+- **[第十六課：複雜對話框處理 (Complex Dialogs)](./docs/course/lesson-16.md)**
+- **[第十七課：彈窗管理技巧 (Modal Management)](./docs/course/lesson-17.md)**
+- **[第十八課：檔案上傳實戰 (File Upload)](./docs/course/lesson-18.md)**
+- **[第十九課：檔案下載與匯出 (File Download)](./docs/course/lesson-19.md)**
+
+### 階段五：系統、資安與工作流 (System, Security & Workflow)
+
+保護專案、解決常見問題，以及正確提交程式碼。
+
+- **[第二十課：Ui資安防衛 (Security & Watermark)](./docs/course/lesson-20.md)**
+- **[第二十一課：常見問題排解](./docs/course/lesson-21.md)**
+- **[第二十二課：Git 提交與工作流](./docs/course/lesson-22.md)**
 
 ---
 

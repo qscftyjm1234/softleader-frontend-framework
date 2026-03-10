@@ -27,11 +27,11 @@
 
 針對不同甲方公司的部署需求與套件限制，專案提供自動化「Package 篩選」機制，能快速調整 `package.json` 的名稱、描述並過濾不必要的依賴項。
 
-| 檔案/目錄                    | 用途     | 說明                                               |
-| :--------------------------- | :------- | :------------------------------------------------- |
-| `package.master.json`        | 原始清單 | **重要**: 這是所有套件的完整來源，請勿直接修改此檔 |
-| `package-clients.json`       | 甲方清單 | 定義各公司的排除 (`exclude`) 或所需 (`include`)    |
-| `scripts/package-filter.mjs` | 篩選腳本 | 負責將 `package.json` 篩選為目標公司的版本         |
+| 檔案/目錄                                     | 用途     | 說明                                               |
+| :-------------------------------------------- | :------- | :------------------------------------------------- |
+| `configs/package-policy/package.master.json`  | 原始清單 | **重要**: 這是所有套件的完整來源，請勿直接修改此檔 |
+| `configs/package-policy/package-clients.json` | 甲方清單 | 定義各公司的排除 (`exclude`) 或所需 (`include`)    |
+| `scripts/package-filter.mjs`                  | 篩選腳本 | 負責將 `package.json` 篩選為目標公司的版本         |
 
 **使用方式：**
 
@@ -62,7 +62,7 @@ npm install
 ```
 
 > [!TIP]
-> 執行此腳本後，`package.json` 的 `name` 與 `description` 會自動根據 `package-clients.json` 的定義變更。
+> 執行此腳本後，`package.json` 的 `name` 與 `description` 會自動根據 `configs/package-policy/package-clients.json` 的定義變更。
 
 #### 動態模組載入 (Dynamic Module Loading)
 

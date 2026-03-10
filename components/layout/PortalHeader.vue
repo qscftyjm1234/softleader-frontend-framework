@@ -1,63 +1,74 @@
 <script setup lang="ts">
-import IButton from '@/components/uiInterface/IButton.vue'
 import HeaderUserMenu from '~/components/layout/header/HeaderUserMenu.vue'
+import IIcon from '@/components/uiInterface/IIcon.vue'
 
 const config = useRuntimeConfig()
-const appName = config.public.app.productConfig?.meta?.title || 'Frontend Kit'
+const appName = config.public.app.productConfig?.meta?.title || 'Vue前端開發包系統'
 
 // 簡單導航
 const navItems = [
   { label: '首頁', to: '/' },
+  { label: '組件遊樂場', to: '/showcase/component-playground' },
   { label: '開發指南', to: '/showcase/development' },
   { label: '模組', to: '/showcase' }
 ]
 </script>
 
 <template>
-  <header class="portal-header">
-    <div class="header-container">
-      <!-- Logo / 品牌 -->
-      <NuxtLink
-        to="/"
-        class="brand-link"
-      >
-        <IIcon
-          size="64"
-          color="primary"
-          icon="mdi-domain"
-        />
-        <span class="brand-text">{{ appName }}</span>
-      </NuxtLink>
-
-      <!-- 導航 -->
-      <nav class="header-nav">
+  <header
+    class="fixed top-0 left-0 w-full h-14 z-[100] bg-white/70 backdrop-blur-xl border-b border-slate-200/50 transition-all duration-300 shadow-sm"
+  >
+    <div class="max-w-[1500px] mx-auto h-full px-8 flex items-center justify-between">
+      <div class="flex items-center gap-10">
+        <!-- Logo / 品牌 -->
         <NuxtLink
-          v-for="item in navItems"
-          :key="item.to"
-          :to="item.to"
-          class="nav-link"
+          to="/"
+          class="flex items-center gap-2.5 group transition-all"
         >
-          {{ item.label }}
+          <div
+            class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform"
+          >
+            <IIcon
+              size="18"
+              color="white"
+              icon="mdi-hexagon-multiple"
+            />
+          </div>
+          <span class="text-lg font-black tracking-tight text-slate-900">{{ appName }}</span>
         </NuxtLink>
-      </nav>
 
-      <div class="header-spacer" />
+        <!-- 導覽 -->
+        <nav class="hidden md:flex items-center gap-1">
+          <NuxtLink
+            v-for="item in navItems"
+            :key="item.to"
+            :to="item.to"
+            class="px-4 py-1.5 rounded-lg text-[13px] font-bold text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-all"
+            active-class="text-blue-600 bg-blue-50/50 shadow-sm"
+          >
+            {{ item.label }}
+          </NuxtLink>
+        </nav>
+      </div>
 
       <!-- 右側操作區 -->
-      <div class="header-actions">
-        <div class="action-item">
-          <IButton
-            variant="text"
-            icon="mdi-github"
-            color="white"
-            size="large"
+      <div class="flex items-center gap-5">
+        <div class="h-4 w-px bg-slate-200"></div>
+        <div class="flex items-center">
+          <a
             href="https://github.com/example/repo"
             target="_blank"
-          />
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all"
+          >
+            <IIcon
+              icon="mdi-github"
+              size="20"
+            />
+          </a>
         </div>
 
         <!-- 使用者選單 -->
-        <div class="action-item">
+        <div class="flex items-center shrink-0">
           <HeaderUserMenu />
         </div>
       </div>
@@ -66,99 +77,5 @@ const navItems = [
 </template>
 
 <style scoped>
-.portal-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 64px;
-  z-index: 100;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.header-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  gap: 2rem;
-}
-
-.brand-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  color: white;
-  transition: opacity 0.2s;
-}
-
-.brand-link:hover {
-  opacity: 0.8;
-}
-
-.brand-logo {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
-}
-
-.brand-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.header-nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.nav-link:hover,
-.nav-link.router-link-active,
-.nav-link.router-link-exact-active {
-  color: white;
-  background: rgba(56, 189, 248, 0.15); /* 天藍色淡彩 */
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
-}
-
-.header-spacer {
-  flex: 1;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: white;
-}
-
-.action-item {
-  display: flex;
-  align-items: center;
-}
-
-/* Deep selector 用於覆蓋子元件樣式 (若暗色模式需要) */
-:deep(.v-btn) {
-  color: #e2e8f0 !important;
-}
+/* Scoped styles are largely replaced by Tailwind classes above */
 </style>

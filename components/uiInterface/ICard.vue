@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Card as ACard } from 'ant-design-vue'
+
 /**
  * ICard - UI 介面層卡片
- *
- * 用途：統一的 Card 介面，內部可使用原生 HTML 或 UI 框架
- * 未來要換 UI 框架，只需要修改這個檔案
+ * 基底更換為 Ant Design Vue (a-card)
  */
 
 interface Props {
@@ -11,118 +12,103 @@ interface Props {
   subtitle?: string
   elevation?: number
   color?: string
-  variant?: 'elevated' | 'flat' | 'outlined'
+  variant?: 'elevated' | 'flat' | 'outlined' | 'glass'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   subtitle: '',
   elevation: 1,
-  color: 'white',
+  color: '#ffffff',
   variant: 'elevated'
 })
 
-const cardClass = computed(() => ({
-  [`variant-${props.variant}`]: true
-}))
-
-const cardStyle = computed(() => ({
-  backgroundColor: props.color,
-  boxShadow:
-    props.variant === 'elevated' && props.elevation > 0
-      ? `0 ${props.elevation}px ${props.elevation * 2}px rgba(0, 0, 0, 0.1)`
-      : 'none'
-}))
-const shouldUseFramework = true
-
-const antDBindings = computed(() => ({
-  title: props.title,
-  bordered: props.variant === 'outlined',
-  hoverable: true
-}))
+const cardStyle = computed(() => {
+  const styles: any = {}
+  if (props.color && props.variant !== 'glass') {
+    styles.backgroundColor = props.color
+  }
+  return styles
+})
 </script>
 
 <template>
-  <a-card
-    v-if="shouldUseFramework"
-    v-bind="antDBindings"
-  >
-    <template
-      v-if="$slots.header"
-      #title
-    >
-      <slot name="header" />
-    </template>
-    <slot />
-  </a-card>
-
-  <!-- 目前使用原生 HTML -->
-  <div
-    v-else
-    class="ui-card"
-    :class="cardClass"
+  <ACard
+    :bordered="variant === 'outlined'"
+    :class="['i-card-wrapper', `variant-${variant}`]"
     :style="cardStyle"
   >
-    <div
+    <template
       v-if="title || subtitle || $slots.header"
-      class="card-header"
+      #title
     >
       <slot name="header">
-        <h3
-          v-if="title"
-          class="card-title"
-        >
-          {{ title }}
-        </h3>
-        <p
-          v-if="subtitle"
-          class="card-subtitle"
-        >
-          {{ subtitle }}
-        </p>
+        <div class="flex flex-col">
+          <span class="text-lg font-black text-slate-900 tracking-tight">{{ title }}</span>
+          <span
+            v-if="subtitle"
+            class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1"
+          >
+            {{ subtitle }}
+          </span>
+        </div>
       </slot>
-    </div>
-    <div class="card-content">
+    </template>
+
+    <div class="i-card-body">
       <slot />
     </div>
-  </div>
+
+    <template
+      v-if="$slots.footer"
+      #actions
+    >
+      <div class="px-6 py-4 w-full text-left">
+        <slot name="footer" />
+      </div>
+    </template>
+  </ACard>
 </template>
 
-<style scoped>
-.ui-card {
-  border-radius: 8px;
+<style scoped lang="scss">
+:deep(.i-card-wrapper) {
+  border-radius: 24px;
   overflow: hidden;
-  transition: all 0.3s ease;
-}
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-.ui-card.variant-outlined {
-  border: 1px solid #e0e0e0;
-  box-shadow: none !important;
-}
+  .ant-card-head {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px 24px;
+  }
 
-.ui-card.variant-flat {
-  box-shadow: none !important;
-}
+  .ant-card-body {
+    padding: 24px;
+  }
 
-.card-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
-}
+  &.variant-elevated {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.05),
+      0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+  }
 
-.card-title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-}
+  &.variant-glass {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
 
-.card-subtitle {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.875rem;
-  color: #7f8c8d;
-}
-
-.card-content {
-  padding: 1.5rem;
+  &.variant-flat {
+    background-color: #f8fafc !important;
+    border: none;
+    box-shadow: none;
+  }
 }
 </style>

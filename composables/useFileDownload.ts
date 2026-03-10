@@ -76,7 +76,7 @@ function getMimeType(filename: string): string {
  * @param contentDisposition - Content-Disposition Header 值
  * @returns 檔案名稱
  */
-function extractFilenameFromHeader(contentDisposition: string | null): string | null {
+function parseFilenameFromHeader(contentDisposition: string | null): string | null {
   if (!contentDisposition) return null
 
   // 處理 filename*=UTF-8''encoded-filename 格式
@@ -99,7 +99,7 @@ function extractFilenameFromHeader(contentDisposition: string | null): string | 
  * @param blob - Blob 物件
  * @param filename - 檔案名稱
  */
-function downloadBlob(blob: Blob, filename: string): void {
+function handleDownloadBlob(blob: Blob, filename: string): void {
   // 建立臨時 URL
   const url = window.URL.createObjectURL(blob)
 
@@ -134,17 +134,17 @@ export function useFileDownload() {
   const downloadFromUrl = async (url: string, options: FileDownloadOptions = {}): Promise<void> => {
     const {
       filename,
-      globalLoading = false,
+      globalLoading: isGlobalLoading = false,
       loadingRef,
       onSuccess,
       onError,
-      autoSuccess = true,
-      autoError = true
+      autoSuccess: shouldAutoSuccess = true,
+      autoError: shouldAutoError = true
     } = options
 
     try {
       // 開始 Loading
-      if (globalLoading) loading.start()
+      if (isGlobalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 發送請求
@@ -162,28 +162,28 @@ export function useFileDownload() {
       if (!finalFilename) {
         // 嘗試從 Header 取得檔案名稱
         const contentDisposition = response.headers.get('Content-Disposition')
-        finalFilename = extractFilenameFromHeader(contentDisposition) || 'download'
+        finalFilename = parseFilenameFromHeader(contentDisposition) || 'download'
       }
 
       // 下載檔案
-      downloadBlob(blob, finalFilename)
+      handleDownloadBlob(blob, finalFilename)
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`檔案 ${finalFilename} 下載成功`)
       }
       onSuccess?.(finalFilename)
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案下載失敗: ${err.message}`)
       }
       onError?.(err)
       throw error
     } finally {
       // 結束 Loading
-      if (globalLoading) loading.finish()
+      if (isGlobalLoading) loading.finish()
       if (loadingRef) loadingRef.value = false
     }
   }
@@ -199,12 +199,12 @@ export function useFileDownload() {
   ): Promise<void> => {
     const {
       filename,
-      globalLoading = false,
+      globalLoading: isGlobalLoading = false,
       loadingRef,
       onSuccess,
       onError,
-      autoSuccess = true,
-      autoError = true,
+      autoSuccess: shouldAutoSuccess = true,
+      autoError: shouldAutoError = true,
       method = 'GET',
       body
     } = options
@@ -213,7 +213,7 @@ export function useFileDownload() {
 
     try {
       // 開始 Loading
-      if (globalLoading) loading.start()
+      if (isGlobalLoading) loading.start()
       if (loadingRef) loadingRef.value = true
 
       // 發送 API 請求
@@ -231,14 +231,14 @@ export function useFileDownload() {
       downloadBlob(blob, finalFilename)
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`檔案 ${finalFilename} 下載成功`)
       }
       onSuccess?.(finalFilename)
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案下載失敗: ${err.message}`)
       }
       onError?.(err)
@@ -261,7 +261,12 @@ export function useFileDownload() {
     filename: string,
     options: Omit<FileDownloadOptions, 'filename'> = {}
   ): void => {
-    const { onSuccess, onError, autoSuccess = true, autoError = true } = options
+    const {
+      onSuccess,
+      onError,
+      autoSuccess: shouldAutoSuccess = true,
+      autoError: shouldAutoError = true
+    } = options
 
     try {
       // 移除 data URI 前綴（如果有的話）
@@ -282,14 +287,14 @@ export function useFileDownload() {
       downloadBlob(blob, filename)
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`檔案 ${filename} 下載成功`)
       }
       onSuccess?.(filename)
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案下載失敗: ${err.message}`)
       }
       onError?.(err)
@@ -308,21 +313,26 @@ export function useFileDownload() {
     filename: string,
     options: Omit<FileDownloadOptions, 'filename'> = {}
   ): void => {
-    const { onSuccess, onError, autoSuccess = true, autoError = true } = options
+    const {
+      onSuccess,
+      onError,
+      autoSuccess: shouldAutoSuccess = true,
+      autoError: shouldAutoError = true
+    } = options
 
     try {
       // 下載檔案
-      downloadBlob(blob, filename)
+      handleDownloadBlob(blob, filename)
 
       // 成功回呼
-      if (autoSuccess) {
+      if (shouldAutoSuccess) {
         notify.success(`檔案 ${filename} 下載成功`)
       }
       onSuccess?.(filename)
     } catch (error) {
       // 錯誤處理
       const err = error as Error
-      if (autoError) {
+      if (shouldAutoError) {
         notify.error(`檔案下載失敗: ${err.message}`)
       }
       onError?.(err)

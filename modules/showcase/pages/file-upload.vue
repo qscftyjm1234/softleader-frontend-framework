@@ -1,758 +1,623 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import ShowcasePage from '../components/ShowcasePage.vue'
-import ShowcaseSection from '../components/ShowcaseSection.vue'
+import { ref, computed, watch } from 'vue'
+import IIcon from '~/components/uiInterface/IIcon.vue'
+import IButton from '~/components/uiInterface/IButton.vue'
+import IBreadcrumbs from '~/components/uiInterface/layout/IBreadcrumbs.vue'
+import { useBreadcrumbs } from '~/composables/useBreadcrumbs'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 
-const {
-  uploadFile,
-  uploadFiles,
-  uploadFromInput,
-  uploadFromBase64,
-  uploadFromBlob,
-  validate,
-  validateMultiple,
-  getSelectedFiles,
-  formatFileSize
-} = useFileUpload()
+const { breadcrumbs: breadcrumbItems } = useBreadcrumbs()
 
-// 狀態
-const selectedFiles = ref<File[]>([])
-const isDragging = ref(false)
-const isUploading = ref(false)
-const uploadResults = ref<any[]>([])
-
-// 示範驗證選項
-const maxFileSize = ref(5 * 1024 * 1024) // 5MB
-const acceptedTypes = ref<string[]>(['image/*', '.pdf'])
-const maxFilesCount = ref(5)
-
-const validationSummary = computed(() => {
-  if (selectedFiles.value.length === 0) return null
-
-  const result = validateMultiple(selectedFiles.value, {
-    maxSize: maxFileSize.value,
-    accept: acceptedTypes.value,
-    maxFiles: maxFilesCount.value
-  })
-
-  return result
+definePageMeta({
+  title: '文件上傳核心 (File Upload)',
+  layout: 'portal'
 })
 
-// 檔案圖示輔助函式
-const getFileIcon = (file: File) => {
-  if (file.type.startsWith('image/')) return '🖼️'
-  if (file.type.startsWith('video/')) return '🎥'
-  if (file.type.includes('pdf')) return '📄'
-  if (file.type.includes('word')) return '📝'
-  if (file.type.includes('excel') || file.type.includes('spreadsheet')) return '📊'
-  if (file.type.startsWith('audio/')) return '🎵'
-  return '📁'
+const units = ref([
+  {
+    id: 'process',
+    title: '單元 00：核心流程',
+    icon: 'mdi-file-outline',
+    description: '文件上傳不只是選擇檔案，它包含：選取、校驗、上傳中、成功/失敗四個關鍵生命週期。',
+    useCase: '理解企業級上傳組件如何透過狀態機管理複雜的異常情境。'
+  },
+  {
+    id: 'dropzone',
+    title: '單元 01：拖拽上傳',
+    icon: 'mdi-tray-arrow-up',
+    description: '提供直觀的 Drag & Drop 區域，支援單檔案、多檔案以及點擊觸發原生選取器。',
+    useCase: '後台表單、附件上傳、圖片庫管理。'
+  },
+  {
+    id: 'validation',
+    title: '單元 02：文件校驗',
+    icon: 'mdi-shield-check-outline',
+    description: '在進入上傳隊列前，自動檢查檔案格式 (Accept)、大小限制 (MaxSize) 與數量限制。',
+    useCase: '嚴格限制上傳圖片格式（如僅限 PNG/JPG）或限制檔案不得超過 5MB。'
+  },
+  {
+    id: 'feedback',
+    title: '單元 03：進度反饋',
+    icon: 'mdi-progress-upload',
+    description: '展示文件上傳的實時進度，並提供「取消上傳」與「重新嘗試」的互動能力。',
+    useCase: '大型文件上傳（如影片、壓縮包）的用戶體驗優化。'
+  },
+  {
+    id: 'advanced',
+    title: '單元 04：進階應用',
+    icon: 'mdi-cog-outline',
+    description:
+      '使用 `useFileUpload` Composables 自定義上傳邏輯，或整合到現有的表單 Submitting 流程。',
+    useCase: '多步驟表單中的文件預處理 or 異步對接第三方雲存儲 (S3/OSS)。'
+  }
+])
+
+const activeUnitIndex = ref(0)
+const activeUnit = computed(() => units.value[activeUnitIndex.value])
+
+const scrollContainer = ref<HTMLElement | null>(null)
+watch(activeUnitIndex, () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+})
+
+// File State Simulation
+const files = ref<any[]>([])
+const isDragging = ref(false)
+const uploadProgress = ref(0)
+const isUploading = ref(false)
+
+const simulateUpload = () => {
+  if (files.value.length === 0) return
+  isUploading.value = true
+  uploadProgress.value = 0
+  const interval = setInterval(() => {
+    uploadProgress.value += 10
+    if (uploadProgress.value >= 100) {
+      clearInterval(interval)
+      isUploading.value = false
+      files.value = files.value.map((f) => ({ ...f, status: 'success' }))
+    }
+  }, 200)
 }
 
-// 事件處理
-const handleDrop = (e: DragEvent) => {
-  isDragging.value = false
-  const files = getSelectedFiles(e)
-  selectedFiles.value = [...selectedFiles.value, ...files]
-}
-
-const handleFileSelect = (e: Event) => {
-  const files = getSelectedFiles(e)
-  selectedFiles.value = [...selectedFiles.value, ...files]
+const addFiles = (newFiles: FileList | null) => {
+  if (!newFiles) return
+  const mapped = Array.from(newFiles).map((f) => ({
+    name: f.name,
+    size: `${(f.size / 1024 / 1024).toFixed(2)} MB`,
+    status: 'pending'
+  }))
+  files.value = [...files.value, ...mapped]
 }
 
 const removeFile = (index: number) => {
-  selectedFiles.value.splice(index, 1)
+  files.value.splice(index, 1)
 }
 
-const clearAll = () => {
-  selectedFiles.value = []
-  uploadResults.value = []
+// Snippets
+const snippets = {
+  basic: `<template>\n  <IDropzone @change="handleFiles" />\n</template>\n\n<script setup>\nconst handleFiles = (files) => {\n  console.log('Selected:', files)\n}\n<\/script>`,
+  validation: `<IDropzone \n  :accept="['image/png', 'image/jpeg']"\n  :max-size="5" \n  :max-count="3"\n/>`,
+  composite: `const { upload, abort, progress, status } = useFileUpload({\n  url: '/api/upload',\n  headers: { Authorization: 'Bearer ...' }\n})`
 }
-
-// 上傳操作
-
-const handleUploadMultiple = async () => {
-  if (selectedFiles.value.length === 0) return
-
-  // 過濾出符合規則的檔案
-  const validFiles = selectedFiles.value.filter((file) => {
-    const result = validate(file, {
-      maxSize: maxFileSize.value,
-      accept: acceptedTypes.value
-    })
-    return result.valid
-  })
-
-  // 檢查是否有符合規則的檔案
-  if (validFiles.length === 0) {
-    useNotify().error('沒有符合規則的檔案可上傳')
-    return
-  }
-
-  // 如果有檔案被過濾掉，提醒使用者
-  const filteredCount = selectedFiles.value.length - validFiles.length
-  if (filteredCount > 0) {
-    useNotify().warning(`已過濾 ${filteredCount} 個不符合規則的檔案`)
-  }
-
-  // 上傳符合規則的檔案
-  const results = await uploadFiles(validFiles, {
-    endpoint: '/api/upload/multiple',
-    loadingRef: isUploading,
-    autoSuccess: true,
-    autoError: true,
-    maxSize: maxFileSize.value,
-    accept: acceptedTypes.value
-  })
-
-  uploadResults.value.push({
-    files: validFiles.map((f) => f.name),
-    results
-  })
-}
-
-const handleValidateOnly = () => {
-  const result = validateMultiple(selectedFiles.value, {
-    maxSize: maxFileSize.value,
-    accept: acceptedTypes.value,
-    maxFiles: maxFilesCount.value
-  })
-
-  if (!result.valid) {
-    useNotify().error(`驗證失敗：${result.error}`)
-  } else {
-    useNotify().success(`✓ 所有檔案驗證通過（共 ${selectedFiles.value.length} 個）`)
-  }
-}
-
-definePageMeta({
-  title: '檔案上傳 (File Upload)',
-  icon: 'mdi-upload',
-  layout: 'portal'
-})
 </script>
 
 <template>
-  <ShowcasePage
-    title="檔案上傳系統"
-    description="統一的檔案上傳處理模組，支援拖放上傳、檔案驗證與進度追蹤。"
-  >
-    <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
-      <ShowcaseCard
-        title="核心功能"
-        full-width
-      >
-        <div class="demo-area">
-          <ul class="benefit-list">
-            <li>
-              <strong>快速上傳:</strong>
-              綁定 input 元素，選完即上傳
-            </li>
-            <li>
-              <strong>智慧過濾:</strong>
-              自動過濾不符合規則的檔案，只上傳有效檔案
-            </li>
-            <li>
-              <strong>完整驗證:</strong>
-              大小、類型、數量批次驗證
-            </li>
-            <li>
-              <strong>拖放支援:</strong>
-              內建拖放上傳功能
-            </li>
-            <li>
-              <strong>自動通知:</strong>
-              成功、失敗、警告自動顯示訊息
-            </li>
-            <li>
-              <strong>表單整合:</strong>
-              自動封裝 FormData 與額外欄位
-            </li>
-          </ul>
-        </div>
-        <template #footer>
-          <ShowcaseCodeBlock
-            code="const { uploadFromInput } = useFileUpload()
-// <input type='file' @change='e => uploadFromInput(e, options)' />"
-            label="快速開始"
-          />
-        </template>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <!-- 互動測試 -->
-    <ShowcaseSection title="互動測試">
-      <ShowcaseCard
-        title="測試"
-        description="檔案上傳區塊"
-        full-width
-      >
-        <div class="demo-area">
-          <!-- 上傳區域 -->
-          <div
-            class="upload-dropzone"
-            :class="{ 'is-dragging': isDragging }"
-            @dragover.prevent="isDragging = true"
-            @dragleave.prevent="isDragging = false"
-            @drop.prevent="handleDrop"
-          >
-            <input
-              id="file-upload"
-              type="file"
-              multiple
-              class="hidden"
-              @change="handleFileSelect"
-            />
-            <label
-              for="file-upload"
-              class="dropzone-content"
-            >
-              <div class="icon-wrapper">☁️</div>
-              <div class="text-main">點擊此處 或 將檔案拖曳至此</div>
-              <div class="text-sub">支援各種格式圖片與文件</div>
-            </label>
-          </div>
-
-          <!-- 設定 -->
-          <div class="settings-bar">
-            <div class="setting-group">
-              <label>最大檔案:</label>
-              <select
-                v-model.number="maxFileSize"
-                class="glass-input"
-              >
-                <option :value="1 * 1024 * 1024">1 MB</option>
-                <option :value="5 * 1024 * 1024">5 MB</option>
-                <option :value="10 * 1024 * 1024">10 MB</option>
-              </select>
-            </div>
-            <div class="setting-group">
-              <label>最大數量:</label>
-              <input
-                v-model.number="maxFilesCount"
-                type="number"
-                class="glass-input"
-                min="1"
-                max="10"
-              />
-            </div>
-          </div>
-
-          <!-- 檔案清單 -->
-          <div
-            v-if="selectedFiles.length > 0"
-            class="file-list"
-          >
-            <div class="list-header">
-              <h3>已選檔案 ({{ selectedFiles.length }})</h3>
-              <div class="actions">
-                <button
-                  class="glass-btn small"
-                  @click="handleValidateOnly"
-                >
-                  驗證
-                </button>
-                <button
-                  class="glass-btn small primary"
-                  :disabled="isUploading"
-                  @click="handleUploadMultiple"
-                >
-                  {{ isUploading ? '上傳中...' : '全部上傳' }}
-                </button>
-                <button
-                  class="glass-btn small danger"
-                  @click="clearAll"
-                >
-                  清除
-                </button>
-              </div>
-            </div>
-
-            <!-- 驗證狀態 -->
-            <div
-              v-if="validationSummary"
-              class="status-alert"
-              :class="validationSummary.valid ? 'success' : 'error'"
-            >
-              <strong>
-                {{ validationSummary.valid ? '✓ 準備上傳' : '⚠ 驗證失敗' }}
-              </strong>
-              <span
-                v-if="!validationSummary.valid"
-                class="ml-2"
-              >
-                {{ validationSummary.error }}
-              </span>
-            </div>
-
-            <div class="files-grid">
-              <div
-                v-for="(file, index) in selectedFiles"
-                :key="index"
-                class="file-item"
-              >
-                <div class="file-icon">{{ getFileIcon(file) }}</div>
-                <div class="file-details">
-                  <div class="name">{{ file.name }}</div>
-                  <div class="meta">{{ formatFileSize(file.size) }}</div>
-                </div>
-                <button
-                  class="delete-btn"
-                  @click="removeFile(index)"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 結果 -->
-          <div
-            v-if="uploadResults.length > 0"
-            class="results-area"
-          >
-            <h3>上傳結果</h3>
-            <ShowcaseCodeBlock
-              :code="JSON.stringify(uploadResults, null, 2)"
-              language="json"
-              label="伺服器回應"
-            />
-          </div>
-        </div>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <!-- API 參考 -->
-    <ShowcaseSection
-      title="API 參考"
-      icon="📝"
+  <div class="vue-course-layout min-h-screen bg-white">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-slate-100 px-8 py-4"
     >
-      <div class="component-grid">
-        <ShowcaseCard
-          title="API 詳細說明"
-          description="useFileUpload() 回傳方法列表"
-          full-width
-        >
-          <div class="mb-4 text-slate-400 text-sm leading-relaxed">
-            提供檔案上傳、驗證與 Utils 功能。所有上傳方法皆支援進度追蹤與自動通知。
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse border border-slate-700">
-              <thead>
-                <tr>
-                  <th
-                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                  >
-                    方法名稱 (Name)
-                  </th>
-                  <th
-                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                  >
-                    型別 (Type)
-                  </th>
-                  <th
-                    class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
-                  >
-                    說明 (Description)
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-700/50">
-                <!-- Upload -->
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                    uploadFile(file, opts)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    上傳單一檔案。回傳 Promise。
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                    uploadFiles(files, opts)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    批次上傳多個檔案 (封裝至同一個 request 或序列上傳，視實作而定)。
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                    uploadFromInput(e, opts)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    監聽 Input Change 事件，自動提取檔案並上傳。
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-indigo-300 font-medium">
-                    uploadFromBase64(str)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    上傳 Base64 字串 (自動轉換為 File 上傳)。
-                  </td>
-                </tr>
-
-                <!-- Validation -->
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
-                    validate(file, opts)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    驗證單一檔案 (大小/類型檢查)，不執行上傳。
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
-                    validateMultiple(files)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    驗證檔案陣列 (數量/大小/類型檢查)。
-                  </td>
-                </tr>
-
-                <!-- Utils -->
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
-                    getSelectedFiles(e)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    從 Input Change 或 Drop Event 提取 File[]。
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="p-4 border border-slate-700/50 font-mono text-emerald-300 font-medium">
-                    formatFileSize(bytes)
-                  </td>
-                  <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                  <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                    檔案大小格式化 (Bytes -> KB/MB)。
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </ShowcaseCard>
-
-        <!-- uploadFromInput -->
-        <ShowcaseCard
-          title="3. uploadFromInput"
-          description="從 Input 元素直接上傳"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              綁定到
-              <code>&lt;input type="file"&gt;</code>
-              ，選完即上傳。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { uploadFromInput } = useFileUpload()
-
-// 在 template 中
-<input 
-  type='file' 
-  @change='e => uploadFromInput(e, { 
-    endpoint: '/api/upload',
-    autoSuccess: true 
-  })' 
-/>"
-              label="使用範例"
+      <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-5">
+          <NuxtLink
+            to="/showcase"
+            class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-all group"
+          >
+            <IIcon
+              icon="mdi-home-outline"
+              size="22"
+              class="group-hover:scale-110 transition-transform"
             />
-          </template>
-        </ShowcaseCard>
+          </NuxtLink>
+          <div class="h-8 w-px bg-slate-200 mx-1"></div>
+          <IBreadcrumbs :items="breadcrumbItems" />
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="text-right">
+            <span class="text-[10px] font-black text-emerald-500 uppercase">單元進度</span>
+            <div class="text-sm font-mono font-bold text-slate-600">
+              {{ activeUnitIndex + 1 }} / {{ units.length }}
+            </div>
+          </div>
+          <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-emerald-500 transition-all duration-500"
+              :style="{ width: `${((activeUnitIndex + 1) / units.length) * 100}%` }"
+            ></div>
+          </div>
+        </div>
       </div>
-    </ShowcaseSection>
-  </ShowcasePage>
+    </header>
+
+    <div class="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-73px)]">
+      <!-- Sidebar -->
+      <aside class="lg:col-span-3 border-r border-slate-50 p-6 space-y-2 bg-slate-50/30">
+        <div
+          class="px-4 py-2 mb-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]"
+        >
+          課程單元
+        </div>
+        <button
+          v-for="(unit, index) in units"
+          :key="unit.id"
+          class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group"
+          :class="
+            activeUnitIndex === index
+              ? 'bg-white shadow-sm text-emerald-600 ring-1 ring-emerald-50'
+              : 'text-slate-500 hover:bg-slate-100/50 hover:text-slate-900'
+          "
+          @click="activeUnitIndex = index"
+        >
+          <div
+            class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors"
+            :class="
+              activeUnitIndex === index
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-100 text-slate-400'
+            "
+          >
+            {{ index + 1 }}
+          </div>
+          <span class="text-sm font-black tracking-tight">{{ unit.title }}</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <div
+        ref="scrollContainer"
+        class="lg:col-span-9 h-full overflow-y-auto bg-slate-50/10"
+      >
+        <main class="max-w-4xl mx-auto p-10 space-y-12 pb-32">
+          <!-- Intro Section -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm"
+              >
+                <IIcon
+                  :icon="activeUnit.icon"
+                  size="28"
+                />
+              </div>
+              <div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+                  {{ activeUnit.title }}
+                </h1>
+                <p class="text-lg text-slate-500 font-medium mt-1 leading-relaxed">
+                  {{ activeUnit.description }}
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-5 flex items-start gap-4"
+            >
+              <div
+                class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-500 shrink-0"
+              >
+                <IIcon
+                  icon="mdi-shield-check"
+                  size="24"
+                />
+              </div>
+              <div>
+                <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+                  實戰應用 (Use Case)
+                </div>
+                <p class="text-sm font-bold text-slate-600">{{ activeUnit.useCase }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unit Content -->
+          <div class="space-y-10 animate-fadeIn">
+            <!-- Unit 00: Core Process -->
+            <template v-if="activeUnit.id === 'process'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <ShowcaseCard
+                  title="生命週期視覺化"
+                  description="好的上傳體驗在於狀態的管理。"
+                >
+                  <div class="relative py-10 flex justify-between items-center px-4">
+                    <div class="flex flex-col items-center gap-2">
+                      <div
+                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-black"
+                      >
+                        1
+                      </div>
+                      <span class="text-[10px] font-bold text-slate-400">Idle</span>
+                    </div>
+                    <div class="h-px bg-slate-200 flex-1 mx-2"></div>
+                    <div class="flex flex-col items-center gap-2">
+                      <div
+                        class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-black"
+                      >
+                        2
+                      </div>
+                      <span class="text-[10px] font-bold text-emerald-600">Active</span>
+                    </div>
+                    <div class="h-px bg-slate-200 flex-1 mx-2"></div>
+                    <div class="flex flex-col items-center gap-2">
+                      <div
+                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-black"
+                      >
+                        3
+                      </div>
+                      <span class="text-[10px] font-bold text-slate-400">Stable</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-slate-400 text-center mt-4">
+                    狀態機確保了 UI 與文件實體始終保持同步。
+                  </p>
+                </ShowcaseCard>
+                <div class="space-y-6 pt-2">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    核心組件職責
+                  </h4>
+                  <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                      <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>選取器隔離</strong>
+                        ：隱藏原生的
+                        <code>&lt;input type="file"&gt;</code>
+                        ，透過 API 觸發點擊。
+                      </p>
+                    </li>
+                    <li class="flex items-start gap-3">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                      <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>隊列管理</strong>
+                        ：支援異步且併發的上傳流程。
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </template>
+
+            <!-- Unit 01: Dropzone -->
+            <template v-if="activeUnit.id === 'dropzone'">
+              <div class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div class="space-y-4">
+                    <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest px-1">
+                      交互預覽
+                    </h4>
+                    <div
+                      class="relative h-64 border-2 border-dashed rounded-[2rem] flex flex-col items-center justify-center transition-all cursor-pointer group"
+                      :class="
+                        isDragging
+                          ? 'bg-emerald-50 border-emerald-400'
+                          : 'bg-slate-50 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/30'
+                      "
+                      @dragover.prevent="isDragging = true"
+                      @dragleave="isDragging = false"
+                      @drop.prevent="
+                        () => {
+                          isDragging = false
+                          addFiles($event.dataTransfer.files)
+                        }
+                      "
+                    >
+                      <input
+                        type="file"
+                        class="absolute inset-0 opacity-0 cursor-pointer"
+                        multiple
+                        @change="addFiles($event.target.files)"
+                      />
+                      <div
+                        class="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:scale-110 transition-all mb-4"
+                      >
+                        <IIcon
+                          icon="mdi-cloud-upload-outline"
+                          size="32"
+                        />
+                      </div>
+                      <div class="text-sm font-bold text-slate-600">
+                        拖拽文件至此 或
+                        <span class="text-emerald-600 underline">點擊上傳</span>
+                      </div>
+                      <div class="text-[10px] text-slate-400 mt-2 font-medium">
+                        支援 JPG, PNG, PDF (Max 5MB)
+                      </div>
+                    </div>
+                  </div>
+                  <div class="space-y-4">
+                    <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest px-1">
+                      實作代碼
+                    </h4>
+                    <ShowcaseCodeBlock :code="snippets.basic" />
+                  </div>
+                </div>
+
+                <!-- File List -->
+                <div
+                  v-if="files.length > 0"
+                  class="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm space-y-4 animate-fadeIn"
+                >
+                  <div class="flex items-center justify-between px-2">
+                    <h5 class="text-sm font-black text-slate-700">
+                      待上傳清單 ({{ files.length }})
+                    </h5>
+                    <IButton
+                      v-if="!isUploading"
+                      size="small"
+                      color="primary"
+                      @click="simulateUpload"
+                    >
+                      開始上傳
+                    </IButton>
+                  </div>
+                  <div class="grid grid-cols-1 gap-3">
+                    <div
+                      v-for="(file, idx) in files"
+                      :key="idx"
+                      class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group"
+                    >
+                      <div class="flex items-center gap-4">
+                        <div
+                          class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 border border-slate-100"
+                        >
+                          <IIcon
+                            :icon="
+                              file.status === 'success'
+                                ? 'mdi-check-circle'
+                                : 'mdi-file-document-outline'
+                            "
+                            :color="file.status === 'success' ? 'success' : 'currentColor'"
+                          />
+                        </div>
+                        <div>
+                          <div class="text-sm font-bold text-slate-700">{{ file.name }}</div>
+                          <div class="text-[10px] font-bold text-slate-400 uppercase">
+                            {{ file.size }}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        class="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors flex items-center justify-center"
+                        @click="removeFile(idx)"
+                      >
+                        <IIcon
+                          icon="mdi-close"
+                          size="18"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- Unit 02: Validation -->
+            <template v-if="activeUnit.id === 'validation'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6 pt-2">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    校驗策略庫
+                  </h4>
+                  <div class="space-y-4">
+                    <div
+                      class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 group hover:border-emerald-200 transition-all"
+                    >
+                      <div
+                        class="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 flex items-center justify-center transition-all"
+                      >
+                        <IIcon
+                          icon="mdi-file-eye-outline"
+                          size="24"
+                        />
+                      </div>
+                      <div>
+                        <div class="text-sm font-extrabold text-slate-700 uppercase tracking-tight">
+                          MimeType Check
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">
+                          只過濾特定後綴的檔案（如 .zip, .csv）。
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 group hover:border-emerald-200 transition-all"
+                    >
+                      <div
+                        class="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 flex items-center justify-center transition-all"
+                      >
+                        <IIcon
+                          icon="mdi-weight-kilogram"
+                          size="24"
+                        />
+                      </div>
+                      <div>
+                        <div class="text-sm font-extrabold text-slate-700 uppercase tracking-tight">
+                          Size Guard
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">
+                          防止用戶上傳過大文件耗盡服務器帶寬。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-4">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest px-1">
+                    屬性配置
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.validation" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Unit 03: Feedback -->
+            <template v-if="activeUnit.id === 'feedback'">
+              <ShowcaseCard
+                title="動態上傳反饋"
+                description="點擊下方按鈕觀察進度條平滑動畫。"
+              >
+                <div class="py-6 space-y-8 max-w-md mx-auto">
+                  <div class="space-y-3">
+                    <div class="flex justify-between items-end px-1">
+                      <div>
+                        <div class="text-[10px] font-black text-emerald-600 uppercase">
+                          Uploading Status
+                        </div>
+                        <div class="text-sm font-bold text-slate-700">Project_Final_v2.zip</div>
+                      </div>
+                      <div class="text-sm font-mono font-bold text-slate-900">
+                        {{ uploadProgress }}%
+                      </div>
+                    </div>
+                    <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        class="h-full bg-emerald-500 transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                        :style="{ width: `${uploadProgress}%` }"
+                      ></div>
+                    </div>
+                    <div
+                      class="flex items-center gap-2 text-[10px] text-slate-400 font-bold justify-end"
+                    >
+                      <span v-if="uploadProgress < 100">剩餘約 5 秒...</span>
+                      <span
+                        v-else
+                        class="text-emerald-500"
+                      >
+                        上傳成功！
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex justify-center gap-4">
+                    <IButton
+                      v-if="!isUploading && uploadProgress < 100"
+                      color="primary"
+                      @click="simulateUpload"
+                    >
+                      啟動模擬上傳
+                    </IButton>
+                    <IButton
+                      v-if="isUploading"
+                      color="error"
+                      variant="text"
+                      @click="
+                        () => {
+                          isUploading = false
+                          uploadProgress = 0
+                        }
+                      "
+                    >
+                      取消
+                    </IButton>
+                    <IButton
+                      v-if="uploadProgress === 100"
+                      variant="outlined"
+                      @click="uploadProgress = 0"
+                    >
+                      重置測試
+                    </IButton>
+                  </div>
+                </div>
+              </ShowcaseCard>
+            </template>
+
+            <!-- Unit 04: Advanced -->
+            <template v-if="activeUnit.id === 'advanced'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6 pt-2">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    Composables 指南
+                  </h4>
+                  <p class="text-slate-600 text-sm leading-relaxed font-medium">
+                    對於不使用 Dropzone UI 的場景（例如按鈕觸發、自定義列表），可以直接使用
+                    <code>useFileUpload</code>
+                    。
+                  </p>
+                  <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                      <div
+                        class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0"
+                      >
+                        <IIcon
+                          icon="mdi-code-json"
+                          size="18"
+                        />
+                      </div>
+                      <p class="text-slate-600 text-sm leading-relaxed mt-1">
+                        <strong>多實例並行</strong>
+                        ：在同個頁面創建多組上傳鉤子而互不干擾。
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+                <div class="space-y-4">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest px-1">
+                    Composables 範例
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.composite" />
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Footer Navigation -->
+          <div class="mt-12 border-t border-slate-100 pt-8 flex justify-between items-center">
+            <button
+              v-if="activeUnitIndex > 0"
+              class="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex--"
+            >
+              <IIcon
+                icon="mdi-arrow-left"
+                size="18"
+              />
+              上一章節
+            </button>
+            <div v-else></div>
+
+            <button
+              v-if="activeUnitIndex < units.length - 1"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex++"
+            >
+              前進單元：{{ units[activeUnitIndex + 1].title.split('：')[1] }}
+              <IIcon
+                icon="mdi-arrow-right"
+                size="18"
+              />
+            </button>
+            <NuxtLink
+              v-else
+              to="/showcase"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-200 font-bold text-sm active:scale-95 transition-all"
+            >
+              完成上傳課程
+              <IIcon
+                icon="mdi-check-circle"
+                size="18"
+              />
+            </NuxtLink>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.upload-dropzone {
-  border: 2px dashed rgba(148, 163, 184, 0.4);
-  border-radius: 12px;
-  padding: 3rem 2rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  background-color: rgba(30, 41, 59, 0.3);
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.upload-dropzone:hover,
-.upload-dropzone.is-dragging {
-  border-color: #38bdf8;
-  background-color: rgba(56, 189, 248, 0.1);
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
-}
-
-.dropzone-content {
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.icon-wrapper {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
-}
-
-.text-main {
-  font-size: 1.2rem;
-  color: #f1f5f9;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.text-sub {
-  color: #94a3b8;
-  font-size: 0.9rem;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Settings Bar */
-.settings-bar {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-  background: rgba(15, 23, 42, 0.4);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.setting-group {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.setting-group label {
-  color: #cbd5e1;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #f1f5f9;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  outline: none;
-  font-size: 0.9rem;
-}
-
-.glass-input:focus {
-  border-color: #38bdf8;
-  background: rgba(15, 23, 42, 0.8);
-}
-
-/* Glass Buttons */
-.glass-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #e2e8f0;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-}
-
-.glass-btn:hover {
-  background: rgba(51, 65, 85, 0.8);
-  border-color: #94a3b8;
-}
-
-.glass-btn.primary {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.5);
-  color: #38bdf8;
-}
-
-.glass-btn.primary:hover {
-  background: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-}
-
-.glass-btn.danger {
-  color: #f87171;
-  border-color: rgba(248, 113, 113, 0.3);
-  background: rgba(248, 113, 113, 0.1);
-}
-
-.glass-btn.danger:hover {
-  background: rgba(248, 113, 113, 0.2);
-}
-
-.glass-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* File List */
-.file-list {
-  margin-top: 2rem;
-}
-
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.list-header h3 {
-  color: #f1f5f9;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.status-alert {
-  padding: 0.8rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-}
-
-.status-alert.success {
-  background: rgba(22, 163, 74, 0.15);
-  border: 1px solid rgba(22, 163, 74, 0.3);
-  color: #4ade80;
-}
-
-.status-alert.error {
-  background: rgba(220, 38, 38, 0.15);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  color: #f87171;
-}
-
-.files-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-}
-
-.file-item {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-}
-
-.file-icon {
-  font-size: 1.8rem;
-}
-
-.file-details {
-  flex: 1;
-  overflow: hidden;
-}
-
-.name {
-  color: #e2e8f0;
-  font-weight: 500;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.meta {
-  color: #94a3b8;
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.action-btn:hover:not(:disabled) {
-  background: #2563eb;
-}
-
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.action-btn.secondary {
-  background: #64748b;
-}
-
-.action-btn.secondary:hover:not(:disabled) {
-  background: #475569;
-}
-
-.action-btn.danger {
-  background: #ef4444;
-}
-
-.action-btn.danger:hover:not(:disabled) {
-  background: #dc2626;
-}
-
-/* Method Demos */
-.method-demos {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.demo-card {
-  padding: 1.5rem;
-  background: #fafafa;
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-
-.demo-title {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
-  color: #2c3e50;
-  font-family: 'Fira Code', monospace;
-}
-
-/* Animation */
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -764,90 +629,5 @@ definePageMeta({
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Benefit List - Consistent with other showcase pages */
-.benefit-list {
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.benefit-list li {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  flex: 1;
-  min-width: 200px;
-  color: #e2e8f0;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.benefit-list li strong {
-  color: #38bdf8;
-  display: block;
-  margin-bottom: 0.25rem;
-  font-size: 1.1em;
-}
-
-/* Method Description */
-.method-desc {
-  color: #cbd5e1;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.method-desc strong {
-  color: #38bdf8;
-  font-weight: 600;
-}
-
-.method-desc code {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: #e2e8f0;
-}
-
-/* Parameter List */
-.param-list {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.param-item {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-left: 2px solid #38bdf8;
-  border-radius: 4px;
-}
-
-.param-item code {
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  min-width: 120px;
-  flex-shrink: 0;
-}
-
-.param-item span {
-  color: #94a3b8;
-  font-size: 0.9rem;
-  line-height: 1.5;
 }
 </style>

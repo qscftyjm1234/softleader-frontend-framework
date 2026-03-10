@@ -1,12 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Radio as ARadio } from 'ant-design-vue'
+
 /**
  * IRadio - 單選按鈕介面層
- *
- * 用途：統一的 Radio 介面，內部可替換 UI 框架
- *
- * 設計原則：
- * - 只定義 props 和 events
- * - 支援單選組
+ * 基底更換為 Ant Design Vue (a-radio)
  */
 
 interface Props {
@@ -15,10 +13,16 @@ interface Props {
   label?: string
   name?: string
   disabled?: boolean
+  error?: boolean
+  errorMessage?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  disabled: false
+  label: '',
+  name: '',
+  disabled: false,
+  error: false,
+  errorMessage: undefined
 })
 
 const emit = defineEmits<{
@@ -28,112 +32,67 @@ const emit = defineEmits<{
 
 const isChecked = computed(() => props.modelValue === props.value)
 
-const handleChange = () => {
-  if (!props.disabled) {
-    emit('update:modelValue', props.value)
-    emit('change', props.value)
-  }
+const onChange = (e: any) => {
+  const val = e.target.value
+  emit('update:modelValue', val)
+  emit('change', val)
 }
 </script>
 
 <template>
-  <label
-    class="i-radio"
-    :class="{ 'i-radio--disabled': disabled }"
+  <ARadio
+    :value="value"
+    :checked="isChecked"
+    :disabled="disabled"
+    :name="name"
+    class="i-radio-wrapper"
+    @change="onChange"
   >
-    <input
-      type="radio"
-      :name="name"
-      :value="value"
-      :checked="isChecked"
-      :disabled="disabled"
-      class="i-radio__input"
-      @change="handleChange"
-    />
-    <span class="i-radio__circle" />
     <span
       v-if="label || $slots.default"
-      class="i-radio__label"
+      class="text-slate-700 font-medium ml-1"
     >
       <slot>{{ label }}</slot>
     </span>
-  </label>
+  </ARadio>
 
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VRadio
-    :model-value="modelValue"
-    :value="value"
-    :label="label"
-    :disabled="disabled"
-    @update:model-value="emit('update:modelValue', $event)"
+  <!-- 錯誤訊息 -->
+  <div
+    v-if="errorMessage"
+    class="mt-1.5 ml-1 flex items-center gap-1.5 text-[0.85rem] font-semibold text-red-500"
   >
-    <template v-if="$slots.default" #label>
-      <slot />
-    </template>
-  </VRadio>
-  -->
+    {{ errorMessage }}
+  </div>
 </template>
 
-<style scoped>
-.i-radio {
+<style scoped lang="scss">
+:deep(.i-radio-wrapper) {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  user-select: none;
-}
 
-.i-radio--disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+  .ant-radio {
+    top: 0;
 
-.i-radio__input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
+    .ant-radio-inner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      transition: all 0.3s;
 
-.i-radio__circle {
-  position: relative;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  border-radius: 50%;
-  background: white;
-  transition: all 0.2s;
-}
+      &::after {
+        width: 10px;
+        height: 10px;
+        background-color: #10b981;
+      }
+    }
 
-.i-radio:hover .i-radio__circle {
-  border-color: #3498db;
-}
+    &.ant-radio-checked .ant-radio-inner {
+      border-color: #10b981;
+    }
+  }
 
-.i-radio__input:checked ~ .i-radio__circle {
-  border-color: #3498db;
-}
-
-.i-radio__input:checked ~ .i-radio__circle::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #3498db;
-}
-
-.i-radio__label {
-  font-size: 1rem;
-  color: #333;
-}
-
-.i-radio--disabled .i-radio__label {
-  color: #999;
+  &:hover .ant-radio-inner {
+    border-color: #10b981;
+  }
 }
 </style>

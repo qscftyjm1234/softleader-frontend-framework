@@ -14,7 +14,10 @@
  * @param timeout - 超時時間（毫秒），預設 10 秒
  * @returns Promise
  */
-export async function waitForData(pending: Ref<boolean>, timeout: number = 10000): Promise<void> {
+export async function handleWaitForData(
+  pending: Ref<boolean>,
+  timeout: number = 10000
+): Promise<void> {
   return new Promise((resolve, reject) => {
     // 如果已經載入完成，直接返回
     if (!pending.value) {
@@ -51,11 +54,11 @@ export async function waitForData(pending: Ref<boolean>, timeout: number = 10000
  * @param pendingRefs - pending Ref 陣列
  * @param timeout - 超時時間（毫秒），預設 10 秒
  */
-export async function waitForAll(
+export async function handleWaitForAll(
   pendingRefs: Ref<boolean>[],
   timeout: number = 10000
 ): Promise<void> {
-  await Promise.all(pendingRefs.map((pending) => waitForData(pending, timeout)))
+  await Promise.all(pendingRefs.map((pending) => handleWaitForData(pending, timeout)))
 }
 
 /**

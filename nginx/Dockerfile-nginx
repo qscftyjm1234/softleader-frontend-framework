@@ -1,0 +1,35 @@
+FROM node:20-slim as builder
+LABEL maintainer="softleader.com.tw"
+
+WORKDIR /app
+
+# 複製依賴描述檔案
+COPY package*.json ./
+
+# 安裝依賴 (假設使用 npm)
+RUN npm install
+
+# 複製原始碼
+COPY . .
+
+# 執行 Nuxt 靜態建置 (產生 .output/public)
+RUN npm run generate
+
+# --- Runtime Stage ---
+FROM nginx:stable-alpine as release
+
+# 複製靜態檔案
+COPY --from=builder /app/.output/public /usr/share/nginx/html
+
+# 複製 Nginx 設定
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/entrypoint.sh nginx/nginx.default.conf.template /tmp/
+
+USER root
+# 修正換行符號問題並給予執行權限
+RUN chmod +x /tmp/entrypoint.sh
+
+# Nginx 官方 image 預設跑在 80，我們這裡參考 jasmine-dashboard 使用 8080
+EXPOSE 8080
+
+CMD ["sh", "/tmp/entrypoint.sh"]

@@ -241,7 +241,7 @@ const countries = options.countries
 
 // 檢查載入狀態
 const isLoading = countries.isLoading"
-              label="使用代碼"
+              label="使用程式碼"
             />
           </template>
         </ShowcaseCard>
@@ -286,7 +286,7 @@ const currencies = options.currencies
 
 // 檢查載入狀態
 const isLoading = currencies.isLoading"
-              label="使用代碼"
+              label="使用程式碼"
             />
           </template>
         </ShowcaseCard>
@@ -343,7 +343,7 @@ const townships = options.townships('${demoCity}')
 
 // 檢查載入狀態
 const isLoading = townships.isLoading`"
-              label="使用代碼"
+              label="使用程式碼"
             />
           </template>
         </ShowcaseCard>
@@ -489,7 +489,7 @@ const list = ${usageCodePrefix}
 <li v-for=&quot;item in list&quot; :key=&quot;item.value&quot;>
   {{ item.label }}
 </li>`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -506,7 +506,7 @@ const list = ${usageCodePrefix}
               <ShowcaseCodeBlock
                 :code="`// API 載入狀態
 const loading = ${usageCodePrefix}.isLoading`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -523,7 +523,7 @@ const loading = ${usageCodePrefix}.isLoading`"
               <ShowcaseCodeBlock
                 :code="`// API 載入完成狀態
 const loaded = ${usageCodePrefix}.isLoaded`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -558,7 +558,7 @@ const loaded = ${usageCodePrefix}.isLoaded`"
                 :code="`// 自動加上 'All' 選項
 // 此屬性直接回傳陣列，v-for 不需加 .value
 const allList = ${usageCodePrefix}.withAll`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -593,7 +593,7 @@ const allList = ${usageCodePrefix}.withAll`"
                 :code="`// 自動加上 'Other' 選項
 // 此屬性直接回傳陣列，v-for 不需加 .value
 const otherList = ${usageCodePrefix}.other`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -618,7 +618,7 @@ const otherList = ${usageCodePrefix}.other`"
               <ShowcaseCodeBlock
                 :code="`// 轉換顯示文字
 const label = ${usageCodePrefix}.label('${demoValue}')`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -645,7 +645,7 @@ const label = ${usageCodePrefix}.label('${demoValue}')`"
               <ShowcaseCodeBlock
                 :code="`// 尋找完整物件
 const item = ${usageCodePrefix}.findByValue('${demoValue}')`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -680,7 +680,7 @@ const item = ${usageCodePrefix}.findByValue('${demoValue}')`"
                 :code="`// 排除特定選項
 // 回傳原始陣列，v-for 不需加 .value
 const filtered = ${usageCodePrefix}.exclude(${JSON.stringify(demoExcludes)})`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>
@@ -715,7 +715,7 @@ const filtered = ${usageCodePrefix}.exclude(${JSON.stringify(demoExcludes)})`"
                 :code="`// 只保留特定選項
 // 回傳原始陣列，v-for 不需加 .value
 const filtered = ${usageCodePrefix}.only(${JSON.stringify(demoOnly)})`"
-                label="使用代碼"
+                label="使用程式碼"
               />
             </template>
           </ShowcaseCard>

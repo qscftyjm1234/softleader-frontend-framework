@@ -29,7 +29,7 @@ const ORDER_STATUSES: OrderStatus[] = ['pending', 'processing', 'shipped', 'deli
  * @param max - 最大值
  * @returns 隨機整數
  */
-function randomInt(min: number, max: number): number {
+function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -41,7 +41,7 @@ function randomInt(min: number, max: number): number {
  * @param decimals - 小數位數，預設 2
  * @returns 隨機浮點數
  */
-function randomFloat(min: number, max: number, decimals: number = 2): number {
+function getRandomFloat(min: number, max: number, decimals: number = 2): number {
   const value = Math.random() * (max - min) + min
   return Number(value.toFixed(decimals))
 }
@@ -52,8 +52,8 @@ function randomFloat(min: number, max: number, decimals: number = 2): number {
  * @param array - 來源陣列
  * @returns 隨機選擇的元素
  */
-function randomElement<T>(array: readonly T[]): T {
-  return array[randomInt(0, array.length - 1)]!
+function getRandomElement<T>(array: readonly T[]): T {
+  return array[getRandomInt(0, array.length - 1)]!
 }
 
 /**
@@ -62,9 +62,9 @@ function randomElement<T>(array: readonly T[]): T {
  * @param daysAgo - 過去幾天內，預設 365 天
  * @returns ISO 格式的日期字串
  */
-function randomDate(daysAgo: number = 365): string {
+function getRandomDate(daysAgo: number = 365): string {
   const now = new Date()
-  const past = new Date(now.getTime() - randomInt(0, daysAgo) * 24 * 60 * 60 * 1000)
+  const past = new Date(now.getTime() - getRandomInt(0, daysAgo) * 24 * 60 * 60 * 1000)
   return past.toISOString()
 }
 
@@ -74,11 +74,11 @@ function randomDate(daysAgo: number = 365): string {
  * @param length - 字串長度
  * @returns 隨機字母數字字串
  */
-function randomAlphanumeric(length: number): string {
+function getRandomAlphanumeric(length: number): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let result = ''
   for (let i = 0; i < length; i++) {
-    result += chars.charAt(randomInt(0, chars.length - 1))
+    result += chars.charAt(getRandomInt(0, chars.length - 1))
   }
   return result
 }
@@ -90,13 +90,13 @@ function randomAlphanumeric(length: number): string {
  * @returns Mock OrderItem 物件
  */
 export function createMockOrderItem(overrides?: Partial<OrderItem>): OrderItem {
-  const quantity = randomInt(1, 5)
-  const price = randomFloat(10, 1000, 2)
+  const quantity = getRandomInt(1, 5)
+  const price = getRandomFloat(10, 1000, 2)
 
   return {
-    id: randomInt(1, 10000),
-    productId: randomInt(1, 1000),
-    productName: randomElement(PRODUCT_NAMES),
+    id: getRandomInt(1, 10000),
+    productId: getRandomInt(1, 1000),
+    productName: getRandomElement(PRODUCT_NAMES),
     quantity,
     price,
     subtotal: Number((quantity * price).toFixed(2)),
@@ -111,18 +111,18 @@ export function createMockOrderItem(overrides?: Partial<OrderItem>): OrderItem {
  * @returns Mock Order 物件
  */
 export function createMockOrder(overrides?: Partial<Order>): Order {
-  const items = Array.from({ length: randomInt(1, 5) }, () => createMockOrderItem())
+  const items = Array.from({ length: getRandomInt(1, 5) }, () => createMockOrderItem())
   const total = Number(items.reduce((sum, item) => sum + item.subtotal, 0).toFixed(2))
 
   return {
-    id: randomInt(1, 10000),
-    orderNumber: `ORD-${randomAlphanumeric(8)}`,
-    userId: randomInt(1, 1000),
-    status: randomElement(ORDER_STATUSES),
+    id: getRandomInt(1, 10000),
+    orderNumber: `ORD-${getRandomAlphanumeric(8)}`,
+    userId: getRandomInt(1, 1000),
+    status: getRandomElement(ORDER_STATUSES),
     items,
     total,
-    createdAt: randomDate(365),
-    updatedAt: randomDate(30),
+    createdAt: getRandomDate(365),
+    updatedAt: getRandomDate(30),
     ...overrides
   }
 }

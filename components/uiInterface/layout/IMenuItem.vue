@@ -180,7 +180,7 @@ const handleClick = (event: MouseEvent) => {
   text-overflow: ellipsis;
 }
 
-/* NuxtLink active class */
+/* NuxtLink 啟用狀態類別 (active class) */
 .ui-menu-item.router-link-active {
   background: #e3f2fd;
   color: #2196f3;

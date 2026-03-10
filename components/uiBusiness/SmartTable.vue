@@ -9,7 +9,7 @@
  * - 支援欄位定義與自定義渲染
  */
 import ICard from '~/components/uiInterface/ICard.vue'
-import ITextField from '~/components/uiInterface/ITextField.vue'
+import IInput from '~/components/uiInterface/IInput.vue'
 import IDivider from '~/components/uiInterface/IDivider.vue'
 import IChip from '~/components/uiInterface/IChip.vue'
 
@@ -160,7 +160,7 @@ defineOptions({
   background: rgba(30, 41, 59, 0.4);
 }
 
-/* Header */
+/* 表頭區塊 (Header) */
 .table-header {
   display: flex;
   align-items: center;
@@ -180,7 +180,7 @@ defineOptions({
   max-width: 300px;
 }
 
-/* Table */
+/* 表格區塊 (Table) */
 .table-wrapper {
   overflow-x: auto;
 }
@@ -218,7 +218,7 @@ defineOptions({
   border-bottom: none;
 }
 
-/* States */
+/* 狀態區塊 (States) */
 .table-loading,
 .table-empty {
   padding: 3rem;
@@ -227,7 +227,7 @@ defineOptions({
   font-size: 0.875rem;
 }
 
-/* Footer */
+/* 表尾區塊 (Footer) */
 .table-footer {
   padding: 1rem 1.5rem;
   background: rgba(15, 23, 42, 0.4);

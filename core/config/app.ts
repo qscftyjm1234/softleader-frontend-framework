@@ -14,12 +14,12 @@ import { productConfig } from '../../scripts/product-loader'
 export const appConfig: NuxtConfig['app'] = {
   head: {
     /** 網頁標題 - 顯示在瀏覽器分頁上 */
-    title: productConfig.meta?.title || 'Nuxt 3 Development Kit',
+    title: productConfig.meta?.title || 'Vue前端開發包系統',
 
     /** 標題模板 - 用於動態設定頁面標題，%s 會被替換成頁面標題
-     * @example 產品列表 - Nuxt 3 Kit
+     * @example 產品列表 - Vue前端開發包系統
      */
-    titleTemplate: '%s - Nuxt 3 Kit',
+    titleTemplate: '%s - Vue前端開發包系統',
 
     /** HTML 語言屬性 */
     htmlAttrs: {
@@ -32,11 +32,9 @@ export const appConfig: NuxtConfig['app'] = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         name: 'description',
-        content:
-          productConfig.meta?.description ||
-          'Enterprise-grade Nuxt 3 Development Kit - Streamlining your frontend development'
+        content: productConfig.meta?.description || 'Vue前端開發包系統'
       },
-      { name: 'author', content: 'Demo App' },
+      { name: 'author', content: 'Vue前端開發包系統' },
       { name: 'robots', content: 'index, follow' }, // SEO：允許搜尋引擎索引
       { name: 'format-detection', content: 'telephone=no' }
     ],
@@ -45,5 +43,7 @@ export const appConfig: NuxtConfig['app'] = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: productConfig.meta?.favicon || '/favicon.ico' }
     ]
-  }
+  },
+  /** 頁面切換動畫 */
+  pageTransition: { name: 'page', mode: 'out-in' }
 }

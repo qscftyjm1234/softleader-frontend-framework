@@ -5,9 +5,9 @@
  * ```typescript
  * import { maskIdCard, maskPhone, maskEmail } from '~/utils/security/mask'
  *
- * maskIdCard('A123456789')      // A123****89
+ * maskIdCard('A123456789')      // A123****89 (遮罩身分證字號)
  * maskPhone('0912345678')        // 0912***678
- * maskEmail('user@example.com')  // u***@example.com
+ * maskEmail('user@example.com')  // u***@example.com (遮罩電子郵件)
  * ```
  * @returns 回傳值
  */

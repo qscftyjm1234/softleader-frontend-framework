@@ -52,20 +52,20 @@ export function useDebounce() {
     fn: T,
     limit: number = 300
   ): ((...args: Parameters<T>) => void) & { cancel: () => void } => {
-    let inThrottle = false
+    let isThrottled = false
     let lastArgs: Parameters<T> | null = null
     let timeoutId: ReturnType<typeof setTimeout> | null = null
 
     const throttledFn = (...args: Parameters<T>) => {
       lastArgs = args
 
-      if (!inThrottle) {
+      if (!isThrottled) {
         fn(...args)
-        inThrottle = true
+        isThrottled = true
         lastArgs = null
 
         timeoutId = setTimeout(() => {
-          inThrottle = false
+          isThrottled = false
           if (lastArgs) {
             throttledFn(...lastArgs)
           }
@@ -79,7 +79,7 @@ export function useDebounce() {
         clearTimeout(timeoutId)
         timeoutId = null
       }
-      inThrottle = false
+      isThrottled = false
       lastArgs = null
     }
 
@@ -125,16 +125,15 @@ export function useDebounce() {
     const immediate = ref<T>(value) as Ref<T>
     const throttled = ref<T>(value) as Ref<T>
 
-    let inThrottle = false
-    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let isThrottled = false
 
     watch(immediate, (newValue) => {
-      if (!inThrottle) {
+      if (!isThrottled) {
         throttled.value = newValue
-        inThrottle = true
+        isThrottled = true
 
-        timeoutId = setTimeout(() => {
-          inThrottle = false
+        setTimeout(() => {
+          isThrottled = false
           // 更新為最新值
           if (immediate.value !== throttled.value) {
             throttled.value = immediate.value

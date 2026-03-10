@@ -6,14 +6,32 @@ import IApp from '~/components/uiInterface/IApp.vue'
 </script>
 
 <template>
-  <IApp class="portal-layout">
-    <PortalHeader />
+  <IApp class="portal-layout relative overflow-hidden font-sans text-slate-800">
+    <!-- Ambient Decor -->
+    <div
+      class="fixed top-0 right-0 w-[600px] h-[600px] bg-blue-50/40 rounded-full blur-[120px] -mr-48 -mt-48 pointer-events-none z-0"
+    ></div>
+    <div
+      class="fixed bottom-0 left-0 w-[500px] h-[500px] bg-white/40 rounded-full blur-[100px] -ml-32 -mb-32 pointer-events-none z-0"
+    ></div>
 
-    <main class="portal-main">
-      <slot />
-    </main>
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <PortalHeader
+        class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200/50"
+      />
 
-    <footer class="portal-footer">Copyright © 2026 Demo App. All rights reserved.</footer>
+      <main class="portal-main">
+        <slot />
+      </main>
+
+      <footer class="portal-footer">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+          <p class="text-[13px] text-slate-400 font-medium">
+            Copyright © 2026 Softleader. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
 
     <GlobalSnackbar />
     <GlobalModal />
@@ -23,22 +41,16 @@ import IApp from '~/components/uiInterface/IApp.vue'
 <style scoped>
 .portal-layout {
   min-height: 100vh;
-  background: #0f172a; /* Match portal background default */
-  display: flex;
-  flex-direction: column;
+  background: #ffffff;
 }
 
 .portal-main {
-  /* padding-top: 64px; */
   flex: 1;
 }
 
 .portal-footer {
-  text-align: center;
-  padding: 1.5rem;
-  color: #64748b;
-  font-size: 0.875rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(15, 23, 42, 0.95);
+  padding: 2rem 1.5rem;
+  background: white;
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
 }
 </style>

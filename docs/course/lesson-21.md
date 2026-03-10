@@ -1,68 +1,63 @@
 <!-- Author: antigravity -->
 
-# 第二十一課：常見問題排解 (Troubleshooting)
+# 第二十一課：常見問題排解
 
-本課程收集了專案開發與部署過程中常見的高頻問題及其解決方案。
+本課程收集了開發過程中高頻發生的問題及其解決方案。特別是針對正式環境部署後，使用者可能遇到的換頁錯誤進行預防性處理。
 
-## 1. 部署後換頁噴 404 (Chunk Load Error)
+---
 
-### 問題描述
+## 1. 解決換頁 404 錯誤
 
-專案在正式環境（Production/Staging）上板後，原本開著網頁的使用者在「不重新整理」的情況下點擊選單換頁，畫面突然卡住，打開控制台（Console）看到 `Failed to load resource: the server responded with a status of 404`，或是報錯 `ChunkLoadError`。但在本地開發環境卻完全無法重現。
+當系統更新後，舊使用者若不重新整理網頁直接換頁，可能會因為檔案雜湊（Hash）變更而找不到資源。
 
-### 發生原因：Lazy Load 與檔案雜湊的時差
+(1.) 在 `plugins/` 資料夾下建立 `error-handler.client.ts`。
+(2.) 準備好全域錯誤攔截邏輯。
 
-1.  **隨選下載 (Lazy Loading)**：Nuxt 為了效能，預設不會一次下載所有頁面代碼。當使用者點擊 `/about` 時，瀏覽器才動態去伺服器抓 `about.[hash].js`。
-2.  **檔案更名 (Hashing)**：每次重新 Build 時，檔案內容變動會產生新的雜湊名稱（例如 `about.a1b2.js` 變為 `about.x9y8.js`）。
-3.  **時差風險**：
-    - 使用者目前開的是**舊版**網頁，記憶體裡紀錄的檔案名稱是 `about.a1b2.js`。
-    - 您剛好完成了**部署**，伺服器上的舊檔案已被刪除或替換。
-    - 使用者點擊換頁，瀏覽器去伺服器抓 `a1b2`，但伺服器只剩下 `x9y8`，因此噴出 **404**。
+---
 
-### 解決方案
+## 3. 引入完整程式碼
 
-#### A. 前端自動重載 (最推薦)
+這裡展示了如何偵測載入失敗（Chunk Load Error）並自動強制頁面重洗的完整實作。
 
-偵測到 Chunk 載入失敗時，強制瀏覽器重新整理，讓它抓取最新的 Manifest 與檔案路徑。
-
-建立 `plugins/error-handler.client.ts`：
+(3.) 貼入以下完整程式碼：
 
 ```typescript
+/**
+ * 用於處理模組隨選載入失敗的全域插件
+ */
 export default defineNuxtPlugin((nuxtApp) => {
-  // 偵測 Chunk 或路由載入錯誤
+  // 監聽 Nuxt 核心拋出的檔案載入錯誤
   nuxtApp.hook('app:chunkError', () => {
-    // 發現版本不一致導致載入失敗，強制刷新頁面
+    console.error('偵測到頁面模組版本不符，正在自動重新整理以取得最新資源')
+
+    // 強制瀏覽器重新讀取伺服器上的最新 Manifest
     window.location.reload()
   })
 })
 ```
 
-#### B. 伺服器端增量部署 (Incremental Deploy)
+---
 
-調整 CI/CD 流程：
+## 4. 小結
 
-- 部署時**不要清空**伺服器的靜態資源目錄。
-- 採用「增量更新 (Incremental Update)」，保留舊版本的網頁檔案。
-- **範例指令 (AWS S3)**：
-
-  ```bash
-  # ❌ 錯誤：--delete 會刪除伺服器上的舊 Hash 檔案
-  aws s3 sync ./dist s3://my-bucket --delete
-
-  # ✅ 正確：保留舊檔案，讓舊使用者的瀏覽器還能抓到對應的 JS
-  aws s3 sync ./dist s3://my-bucket
-  ```
-
-- 這樣舊使用者在切換時，伺服器依然能提供舊版本的代碼，避免 404。
+一
+網頁部署後的雜湊時差是導致 404 錯誤的主因。
+二
+透過 `app:chunkError` 勾子可以主動偵測這類問題並進行無感復原。
+三
+在正式環境中，建議始終保留至少一個舊版本的檔案紀錄，以提升系統的容錯能力。
 
 ---
 
-## 2. 小結
-
-1.  **Lazy Load** 讓換頁變成高度依賴「伺服器檔案存在性」的行為。
-2.  **404 錯誤** 通常是由於客戶端小本本（Manifest）紀錄的名字與伺服器實際檔名產生衝突。
-3.  使用 `app:chunkError` Hook 是最直接的前端保險做法。
+```vue
+<script setup lang="ts">
+definePageMeta({
+  title: '資料列表範例',
+  layout: 'portal'
+})
+</script>
+```
 
 ---
 
-[上一課：全域錯誤處理](./lesson-20.md) | [回首頁](../../README.md)
+[上一課 第二十課：UI 資安防護實戰](./lesson-20.md) | [下一課 第二十二課：Git 提交與工作流](./lesson-22.md) | [回首頁](../../README.md)

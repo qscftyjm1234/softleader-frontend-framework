@@ -188,7 +188,7 @@ function useOptionDataLoader(registryKey: string, definition: OptionDefinition) 
         }
       }
 
-      // Sync function handling within refresh
+      // 在重整過中中處理同步函式 (Sync function)
       parseDefinition(definition, args, state, registryKey)
     }
     return state.data
@@ -252,7 +252,7 @@ function parseDefinition(
           .finally(() => (state.isLoading = false))
       }
     } else if (!state.isLoaded) {
-      // Sync function
+      // 同步函式 (Sync function)
       state.data.push(...(result as OptionItem[]))
       state.isLoaded = true
     } else if (Array.isArray(result)) {
@@ -361,34 +361,53 @@ function createOptionProxy(registryKey: string, definition: OptionDefinition): O
 // #region Public Exports (公開 API)
 // =============================================================================
 
-let singletonOptions: Options | null = null
+let dynamicOptionsProxy: Options | null = null
+const optionProxyCache: Record<string, OptionArray> = {}
 
 /**
  * [Composable] 取得全域選項物件
  * @returns 全域選項物件代理，包含所有定義在 registry 的選項
  */
 export function useOptions(): Options {
-  if (!singletonOptions) {
-    const proxies: Record<string, OptionArray> = {}
-    for (const key of Object.keys(optionsRegistry) as OptionKey[]) {
-      proxies[key] = createOptionProxy(key, optionsRegistry[key])
-    }
-
-    // 定義根物件的 toJSON，確保 {{ options }} 能顯示內容
-    Object.defineProperty(proxies, 'toJSON', {
-      value: () => {
-        const result: Record<string, any> = {}
-        for (const key in proxies) {
-          result[key] = (proxies[key] as any).toJSON ? (proxies[key] as any).toJSON() : proxies[key]
+  if (!dynamicOptionsProxy) {
+    dynamicOptionsProxy = new Proxy({} as Options, {
+      get(target, prop: string) {
+        // 確保 {{ options }} 能夠在 Vue template 中顯示內容
+        if (prop === 'toJSON') {
+          return () => {
+            const result: Record<string, any> = {}
+            for (const key of Object.keys(optionsRegistry)) {
+              result[key] = (optionsRegistry as any)[key]
+            }
+            return result
+          }
         }
-        return result
-      },
-      enumerable: false
-    })
 
-    singletonOptions = proxies as Options
+        // 動態尋找選項 (支援 Vite HMR)
+        if (prop in optionsRegistry) {
+          if (!optionProxyCache[prop]) {
+            optionProxyCache[prop] = createOptionProxy(prop, (optionsRegistry as any)[prop])
+          }
+          return optionProxyCache[prop]
+        }
+
+        return Reflect.get(target, prop)
+      },
+      ownKeys() {
+        return Reflect.ownKeys(optionsRegistry)
+      },
+      getOwnPropertyDescriptor(target, prop) {
+        if (prop in optionsRegistry) {
+          return {
+            enumerable: true,
+            configurable: true,
+            writable: false
+          }
+        }
+      }
+    })
   }
-  return singletonOptions
+  return dynamicOptionsProxy
 }
 
 // --- Standalone Helpers ---

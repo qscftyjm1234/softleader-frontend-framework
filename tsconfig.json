@@ -1,7 +1,18 @@
 {
+  /**
+   * TypeScript 編譯設定檔
+   * 繼承 Nuxt 自動產生的設定，並額外定義全域型別與編譯環境。
+   *
+   * @author Gino Huang
+   * @since 2024-12-24
+   * @version 1.0.0
+   *
+   * @changelog
+   * - 2024-12-24 v1.0.0 [Gino] 初始版本
+   */
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
-    "types": ["node", "vite/client"]
+    // 避掉node語法的ts錯誤
+    "types": ["node"]
   }
 }

@@ -597,7 +597,7 @@ const { data } = useApi('/config/map', {
         </ShowcaseCard>
 
         <ShowcaseCard
-          title="代碼比較"
+          title="程式碼比較"
           description="使用 useClient 前後的差異比較"
         >
           <div class="flex flex-col gap-4">

@@ -14,107 +14,57 @@ interface BreadcrumbItem {
 
 interface Props {
   items: BreadcrumbItem[]
-  separator?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  separator: '/'
-})
+// props 已定義，但目前在模板中未使用，因為 SVG 是硬編碼的。
+// items prop 是導覽項目所必需的。
+defineProps<Props>()
 </script>
 
 <template>
-  <!-- 目前使用原生 HTML -->
   <nav
-    class="ui-breadcrumbs"
-    aria-label="breadcrumb"
+    class="flex items-center"
+    aria-label="Breadcrumb"
   >
-    <ol class="breadcrumbs-list">
+    <ol class="flex items-center space-x-2">
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="breadcrumb-item"
-        :class="{ 'is-disabled': item.disabled }"
+        class="flex items-center"
       >
-        <NuxtLink
-          v-if="item.to && !item.disabled"
-          :to="item.to"
-          class="breadcrumb-link"
-        >
-          {{ item.label }}
-        </NuxtLink>
-        <span
-          v-else
-          class="breadcrumb-text"
-        >
-          {{ item.label }}
-        </span>
-        <span
-          v-if="index < items.length - 1"
-          class="breadcrumb-separator"
-        >
-          {{ separator }}
-        </span>
+        <div class="flex items-center">
+          <!-- 分隔線圖示 -->
+          <svg
+            v-if="index > 0"
+            class="h-5 w-5 flex-shrink-0 text-slate-300"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+          </svg>
+
+          <NuxtLink
+            v-if="item.to && index < items.length - 1"
+            :to="item.to"
+            class="ml-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors"
+          >
+            {{ item.label }}
+          </NuxtLink>
+          <span
+            v-else
+            class="ml-2 text-xs font-black text-slate-900"
+            :class="{ 'opacity-50': item.disabled }"
+            aria-current="page"
+          >
+            {{ item.label }}
+          </span>
+        </div>
       </li>
     </ol>
   </nav>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VBreadcrumbs
-    :items="items"
-    :divider="separator"
-  />
-  -->
 </template>
 
 <style scoped>
-.ui-breadcrumbs {
-  padding: 0.5rem 0;
-}
-
-.breadcrumbs-list {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.breadcrumb-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.breadcrumb-link {
-  color: #3498db;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.breadcrumb-link:hover {
-  color: #2980b9;
-  text-decoration: underline;
-}
-
-.breadcrumb-text {
-  color: #666;
-}
-
-.breadcrumb-item:last-child .breadcrumb-text {
-  color: #333;
-  font-weight: 500;
-}
-
-.breadcrumb-item.is-disabled {
-  opacity: 0.5;
-}
-
-.breadcrumb-separator {
-  color: #999;
-  user-select: none;
-}
+/* 為了保持一致性，移除 Scoped 樣式，改用 Tailwind Class */
 </style>

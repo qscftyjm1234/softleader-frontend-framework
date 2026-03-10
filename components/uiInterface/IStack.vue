@@ -1,46 +1,46 @@
 <script setup lang="ts">
+import { Space as ASpace } from 'ant-design-vue'
+
 /**
  * IStack - UI 介面層佈局元件
- *
- * 用途：提供 Flexbox 佈局容器，消除頁面中的 CSS 排版代碼。
+ * 基底採用 Ant Design Vue (a-space) 理念，實現 Flexbox 佈局
  */
 interface Props {
-  direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
-  gap?: string | number
-  align?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch'
-  justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'
-  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
-  inline?: boolean
+  direction?: 'horizontal' | 'vertical'
+  gap?: 'small' | 'middle' | 'large' | number | [number, number]
+  align?: 'start' | 'end' | 'center' | 'baseline'
+  justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between'
+  wrap?: boolean
+  block?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  direction: 'row',
-  gap: '0.5rem',
-  align: 'stretch',
-  justify: 'flex-start',
-  wrap: 'nowrap',
-  inline: false
+withDefaults(defineProps<Props>(), {
+  direction: 'horizontal',
+  gap: 'middle',
+  align: 'center',
+  wrap: false,
+  block: false
 })
 </script>
 
 <template>
-  <div
-    class="ui-stack"
-    :style="{
-      display: inline ? 'inline-flex' : 'flex',
-      flexDirection: direction,
-      gap: typeof gap === 'number' ? `${gap}rem` : gap,
-      alignItems: align,
-      justifyContent: justify,
-      flexWrap: wrap
-    }"
+  <ASpace
+    :direction="direction"
+    :size="gap"
+    :align="align"
+    :wrap="wrap"
+    :class="['i-stack-wrapper', { 'is-block': block }]"
   >
     <slot />
-  </div>
+  </ASpace>
 </template>
 
-<style scoped>
-.ui-stack {
-  width: 100%;
+<style scoped lang="scss">
+.i-stack-wrapper {
+  display: flex;
+
+  &.is-block {
+    width: 100%;
+  }
 }
 </style>

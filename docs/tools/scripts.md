@@ -12,20 +12,20 @@
 
 以下是專案中常用的指令：
 
-| 指令                       | 用途             | 說明                                                                |
-| :------------------------- | :--------------- | :------------------------------------------------------------------ |
-| `npm run dev`              | 開發環境         | 啟動 Nuxt 開發伺服器，支援 Hot Reload。                             |
-| `npm run build`            | 專案建置         | 編譯專案並準備生產環境部署檔案。                                    |
-| `npm run build:staging`    | Staging 建置     | 指定 `NODE_ENV=staging` 進行建置。                                  |
-| `npm run generate`         | 靜態生成         | 生成靜態 HTML 檔案 (SSG)。                                          |
-| `npm run generate:staging` | Staging 靜態生成 | 指定 `NODE_ENV=staging` 進行靜態生成。                              |
-| `npm run preview`          | 預覽建置         | 在本地啟動伺服器預覽已建置的內容。                                  |
-| `npm run lint`             | 程式碼檢查       | 使用 ESLint 檢查並自動修復常見的程式碼規範問題。                    |
-| `npm run format`           | 格式檢查         | 使用 Prettier 檢查程式碼格式是否符合規範。                          |
-| `npm run format:write`     | 格式修復         | 使用 Prettier 自動修復所有程式碼格式問題。                          |
-| `npm run commit`           | 規範提交         | 啟動 Commitizen 引導式介面，生成符合規範的 Commit Message。         |
-| `npm run clone`            | 複製專案         | 執行 `clone-project.bat` 腳本，快速複製排除 `node_modules` 的專案。 |
-| `npm run package-filter`   | 套件篩選         | 根據公司需求 (`package-clients.json`) 產生客製化的 `package.json`。 |
+| 指令                       | 用途             | 說明                                                                                       |
+| :------------------------- | :--------------- | :----------------------------------------------------------------------------------------- |
+| `npm run dev`              | 開發環境         | 啟動 Nuxt 開發伺服器，支援 Hot Reload。                                                    |
+| `npm run build`            | 專案建置         | 編譯專案並準備生產環境部署檔案。                                                           |
+| `npm run build:staging`    | Staging 建置     | 指定 `NODE_ENV=staging` 進行建置。                                                         |
+| `npm run generate`         | 靜態生成         | 生成靜態 HTML 檔案 (SSG)。                                                                 |
+| `npm run generate:staging` | Staging 靜態生成 | 指定 `NODE_ENV=staging` 進行靜態生成。                                                     |
+| `npm run preview`          | 預覽建置         | 在本地啟動伺服器預覽已建置的內容。                                                         |
+| `npm run lint`             | 程式碼檢查       | 使用 ESLint 檢查並自動修復常見的程式碼規範問題。                                           |
+| `npm run format`           | 格式檢查         | 使用 Prettier 檢查程式碼格式是否符合規範。                                                 |
+| `npm run format:write`     | 格式修復         | 使用 Prettier 自動修復所有程式碼格式問題。                                                 |
+| `npm run commit`           | 規範提交         | 啟動 Commitizen 引導式介面，生成符合規範的 Commit Message。                                |
+| `npm run clone`            | 複製專案         | 執行 `clone-project.bat` 腳本，快速複製排除 `node_modules` 的專案。                        |
+| `npm run package-filter`   | 套件篩選         | 根據公司需求 (`configs/package-policy/package-clients.json`) 產生客製化的 `package.json`。 |
 
 ---
 
@@ -154,8 +154,8 @@ npm run package-filter
 
 **功能說明**:
 
-- **Source of Truth**: 以 `package.master.json` 作為唯一真理來源。
-- **Client Policy**: 讀取 `package-clients.json` 定義的各公司政策（白名單/黑名單）。
+- **Source of Truth**: 以 `configs/package-policy/package.master.json` 作為唯一真理來源。
+- **Client Policy**: 讀取 `configs/package-policy/package-clients.json` 定義的各公司政策（白名單/黑名單）。
 - **自動修剪**: 根據選擇的公司政策，自動移除不允許或不需要的 `dependencies` 與 `scripts`。
 - **防止漂移**: 每次執行都會強制重置 `package.json`，確保專案依賴完全符合政策規範。
 

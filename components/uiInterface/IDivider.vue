@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Divider as ADivider } from 'ant-design-vue'
+
 /**
  * IDivider - UI 介面層分隔線
- *
- * 用途：統一的 Divider 介面，內部可使用原生 HTML 或 UI 框架
- * 未來要換 UI 框架，只需要修改這個檔案
+ * 基底更換為 Ant Design Vue (a-divider)
  */
 
 interface Props {
@@ -13,44 +14,29 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  color: '#e0e0e0',
+  color: '#f1f5f9',
   thickness: 1,
   vertical: false
 })
-
-const dividerStyle = computed(() => ({
-  backgroundColor: props.color,
-  [props.vertical ? 'width' : 'height']: `${props.thickness}px`
-}))
 </script>
 
 <template>
-  <!-- 目前使用原生 HTML -->
-  <hr
-    class="ui-divider"
-    :class="{ 'ui-divider--vertical': vertical }"
-    :style="dividerStyle"
+  <ADivider
+    :type="vertical ? 'vertical' : 'horizontal'"
+    class="i-divider-wrapper"
+    :style="{ backgroundColor: color, [vertical ? 'width' : 'height']: `${thickness}px` }"
   />
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VDivider
-    :color="color"
-    :thickness="thickness"
-    :vertical="vertical"
-  />
-  -->
 </template>
 
-<style scoped>
-.ui-divider {
-  border: none;
+<style scoped lang="scss">
+.i-divider-wrapper {
   margin: 0;
-}
+  border: none;
+  opacity: 0.8;
 
-.ui-divider--vertical {
-  display: inline-block;
-  height: auto;
-  align-self: stretch;
+  &.ant-divider-vertical {
+    top: 0;
+    margin: 0 12px;
+  }
 }
 </style>

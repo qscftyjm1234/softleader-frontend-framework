@@ -4,7 +4,6 @@
  * 業務邏輯層元件 (Business Layer)
  * 頁面標準佈局 - Dark Mode / Glassmorphism Style
  */
-import IButton from '@/components/uiInterface/IButton.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -17,8 +16,8 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   description: '',
-  backTo: '/showcase',
-  backText: '返回列表'
+  backTo: '/',
+  backText: '返回首頁'
 })
 
 const route = useRoute()
@@ -55,202 +54,115 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-  <div class="showcase-page-dark">
+  <div class="min-h-screen bg-slate-50 relative font-sans text-slate-800">
     <!-- Background Decoration -->
-    <div class="bg-decoration"></div>
+    <div
+      class="absolute top-0 right-0 w-96 h-96 bg-blue-50/50 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none z-0"
+    ></div>
+    <div
+      class="absolute top-40 left-10 w-64 h-64 bg-emerald-50/40 rounded-full blur-3xl pointer-events-none z-0"
+    ></div>
 
-    <div class="page-container">
+    <div class="relative z-10 max-w-7xl mx-auto px-6 py-12">
       <!-- Header Section -->
-      <header class="page-header">
-        <!-- Breadcrumbs -->
-        <nav
-          class="breadcrumbs"
-          aria-label="Breadcrumb"
-        >
-          <ol>
-            <li
-              v-for="(item, index) in breadcrumbs"
-              :key="item.path"
-            >
-              <span
-                v-if="index > 0"
-                class="separator"
-              >
-                /
-              </span>
-              <NuxtLink
-                v-if="!item.disabled"
-                :to="item.path"
-                class="crumb-link"
-              >
-                {{ item.title }}
-              </NuxtLink>
-              <span
-                v-else
-                class="crumb-current"
-              >
-                {{ item.title }}
-              </span>
-            </li>
-          </ol>
-        </nav>
+      <!-- Top Navigation Bar (Home + Breadcrumbs) -->
+      <header class="mb-10 border-b border-slate-200/50 pb-6">
+        <div class="flex items-center gap-5">
+          <NuxtLink
+            to="/"
+            class="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-100 transition-all hover:shadow-sm group/home"
+            title="回到首頁"
+          >
+            <IIcon
+              icon="mdi-home-outline"
+              size="22"
+              class="group-hover/home:scale-110 transition-transform"
+            />
+          </NuxtLink>
 
-        <div class="header-content">
-          <div class="title-group">
-            <h1 class="page-title">{{ title }}</h1>
+          <div class="h-6 w-px bg-slate-200"></div>
+
+          <div class="flex-1">
+            <nav aria-label="Breadcrumb">
+              <ol class="flex items-center gap-2">
+                <li
+                  v-for="(item, index) in breadcrumbs"
+                  :key="item.path"
+                  class="flex items-center"
+                >
+                  <svg
+                    v-if="index > 0"
+                    class="h-5 w-5 flex-shrink-0 text-slate-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                  </svg>
+
+                  <NuxtLink
+                    v-if="!item.disabled"
+                    :to="item.path"
+                    class="ml-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    {{ item.title }}
+                  </NuxtLink>
+                  <span
+                    v-else
+                    class="ml-2 text-[11px] font-black uppercase tracking-widest text-slate-900"
+                    aria-current="page"
+                  >
+                    {{ item.title }}
+                  </span>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Header (Title & Description) - Independent Section -->
+      <section class="mb-12">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="flex-1">
+            <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-4 leading-tight">
+              {{ title }}
+            </h1>
             <p
               v-if="description"
-              class="page-desc"
+              class="text-lg text-slate-500 font-medium leading-relaxed max-w-3xl"
             >
               {{ description }}
             </p>
           </div>
 
-          <div class="header-actions">
+          <div class="flex items-center gap-4 pb-2">
             <slot name="header-extra" />
             <NuxtLink
               v-slot="{ navigate }"
               :to="backTo"
               custom
             >
-              <IButton
-                variant="outlined"
-                prepend-icon="mdi-arrow-left"
-                class="back-btn"
+              <button
+                class="group flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white border border-slate-100 text-slate-600 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-300"
                 @click="navigate"
               >
-                {{ backText }}
-              </IButton>
+                <IIcon
+                  icon="mdi-arrow-left"
+                  size="18"
+                  class="text-slate-400 group-hover:text-blue-500 transition-all"
+                />
+                <span class="text-sm font-bold">{{ backText }}</span>
+              </button>
             </NuxtLink>
           </div>
         </div>
-      </header>
+      </section>
 
       <!-- Content Section -->
-      <main class="page-content">
+      <main class="flex flex-col gap-8">
         <slot />
       </main>
     </div>
   </div>
 </template>
-
-<style scoped>
-.showcase-page-dark {
-  min-height: 100vh;
-  background: #0f172a;
-  color: #e2e8f0;
-  position: relative;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-
-.bg-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 400px;
-  background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.15), transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.page-container {
-  position: relative;
-  z-index: 1;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-/* Breadcrumbs */
-.breadcrumbs ol {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem 0;
-  font-size: 0.9rem;
-  color: #94a3b8;
-}
-
-.crumb-link {
-  color: #94a3b8;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.crumb-link:hover {
-  color: #38bdf8;
-}
-
-.crumb-current {
-  color: #f1f5f9;
-  font-weight: 500;
-}
-
-.separator {
-  color: #475569;
-  font-size: 0.8rem;
-}
-
-/* Header */
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 2rem;
-}
-
-.title-group {
-  flex: 1;
-}
-
-.page-title {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.02em;
-  background: linear-gradient(to right, #ffffff, #94a3b8);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.page-desc {
-  font-size: 1.1rem;
-  color: #94a3b8;
-  line-height: 1.6;
-  max-width: 800px;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.back-btn {
-  color: #94a3b8 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: white !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Page Content usually contains stacked sections */
-.page-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-</style>

@@ -1,180 +1,144 @@
-<!-- Author: cindy -->
+<!-- Author: antigravity -->
 
-# 第八課:全域狀態管理 (Pinia)
+# 第八課：客製化圖示系統
 
-本課程教您如何使用 **Pinia** 來管理跨頁面的資料 (Global State)。
-
-最常見的情境：登入資訊 (User)、保險試算 (Quotation)、全域設定 (AppConfig)。
-
-## 1. 什麼是 Store?
-
-Store 就像是一個「雲端資料夾」，任何頁面都可以存取它，且**資料會自動同步**。
-
-- **State**: 變數 (如 `selectedPlans`)
-- **Getters**: 計算屬性 (如 `totalPremium`)
-- **Actions**: 函式 (如 `addPlan`)
+本課程教您如何在專案中使用圖示。我們已經整合了豐富的圖示庫，讓您能透過簡單的參數來增強介面的識別度。
 
 ---
 
-## 2. 實戰範例：保險試算投保 (QuotationStore)
+## 1. 使用圖示組件
 
-我們來建立一個保險試算 Store，包含被保險人資訊、保費計算、新增險種功能。
+本專案統一使用 `IIcon` 來處理所有的圖示顯示需求。
 
-### 步驟 1: 定義 Store (`stores/quotation.ts`)
+(1.) 開啟您的頁面檔案。
+(2.) 準備好要使用的圖示名稱（預設支援 MDI 圖示庫）。
 
-```typescript
-// stores/quotation.ts
-export const useQuotationStore = defineStore('quotation', () => {
-  // 1. State (資料)
-  const policyHolder = ref({ name: '', age: 0 })
-  const selectedPlans = ref<any[]>([])
+---
 
-  // 2. Getters (計算屬性)
-  const totalPremium = computed(() => {
-    return selectedPlans.value.reduce((sum, plan) => sum + plan.premium, 0)
-  })
+## 2. 引入完整程式碼
 
-  const planCount = computed(() => selectedPlans.value.length)
+這裡展示了如何調整圖示的大小、顏色以及結合按鈕使用的完整範例。
 
-  // 3. Actions (動作)
-  function addPlan(plan: any) {
-    selectedPlans.value.push(plan)
-  }
-
-  function resetQuotation() {
-    selectedPlans.value = []
-    policyHolder.value = { name: '', age: 0 }
-  }
-
-  return {
-    policyHolder,
-    selectedPlans,
-    totalPremium,
-    planCount,
-    addPlan,
-    resetQuotation
-  }
-})
-```
-
-### 步驟 2: 在頁面使用
+(3.) 貼入以下完整程式碼：
 
 ```vue
-<script setup lang="ts">
-const quoteStore = useQuotationStore()
-
-// ✅ 使用 storeToRefs 保持響應性
-const { planCount, totalPremium, policyHolder } = storeToRefs(quoteStore)
-
-function addInsurance() {
-  // Action 直接呼叫即可
-  quoteStore.addPlan({ name: '意外傷害保險', premium: 1200 })
-}
-</script>
-
 <template>
-  <div class="p-4 border rounded">
-    <h2>保險試算摘要</h2>
-    <p>要保人：{{ policyHolder.name || '未填寫' }}</p>
-    <p>目前選購險種：{{ planCount }} 項</p>
-    <p>預估年繳保費：${{ totalPremium }}</p>
+  <div class="p-10 bg-slate-50 min-h-screen">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <!-- 基礎圖示展示 -->
+      <div class="p-8 bg-white border border-slate-100 rounded-3xl shadow-sm text-center">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">
+          不同大小與顏色的圖示
+        </h3>
+        <div class="flex items-center justify-center gap-10">
+          <IIcon
+            icon="mdi-home"
+            size="24"
+            class="text-slate-400"
+          />
+          <IIcon
+            icon="mdi-heart"
+            size="32"
+            class="text-red-500"
+          />
+          <IIcon
+            icon="mdi-star"
+            size="48"
+            class="text-yellow-400"
+          />
+        </div>
+      </div>
 
-    <IButton @click="addInsurance">加入意外險 ($1200)</IButton>
-    <IButton
-      variant="outline"
-      @click="quoteStore.resetQuotation"
-    >
-      重設試算
-    </IButton>
+      <!-- 按鈕整合展示 -->
+      <div class="p-8 bg-white border border-slate-100 rounded-3xl shadow-sm">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 text-center">
+          帶有圖示的按鈕
+        </h3>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+          <IButton
+            icon="mdi-plus"
+            variant="primary"
+            class="px-8"
+          >
+            新增資料
+          </IButton>
+
+          <IButton
+            icon="mdi-delete"
+            class="bg-red-50 text-red-600 border border-red-100"
+          >
+            刪除項目
+          </IButton>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  title: '圖示使用大會',
+  layout: 'portal'
+})
+</script>
+```
+
+---
+
+## 3. 圖示搜尋方法
+
+如果您需要尋找更多圖示，請按照以下步驟操作。
+
+(1.) 前往圖示庫官網搜尋。
+(2.) 複製您喜歡的名稱（例如 `mdi-cog`）。
+(3.) 直接填入 `IIcon` 的 `icon` 參數中。
+
+---
+
+## 4. 實戰：使用自定義 SVG
+
+除了推薦的 MDI 圖示，您也可以使用自己設計的 SVG 檔案。
+
+(1.) 將您的 SVG 檔案（例如 `smile.svg`）放入 `assets/icons/` 資料夾下。
+(2.) 系統會自動完成掃描，您無需修改任何註冊檔案。
+(3.) 在組件中使用時，名稱請加上 `svg-` 前綴（例如 `svg-smile`）。
+
+```vue
+<template>
+  <div class="p-8 bg-white border border-slate-100 rounded-3xl shadow-sm text-center">
+    <!-- 引用 assets/icons/smile.svg -->
+    <IIcon
+      icon="svg-smile"
+      size="32"
+      class="text-blue-500"
+    />
+    <span class="ml-2 font-bold">自定義專案標誌</span>
   </div>
 </template>
 ```
 
 ---
 
-## 3. 重要觀念：解構陷阱
-
-初學者最常犯的錯，就是直接解構 Store，導致資料不會更新。
-
-| 類型                | 處理方式             | 原因                                   |
-| :------------------ | :------------------- | :------------------------------------- |
-| **State / Getters** | 必須用 `storeToRefs` | 因為它是 `Ref`，直接解構會變成普通變數 |
-| **Actions**         | 直接解構             | 因為它是 `Function`，不會有響應性問題  |
-
-```typescript
-// 假設 store.count = 0
-
-// ❌ 壞掉的寫法
-const { count } = store
-// 此時 count 變成單純的 number 0，store 變了它也不會變
-
-// ✅ 正確寫法
-const { count } = storeToRefs(store)
-// 此時 count 是 Ref<number>，會跟著 store 連動
-```
-
----
-
-## 4. Pinia 生命週期 (CSR 模式)
-
-由於本專案目前的設定為 **`ssr: false`** (純客戶端渲染 CSR)，Pinia 的生命週期非常直觀，主要遵循「首次呼叫即建立，不重新整理即永生」的原則。
-
-### 生命周期流程圖
-
-```text
-[ 瀏覽器載入應用程式 ]
-       │
-       ▼
-[ Nuxt 初始化並註冊 Pinia 插件 ]
-       │
-       ▼
-[ 組件第一次執行 useQuotationStore() ] ─── 沒有人呼叫時 ──▶ [ Store 不會建立 (節省記憶體) ]
-       │
-       ▼
-[ 執行 Store Setup 邏輯 (只執行一次) ]
-       │
-       ▼
-[ Store 進入 Singleton (單例) 模式 ]
-       │
-       ▼
-[ 跨頁導覽、資料持續存在 ] ◀───────┐
-       │                       │
-       ▼                       │
-[ 使用者 F5 重新整理 ? ] ── No ───┘
-       │
-      Yes
-       │
-       ▼
-[ 環境重啟、資料清空 ]
-```
-
-### 生命週期階段說明
-
-| 階段                           | 說明                                                                                                                                                      |
-| :----------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. 定義期 (Definition)**     | 撰寫 `defineStore` 時。此時程式碼已載入，但尚未分配記憶體空間給資料。                                                                                     |
-| **2. 初始化 (Initialization)** | **隨選建立 (On-demand)**。只有當第一個組件執行 `const store = useStore()` 時，才會真正執行內部的 `ref` 和 `computed` 邏輯。                               |
-| **3. 活躍期 (Active)**         | 一旦建立，Store 就會一直存在於內存中。**換頁 (Router change) 資料絕對不會消失**。無論您在頁面間如何切換 (`/page-a` 到 `/page-b`)，資料都會保持原樣。      |
-| **4. 銷毀期 (Destruction)**    | **僅限頁面重新整理或關閉分頁**。CSR 模式下，頁面重新整理等同於整個 JavaScript 環境重啟，此時 Store 資料會被清空（除非有搭配 `localStorage` 持久化套件）。 |
-
-### CSR 模式下的優勢
-
-1.  **環境存取自如**：可以直接在 Store 內存取 `window`、`location` 或 `localStorage`，不必擔心 Server 端報錯。
-2.  **簡易除錯**：Vue DevTools 看到的狀態就是數據的唯一真相，沒有 SSR 資料不一致的困擾。
-3.  **效能直覺**：資料抓取完全由前端控制，邏輯透明。
-
-> [!TIP]
-> **懶加載特性**：如果一個 Store 從未被任何頁面或組件使用，它就不會被初始化，這有助於節省初始載入的資源佔用。
-
----
-
 ## 5. 小結
 
-1.  **State** = `ref()`
-2.  **Getters** = `computed()`
-3.  **Actions** = `function()`
-4.  **Destructure**: 取資料記得用 `storeToRefs()`。
+一
+統一使用 `<IIcon />` 組件，不要直接寫原生的圖示標籤。
+二
+可以使用 `mdi-` 名稱調用內建圖示，或使用 `svg-` 名稱調用 `assets/icons/` 下的自訂檔案。
+三
+可以直接用 Tailwind 的類別來控制顏色與特效。
+四
+按鈕組件內建 `icon` 屬性，可以直接傳入名稱進行顯示。
 
 ---
 
-[上一課:API 串接與資料層](./lesson-7.md) | [下一課:Git 提交與工作流](./lesson-9.md) | [回首頁](../../README.md)
+## 6. 延伸資源
+
+一
+[Iconify 萬用圖示搜尋網](https://iconify.design/)
+二
+[Nuxt Icon 模組文檔](https://nuxt.com/modules/icon)
+
+---
+
+[上一課 第七課：UI 組件開發規範](./lesson-7.md) | [下一課 第九課：資料格式化工具](./lesson-9.md) | [回首頁](../../README.md)

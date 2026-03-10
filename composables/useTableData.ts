@@ -29,10 +29,10 @@ export interface TableDataState {
  *
  * @example
  * ```ts
- * // Server-side mode
+ * // 伺服器端模式 (Server-side mode)
  * const tableData = useTableData({ api: '/api/users' })
  *
- * // Client-side mode
+ * // 用戶端模式 (Client-side mode)
  * const tableData = useTableData({ staticData: [...] })
  * ```
  */

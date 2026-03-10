@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { defaultLayoutConfig, type LayoutConfig } from '~/core/config/layout'
+import { defaultFeatures, type FeatureFlags } from '~/core/config/features'
 
 export const useAppStore = defineStore('app', () => {
   // 狀態
   const config = ref<LayoutConfig>({ ...defaultLayoutConfig })
+  const features = ref<FeatureFlags>({ ...defaultFeatures })
   const drawer = ref(true)
   const loading = ref(false)
 
@@ -16,69 +18,84 @@ export const useAppStore = defineStore('app', () => {
   }
 
   /**
-   * 設定主題
-   * @param newTheme - 新的主題 ('light' 或 'dark')
+   *
+   * @param newTheme
    */
   function setTheme(newTheme: 'light' | 'dark') {
     config.value.theme.defaultTheme = newTheme
   }
 
   /**
-   * 更新設定
-   * @param newConfig - 部分設定物件
+   *
+   * @param newConfig
    */
   function updateConfig(newConfig: Partial<LayoutConfig>) {
-    // 可以在這裡加入深度合併 (Deep merge) 邏輯以處理更複雜的更新
     Object.assign(config.value, newConfig)
   }
 
   /**
    * 重新載入設定（用於熱重載）
-   * @param newConfig - 新的設定物件
+   * @param newConfig
    */
-  function reloadConfig(newConfig?: typeof defaultLayoutConfig) {
+  function handleReloadConfig(newConfig?: LayoutConfig) {
     if (newConfig) {
-      // 使用新模組的設定
       Object.assign(config.value, newConfig)
     } else {
-      // 使用當前的 defaultLayoutConfig（用於手動重載）
       Object.assign(config.value, defaultLayoutConfig)
     }
     console.log('🔄 Layout config reloaded:', config.value)
   }
 
-  // 初始化 (模擬從後端獲取)
+  /**
+   *
+   * @param newFeatures
+   */
+  function handleReloadFeatures(newFeatures?: FeatureFlags) {
+    if (newFeatures) {
+      Object.assign(features.value, newFeatures)
+    } else {
+      Object.assign(features.value, defaultFeatures)
+    }
+    console.log('🔄 Features config reloaded:', features.value)
+  }
+
+  // 初始化
   /**
    *
    */
   async function initApp() {
     loading.value = true
     try {
-      console.log('App initialized with config:', config.value)
+      console.log('App initialized')
     } finally {
       loading.value = false
     }
   }
 
-  // 開發模式下啟用熱重載
-  // if (import.meta.hot) {
-  //   // {import.meta.hot.accept} 如果有人改了我裡面的程式碼，直接把我的新邏輯「塞」進去就好，不准重新整理網頁
-  //   import.meta.hot.accept('~/core/config/layout', (newModule) => {
-  //     if (newModule && newModule.defaultLayoutConfig) {
-  //       // 使用新模組的設定資料
-  //       reloadConfig(newModule.defaultLayoutConfig)
-  //     }
-  //   })
-  // }
+  // 熱重載偵測
+  if (import.meta.hot) {
+    import.meta.hot.accept('~/core/config/layout', (newModule) => {
+      if (newModule?.defaultLayoutConfig) {
+        handleReloadConfig(newModule.defaultLayoutConfig)
+      }
+    })
+    import.meta.hot.accept('~/core/config/features', (newModule) => {
+      if (newModule?.defaultFeatures) {
+        handleReloadFeatures(newModule.defaultFeatures)
+      }
+    })
+  }
 
   return {
     config,
+    features,
     drawer,
     loading,
     toggleDrawer,
     setTheme,
     updateConfig,
-    reloadConfig,
+    handleReloadConfig,
+    handleReloadFeatures,
     initApp
   }
 })

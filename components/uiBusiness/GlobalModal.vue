@@ -74,15 +74,15 @@ const handleUpdate = (val: boolean, modal: ModalInstance) => {
     <IModal
       v-for="modal in modals"
       :key="modal.id"
-      :model-value="modal.isVisible"
+      :open="modal.isVisible"
       :title="modal.config.title"
       :content="modal.config.content"
       :confirm-text="modal.config.confirmText"
       :cancel-text="modal.config.cancelText"
       :show-cancel="modal.config.showCancel"
       :close-on-mask="modal.config.closeOnMask"
-      @update:model-value="(val) => handleUpdate(val, modal)"
-      @confirm="() => handleConfirm(modal)"
+      @update:open="(val) => handleUpdate(val, modal)"
+      @ok="() => handleConfirm(modal)"
       @cancel="() => handleCancel(modal)"
     >
       <!-- 動態渲染自訂內容 (Slot) -->

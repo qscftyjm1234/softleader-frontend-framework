@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Alert as AAlert } from 'ant-design-vue'
+import IIcon from './IIcon.vue'
+
 /**
  * IAlert - UI 介面層警示框
- *
- * 用途：顯示重要訊息、提示或警告
+ * 基底更換為 Ant Design Vue (a-alert)
  */
 interface Props {
   title?: string
@@ -12,98 +15,120 @@ interface Props {
   icon?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   title: '',
   text: '',
   type: 'info',
   variant: 'tonal',
   icon: ''
 })
+
+const antdType = computed(() => {
+  if (props.type === 'error') return 'error'
+  if (props.type === 'warning') return 'warning'
+  if (props.type === 'success') return 'success'
+  return 'info'
+})
+
+const defaultIcon = computed(() => {
+  if (props.icon) return props.icon
+  switch (props.type) {
+    case 'info':
+      return 'mdi-information-outline'
+    case 'success':
+      return 'mdi-check-circle-outline'
+    case 'warning':
+      return 'mdi-alert-outline'
+    case 'error':
+      return 'mdi-alert-circle-outline'
+    default:
+      return 'mdi-information-outline'
+  }
+})
 </script>
 
 <template>
-  <div
-    class="ui-alert"
-    :class="[`type-${type}`, `variant-${variant}`]"
+  <AAlert
+    :message="title || undefined"
+    :description="text || $slots.default ? text || undefined : undefined"
+    :type="antdType"
+    show-icon
+    :class="['i-alert-wrapper', `variant-${variant}`]"
   >
-    <div
-      v-if="icon"
-      class="alert-icon"
+    <template #icon>
+      <IIcon
+        :icon="defaultIcon"
+        size="22"
+      />
+    </template>
+    <template
+      v-if="$slots.default"
+      #description
     >
-      {{ icon }}
-    </div>
-    <div class="alert-content-wrapper">
-      <div
-        v-if="title"
-        class="alert-title"
-      >
-        {{ title }}
-      </div>
-      <div class="alert-text">
-        <slot>{{ text }}</slot>
-      </div>
-    </div>
-  </div>
+      <slot />
+    </template>
+  </AAlert>
 </template>
 
-<style scoped>
-.ui-alert {
-  display: flex;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  border-left-width: 4px;
-  border-left-style: solid;
-  gap: 1rem;
-}
+<style scoped lang="scss">
+.i-alert-wrapper {
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 500;
 
-.variant-tonal.type-info {
-  background: #f0f7ff;
-  border-left-color: #2196f3;
-  color: #0c5460;
-}
+  &.ant-alert-with-description {
+    .ant-alert-message {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+  }
 
-.variant-tonal.type-success {
-  background: #e8f5e9;
-  border-left-color: #4caf50;
-  color: #2e7d32;
-}
+  &.variant-tonal {
+    &.ant-alert-info {
+      background-color: #eff6ff;
+      color: #1e40af;
+    }
+    &.ant-alert-success {
+      background-color: #ecfdf5;
+      color: #065f46;
+    }
+    &.ant-alert-warning {
+      background-color: #fffbeb;
+      color: #92400e;
+    }
+    &.ant-alert-error {
+      background-color: #fff1f2;
+      color: #9f1239;
+    }
+  }
 
-.variant-tonal.type-warning {
-  background: #fff3e0;
-  border-left-color: #ff9800;
-  color: #856404;
-}
+  &.variant-outlined {
+    background-color: white;
+    border: 1px solid currentColor;
+    opacity: 0.8;
+  }
 
-.variant-tonal.type-error {
-  background: #fee2e2;
-  border-left-color: #ef4444;
-  color: #721c24;
-}
+  &.variant-flat {
+    color: white;
+    &.ant-alert-info {
+      background-color: #3b82f6;
+    }
+    &.ant-alert-success {
+      background-color: #10b981;
+    }
+    &.ant-alert-warning {
+      background-color: #f59e0b;
+    }
+    &.ant-alert-error {
+      background-color: #e11d48;
+    }
 
-.variant-outlined {
-  background: transparent;
-  border: 1px solid currentColor;
-  border-left-width: 4px;
-}
-
-.alert-title {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.alert-text {
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.alert-content-wrapper {
-  flex: 1;
-}
-
-.alert-icon {
-  font-size: 1.5rem;
-  display: flex;
-  align-items: flex-start;
-  padding-top: 0.125rem;
+    :deep(.ant-alert-message),
+    :deep(.ant-alert-description) {
+      color: white;
+    }
+  }
 }
 </style>

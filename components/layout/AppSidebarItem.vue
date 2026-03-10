@@ -5,6 +5,7 @@
  */
 import type { SidebarItem } from '~/core/sidebar/buildSidebar'
 import AppSidebarItem from '~/components/layout/AppSidebarItem.vue'
+import IIcon from '~/components/uiInterface/IIcon.vue'
 
 defineOptions({
   name: 'AppSidebarItem'
@@ -44,48 +45,52 @@ const handleClick = () => {
   <!-- 如果有子選單 -->
   <div v-if="item.children && item.children.length > 0">
     <div
-      class="sidebar-nav-item"
-      :class="{ 'is-disabled': item.disabled }"
+      class="group flex items-center px-4 py-2.5 my-0.5 rounded-xl cursor-pointer transition-all duration-300"
+      :class="[
+        item.disabled
+          ? 'opacity-50 cursor-not-allowed'
+          : 'hover:bg-white hover:shadow-sm hover:shadow-slate-200/50 text-slate-600 hover:text-slate-900',
+        isExpanded
+          ? 'bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] text-slate-900 font-semibold'
+          : ''
+      ]"
       @click="handleClick"
     >
-      <svg
+      <div
         v-if="item.icon"
-        class="sidebar-nav-icon"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
+        class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300"
+        :class="
+          isExpanded
+            ? 'bg-blue-50 text-blue-500'
+            : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50/50 group-hover:text-blue-400'
+        "
       >
-        <!-- 簡化的圖標,實際應用中可以根據 item.icon 動態渲染 -->
-        <circle
-          cx="12"
-          cy="12"
-          r="10"
+        <IIcon
+          :icon="item.icon"
+          size="18"
         />
-      </svg>
-      <span style="flex: 1">{{ item.label }}</span>
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        :style="{
-          transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 0.2s'
-        }"
+      </div>
+      <div
+        v-else
+        class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-slate-50 text-slate-400"
       >
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
+        <div class="w-1.5 h-1.5 rounded-full bg-current opacity-50"></div>
+      </div>
+
+      <span class="flex-1 text-sm tracking-wide">{{ item.label }}</span>
+
+      <IIcon
+        icon="mdi-chevron-down"
+        size="18"
+        class="text-slate-400 transition-transform duration-300"
+        :class="isExpanded ? 'rotate-180 text-blue-500' : 'rotate-0 group-hover:text-slate-600'"
+      />
     </div>
 
     <!-- 子選單 (遞迴) -->
     <div
       v-show="isExpanded"
-      style="padding-left: 1rem"
+      class="pl-4 mt-1 space-y-1 relative before:content-[''] before:absolute before:left-8 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100 before:rounded-full"
     >
       <AppSidebarItem
         v-for="child in item.children"
@@ -99,27 +104,50 @@ const handleClick = () => {
   <NuxtLink
     v-else
     :to="item.to || '#'"
-    class="sidebar-nav-item"
-    :class="{ 'is-active': isActive, 'is-disabled': item.disabled }"
+    class="group flex items-center px-4 py-2.5 my-0.5 rounded-xl cursor-pointer transition-all duration-300 relative overflow-hidden"
+    :class="[
+      item.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
+      isActive
+        ? 'bg-gradient-to-r from-emerald-500/10 to-transparent text-emerald-700 font-bold shadow-[inset_2px_0_0_rgb(16,185,129)]'
+        : 'text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-sm hover:shadow-slate-200/50'
+    ]"
     @click.prevent="handleClick"
   >
-    <svg
+    <div
       v-if="item.icon"
-      class="sidebar-nav-icon"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
+      class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300"
+      :class="
+        isActive
+          ? 'bg-emerald-100 text-emerald-600'
+          : 'bg-slate-50 text-slate-400 group-hover:bg-emerald-50/50 group-hover:text-emerald-500'
+      "
     >
-      <!-- 簡化的圖標,實際應用中可以根據 item.icon 動態渲染 -->
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
+      <IIcon
+        :icon="item.icon"
+        size="18"
       />
-    </svg>
-    <span>{{ item.label }}</span>
+    </div>
+    <div
+      v-else
+      class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 transition-colors"
+      :class="isActive ? 'text-emerald-500' : 'text-slate-400'"
+    >
+      <div
+        class="w-1.5 h-1.5 rounded-full bg-current"
+        :class="isActive ? 'opacity-100' : 'opacity-40 group-hover:opacity-70'"
+      ></div>
+    </div>
+
+    <span class="flex-1 text-sm tracking-wide">{{ item.label }}</span>
+
+    <!-- Active Indicator Dot -->
+    <div
+      v-if="isActive"
+      class="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-2 animate-pulse"
+    ></div>
   </NuxtLink>
 </template>
+
+<style scoped>
+/* Scoped styles replaced by Tailwind CSS */
+</style>

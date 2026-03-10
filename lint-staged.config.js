@@ -1,22 +1,51 @@
 /**
- * Lint-staged 設定
- * 在 git commit 前自動檢查和修復即將提交的檔案
+ * Git Staged 檔案檢查設定檔
+ * 當執行 `git commit` 時，自動檢查並修復即將提交的檔案。
  *
- * 主要功能：
- * 1. 只檢查「暫存區 (Staged)」的檔案：只針對本次 `git add` 的檔案進行檢查，避免掃描全專案，大幅提升速度。
- * 2. 解決部份提交問題：確保只修復本次要提交的程式碼，不會誤修或提交未 `add` 的內容。
- * 3. 作為 Git 與 ESLint/Prettier 的橋樑：負責將 Git 暫存區的檔案列表傳遞給檢查工具執行。
+ * @see {@link https://github.com/lint-staged/lint-staged|Lint-staged 官方文件}
+ *
+ * @author Gino Huang
+ * @since 2024-12-24
+ * @version 1.0.0
+ *
+ * @changelog
+ * - 2024-12-24 v1.0.0 [Gino] 初始版本
  */
+
 export default {
-  // TypeScript/JavaScript 檔案
+  /**
+   * 1. 檢查程式邏輯：JavaScript, TypeScript, JSX, TSX
+   * 動作：先用 ESLint 自動修復語法問題，再用 Prettier 排版
+   */
   '*.{js,jsx,ts,tsx,mjs,cjs}': ['eslint --fix', 'prettier --write'],
 
-  // Vue 檔案
+  /**
+   * 2. 檢查 Vue 組件
+   * 動作：同樣執行 ESLint 修復與 Prettier 排版
+   */
   '*.vue': ['eslint --fix', 'prettier --write'],
 
-  // JSON, YAML, Markdown 等檔案
+  /**
+   * 3. 檢查文件類檔案：JSON, YAML, Markdown
+   * 動作：僅執行 Prettier 排版（因為這類檔案通常不涉及程式邏輯錯誤）
+   */
   '*.{json,yaml,yml,md}': ['prettier --write'],
 
-  // CSS, SCSS 檔案
+  /**
+   * 4. 檢查樣式檔案：CSS, SCSS, SASS
+   * 動作：僅執行 Prettier 排版
+   */
   '*.{css,scss,sass}': ['prettier --write']
+
+  /**
+   * 【未來如何彈性擴充？】
+   *
+   * - 想增加新工具？
+   *   例如：加上單元測試，確認沒寫壞。
+   *   '*.ts': ['eslint --fix', 'vitest related --run']
+   *
+   * - 想排除特定檔案？
+   *   可以使用 `!` 開頭。
+   *   '!src/legacy/*.js': ['eslint --fix']
+   */
 }

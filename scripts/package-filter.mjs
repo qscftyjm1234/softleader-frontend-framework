@@ -2,9 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import readline from 'node:readline'
 
-const MASTER_JSON_PATH = path.resolve('package.master.json')
+const MASTER_JSON_PATH = path.resolve('configs/package-policy/package.master.json')
 const PACKAGE_JSON_PATH = path.resolve('package.json')
-const POLICY_PATH = path.resolve('package-clients.json')
+const POLICY_PATH = path.resolve('configs/package-policy/package-clients.json')
 
 /**
  * 處理互動式詢問
@@ -124,7 +124,7 @@ async function run() {
   // 篩選套件
   console.log('   [~] 正在根據政策修剪 Package 依賴項...')
   packageData.dependencies = filterDependencies(packageData.dependencies)
-  // packageData.devDependencies = filterDependencies(packageData.devDependencies);
+  // packageData.devDependencies = filterDependencies(packageData.devDependencies); // 同步過濾開發依賴（目前停用）
 
   // 寫回 package.json
   fs.writeFileSync(PACKAGE_JSON_PATH, `${JSON.stringify(packageData, null, 2)}\n`)

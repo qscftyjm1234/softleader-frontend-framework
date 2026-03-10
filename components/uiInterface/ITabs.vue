@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { Tabs as ATabs, TabPane as ATabPane } from 'ant-design-vue'
+
 /**
- * ITabs - UI 介面層分頁導航 (支援深色模式)
+ * ITabs - UI 介面層分頁導航
+ * 基底更換為 Ant Design Vue (a-tabs)
  */
 interface TabOption {
   label: string
@@ -12,66 +16,77 @@ interface Props {
   options: TabOption[]
 }
 
-defineProps<Props>()
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps<Props>()
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const updateValue = (value: string | number) => {
-  emit('update:modelValue', value)
-}
+const activeKey = computed({
+  get: () => props.modelValue,
+  set: (val) => {
+    emit('update:modelValue', val)
+    emit('change', val)
+  }
+})
 </script>
 
 <template>
-  <div class="ui-tabs">
-    <button
-      v-for="option in options"
-      :key="option.value"
-      class="tab-item"
-      :class="{ active: modelValue === option.value }"
-      @click="updateValue(option.value)"
+  <div class="i-tabs-container">
+    <ATabs
+      v-model:active-key="activeKey"
+      class="i-tabs-wrapper"
+      animated
     >
-      {{ option.label }}
-    </button>
+      <ATabPane
+        v-for="option in options"
+        :key="option.value"
+        :tab="option.label"
+      />
+    </ATabs>
   </div>
 </template>
 
-<style scoped>
-.ui-tabs {
-  display: flex;
-  gap: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 深色模式邊框 */
-  padding: 0 1rem;
-  overflow-x: auto;
-  scrollbar-width: none;
+<style scoped lang="scss">
+.i-tabs-container {
+  width: 100%;
 }
 
-.ui-tabs::-webkit-scrollbar {
-  display: none;
-}
+:deep(.i-tabs-wrapper) {
+  .ant-tabs-nav {
+    margin-bottom: 0;
 
-.tab-item {
-  padding: 0.75rem 1.5rem;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #94a3b8; /* 深色模式柔和文字 */
-  white-space: nowrap;
-  transition: all 0.3s ease;
-  position: relative;
-  bottom: -1px; /* 對齊底部邊框 */
-}
+    &::before {
+      border-bottom: 1px solid #f1f5f9;
+    }
+  }
 
-.tab-item:hover {
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.05); /* 輕微懸停效果 */
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-}
+  .ant-tabs-tab {
+    padding: 12px 4px;
+    margin: 0 16px;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.3s;
 
-.tab-item.active {
-  color: #38bdf8; /* 天藍色激活狀態 */
-  border-bottom-color: #38bdf8;
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &-btn {
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+
+    &:hover {
+      color: #1e293b;
+    }
+
+    &.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #6366f1;
+    }
+  }
+
+  .ant-tabs-ink-bar {
+    background: #6366f1;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
 }
 </style>

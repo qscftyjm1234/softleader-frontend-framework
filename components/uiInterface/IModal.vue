@@ -1,63 +1,22 @@
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { Modal as AModal } from 'ant-design-vue'
+import IButton from './IButton.vue'
+
 /**
  * IModal - 介面層
- *
- * 用途：統一的 Modal 介面
- * 設計原則：只負責顯示，不涉入 useModal 邏輯
+ * 基底更換為 Ant Design Vue (a-modal)
  */
 
 interface Props {
-  /**
-   * 是否顯示彈窗
-   * @default false
-   */
-  modelValue: boolean
-
-  /**
-   * 彈窗標題
-   */
+  open: boolean
   title?: string
-
-  /**
-   * 彈窗內容文字
-   */
   content?: string
-
-  /**
-   * 確認按鈕文字
-   * @default '確認'
-   */
   confirmText?: string
-
-  /**
-   * 取消按鈕文字
-   * @default '取消'
-   */
   cancelText?: string
-
-  /**
-   * 是否顯示取消按鈕
-   * @default true
-   */
   showCancel?: boolean
-
-  /**
-   * 是否允許點擊遮罩關閉
-   * @default true
-   */
   closeOnMask?: boolean
-
-  /**
-   * 是否強制顯示 (不可點遮罩關閉，不顯示取消)
-   * 若為 true，則忽略 closeOnMask
-   * @default false
-   */
   persistent?: boolean
-
-  /**
-   * 最大寬度
-   * @default 500
-   */
   maxWidth?: string | number
 }
 
@@ -73,37 +32,32 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: boolean] // 代表 emit('update:modelValue', true)
-  confirm: [] // 代表 emit('confirm') 不帶參數
-  cancel: [] // 代表 emit('cancel') 不帶參數
+  'update:open': [value: boolean]
+  ok: []
+  cancel: []
 }>()
 
-// 內部狀態
-const internalVisible = ref(props.modelValue)
+const internalVisible = ref(props.open)
 const internalConfig = ref<Partial<Props>>({})
 let resolvePromise: ((value: boolean) => void) | null = null
 
-// 監聽外部 props 變更
 watch(
-  () => props.modelValue,
+  () => props.open,
   (val) => {
     internalVisible.value = val
   }
 )
 
-// 處理顯示狀態變更
 const handleUpdate = (val: boolean) => {
   internalVisible.value = val
-  emit('update:modelValue', val)
+  emit('update:open', val)
 
-  // 如果是關閉且有 pending promise，視為取消
   if (!val && resolvePromise) {
     resolvePromise(false)
-    resolvePromise = null // Reset
+    resolvePromise = null
   }
 }
 
-// 合併後的設定 (優先使用 open() 傳入的設定，否則使用 props)
 const finalConfig = computed(() => ({
   title: internalConfig.value.title ?? props.title,
   content: internalConfig.value.content ?? props.content,
@@ -115,35 +69,32 @@ const finalConfig = computed(() => ({
   maxWidth: internalConfig.value.maxWidth ?? props.maxWidth
 }))
 
-// 按鈕處理
 const handleConfirm = () => {
   if (resolvePromise) {
     resolvePromise(true)
     resolvePromise = null
     internalVisible.value = false
+    emit('update:open', false)
   } else {
-    emit('confirm')
+    emit('ok')
   }
 }
 
 const handleCancel = () => {
+  internalVisible.value = false
+  emit('update:open', false)
+
   if (resolvePromise) {
     resolvePromise(false)
     resolvePromise = null
-    internalVisible.value = false
   } else {
     emit('cancel')
   }
 }
 
-/**
- * 開啟彈窗 (Script 調用模式)
- * @param config 彈窗設定
- */
-const open = (config?: Partial<Props>) => {
+const showModal = (config?: Partial<Props>) => {
   internalConfig.value = config || {}
   internalVisible.value = true
-  // Reset promise
   if (resolvePromise) resolvePromise(false)
 
   return new Promise<boolean>((resolve) => {
@@ -151,110 +102,101 @@ const open = (config?: Partial<Props>) => {
   })
 }
 
-/**
- * 確認對話框 (Script 調用模式 Helpers)
- * @param config
- */
 const confirm = (config?: Partial<Props>) =>
-  open({
+  showModal({
     showCancel: true,
     confirmText: '確認',
     cancelText: '取消',
     ...config
   })
 
-/**
- * 警告對話框 (Script 調用模式 Helpers)
- * @param config
- */
 const alert = (config?: Partial<Props>) =>
-  open({
+  showModal({
     showCancel: false,
     confirmText: '確認',
     ...config
-  }).then(() => {}) // alert 不回傳 boolean
+  }).then(() => {})
 
 defineExpose({
-  open,
+  show: showModal,
+  open: showModal,
   confirm,
   alert
 })
 </script>
 
 <template>
-  <v-dialog
-    :model-value="internalVisible"
-    :persistent="finalConfig.persistent || !finalConfig.closeOnMask"
-    :max-width="finalConfig.maxWidth"
-    class="glass-dialog"
-    @update:model-value="handleUpdate"
+  <AModal
+    v-model:open="internalVisible"
+    :title="null"
+    :footer="null"
+    :closable="false"
+    :mask-closable="finalConfig.closeOnMask && !finalConfig.persistent"
+    :width="finalConfig.maxWidth"
+    centered
+    wrap-class-name="i-modal-wrapper"
+    @update:open="handleUpdate"
   >
-    <v-card class="glass-card">
+    <div class="i-modal-content">
       <!-- 標題 -->
-      <v-card-title
+      <div
         v-if="finalConfig.title"
-        class="text-h6 font-weight-bold pa-4"
+        class="px-8 pt-8 pb-4"
       >
-        {{ finalConfig.title }}
-      </v-card-title>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+          {{ finalConfig.title }}
+        </h2>
+      </div>
 
       <!-- 內容 -->
-      <v-card-text
+      <div
         v-if="finalConfig.content"
-        class="pa-4 pt-0 text-body-1"
+        class="px-8 text-[1rem] text-slate-500 leading-relaxed font-medium"
+        :class="{ 'pt-10': !finalConfig.title }"
       >
         {{ finalConfig.content }}
-      </v-card-text>
+      </div>
 
-      <!-- 插槽內容 (預設無 padding，若為純文字建議自行加 pa-4) -->
+      <!-- 插槽內容 -->
       <div
         v-if="$slots.default"
-        class="i-modal-slot"
+        class="px-8 py-4"
       >
         <slot />
       </div>
 
       <!-- 按鈕區 -->
-      <v-card-actions class="pa-4 pt-0">
-        <v-spacer />
-
-        <!-- 取消按鈕 -->
-        <v-btn
+      <div
+        class="px-8 py-6 flex items-center justify-end gap-3 bg-slate-50/50 mt-4 rounded-b-[24px]"
+      >
+        <IButton
           v-if="finalConfig.showCancel"
           variant="text"
-          color="grey-lighten-1"
-          class="mr-2"
+          class="!text-slate-500"
           @click="handleCancel"
         >
           {{ finalConfig.cancelText }}
-        </v-btn>
+        </IButton>
 
-        <!-- 確認按鈕 -->
-        <v-btn
-          color="primary"
-          variant="flat"
+        <IButton
+          variant="primary"
+          class="min-w-[100px]"
           @click="handleConfirm"
         >
           {{ finalConfig.confirmText }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        </IButton>
+      </div>
+    </div>
+  </AModal>
 </template>
 
-<style scoped>
-.glass-card {
-  background: rgba(15, 23, 42, 0.9) !important;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white !important;
-}
-
-:deep(.v-card-title) {
-  color: #f1f5f9;
-}
-
-:deep(.v-card-text) {
-  color: #cbd5e1;
+<style lang="scss">
+.i-modal-wrapper {
+  .ant-modal-content {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 0;
+  }
 }
 </style>

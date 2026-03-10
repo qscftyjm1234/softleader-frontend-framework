@@ -5,7 +5,6 @@
  * 專用於展示程式碼區塊，包含複製功能與 Mac 風格視窗
  */
 import { ref } from 'vue'
-import IButton from '@/components/uiInterface/IButton.vue'
 import IIcon from '@/components/uiInterface/IIcon.vue'
 
 interface Props {
@@ -37,19 +36,32 @@ const copyCode = async () => {
 </script>
 
 <template>
-  <div class="showcase-code-block">
+  <div
+    class="bg-slate-900 rounded-2xl overflow-hidden shadow-lg shadow-slate-900/10 border border-slate-800 mt-4 group"
+  >
     <!-- Window Header -->
-    <div class="code-header">
+    <div
+      class="flex items-center justify-between px-4 py-2.5 bg-slate-800/90 border-b border-white/5"
+    >
       <div class="flex items-center gap-4">
-        <div class="window-controls">
-          <span class="control red"></span>
-          <span class="control yellow"></span>
-          <span class="control green"></span>
+        <!-- Mac-style controls -->
+        <div class="flex gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-[#ff5f56] border border-black/10"></div>
+          <div class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-black/10"></div>
+          <div class="w-3 h-3 rounded-full bg-[#27c93f] border border-black/10"></div>
         </div>
-        <div class="code-label font-mono text-xs tracking-wide">
+        <!-- File Name / Label -->
+        <div
+          class="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2"
+        >
+          <IIcon
+            icon="mdi-xml"
+            size="14"
+            class="text-indigo-400"
+          />
           <span
             v-if="filename"
-            class="text-slate-200"
+            class="text-slate-300 font-mono italic normal-case tracking-normal"
           >
             {{ filename }}
           </span>
@@ -57,15 +69,19 @@ const copyCode = async () => {
         </div>
       </div>
 
-      <div class="header-actions">
+      <div>
         <button
-          class="copy-btn"
-          :class="{ copied }"
+          class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all duration-300 active:scale-95"
+          :class="
+            copied
+              ? 'bg-emerald-500/20 text-emerald-400'
+              : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200'
+          "
           @click="copyCode"
         >
           <IIcon
             :icon="copied ? 'mdi-check' : 'mdi-content-copy'"
-            :size="14"
+            :size="12"
           />
           <span>{{ copied ? '已複製' : '複製' }}</span>
         </button>
@@ -73,106 +89,64 @@ const copyCode = async () => {
     </div>
 
     <!-- Code Content -->
-    <div class="code-content">
-      <pre><code><slot>{{ code }}</slot></code></pre>
+    <div class="p-5 overflow-x-auto bg-[#0d1117]">
+      <pre
+        class="m-0 font-mono text-sm leading-relaxed text-slate-300 highlight-code"
+      ><code><slot>{{ code }}</slot></code></pre>
     </div>
   </div>
 </template>
 
 <style scoped>
-.showcase-code-block {
-  background: #1e293b; /* Dark Slate 800 */
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin-top: 1rem;
+.highlight-code {
+  tab-size: 2;
+  white-space: pre;
 }
 
-/* Header */
-.code-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background: rgba(15, 23, 42, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* Simulated Syntax Highlighting */
+:deep(.hljs-keyword),
+:deep(.kwd) {
+  color: #c678dd;
+} /* const, export, return */
+:deep(.hljs-string),
+:deep(.str) {
+  color: #98c379;
+} /* 'string' */
+:deep(.hljs-attr),
+:deep(.atn) {
+  color: #d19a66;
+} /* attr="val" */
+:deep(.hljs-tag),
+:deep(.tag) {
+  color: #e06c75;
+} /* <tag> */
+:deep(.hljs-params),
+:deep(.typ) {
+  color: #e5c07b;
+} /* (params) */
+:deep(.hljs-comment),
+:deep(.com) {
+  color: #5c6370;
+  italic: true;
 }
+:deep(.hljs-title),
+:deep(.fun) {
+  color: #61afef;
+} /* function name */
 
-.window-controls {
-  display: flex;
-  gap: 0.5rem;
+/* Scrollbar refinement for code blocks */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-
-.control {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.control.red {
-  background-color: #ff5f56;
-}
-.control.yellow {
-  background-color: #ffbd2e;
-}
-.control.green {
-  background-color: #27c93f;
-}
-
-.code-label {
-  font-size: 0.75rem;
-  color: #64748b;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Copy Button */
-.copy-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
-  padding: 0.25rem 0.5rem;
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.1);
   border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
 }
-
-.copy-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  border-color: rgba(255, 255, 255, 0.2);
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.2);
 }
-
-.copy-btn.copied {
-  color: #4ade80; /* Green 400 */
-  border-color: rgba(74, 222, 128, 0.2);
-  background: rgba(74, 222, 128, 0.1);
-}
-
-/* Code Content */
-.code-content {
-  padding: 1rem;
-  overflow-x: auto;
-}
-
-pre {
-  margin: 0;
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #e2e8f0;
-}
-
-code {
+::-webkit-scrollbar-track {
   background: transparent;
-  padding: 0;
 }
 </style>

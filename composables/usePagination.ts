@@ -216,6 +216,21 @@ export function usePagination(options: PaginationOptions = {}) {
    */
   const paginateArray = <T>(array: T[]): T[] => array.slice(startIndex.value, endIndex.value + 1)
 
+  /**
+   * Ant Design Vue 相容的分頁設定物件
+   */
+  const paginationConfig = computed(() => ({
+    total: total.value,
+    current: currentPage.value,
+    pageSize: pageSize.value,
+    showSizeChanger: true,
+    showTotal: (total: number) => `共 ${total} 筆`,
+    onChange: (page: number, size: number) => {
+      currentPage.value = page
+      pageSize.value = size
+    }
+  }))
+
   return {
     // 狀態
     currentPage,
@@ -231,6 +246,7 @@ export function usePagination(options: PaginationOptions = {}) {
     info,
     offset,
     limit,
+    paginationConfig,
 
     // 方法
     goToPage,

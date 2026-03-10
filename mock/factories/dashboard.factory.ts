@@ -13,7 +13,7 @@ import type { DashboardStat, DashboardActivity } from '../types/dashboard'
  * @param max - 最大值
  * @returns 隨機整數
  */
-function randomInt(min: number, max: number): number {
+function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -23,8 +23,8 @@ function randomInt(min: number, max: number): number {
  * @param array - 來源陣列
  * @returns 隨機選擇的元素
  */
-function randomElement<T>(array: readonly T[]): T {
-  return array[randomInt(0, array.length - 1)]!
+function getRandomElement<T>(array: readonly T[]): T {
+  return array[getRandomInt(0, array.length - 1)]!
 }
 
 /**
@@ -32,16 +32,16 @@ function randomElement<T>(array: readonly T[]): T {
  *
  * @returns 時間描述字串
  */
-function randomTimeAgo(): string {
+function getRandomTimeAgo(): string {
   const types = ['分鐘前', '小時前', '天前']
-  const type = randomElement(types)
+  const type = getRandomElement(types)
 
   if (type === '分鐘前') {
-    return `${randomInt(1, 59)} ${type}`
+    return `${getRandomInt(1, 59)} ${type}`
   } else if (type === '小時前') {
-    return `${randomInt(1, 23)} ${type}`
+    return `${getRandomInt(1, 23)} ${type}`
   } else {
-    return `${randomInt(1, 7)} ${type}`
+    return `${getRandomInt(1, 7)} ${type}`
   }
 }
 
@@ -51,10 +51,10 @@ function randomTimeAgo(): string {
  * @returns 4 個統計卡片資料
  */
 export function createMockDashboardStats(): DashboardStat[] {
-  const memberCount = randomInt(1000, 5000)
-  const revenue = randomInt(30000, 80000)
-  const pendingOrders = randomInt(10, 50)
-  const systemLoad = randomInt(20, 80)
+  const memberCount = getRandomInt(1000, 5000)
+  const revenue = getRandomInt(30000, 80000)
+  const pendingOrders = getRandomInt(10, 50)
+  const systemLoad = getRandomInt(20, 80)
 
   return [
     {
@@ -62,21 +62,21 @@ export function createMockDashboardStats(): DashboardStat[] {
       value: memberCount.toLocaleString(),
       icon: 'mdi-account-group',
       color: 'primary',
-      trend: `+${randomInt(5, 20)}%`
+      trend: `+${getRandomInt(5, 20)}%`
     },
     {
       title: '本月營收',
       value: `$${revenue.toLocaleString()}`,
       icon: 'mdi-currency-usd',
       color: 'success',
-      trend: `+${randomInt(3, 15)}.${randomInt(0, 9)}%`
+      trend: `+${getRandomInt(3, 15)}.${getRandomInt(0, 9)}%`
     },
     {
       title: '待處理訂單',
       value: pendingOrders.toString(),
       icon: 'mdi-clipboard-alert',
       color: 'warning',
-      trend: randomInt(0, 1) === 0 ? `-${randomInt(1, 5)}%` : `+${randomInt(1, 5)}%`
+      trend: getRandomInt(0, 1) === 0 ? `-${getRandomInt(1, 5)}%` : `+${getRandomInt(1, 5)}%`
     },
     {
       title: '系統負載',
@@ -110,14 +110,14 @@ const ACTIONS = [
  * @returns Mock Activity 物件
  */
 export function createMockDashboardActivity(): DashboardActivity {
-  const user = randomElement(USERS)
-  const actionData = randomElement(ACTIONS)
-  const time = randomTimeAgo()
+  const user = getRandomElement(USERS)
+  const actionData = getRandomElement(ACTIONS)
+  const time = getRandomTimeAgo()
 
   // 如果是訂單相關，加上訂單編號
   let action: string = actionData.action
   if (action.includes('訂單')) {
-    action = `${action} #${randomInt(2023000, 2023999)}`
+    action = `${action} #${getRandomInt(2023000, 2023999)}`
   }
 
   return {

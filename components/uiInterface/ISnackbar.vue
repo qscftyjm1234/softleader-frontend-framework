@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import { computed, watch, onBeforeUnmount } from 'vue'
+import { Alert as AAlert } from 'ant-design-vue'
+import IIcon from './IIcon.vue'
+
 /**
  * ISnackbar - 介面層
- *
- * 用途：統一的 Snackbar/Toast 介面
- *
- * 設計原則：
- * - 透過 props 接收顯示狀態與內容
- * - 透過 emit 通知關閉
- * - 不包含 useNotify 邏輯
+ * 基底更換為 Ant Design Vue 基礎樣式
  */
 
 interface Props {
@@ -26,12 +24,6 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
 
-// 內部狀態管理 (為了 Transition 與 auto-close)
-// 如果底層是 Vuetify，直接傳 props 即可。
-// 這裡是原生實作，所以簡單模擬一下 timeout 行為。
-// 注意：如果由外部控制 timeout (如 useNotify)，這裡其實可以單純響應。
-// 但為了符合 "UI component" 通常自帶 timeout 的習慣，我們這裡實作一個簡單的 watcher。
-
 let timer: any = null
 
 watch(
@@ -46,128 +38,98 @@ watch(
   }
 )
 
-// 清理 timer
 onBeforeUnmount(() => {
   clearTimeout(timer)
+})
+
+const antdType = computed(() => {
+  if (props.color === 'error') return 'error'
+  if (props.color === 'warning') return 'warning'
+  if (props.color === 'success') return 'success'
+  return 'info'
+})
+
+const defaultIcon = computed(() => {
+  switch (props.color) {
+    case 'success':
+      return 'mdi-check-circle'
+    case 'error':
+      return 'mdi-alert-circle'
+    case 'warning':
+      return 'mdi-alert'
+    case 'info':
+      return 'mdi-information'
+    default:
+      return 'mdi-information'
+  }
 })
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="i-snackbar-container">
-      <Transition name="slide-fade">
+    <div class="fixed bottom-8 right-8 z-[9999] pointer-events-none">
+      <Transition name="snackbar-slide">
         <div
           v-if="modelValue"
-          class="i-snackbar"
-          :class="`is-${color}`"
+          class="pointer-events-auto"
         >
-          <div class="i-snackbar__content">
-            {{ message }}
-          </div>
-          <button
-            class="i-snackbar__close"
-            @click="emit('update:modelValue', false)"
+          <AAlert
+            :type="antdType"
+            show-icon
+            class="i-snackbar-wrapper shadow-2xl shadow-slate-900/10"
           >
-            ×
-          </button>
+            <template #icon>
+              <IIcon
+                :icon="defaultIcon"
+                size="20"
+              />
+            </template>
+            <template #message>
+              <div class="flex items-center justify-between w-full pr-2">
+                <span class="font-bold text-[0.95rem] tracking-tight">{{ message }}</span>
+                <button
+                  class="ml-4 text-slate-400 hover:text-slate-600 transition-colors"
+                  @click="emit('update:modelValue', false)"
+                >
+                  <IIcon
+                    icon="mdi-close"
+                    size="18"
+                  />
+                </button>
+              </div>
+            </template>
+          </AAlert>
         </div>
       </Transition>
     </div>
   </Teleport>
-
-  <!-- 未來換成 Vuetify 的範例 -->
-  <!--
-  <VSnackbar
-    :model-value="modelValue"
-    :color="color"
-    :timeout="timeout"
-    location="bottom right"
-    @update:model-value="emit('update:modelValue', $event)"
-  >
-    {{ message }}
-    <template v-slot:actions>
-      <VBtn variant="text" @click="emit('update:modelValue', false)">Close</VBtn>
-    </template>
-  </VSnackbar>
-  -->
 </template>
 
-<style scoped>
-.i-snackbar-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none; /* 讓點擊穿透容器，但按鈕可點 */
+<style scoped lang="scss">
+.i-snackbar-wrapper {
+  min-width: 320px;
+  max-width: 420px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+
+  :deep(.ant-alert-message) {
+    margin-bottom: 0;
+    width: 100%;
+  }
 }
 
-.i-snackbar {
-  pointer-events: auto;
-  min-width: 300px;
-  max-width: 400px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: #333;
-  font-size: 14px;
-  border-left: 4px solid #ccc;
+.snackbar-slide-enter-active,
+.snackbar-slide-leave-active {
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* Colors */
-.is-success {
-  border-left-color: #2ecc71;
-  background: #e8f8f5;
-}
-.is-error {
-  border-left-color: #e74c3c;
-  background: #fdedec;
-}
-.is-warning {
-  border-left-color: #f39c12;
-  background: #fef9e7;
-}
-.is-info {
-  border-left-color: #3498db;
-  background: #eaf2f8;
-}
-
-.i-snackbar__content {
-  flex: 1;
-  line-height: 1.5;
-}
-
-.i-snackbar__close {
-  background: none;
-  border: none;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.5;
-  padding: 0 4px;
-  color: inherit;
-}
-
-.i-snackbar__close:hover {
-  opacity: 1;
-}
-
-/* Transitions */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateX(100%);
+.snackbar-slide-enter-from,
+.snackbar-slide-leave-to {
+  transform: translateX(100%) scale(0.9);
   opacity: 0;
+  filter: blur(8px);
 }
 </style>

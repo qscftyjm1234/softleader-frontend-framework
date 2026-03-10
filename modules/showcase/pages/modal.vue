@@ -1,936 +1,616 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import ShowcasePage from '../components/ShowcasePage.vue'
-import ShowcaseSection from '../components/ShowcaseSection.vue'
+import { ref, computed, watch, markRaw } from 'vue'
+import IIcon from '~/components/uiInterface/IIcon.vue'
+import IBreadcrumbs from '~/components/uiInterface/layout/IBreadcrumbs.vue'
+import { useBreadcrumbs } from '~/composables/useBreadcrumbs'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
 import ShowcaseCodeBlock from '../components/ShowcaseCodeBlock.vue'
 import EmailInput from '~/components/uiBusiness/EmailInput.vue'
 import IModal from '~/components/uiInterface/IModal.vue'
-import { markRaw } from 'vue'
 
-const { open, closeAll, confirm, alert, modals, hasModal, modalCount } = useModal()
+const { breadcrumbs: breadcrumbItems } = useBreadcrumbs()
+const { open, confirm, alert, modals, hasModal, modalCount, closeAll } = useModal()
 
-// 演示狀態
+definePageMeta({
+  title: '彈窗管理核心 (Modal System)',
+  layout: 'portal'
+})
+
+// Units for Sidebar
+const units = ref([
+  {
+    id: 'intro',
+    title: '單元 00：核心概念',
+    icon: 'mdi-information-outline',
+    description:
+      '了解彈窗系統的設計初衷與 Promise 型態的操作模式。我們捨棄了傳統的 v-model 控制，改以「服務化」的方式調用。',
+    useCase: '理解為什麼要使用 useModal 而非每個頁面自定義彈窗變數。'
+  },
+  {
+    id: 'basic',
+    title: '單元 01：基礎彈窗 (Open)',
+    icon: 'mdi-window-maximize',
+    description: '最靈活的開啟方式。可以自定義標題、內容、按鈕文字，並透過 Promise 接收結果。',
+    useCase: '顯示一般性通知、成功訊息、或是需要自定義按鈕文字的場景。'
+  },
+  {
+    id: 'confirm',
+    title: '單元 02：快速確認與警告',
+    icon: 'mdi-alert-circle-outline',
+    description: '專為「確認/取消」與「單一警告」設計的便捷方法，簡化常見的互動流程。',
+    useCase: '刪除確認、表單重置確認、系統警告通知。'
+  },
+  {
+    id: 'advanced',
+    title: '單元 03：動態元件注入',
+    icon: 'mdi-puzzle-outline',
+    description: ' Modal 的核心優勢在於能渲染任何 Vue 元件。支援傳入 markRaw 組件與 Props。',
+    useCase: '開啟複雜表單、商品詳情檢視、多步驟精靈引導。'
+  },
+  {
+    id: 'queue',
+    title: '單元 04：狀態與佇列',
+    icon: 'mdi-layers-triple-outline',
+    description: '自動管理多層彈窗堆疊 (Stacking) 與 z-index。提供即時的狀態追蹤與批次關閉。',
+    useCase: '處理巢狀彈窗、或是需要程式化清空所有彈窗的情境。'
+  }
+])
+
+const activeUnitIndex = ref(0)
+const activeUnit = computed(() => units.value[activeUnitIndex.value])
+
+// Functional States for Demos
 const customTitle = ref('自訂標題')
-const customContent = ref('這是自訂的彈窗內容')
-const confirmResult = ref('')
-const alertResult = ref('')
+const customContent = ref('這是自訂的內容...')
+const actionResult = ref('')
 
-// 局部彈窗狀態
-// const showLocalModal = ref(false) // Removed
-
-const handleOpenBasic = async () => {
-  const isResult = await open({
-    title: '基本彈窗',
-    content: '這是一個基本的彈窗範例'
-  })
-  confirmResult.value = `使用者選擇: ${isResult ? '確認' : '取消'}`
-}
-
-const handleOpenCustom = async () => {
-  const isResult = await open({
+const handleBasicOpen = async () => {
+  const ok = await open({
     title: customTitle.value,
     content: customContent.value,
-    confirmText: '好的',
-    cancelText: '不要'
+    confirmText: '瞭解了',
+    cancelText: '關閉'
   })
-  confirmResult.value = `使用者選擇: ${isResult ? '確認' : '取消'}`
+  actionResult.value = `使用者操作結果: ${ok ? '點擊確定' : '點擊取消'}`
 }
 
-const handleOpenComponent = async () => {
-  console.log('Opening Component Modal')
-  // 使用 markRaw 避免 Vue 將組件本身變為響應式 (效能優化)
-  const isResult = await open({
+const handleQuickConfirm = async () => {
+  const ok = await confirm({
+    title: '確認刪除',
+    content: '此操作不可復原，您確定要刪除嗎？'
+  })
+  actionResult.value = ok ? '✓ 已執行刪除' : '✗ 已取消操作'
+}
+
+const handleQuickAlert = async () => {
+  await alert({
+    title: '存檔失敗',
+    content: '連線逾時，請檢查網路連線後再試一次。'
+  })
+  actionResult.value = '使用者已關閉警告'
+}
+
+const handleComponentInjection = async () => {
+  const result = await open({
     title: '元件插入測試',
-    content: '下方是一個動態插入的 EmailInput 元件：',
+    content: '下面是一個透過 component 參數動態注入的 EmailInput 元件：',
     component: markRaw(EmailInput),
     componentProps: {
-      placeholder: '我是被插入的元件...',
+      placeholder: '請輸入信箱...',
       corporateOnly: true
     }
   })
-  confirmResult.value = `含元件的彈窗結果: ${isResult ? '確認' : '取消'}`
+  actionResult.value = result ? '已提交表單' : '取消提交'
 }
 
-// 局部彈窗狀態 (使用 Ref)
-const localModalRef = ref()
-
-const handleLocalModalOpen = async () => {
-  console.log('Opening Local Modal via Ref')
-  const result = await localModalRef.value.confirm({
-    title: '局部彈窗 (Promise)'
-  })
-  confirmResult.value = `局部彈窗選擇: ${result ? '確認' : '取消'}`
+const handleStackedModals = () => {
+  open({ title: '第一層', content: 'Base Layer' })
+  setTimeout(() => open({ title: '第二層', content: 'Stacked Layer' }), 400)
 }
 
-const handleConfirm = async () => {
-  const isResult = await confirm({
-    title: '確認操作',
-    content: '您確定要執行此操作嗎？'
-  })
-  confirmResult.value = `確認結果: ${isResult ? '已確認' : '已取消'}`
-}
-
-const handleAlert = async () => {
-  await alert({
-    title: '提示',
-    content: '這是一個警告訊息'
-  })
-  alertResult.value = '警告已顯示並關閉'
-}
-
-const handleMultipleModals = async () => {
-  open({
-    title: '第一層彈窗',
-    content: '這是第一層彈窗'
-  })
-
-  setTimeout(() => {
-    open({
-      title: '第二層彈窗',
-      content: '這是第二層彈窗'
-    })
-  }, 500)
-
-  setTimeout(() => {
-    open({
-      title: '第三層彈窗',
-      content: '這是第三層彈窗'
-    })
-  }, 1000)
-}
-
-const modalStatus = computed(() => ({
-  hasModal: hasModal.value,
-  modalCount: modalCount.value,
-  modals: modals.value.map((m) => ({
-    id: m.id,
-    title: m.config.title,
-    isVisible: m.isVisible
-  }))
-}))
-
-definePageMeta({
-  title: '彈窗管理 (Modal)',
-  icon: 'mdi-window-maximize',
-  layout: 'portal'
+const scrollContainer = ref<HTMLElement | null>(null)
+watch(activeUnitIndex, () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 })
+
+// Code Snippets for Copy-Paste
+const snippets = {
+  setup: `const { open, confirm, alert, closeAll } = useModal()`,
+  basic: `const handleOpen = async () => {
+  const result = await open({
+    title: '歡迎您的到來',
+    content: '這是一個基礎的彈窗視窗內容。',
+    confirmText: '我知道了',
+    cancelText: '稍後再說'
+  })
+  
+  if (result) {
+    console.log('使用者點擊了確認')
+  }
+}`,
+  confirm: `// 回傳 Boolean 的快速確認框
+const ok = await confirm({
+  title: '確定要刪除嗎？',
+  content: '刪除後資料將無法檢索。'
+})
+
+if (ok) {
+  await deleteApi()
+}`,
+  component: `import MyForm from '@/components/MyForm.vue'
+import { markRaw } from 'vue'
+
+const openForm = async () => {
+  await open({
+    title: '編輯資料',
+    component: markRaw(MyForm),
+    componentProps: {
+      initialData: { name: 'Gino' }
+    }
+  })
+}`
+}
 </script>
 
 <template>
-  <ShowcasePage
-    title="彈窗管理系統"
-    description="完整的彈窗管理模組，提供統一彈窗控制、多層彈窗管理和確認對話框功能。支援 Promise 回傳與狀態追蹤。"
-  >
-    <!-- 基礎用法 -->
-    <ShowcaseSection title="基礎用法">
-      <ShowcaseCard
-        title="核心功能"
-        description="彈窗管理的核心特色"
-        full-width
+  <div class="vue-course-layout min-h-screen bg-white">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-slate-100 px-8 py-4"
+    >
+      <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-5">
+          <NuxtLink
+            to="/showcase"
+            class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-all group"
+          >
+            <IIcon
+              icon="mdi-home-outline"
+              size="22"
+              class="group-hover:scale-110 transition-transform"
+            />
+          </NuxtLink>
+          <div class="h-8 w-px bg-slate-200 mx-1"></div>
+          <IBreadcrumbs :items="breadcrumbItems" />
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="text-right">
+            <span class="text-[10px] font-black text-blue-500 uppercase">單元章節</span>
+            <div class="text-sm font-mono font-bold text-slate-600">
+              {{ activeUnitIndex + 1 }} / {{ units.length }}
+            </div>
+          </div>
+          <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-blue-500 transition-all duration-500"
+              :style="{ width: `${((activeUnitIndex + 1) / units.length) * 100}%` }"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-73px)]">
+      <!-- Sidebar -->
+      <aside class="lg:col-span-3 border-r border-slate-50 p-6 space-y-2 bg-slate-50/30">
+        <div
+          class="px-4 py-2 mb-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]"
+        >
+          單元導覽
+        </div>
+        <button
+          v-for="(unit, index) in units"
+          :key="unit.id"
+          class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group"
+          :class="
+            activeUnitIndex === index
+              ? 'bg-white shadow-sm text-blue-600 ring-1 ring-blue-50'
+              : 'text-slate-500 hover:bg-slate-100/50'
+          "
+          @click="activeUnitIndex = index"
+        >
+          <div
+            class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors"
+            :class="
+              activeUnitIndex === index ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
+            "
+          >
+            {{ index + 1 }}
+          </div>
+          <span class="text-sm font-black tracking-tight">{{ unit.title }}</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <div
+        ref="scrollContainer"
+        class="lg:col-span-9 h-full overflow-y-auto bg-slate-50/10"
       >
-        <div class="demo-area">
-          <p
-            class="method-desc"
-            style="margin-bottom: 1.5rem"
-          >
-            <strong>可用方法：</strong>
-          </p>
-          <ShowcaseCodeBlock
-            code="const {
-  // 彈窗方法
-  open,        // 開啟自訂彈窗
-  confirm,     // 確認對話框
-  alert,       // 警告對話框
-  closeAll,    // 關閉所有彈窗
-  
-  // 狀態追蹤
-  modals,      // 所有彈窗列表
-  hasModal,    // 是否有彈窗開啟
-  modalCount   // 彈窗數量
-} = useModal()"
-            label="useModal() 提供的方法"
-          />
-
-          <p
-            class="method-desc"
-            style="margin-top: 1.5rem; margin-bottom: 1rem"
-          >
-            <strong>核心特色：</strong>
-          </p>
-          <ul class="benefit-list">
-            <li>
-              <strong>Promise 回傳:</strong>
-              支援 async/await，輕鬆處理使用者選擇
-            </li>
-            <li>
-              <strong>多層堆疊:</strong>
-              自動管理多個彈窗的顯示順序
-            </li>
-            <li>
-              <strong>狀態追蹤:</strong>
-              即時追蹤所有彈窗的開啟狀態
-            </li>
-            <li>
-              <strong>自訂內容:</strong>
-              靈活設定標題、內容、按鈕文字
-            </li>
-          </ul>
-        </div>
-        <template #footer>
-          <ShowcaseCodeBlock
-            code="const { open, confirm, alert } = useModal()
-
-// 快速使用
-await confirm({ title: '確認', content: '確定執行？' })"
-            label="快速開始"
-          />
-        </template>
-      </ShowcaseCard>
-    </ShowcaseSection>
-
-    <!-- 互動測試 -->
-    <ShowcaseSection title="互動測試 & 實戰範例">
-      <div class="space-y-12">
-        <!-- 1. 基本彈窗 (Basic Modal) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <!-- Demo -->
-          <ShowcaseCard title="1. 基本彈窗 (Basic)">
-            <div class="flex flex-col gap-4">
-              <div class="text-sm text-slate-400">
-                最基礎的彈窗使用方式，包含 Confirm 與 Alert。
-              </div>
-              <div class="flex flex-wrap gap-3">
-                <button
-                  class="glass-btn primary"
-                  @click="handleOpenBasic"
-                >
-                  基本彈窗
-                </button>
-                <button
-                  class="glass-btn danger"
-                  @click="handleAlert"
-                >
-                  警告 Alert
-                </button>
-                <button
-                  class="glass-btn glass-btn"
-                  @click="handleConfirm"
-                >
-                  確認 Confirm
-                </button>
-              </div>
-              <!-- 結果顯示 -->
+        <main class="max-w-4xl mx-auto p-10 space-y-12 pb-32">
+          <!-- Intro Section -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-4">
               <div
-                v-if="confirmResult || alertResult"
-                class="p-3 bg-slate-900/50 border border-slate-700/30 rounded-lg text-emerald-400 text-sm font-mono text-center"
+                class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100"
               >
-                {{ confirmResult || alertResult }}
-              </div>
-            </div>
-          </ShowcaseCard>
-
-          <!-- Code -->
-          <div class="space-y-2 h-full flex flex-col">
-            <ShowcaseCodeBlock
-              code="// 1. 使用 Composable
-const { open, confirm, alert } = useModal()
-
-// 2. 基本開啟
-const handleOpen = async () => {
-  const result = await open({
-    title: '基本彈窗',
-    content: '這是一個基本的彈窗範例'
-  })
-}
-
-// 3. 確認對話框 (回傳 boolean)
-const handleConfirm = async () => {
-  const isConfirmed = await confirm({
-    title: '確認操作',
-    content: '確定要執行嗎？'
-  })
-  if (isConfirmed) {
-    // User clicked Confirm
-  }
-}"
-              language="typescript"
-              :lines="false"
-              class="flex-1"
-            />
-          </div>
-        </div>
-
-        <!-- 2. 自訂彈窗 (Custom Modal) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <!-- Demo -->
-          <ShowcaseCard title="2. 自訂標題與內容">
-            <div class="flex flex-col gap-4">
-              <div class="flex flex-col gap-2">
-                <label class="text-xs text-slate-400 font-bold uppercase">Modal Title</label>
-                <input
-                  v-model="customTitle"
-                  type="text"
-                  class="glass-input"
-                  placeholder="輸入標題..."
+                <IIcon
+                  :icon="activeUnit.icon"
+                  size="28"
                 />
               </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-xs text-slate-400 font-bold uppercase">Modal Content</label>
-                <input
-                  v-model="customContent"
-                  type="text"
-                  class="glass-input"
-                  placeholder="輸入內容..."
-                />
-              </div>
-              <div class="pt-2">
-                <button
-                  class="glass-btn primary w-full"
-                  @click="handleOpenCustom"
-                >
-                  開啟自訂彈窗
-                </button>
+              <div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+                  {{ activeUnit.title }}
+                </h1>
+                <p class="text-lg text-slate-500 font-medium mt-1">{{ activeUnit.description }}</p>
               </div>
             </div>
-          </ShowcaseCard>
-
-          <!-- Code -->
-          <div class="space-y-2 h-full flex flex-col">
-            <ShowcaseCodeBlock
-              code="const handleCustom = async () => {
-  await open({
-    // 支援動態 Reactive 資料
-    title: customTitle.value,
-    content: customContent.value,
-    
-    // 自訂按鈕文字
-    confirmText: '好的',
-    cancelText: '不要'
-  })
-}"
-              language="typescript"
-              :lines="false"
-              class="flex-1"
-            />
-          </div>
-        </div>
-
-        <!-- 多層彈窗 -->
-        <!-- 3. 多層彈窗 (Stacked Modals) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <!-- Demo -->
-          <ShowcaseCard title="3. 多層彈窗 (Stacking)">
-            <div class="flex flex-col gap-4">
-              <div class="text-sm text-slate-400">
-                自動管理多個彈窗的堆疊順序 (z-index)，支援程式化關閉。
+            <div
+              class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5 flex items-start gap-4"
+            >
+              <div
+                class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-500 shrink-0"
+              >
+                <IIcon
+                  icon="mdi-bullseye-arrow"
+                  size="24"
+                />
               </div>
-              <div class="flex gap-4 items-start">
-                <div class="flex flex-col gap-3 shrink-0">
-                  <button
-                    class="glass-btn primary"
-                    @click="handleMultipleModals"
-                  >
-                    開啟多層彈窗
-                  </button>
-                  <button
-                    class="glass-btn danger"
-                    @click="closeAll"
-                  >
-                    關閉所有
-                  </button>
+              <div>
+                <div class="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                  實戰應用 (Use Case)
                 </div>
-                <div class="flex-1 min-w-0">
-                  <div
-                    class="bg-slate-950/50 p-3 rounded-lg border border-slate-800 text-xs font-mono text-slate-400 overflow-hidden"
+                <p class="text-sm font-bold text-slate-600">{{ activeUnit.useCase }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unit Content -->
+          <div class="space-y-10 animate-fadeIn">
+            <!-- Phase 0: Intro -->
+            <template v-if="activeUnit.id === 'intro'">
+              <ShowcaseCard
+                title="為什麼要使用管理系統？"
+                description="了解傳統與規範化開發的差異"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                    <h4 class="font-bold text-slate-400 mb-3 flex items-center gap-2 line-through">
+                      傳統做法 (v-model)
+                    </h4>
+                    <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
+                      <li>
+                        每個頁面都要定義
+                        <code>showModal = ref(false)</code>
+                      </li>
+                      <li>
+                        需要在 Template 中掛載
+                        <code>&lt;Modal&gt;</code>
+                        元件
+                      </li>
+                      <li>難以在多個組件間共享同個彈窗</li>
+                      <li>無法透過 Promise 直接取得操作結果</li>
+                    </ul>
+                  </div>
+                  <div class="p-6 rounded-2xl bg-blue-50 border border-blue-100">
+                    <h4 class="font-bold text-blue-900 mb-3 flex items-center gap-2 italic">
+                      開發包實踐 (Global Service)
+                    </h4>
+                    <ul class="text-sm text-blue-800/80 space-y-2 list-disc pl-4">
+                      <li>
+                        一行
+                        <code>useModal()</code>
+                        即可調用
+                      </li>
+                      <li>無需在 Template 撰寫冗餘代碼</li>
+                      <li>支援 Promise (async/await) 邏輯</li>
+                      <li>自動處理多層堆疊與 z-index</li>
+                    </ul>
+                  </div>
+                </div>
+              </ShowcaseCard>
+              <div class="space-y-4">
+                <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                  起手式教學
+                </h4>
+                <ShowcaseCodeBlock
+                  filename="MyPage.vue"
+                  :code="snippets.setup"
+                />
+              </div>
+            </template>
+
+            <!-- Phase 1: Basic Open -->
+            <template v-if="activeUnit.id === 'basic'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="space-y-6">
+                  <ShowcaseCard
+                    title="互動演示"
+                    description="嘗試修改內容並開啟彈窗"
                   >
-                    <div class="flex justify-between mb-2">
-                      <span class="font-bold text-slate-500">系統狀態</span>
-                      <span
-                        v-if="modalStatus.hasModal"
-                        class="text-emerald-500"
+                    <div class="space-y-4 mt-4">
+                      <div class="space-y-2">
+                        <label class="text-xs font-black text-slate-400 uppercase">標題</label>
+                        <input
+                          v-model="customTitle"
+                          class="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 outline-none"
+                        />
+                      </div>
+                      <div class="space-y-2">
+                        <label class="text-xs font-black text-slate-400 uppercase">內容文字</label>
+                        <textarea
+                          v-model="customContent"
+                          class="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 outline-none min-h-[100px]"
+                        ></textarea>
+                      </div>
+                      <button
+                        class="w-full py-4 rounded-2xl bg-blue-600 text-white font-black shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all"
+                        @click="handleBasicOpen"
                       >
-                        運作中
-                      </span>
-                      <span
-                        v-else
-                        class="text-slate-600"
+                        開啟基礎彈窗
+                      </button>
+                      <div
+                        v-if="actionResult"
+                        class="p-3 text-center rounded-xl bg-emerald-50 text-emerald-600 font-mono text-xs border border-emerald-100"
                       >
-                        閒置
-                      </span>
+                        {{ actionResult }}
+                      </div>
                     </div>
-                    <pre>{{ JSON.stringify(modalStatus, null, 2) }}</pre>
+                  </ShowcaseCard>
+                </div>
+                <div class="space-y-6">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    直接複製貼上
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.basic" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Phase 2: Confirm / Alert -->
+            <template v-if="activeUnit.id === 'confirm'">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="space-y-6">
+                  <ShowcaseCard title="操作測試">
+                    <div class="grid grid-cols-1 gap-4 mt-2">
+                      <button
+                        class="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 group transition-all"
+                        @click="handleQuickConfirm"
+                      >
+                        <div>
+                          <div class="font-black text-slate-800">使用 confirm()</div>
+                          <div class="text-xs text-slate-400 text-left">回傳值為 Boolean</div>
+                        </div>
+                        <IIcon
+                          icon="mdi-chevron-right"
+                          class="text-slate-300 group-hover:text-blue-500"
+                        />
+                      </button>
+                      <button
+                        class="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 group transition-all"
+                        @click="handleQuickAlert"
+                      >
+                        <div>
+                          <div class="font-black text-slate-800">使用 alert()</div>
+                          <div class="text-xs text-slate-400 text-left">純訊息警告，強制確定</div>
+                        </div>
+                        <IIcon
+                          icon="mdi-chevron-right"
+                          class="text-slate-300 group-hover:text-amber-500"
+                        />
+                      </button>
+                    </div>
+                    <div
+                      v-if="actionResult"
+                      class="mt-4 p-3 text-center rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs shadow-inner"
+                    >
+                      {{ actionResult }}
+                    </div>
+                  </ShowcaseCard>
+                </div>
+                <div class="space-y-6">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    實戰代碼範例
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.confirm" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Phase 3: Advanced -->
+            <template v-if="activeUnit.id === 'advanced'">
+              <div class="space-y-8">
+                <div
+                  class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center bg-slate-900 rounded-[2rem] p-10 text-white"
+                >
+                  <div>
+                    <div
+                      class="inline-block px-3 py-1 rounded bg-blue-500/20 text-blue-400 text-[10px] font-black uppercase mb-4 tracking-widest border border-blue-500/30"
+                    >
+                      Feature Preview
+                    </div>
+                    <h3 class="text-2xl font-black mb-4">動態元件注入模式</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">
+                      你可以將現成的業務元件 (如 Email 輸入、甚至整個表格) 傳遞給 Modal 層渲染。透過
+                      <code>markRaw</code>
+                      包裝元件，能有效提升 Vue 的渲染效率。
+                    </p>
+                    <button
+                      class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-8 py-3 rounded-xl font-bold transition-all"
+                      @click="handleComponentInjection"
+                    >
+                      開啟含有動態元件的 Modal
+                      <IIcon icon="mdi-arrow-right" />
+                    </button>
+                  </div>
+                  <div class="bg-slate-800/50 rounded-2xl border border-slate-700/50 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center"
+                      >
+                        <IIcon icon="mdi-file-code-outline" />
+                      </div>
+                      <div class="text-xs font-bold text-slate-300">EmailInput.vue (偵測中)</div>
+                    </div>
+                    <div class="h-px bg-slate-700"></div>
+                    <div class="space-y-2 opacity-50">
+                      <div class="w-full h-8 bg-slate-700/50 rounded"></div>
+                      <div class="w-2/3 h-8 bg-slate-700/50 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">
+                    開發規範代碼
+                  </h4>
+                  <ShowcaseCodeBlock :code="snippets.component" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Phase 4: Queue -->
+            <template v-if="activeUnit.id === 'queue'">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <ShowcaseCard title="堆疊系統狀態 (Real-time Queue)">
+                  <div class="space-y-6">
+                    <div class="flex gap-2">
+                      <button
+                        class="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                        @click="handleStackedModals"
+                      >
+                        開啟兩層彈窗
+                      </button>
+                      <button
+                        class="flex-1 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs hover:bg-slate-50"
+                        @click="closeAll"
+                      >
+                        清空所有
+                      </button>
+                    </div>
+                    <div class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+                      <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-black text-slate-400">目前開啟數量</span>
+                        <span class="text-2xl font-black text-blue-600 font-mono">
+                          {{ modalCount }}
+                        </span>
+                      </div>
+                      <div class="space-y-2">
+                        <div
+                          v-if="modals.length === 0"
+                          class="text-center py-8 text-slate-300 text-xs italic"
+                        >
+                          目前沒有運作中的彈窗...
+                        </div>
+                        <div
+                          v-for="m in modals"
+                          :key="m.id"
+                          class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg text-xs font-mono"
+                        >
+                          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                          <span class="text-slate-500">ID: {{ m.id.slice(0, 8) }}</span>
+                          <span class="font-black text-slate-800">[{{ m.config.title }}]</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ShowcaseCard>
+
+                <div class="space-y-6 bg-slate-50 rounded-3xl p-8 border border-slate-100">
+                  <h4
+                    class="text-sm font-black text-blue-600 uppercase tracking-widest flex items-center gap-2"
+                  >
+                    <IIcon icon="mdi-shield-crown" />
+                    進階 API 教學
+                  </h4>
+                  <div class="space-y-4">
+                    <div class="p-4 bg-white rounded-xl border border-slate-200">
+                      <div class="text-xs font-black text-slate-800 mb-1">modalCount</div>
+                      <p class="text-[11px] text-slate-500">
+                        取得目前彈窗總數，常用於判斷是否鎖定頁面滾動。
+                      </p>
+                    </div>
+                    <div class="p-4 bg-white rounded-xl border border-slate-200">
+                      <div class="text-xs font-black text-slate-800 mb-1">hasModal</div>
+                      <p class="text-[11px] text-slate-500">
+                        Boolean 響應式指標，快速判斷是否有 Modal 運作中。
+                      </p>
+                    </div>
+                    <div class="p-4 bg-white rounded-xl border border-slate-200">
+                      <div class="text-xs font-black text-slate-800 mb-1">closeAll()</div>
+                      <p class="text-[11px] text-slate-500">
+                        強力手段，一次關閉所有佇列中的 Modal（多用於登出或全域異常時）。
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ShowcaseCard>
-
-          <!-- Code -->
-          <div class="space-y-2 h-full flex flex-col">
-            <ShowcaseCodeBlock
-              code="// 開啟多層彈窗 (自動堆疊)
-open({ title: '第一層', content: 'Base Modal' })
-
-setTimeout(() => {
-  open({ title: '第二層', content: 'Stacked Modal' })
-}, 500)
-
-// 取得狀態
-const { 
-  modals,      // 彈窗佇列
-  hasModal,    // 是否有開啟
-  modalCount,  // 數量
-  closeAll     // 強制關閉所有
-} = useModal()"
-              language="typescript"
-              :lines="false"
-              class="flex-1"
-            />
+            </template>
           </div>
-        </div>
+
+          <!-- Bottom Navigation -->
+          <div class="mt-8 border-t border-slate-100 pt-8 flex justify-between items-center">
+            <button
+              v-if="activeUnitIndex > 0"
+              class="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex--"
+            >
+              <IIcon
+                icon="mdi-arrow-left"
+                size="18"
+              />
+              回到上一階段
+            </button>
+            <div v-else></div>
+
+            <button
+              v-if="activeUnitIndex < units.length - 1"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-md transition-all text-sm font-bold active:scale-95"
+              @click="activeUnitIndex++"
+            >
+              下一步：{{ units[activeUnitIndex + 1].title }}
+              <IIcon
+                icon="mdi-arrow-right"
+                size="18"
+              />
+            </button>
+            <NuxtLink
+              v-else
+              to="/showcase"
+              class="flex items-center gap-2 px-8 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold text-sm active:scale-95 transition-all"
+            >
+              完成彈窗課程
+              <IIcon
+                icon="mdi-check-circle"
+                size="18"
+              />
+            </NuxtLink>
+          </div>
+        </main>
       </div>
-    </ShowcaseSection>
-
-    <!-- 進階應用 -->
-    <ShowcaseSection title="進階應用">
-      <div class="space-y-12">
-        <!-- 4. 動態元件插入 (Slot) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <!-- Demo -->
-          <ShowcaseCard title="4. 動態元件插入 (Slot)">
-            <div class="flex flex-col gap-4">
-              <div class="text-sm text-slate-400">
-                透過
-                <code>component</code>
-                參數，將任意 Vue 元件動態注入到彈窗內容區。
-              </div>
-              <div class="p-4 bg-slate-950/50 rounded-lg border border-slate-800/50 border-dashed">
-                <div class="text-xs text-slate-500 mb-2 uppercase font-bold">元件預覽</div>
-                <div class="flex items-center gap-2 text-emerald-400">
-                  <span class="i-mdi-puzzle-outline text-lg"></span>
-                  <span>EmailInput.vue</span>
-                </div>
-              </div>
-              <button
-                class="glass-btn primary w-full"
-                @click="handleOpenComponent"
-              >
-                開啟含元件彈窗
-              </button>
-            </div>
-          </ShowcaseCard>
-
-          <!-- Code -->
-          <div class="space-y-2 h-full flex flex-col">
-            <ShowcaseCodeBlock
-              code="// Import Component
-import EmailInput from '@/components/EmailInput.vue'
-
-// Open with Component
-open({
-  title: '元件插入測試',
-  // 使用 markRaw 避免非必要的響應式開銷
-  component: markRaw(EmailInput),
-  
-  // 傳入 Props 給元件
-  componentProps: {
-    placeholder: '我是被插入的元件...',
-    corporateOnly: true
-  }
-})"
-              language="typescript"
-              :lines="false"
-              class="flex-1"
-            />
-          </div>
-        </div>
-
-        <!-- 5. 局部彈窗 (Local Modal) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <!-- Demo -->
-          <ShowcaseCard title="5. 局部彈窗 (Local)">
-            <div class="flex flex-col gap-4">
-              <div class="text-sm text-slate-400">
-                不透過 Global State，直接在頁面使用
-                <code>&lt;IModal&gt;</code>
-                並使用 Template Ref 控制，適合簡單或獨立情境。
-              </div>
-              <button
-                class="glass-btn primary w-full"
-                @click="handleLocalModalOpen"
-              >
-                開啟局部彈窗 (Via Ref)
-              </button>
-            </div>
-          </ShowcaseCard>
-
-          <!-- Code -->
-          <div class="space-y-2 h-full flex flex-col">
-            <ShowcaseCodeBlock
-              code="<!-- Template -->
-<IModal ref='localModalRef' />
-
-<!-- Script -->
-const localModalRef = ref()
-
-const handleOpen = async () => {
-  // 直接呼叫元件方法 (Promise based)
-  const result = await localModalRef.value.confirm({
-    title: '局部彈窗',
-    content: '這是獨立的實例'
-  })
-}"
-              language="typescript"
-              :lines="false"
-              class="flex-1"
-            />
-          </div>
-        </div>
-      </div>
-    </ShowcaseSection>
-
-    <!-- 設計模式示意 -->
-    <ShowcaseSection title="元件互動模式 (Interaction Patterns)">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Pattern 1 說明 -->
-        <ShowcaseCard
-          title="Pattern 1: 內聚模式"
-          description="由元件內部處理 API 與驗證"
-        >
-          <div class="p-3 bg-emerald-950/30 border border-emerald-500/20 rounded-lg mb-4">
-            <p class="text-xs text-slate-400">
-              適合高度自治的組件。父層只負責傳入初始值，並監聽成功回呼。
-            </p>
-          </div>
-          <ShowcaseCodeBlock
-            code="<!-- 父層範例 -->
-await open({
-  component: markRaw(MyScopedForm),
-  componentProps: {
-    initialData: item,
-    onSuccess: refreshList
-  }
-})"
-            language="typescript"
-            :lines="false"
-          />
-        </ShowcaseCard>
-
-        <!-- Pattern 2 說明 -->
-        <ShowcaseCard
-          title="Pattern 2: 外據模式"
-          description="由父層控制組件資料與存檔行為"
-        >
-          <div class="p-3 bg-sky-950/30 border border-sky-500/20 rounded-lg mb-4">
-            <p class="text-xs text-slate-400">
-              適合輕量級表單。組件透過 props 綁定 Reactive 物件，由父層決定何時存檔。
-            </p>
-          </div>
-          <ShowcaseCodeBlock
-            code="<!-- 父層範例 -->
-const formData = reactive({ ...item })
-const ok = await open({
-  component: markRaw(MySimpleForm),
-  componentProps: { formData }
-})
-if (ok) await saveApi(formData)"
-            language="typescript"
-            :lines="false"
-          />
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-
-    <!-- 局部彈窗實例 (直接掛在 template，使用 Ref 控制) -->
-    <IModal
-      ref="localModalRef"
-      :model-value="false"
-    >
-      局部彈窗實例 (直接掛在 template，使用 Ref 控制) -
-    </IModal>
-
-    <ShowcaseSection title="API 參考">
-      <div class="component-grid">
-        <!-- open() -->
-        <ShowcaseCard
-          title="1. open()"
-          description="開啟自訂彈窗"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              開啟一個可自訂的彈窗，支援確認/取消按鈕。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { open } = useModal()
-
-const result = await open({
-  title: '自訂標題',
-  content: '自訂內容',
-  confirmText: '確定',
-  cancelText: '取消'
-})
-
-if (result) {
-  console.log('使用者點擊確定')
-} else {
-  console.log('使用者點擊取消')
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- confirm() -->
-        <ShowcaseCard
-          title="2. confirm()"
-          description="確認對話框"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              快速開啟確認對話框，預設按鈕為「確認」和「取消」。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { confirm } = useModal()
-
-const result = await confirm({
-  title: '確認操作',
-  content: '您確定要刪除此項目嗎？'
-})
-
-if (result) {
-  // 執行刪除
-  deleteItem()
-}"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- alert() -->
-        <ShowcaseCard
-          title="3. alert()"
-          description="警告對話框"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              顯示警告訊息，只有一個「確定」按鈕。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { alert } = useModal()
-
-await alert({
-  title: '提示',
-  content: '操作已完成！'
-})
-
-console.log('使用者已關閉警告')"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- closeAll() -->
-        <ShowcaseCard
-          title="4. closeAll()"
-          description="關閉所有彈窗"
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              一次關閉所有開啟的彈窗（用於多層彈窗情境）。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { closeAll } = useModal()
-
-// 開啟多個彈窗後
-open({ title: '彈窗 1', content: '...' })
-open({ title: '彈窗 2', content: '...' })
-open({ title: '彈窗 3', content: '...' })
-
-// 一次全部關閉
-closeAll()"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-
-        <!-- 狀態追蹤 -->
-        <ShowcaseCard
-          title="5. 狀態追蹤"
-          description="即時追蹤彈窗狀態"
-          full-width
-        >
-          <div class="demo-area">
-            <p class="method-desc">
-              <strong>用途：</strong>
-              取得目前所有彈窗的狀態資訊。
-            </p>
-          </div>
-          <template #footer>
-            <ShowcaseCodeBlock
-              code="const { hasModal, modalCount, modals } = useModal()
-
-// hasModal: 是否有彈窗開啟
-console.log(hasModal.value)  // true/false
-
-// modalCount: 彈窗數量
-console.log(modalCount.value)  // 0, 1, 2...
-
-// modals: 所有彈窗的詳細資訊
-console.log(modals.value)  // [{ id, config, isVisible }]"
-              label="使用範例"
-            />
-          </template>
-        </ShowcaseCard>
-      </div>
-    </ShowcaseSection>
-    <ShowcaseSection
-      title="API 參考"
-      icon="📝"
-    >
-      <ShowcaseCard
-        title="API 詳細說明"
-        description="useModal() 回傳方法列表"
-        full-width
-      >
-        <div class="mb-4 text-slate-400 text-sm leading-relaxed">
-          提供統一的彈窗管理介面，支援 Promise 回傳與多層堆疊。
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse border border-slate-700">
-            <thead>
-              <tr>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                >
-                  方法名稱 (Name)
-                </th>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm text-nowrap"
-                >
-                  型別 (Type)
-                </th>
-                <th
-                  class="p-4 border border-slate-600 bg-slate-800/50 text-slate-400 font-medium text-sm w-full"
-                >
-                  說明 (Description)
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700/50">
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                  open(config)
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  開啟彈窗 (回傳 Promise)。Config 包含 title, content, component 等。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                  confirm(config)
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  開啟確認對話框 (回傳 Promise&lt;boolean&gt;)。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-fuchsia-300 font-medium">
-                  alert(config)
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  開啟警告對話框 (回傳 Promise&lt;void&gt;)。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-rose-300 font-medium">
-                  closeAll()
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">Function</td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  強制關閉所有彈窗。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
-                  modals
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
-                  Ref&lt;Array&gt;
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  目前所有彈窗的狀態列表。
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="p-4 border border-slate-700/50 font-mono text-sky-300 font-medium">
-                  hasModal
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-400 text-sm">
-                  Ref&lt;Boolean&gt;
-                </td>
-                <td class="p-4 border border-slate-700/50 text-slate-300 text-sm leading-relaxed">
-                  是否有任何彈窗開啟中。
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ShowcaseCard>
-    </ShowcaseSection>
-  </ShowcasePage>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #f1f5f9;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  outline: none;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
-.glass-input:focus {
-  border-color: #38bdf8;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Glass Buttons */
-.glass-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #e2e8f0;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.glass-btn:hover {
-  background: rgba(51, 65, 85, 0.8);
-  border-color: #94a3b8;
-}
-
-.glass-btn.primary {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.5);
-  color: #38bdf8;
-}
-
-.glass-btn.primary:hover {
-  background: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-}
-
-.glass-btn.danger {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #ef4444;
-}
-
-.glass-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.3);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-}
-
-.glass-input {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #f1f5f9;
-  padding: 0.5rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  width: 100%;
-}
-
-.glass-input:focus {
-  outline: none;
-  border-color: #38bdf8;
-  background: rgba(30, 41, 59, 0.6);
-}
-
-/* Benefit List */
-.benefit-list {
-  padding-left: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  margin: 0;
-}
-
-.benefit-list li {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
-  padding: 1.25rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  color: #e2e8f0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.benefit-list li::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.benefit-list li:hover {
-  border-color: rgba(56, 189, 248, 0.3);
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
-}
-
-.benefit-list li:hover::before {
-  opacity: 1;
-}
-
-.benefit-list li strong {
-  color: #38bdf8;
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1.05em;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-/* Method Description */
-.method-desc {
-  color: #cbd5e1;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin: 0;
+textarea {
+  min-height: 200px;
 }
 </style>

@@ -1,0 +1,42 @@
+server {
+  listen 8080;
+  listen [::]:8080;
+  server_name localhost;
+
+  add_header X-Content-Type-Options "nosniff";
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+
+  # Runtime Config
+  location /rt/cfg {
+    default_type application/json;
+    return 200 '{
+      "svc": {
+        "nameSpace": "${NAME_SPACE}",
+        "runtimeEnv": "${RUNTIME_ENV}"
+      }
+    }';
+  }
+
+  # --- API Proxies ---
+
+  # 預設後端服務
+  location /api/ {
+    proxy_http_version 1.1;
+    proxy_set_header    X-Real-IP $remote_addr;
+    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Host $server_name;
+    proxy_pass_header   Set-Cookie;
+    proxy_pass ${BACKEND_URL_API};
+  }
+
+  # Static Assets
+  location / {
+    add_header Cache-Control "no-cache, no-store, must-revalidate, max-age=0";
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    root      /usr/share/nginx/html;
+    index     index.html;
+    try_files $uri $uri/index.html /index.html =404;
+  }
+}

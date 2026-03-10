@@ -92,7 +92,7 @@ const goShowcase = () => router.push('/showcase')
             API 管理
           </NuxtLink>
           <NuxtLink
-            to="/showcase/component-showcase"
+            to="/showcase/component-course"
             class="error-link"
           >
             <IIcon

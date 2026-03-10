@@ -42,7 +42,7 @@ const ROLES = ['admin', 'user', 'guest'] as const
  * @param max - 最大值
  * @returns 隨機整數
  */
-function randomInt(min: number, max: number): number {
+function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -52,8 +52,8 @@ function randomInt(min: number, max: number): number {
  * @param array - 來源陣列
  * @returns 隨機選擇的元素
  */
-function randomElement<T>(array: readonly T[]): T {
-  return array[randomInt(0, array.length - 1)]!
+function getRandomElement<T>(array: readonly T[]): T {
+  return array[getRandomInt(0, array.length - 1)]!
 }
 
 /**
@@ -62,9 +62,9 @@ function randomElement<T>(array: readonly T[]): T {
  * @param daysAgo - 過去幾天內，預設 365 天
  * @returns ISO 格式的日期字串
  */
-function randomDate(daysAgo: number = 365): string {
+function getRandomDate(daysAgo: number = 365): string {
   const now = new Date()
-  const past = new Date(now.getTime() - randomInt(0, daysAgo) * 24 * 60 * 60 * 1000)
+  const past = new Date(now.getTime() - getRandomInt(0, daysAgo) * 24 * 60 * 60 * 1000)
   return past.toISOString()
 }
 
@@ -75,9 +75,9 @@ function randomDate(daysAgo: number = 365): string {
  * @returns Mock User 物件
  */
 export function createMockUser(overrides?: Partial<User>): User {
-  const id = overrides?.id !== undefined ? overrides.id : randomInt(1, 10000)
-  const firstName = randomElement(FIRST_NAMES)
-  const lastName = randomElement(LAST_NAMES)
+  const id = overrides?.id !== undefined ? overrides.id : getRandomInt(1, 10000)
+  const firstName = getRandomElement(FIRST_NAMES)
+  const lastName = getRandomElement(LAST_NAMES)
   const name = `${firstName}${lastName}`
   const email = `${firstName.toLowerCase()}${lastName.toLowerCase()}${id}@example.com`
 
@@ -85,10 +85,10 @@ export function createMockUser(overrides?: Partial<User>): User {
     id,
     name,
     email,
-    role: randomElement(ROLES),
-    avatar: `https://i.pravatar.cc/150?img=${randomInt(1, 70)}`,
-    createdAt: randomDate(365),
-    updatedAt: randomDate(30),
+    role: getRandomElement(ROLES),
+    avatar: `https://i.pravatar.cc/150?img=${getRandomInt(1, 70)}`,
+    createdAt: getRandomDate(365),
+    updatedAt: getRandomDate(30),
     ...overrides
   }
 }

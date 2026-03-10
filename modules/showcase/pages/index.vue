@@ -2,7 +2,7 @@
 import ShowcaseDashboard from '../components/ShowcaseDashboard.vue'
 
 definePageMeta({
-  title: 'Showcase 儀表板',
+  title: '課程中心',
   icon: 'mdi-view-dashboard',
   layout: 'portal'
 })

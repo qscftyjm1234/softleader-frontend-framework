@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 // 權限或篩選
 import { buildSidebar, type SidebarItem, type ModuleConfig } from '~/core/sidebar/buildSidebar'
-// Sidebar
+// 側邊欄 (Sidebar) 狀態管理
 import { sidebarRegistry } from '~/core/sidebar/registry'
 
 /**

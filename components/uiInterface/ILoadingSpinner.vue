@@ -1,68 +1,41 @@
 <script setup lang="ts">
+import { Spin as ASpin } from 'ant-design-vue'
+
 /**
  * ILoadingSpinner - 介面層
- *
- * 用途：純粹的 Loading 動畫元件
- * 樣式：Double Bounce (雙層跳動圓點)
+ * 基底更換為 Ant Design Vue (a-spin)
  */
 
 interface Props {
-  size?: number | string
-  color1?: string
-  color2?: string
+  size?: 'small' | 'default' | 'large' | number
+  color?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  size: 60,
-  color1: '#3498db', // 主要藍色
-  color2: '#2ecc71' // 次要綠色
+const props = withDefaults(defineProps<Props>(), {
+  size: 'default',
+  color: '#6366f1'
 })
 </script>
 
 <template>
-  <div
-    class="spinner"
-    :style="{ width: `${size}px`, height: `${size}px` }"
-  >
-    <div
-      class="double-bounce1"
-      :style="{ backgroundColor: color1 }"
-    ></div>
-    <div
-      class="double-bounce2"
-      :style="{ backgroundColor: color2 }"
-    ></div>
+  <div class="i-loading-spinner">
+    <ASpin
+      :size="typeof size === 'string' ? size : 'default'"
+      class="i-spin-wrapper"
+    />
   </div>
 </template>
 
-<style scoped>
-.spinner {
-  position: relative;
+<style scoped lang="scss">
+.i-loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.double-bounce1,
-.double-bounce2 {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  opacity: 0.6;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: sk-bounce 2s infinite ease-in-out;
-}
-
-.double-bounce2 {
-  animation-delay: -1s;
-}
-
-@keyframes sk-bounce {
-  0%,
-  100% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1);
+:deep(.i-spin-wrapper) {
+  .ant-spin-dot-item {
+    background-color: v-bind(color);
   }
 }
 </style>
