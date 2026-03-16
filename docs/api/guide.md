@@ -17,11 +17,13 @@
 // repositories/modules/policy.ts
 import { useClient } from '~/composables/useApi'
 
-const api = useClient('/jasmine-mar/mar/policy')
-
 export default {
-  getQotList: (params) => api.get('/qot', { query: params }),
-  createQot: (data) => api.post('/qot', data)
+  getQotList(params) {
+    return useClient('/jasmine-mar/mar/policy').get('/qot', { query: params })
+  },
+  createQot(data) {
+    return useClient('/jasmine-mar/mar/policy').post('/qot', data)
+  }
 }
 ```
 
@@ -32,8 +34,6 @@ export default {
 當遇到類似結構但中間路徑不同時，使用參數化方式：
 
 ```typescript
-const service = useClient('/jasmine-mar')
-
 export default {
   /**
    * 取得保單詳情
@@ -41,6 +41,7 @@ export default {
    * @param id - 單號
    */
   getDetail(type: 'qot' | 'pos' | 'mod', id: string) {
+    const service = useClient('/jasmine-mar')
     return service.get(`/${type}/policies/detail/${id}`)
   }
 }

@@ -8,10 +8,9 @@
 
 ```
 stores/
-├── app.ts           # 應用程式全域狀態
+├── app.ts           # 應用程式全域狀態 (包含功能開關)
 ├── user.ts          # 使用者資料與權限
-├── sidebar.ts       # 側邊欄狀態
-└── features.ts      # 功能開關
+└── sidebar.ts       # 側邊欄狀態
 ```
 
 ---
@@ -20,7 +19,7 @@ stores/
 
 ### 職責
 
-管理應用程式層級的全域狀態,包含主題、語言、載入狀態等。
+管理應用程式層級的全域狀態,包含主題、語言、載入狀態以及 **功能開關 (Feature Flags)**。
 
 ### 主要狀態
 
@@ -29,11 +28,12 @@ interface AppState {
   theme: 'light' | 'dark' // 主題模式
   locale: 'zh-TW' | 'en-US' // 語言設定
   isLoading: boolean // 全域載入狀態
+  features: FeatureFlags // 功能開關狀態
   notifications: Notification[] // 通知列表
 }
 ```
 
-### 使用範例
+### 使用範例 (基礎)
 
 ```vue
 <script setup lang="ts">
@@ -41,14 +41,13 @@ import { useAppStore } from '~/stores/app'
 
 const appStore = useAppStore()
 
-// 讀取狀態
+// 讀取主題
 console.log(appStore.theme)
 
-// 修改狀態
-appStore.setTheme('dark')
-
-// 切換主題
-appStore.toggleTheme()
+// 檢查功能是否啟用 (透過 appStore.features)
+if (appStore.features.devTools.apiMock.enabled) {
+  console.log('Mock API 已啟用')
+}
 </script>
 ```
 
@@ -191,57 +190,9 @@ const isOpen = computed(() => sidebarStore.isOpen)
 
 ---
 
-## 4. features.ts - 功能開關
+## 4. 下一步
 
-### 職責
-
-管理功能開關 (Feature Flags),控制特定功能的啟用/停用。
-
-### 主要狀態
-
-```typescript
-interface FeaturesState {
-  flags: Record<string, boolean> // 功能開關對照表
-}
-```
-
-### 主要 Actions
-
-```typescript
-{
-  // 檢查功能是否啟用
-  isEnabled(feature: string): boolean
-
-  // 啟用功能
-  enable(feature: string): void
-
-  // 停用功能
-  disable(feature: string): void
-
-  // 切換功能
-  toggle(feature: string): void
-}
-```
-
-### 使用範例
-
-```vue
-<script setup lang="ts">
-import { useFeaturesStore } from '~/stores/features'
-
-const featuresStore = useFeaturesStore()
-
-// 檢查功能是否啟用
-const showNewFeature = computed(() => featuresStore.isEnabled('new-dashboard'))
-</script>
-
-<template>
-  <div>
-    <NewDashboard v-if="showNewFeature" />
-    <OldDashboard v-else />
-  </div>
-</template>
-```
+可參考 [API 指南](../api/guide.md) 以了解如何將 Store 與 API 結合。
 
 ---
 

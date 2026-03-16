@@ -42,27 +42,29 @@ const { breadcrumbs } = useBreadcrumbs()
           </div>
           <nav class="space-y-1">
             <NuxtLink
-              to="/showcase"
-              class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-50/80 text-blue-700 font-semibold text-sm transition-all border border-blue-100 shadow-sm relative overflow-hidden group"
+              to="/showcase/dashboard"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 font-medium text-sm transition-colors group"
+              active-class="bg-blue-50/80 text-blue-700 font-semibold border-blue-100 shadow-sm"
             >
               <IIcon
                 icon="mdi-view-dashboard-outline"
                 size="18"
-                class="text-blue-600"
+                class="text-slate-500 group-hover:text-blue-600 group-[.router-link-active]:text-blue-600"
               />
               總覽儀表板
             </NuxtLink>
-            <a
-              href="#"
+            <NuxtLink
+              to="/showcase"
               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 font-medium text-sm transition-colors group"
+              active-class="bg-blue-50/80 text-blue-700 font-semibold border-blue-100 shadow-sm"
             >
               <IIcon
                 icon="mdi-book-open-page-variant-outline"
                 size="18"
-                class="group-hover:text-blue-500 transition-colors"
+                class="text-slate-500 group-hover:text-blue-500 group-[.router-link-active]:text-blue-600"
               />
               核心課程模組
-            </a>
+            </NuxtLink>
             <a
               href="#"
               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 font-medium text-sm transition-colors group"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useUserStore } from '~/stores/user'
-import { useFeatureStore } from '~/stores/features'
+import { useAppStore } from '~/stores/app'
 import { useAppDevice } from '~/composables/useAppDevice'
 
 // Components
@@ -36,7 +36,7 @@ const i18nInfo = computed(() => ({
 
 // --- 3. Pinia Stores 狀態 (即時) ---
 const userStore = useUserStore()
-const featuresStore = useFeatureStore()
+const appStore = useAppStore()
 
 // --- 4. 模擬資料 ---
 // Auth 模組模擬資料
@@ -262,9 +262,9 @@ definePageMeta({
           label="使用者狀態 ($state)"
         />
         <ShowcaseCodeBlock
-          :code="formatData(featuresStore.$state)"
+          :code="formatData(appStore.features)"
           language="json"
-          label="功能開關 ($state)"
+          label="功能開關 (Features)"
         />
       </IStack>
     </ShowcaseSection>

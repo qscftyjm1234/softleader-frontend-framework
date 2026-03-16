@@ -124,11 +124,9 @@ NUXT_PUBLIC_API_RETRY=1
 // repositories/modules/auth.ts
 import { useClient } from '~/composables/useApi'
 
-const api = useClient('/auth')
-
 export default {
   login(credentials: any, options = {}) {
-    return api.post('/login', credentials, options)
+    return useClient('/auth').post('/login', credentials, options)
   }
 }
 ```
@@ -164,7 +162,6 @@ npm run dev
 import { useClient } from '~/composables/useApi'
 import type { UseFetchOptions } from 'nuxt/app'
 
-// 定義型別 (選填,但建議)
 interface Product {
   id: number
   name: string
@@ -177,56 +174,32 @@ interface ProductListResponse {
   total: number
 }
 
-// 建立 API Client,指向 /products
-const api = useClient('/products')
-
 export default {
-  /**
-   * 取得商品列表
-   * @param params - 查詢參數 (分頁、搜尋等)
-   */
   getProducts(params = {}, options: UseFetchOptions<ProductListResponse> = {}) {
-    return api.get<ProductListResponse>('/', {
+    return useClient('/products').get<ProductListResponse>('/', {
       query: params,
       ...options
     })
   },
 
-  /**
-   * 根據 ID 取得單一商品
-   * @param id - 商品 ID
-   */
   getProductById(id: number) {
-    return api.get<Product>(`/${id}`)
+    return useClient('/products').get<Product>(`/${id}`)
   },
 
-  /**
-   * 建立商品
-   * @param productData - 商品資料
-   */
   createProduct(productData: Partial<Product>) {
-    return api.post<Product>('/', productData, {
-      autoSuccess: '商品建立成功!' // 成功時自動顯示通知
+    return useClient('/products').post<Product>('/', productData, {
+      autoSuccess: '商品建立成功!'
     })
   },
 
-  /**
-   * 更新商品
-   * @param id - 商品 ID
-   * @param productData - 更新的商品資料
-   */
   updateProduct(id: number, productData: Partial<Product>) {
-    return api.put<Product>(`/${id}`, productData, {
+    return useClient('/products').put<Product>(`/${id}`, productData, {
       autoSuccess: '商品更新成功!'
     })
   },
 
-  /**
-   * 刪除商品
-   * @param id - 商品 ID
-   */
   deleteProduct(id: number) {
-    return api.delete(`/${id}`, {
+    return useClient('/products').delete(`/${id}`, {
       autoSuccess: '商品刪除成功!'
     })
   }

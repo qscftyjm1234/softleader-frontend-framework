@@ -59,7 +59,7 @@ const features = [
 
 <template>
   <div
-    class="min-h-screen relative flex flex-col items-center justify-center py-16 px-8 bg-slate-50 overflow-hidden text-slate-800 font-sans"
+    class="flex-1 relative flex flex-col items-center justify-center pt-24 pb-16 px-8 bg-slate-50 overflow-hidden text-slate-800 font-sans"
   >
     <!-- Background Decoration -->
     <div
@@ -67,9 +67,11 @@ const features = [
     ></div>
 
     <IStack
-      direction="column"
+      direction="vertical"
       :gap="4"
       align="center"
+      justify="center"
+      block
       class="relative z-10 w-full max-w-6xl px-4 animate-fadeInUp"
     >
       <!-- Hero Section -->

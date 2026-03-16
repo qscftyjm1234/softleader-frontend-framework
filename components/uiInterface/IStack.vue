@@ -14,13 +14,17 @@ interface Props {
   block?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   direction: 'horizontal',
   gap: 'middle',
   align: 'center',
   wrap: false,
   block: false
 })
+
+const stackStyle = computed(() => ({
+  justifyContent: props.justify
+}))
 </script>
 
 <template>
@@ -30,6 +34,7 @@ withDefaults(defineProps<Props>(), {
     :align="align"
     :wrap="wrap"
     :class="['i-stack-wrapper', { 'is-block': block }]"
+    :style="stackStyle"
   >
     <slot />
   </ASpace>
@@ -41,6 +46,9 @@ withDefaults(defineProps<Props>(), {
 
   &.is-block {
     width: 100%;
+    :deep(.ant-space-item) {
+      width: 100%;
+    }
   }
 }
 </style>

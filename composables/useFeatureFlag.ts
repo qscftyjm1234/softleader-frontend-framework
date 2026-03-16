@@ -14,11 +14,9 @@
  */
 
 import { defaultFeatures, type FeatureConfig } from '~/core/config/features'
-import { useFeatureStore } from '~/stores/features'
+import { useAppStore } from '~/stores/app'
 
-type FeaturePath =
-  | `devTools.${keyof typeof defaultFeatures.devTools}`
-  | `logging.${keyof typeof defaultFeatures.logging}`
+type FeaturePath = `devTools.${keyof typeof defaultFeatures.devTools}`
 
 /**
  * 從環境變數或設定中獲取功能狀態
@@ -92,8 +90,9 @@ function getConfigByPath(
  * @returns 功能開關相關方法
  */
 export function useFeatureFlag() {
-  // 使用 Feature Store 以支援熱重載
-  const featureStore = useFeatureStore()
+  // 使用 App Store 中的 features
+  const appStore = useAppStore()
+  const features = appStore.features
 
   /**
    * 檢查功能是否啟用
@@ -108,7 +107,7 @@ export function useFeatureFlag() {
    * ```
    */
   const isEnabled = (featurePath: FeaturePath): boolean => {
-    const config = getConfigByPath(featurePath, featureStore.config)
+    const config = getConfigByPath(featurePath, features)
     if (!config) {
       return false
     }
@@ -123,7 +122,7 @@ export function useFeatureFlag() {
    * @returns 功能設定物件
    */
   const getFeatureConfig = (featurePath: FeaturePath): FeatureConfig | null =>
-    getConfigByPath(featurePath, featureStore.config)
+    getConfigByPath(featurePath, features)
 
   /**
    * 獲取所有功能清單及其狀態
@@ -131,18 +130,18 @@ export function useFeatureFlag() {
    * @returns 所有功能的狀態物件
    */
   const getAllFeatures = () => {
-    const features: Record<string, boolean> = {}
+    const status: Record<string, boolean> = {}
 
-    Object.entries(featureStore.config).forEach(([category, categoryFeatures]) => {
+    Object.entries(features).forEach(([category, categoryFeatures]) => {
       Object.entries(categoryFeatures as Record<string, unknown>).forEach(
         ([featureName, config]) => {
-          const path = `${category}.${featureName}`
-          features[path] = getFeatureValue(config as FeatureConfig)
+          const path = `${category}.${featureName}` as FeaturePath
+          status[path] = getFeatureValue(config as FeatureConfig)
         }
       )
     })
 
-    return features
+    return status
   }
 
   /**
@@ -152,18 +151,18 @@ export function useFeatureFlag() {
    * @returns 該分類下所有功能的狀態
    */
   const getCategoryFeatures = (category: keyof typeof defaultFeatures) => {
-    const categoryConfig = featureStore.config[category]
+    const categoryConfig = features[category]
     if (!categoryConfig) {
       console.warn(`[useFeatureFlag] Unknown category: ${category}`)
       return {}
     }
 
-    const features: Record<string, boolean> = {}
+    const status: Record<string, boolean> = {}
     Object.entries(categoryConfig).forEach(([featureName, config]) => {
-      features[featureName] = getFeatureValue(config as FeatureConfig)
+      status[featureName] = getFeatureValue(config as FeatureConfig)
     })
 
-    return features
+    return status
   }
 
   return {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import ShowcaseDashboard from '../components/ShowcaseDashboard.vue'
+import ShowcaseHub from '../components/ShowcaseHub.vue'
 
 definePageMeta({
   title: '課程中心',
-  icon: 'mdi-view-dashboard',
-  layout: 'portal'
+  icon: 'mdi-book-open-variant',
+  layout: 'showcase-layout'
 })
 </script>
 
 <template>
-  <ShowcaseDashboard />
+  <ShowcaseHub />
 </template>

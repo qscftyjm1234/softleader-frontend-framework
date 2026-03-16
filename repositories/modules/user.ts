@@ -9,9 +9,6 @@ interface UserQueryParams {
   q?: MaybeRef<string>
 }
 
-// 1. 定義 Client
-const api = useClient('/users')
-
 export default {
   /**
    * 取得使用者列表
@@ -20,7 +17,7 @@ export default {
    * @returns List of users
    */
   getUsers(params: UserQueryParams = {}, options: UseFetchOptions<UserListResponse> = {}) {
-    return api.get<UserListResponse>('/', {
+    return useClient('/users').get<UserListResponse>('/', {
       query: params,
       ...options
     })
@@ -32,7 +29,7 @@ export default {
    * @returns User detail
    */
   getUserById(id: MaybeRef<number>) {
-    return api.get<any>(`/${unref(id)}`)
+    return useClient('/users').get<any>(`/${unref(id)}`)
   },
 
   /**
@@ -40,7 +37,7 @@ export default {
    * @param userData
    */
   createUser(userData: any) {
-    return api.post('/', userData)
+    return useClient('/users').post('/', userData)
   },
 
   /**
@@ -49,7 +46,7 @@ export default {
    * @param userData
    */
   updateUser(id: number, userData: any) {
-    return api.put(`/${id}`, userData)
+    return useClient('/users').put(`/${id}`, userData)
   },
 
   /**
@@ -57,6 +54,6 @@ export default {
    * @param id
    */
   deleteUser(id: number) {
-    return api.delete(`/${id}`)
+    return useClient('/users').delete(`/${id}`)
   }
 }
